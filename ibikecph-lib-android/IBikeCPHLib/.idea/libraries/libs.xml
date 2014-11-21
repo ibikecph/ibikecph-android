@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/jackson-core-2.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jackson-databind-2.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/android-support-v4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/libGoogleAnalyticsV2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/jackson-annotations-2.0.0.jar!/" />
+      <root url="jar://$USER_HOME$/osmdroid-lib/osmdroid-lib/libs/apache-mime4j-0.4.jar!/" />
+      <root url="jar://$USER_HOME$/osmdroid-lib/osmdroid-lib/libs/httpmime-4.0-beta1.jar!/" />
+      <root url="jar://$USER_HOME$/osmdroid-lib/osmdroid-lib/libs/slf4j-android-1.5.8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

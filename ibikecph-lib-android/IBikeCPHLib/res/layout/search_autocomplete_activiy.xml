@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/White" >
+
+    <RelativeLayout
+        android:id="@+id/navBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/route_enter_header"
+        android:padding="5dp" >
+
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/btn_grey_selector"
+            android:minHeight="40dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="@color/DarkGrey"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/textLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="6dp"
+            android:layout_toLeftOf="@+id/btnClose"
+            android:background="@drawable/input_standard_selector"
+            android:imeOptions="actionGo"
+            android:inputType="text|textNoSuggestions|textFilter"
+            android:paddingLeft="10dp"
+            android:paddingRight="30dp" >
+
+            <requestFocus />
+        </EditText>
+
+        <ImageButton
+            android:id="@+id/btnClear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textLocation"
+            android:layout_alignRight="@+id/textLocation"
+            android:layout_alignTop="@+id/textLocation"
+            android:layout_marginTop="4dp"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            android:onClick="onClearTextClick"
+            android:paddingRight="10dp"
+            android:src="@drawable/clear_textfield"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/listSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navBar"
+        android:layout_centerHorizontal="true"
+        android:background="@null"
+        android:cacheColorHint="@android:color/transparent" >
+    </ListView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

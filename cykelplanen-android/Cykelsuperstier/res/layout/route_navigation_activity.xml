@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentTop="true" >
+
+    <RelativeLayout
+        android:id="@+id/leftContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/Black"
+        android:visibility="gone" >
+
+        <RelativeLayout
+            android:id="@+id/bicycleContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="@color/BlueListBackground"
+            android:onClick="onBicycleContainerClick"
+            android:padding="15dp"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imgBicycle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/normal_white" />
+
+            <TextView
+                android:id="@+id/textBicycle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/imgBicycle"
+                android:textColor="@color/White"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/cargoContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/bicycleContainer"
+            android:background="@color/LeftGreyBackground"
+            android:onClick="onCargoContainerClick"
+            android:padding="15dp"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/imgCargo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/cargo_grey" />
+
+            <TextView
+                android:id="@+id/textCargo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/imgCargo"
+                android:textColor="@color/LightGrey"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/stationsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:background="#d9d9d9"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+            <RelativeLayout
+                android:id="@+id/pathContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:background="@color/White"
+                android:clickable="true"
+                android:onClick="onPatchContainerClick"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" >
+
+                <ImageView
+                    android:id="@+id/imgPath"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/bike_icon_gray" />
+
+                <TextView
+                    android:id="@+id/textPath"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/imgPath"
+                    android:gravity="left"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/TextDarkGrey"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/imgCheckbox1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/check_field" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#aeaeae" />
+
+            <RelativeLayout
+                android:id="@+id/serviceContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:background="@color/White"
+                android:clickable="true"
+                android:onClick="onServiceContainerClick"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" >
+
+                <ImageView
+                    android:id="@+id/imgService"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/service_pump_icon_gray" />
+
+                <TextView
+                    android:id="@+id/textService"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/imgService"
+                    android:gravity="left"
+                    android:textColor="@color/TextDarkGrey"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/imgCheckbox2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/check_field" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#aeaeae" />
+
+            <RelativeLayout
+                android:id="@+id/strainContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:background="@color/White"
+                android:clickable="true"
+                android:onClick="onStrainContainerClick"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" >
+
+                <ImageView
+                    android:id="@+id/imgStrain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/s_togs_icon" />
+
+                <TextView
+                    android:id="@+id/textStrain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/imgStrain"
+                    android:gravity="left"
+                    android:paddingLeft="10dp"
+                    android:textColor="@color/TextDarkGrey"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/imgCheckbox3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/check_field" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#aeaeae" />
+
+            <RelativeLayout
+                android:id="@+id/metroContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:background="@color/White"
+                android:clickable="true"
+                android:onClick="onMetroContainerClick"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" >
+
+                <ImageView
+                    android:id="@+id/imgMetro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/metro_icon" />
+
+                <TextView
+                    android:id="@+id/textMetro"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="20dp"
+                    android:layout_toRightOf="@id/imgMetro"
+                    android:gravity="left"
+                    android:text=""
+                    android:textColor="@color/TextDarkGrey"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/imgCheckbox4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/check_field" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#aeaeae" />
+
+            <RelativeLayout
+                android:id="@+id/localTrainContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:background="@color/White"
+                android:clickable="true"
+                android:onClick="onLocalTrainContainerClick"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" >
+
+                <ImageView
+                    android:id="@+id/imgLocalTrain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/local_train_icon_gray" />
+
+                <TextView
+                    android:id="@+id/textLocalTrain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="36dp"
+                    android:layout_toRightOf="@+id/imgLocalTrain"
+                    android:gravity="left"
+                    android:text=""
+                    android:textColor="@color/TextDarkGrey"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/imgCheckbox5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/check_field" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#aeaeae" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/parent_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/White" >
+
+        <FrameLayout
+            android:id="@+id/map_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/overviewLayout"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginTop="0dp" >
+        </FrameLayout>
+
+        <View
+            android:id="@+id/mapDisabledView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/map_container"
+            android:layout_alignParentBottom="true"
+            android:layout_alignRight="@+id/map_container"
+            android:layout_alignTop="@+id/map_container"
+            android:background="@null"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/darkenedView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/btnTrack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/map_container"
+            android:layout_alignRight="@+id/imgBreakRoute"
+            android:layout_marginBottom="10dp"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/compass_tracking" />
+
+        <ImageView
+            android:id="@+id/imgCargoSlider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="115dp"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            android:paddingBottom="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
+            android:src="@drawable/cargo_slider" />
+
+        <RelativeLayout
+            android:id="@+id/overviewLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/White"
+            android:padding="10dp"
+            android:visibility="visible" >
+
+            <TextView
+                android:id="@+id/overviewDestination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="0dp"
+                android:layout_toLeftOf="@+id/btnStart"
+                android:text=""
+                android:textColor="@color/TextGrey"
+                android:textSize="22dp" />
+
+            <TextView
+                android:id="@+id/overviewDistanceAndVia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/btnStart"
+                android:layout_alignParentLeft="true"
+                android:layout_marginBottom="-4dp"
+                android:layout_toLeftOf="@+id/btnStart"
+                android:gravity="bottom"
+                android:paddingBottom="0dp"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/TextGrey"
+                android:textSize="16dp" />
+
+            <Button
+                android:id="@+id/btnStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/btn_start_selector"
+                android:contentDescription="@string/app_name"
+                android:textColor="@color/White" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/instructionsViewMin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" >
+
+            <ImageButton
+                android:id="@+id/imgPullHandleMin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/pull_handle"
+                android:contentDescription="@string/app_name"
+                android:paddingTop="5dp"
+                android:src="@drawable/pull_handle_strips" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/pullTouchNormal"
+            android:layout_width="60dp"
+            android:layout_height="24dp"
+            android:layout_above="@+id/instructionsView"
+            android:layout_centerHorizontal="true"
+            android:background="@null"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/instructionsView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/White"
+            android:visibility="gone" >
+
+            <ImageButton
+                android:id="@+id/imgPullHandle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:background="@color/White"
+                android:contentDescription="@string/app_name"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="7dp"
+                android:src="@drawable/mover" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/imgPullHandle"
+                android:background="@color/White" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/normalDarkOverlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/instructionsView"
+            android:layout_alignParentLeft="@id/instructionsView"
+            android:layout_alignParentRight="@id/instructionsView"
+            android:layout_alignTop="@id/instructionsView"
+            android:background="#fff"
+            android:visibility="gone" >
+        </View>
+
+        <ProgressBar
+            android:id="@+id/normalProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone" >
+        </ProgressBar>
+
+        <RelativeLayout
+            android:id="@+id/instructionsViewMaxContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="-500dp"
+            android:layout_marginTop="0dp"
+            android:background="@null" >
+
+            <View
+                android:id="@+id/mapTopDisabledView"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_alignParentTop="true"
+                android:background="@null"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:id="@+id/instructionsViewMax"
+                android:layout_width="match_parent"
+                android:layout_height="720dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="55dp"
+                android:background="#e0e0e0"
+                android:visibility="visible" >
+
+                <ImageButton
+                    android:id="@+id/imgPullHandleMax"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/White"
+                    android:contentDescription="@string/app_name"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="7dp"
+                    android:src="@drawable/mover" />
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/imgPullHandleMax"
+                    android:background="@null"
+                    android:footerDividersEnabled="false" />
+
+                <View
+                    android:id="@+id/pullTouchMax"
+                    android:layout_width="60dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@null"
+                    android:visibility="gone" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/maximizedDarkOverlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/instructionsViewMax"
+                android:layout_alignLeft="@id/instructionsViewMax"
+                android:layout_alignRight="@id/instructionsViewMax"
+                android:layout_alignTop="@id/instructionsViewMax"
+                android:background="#fff"
+                android:visibility="gone" >
+            </View>
+        </RelativeLayout>
+
+        <ImageButton
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/btn_close_selector" />
+
+        <ImageButton
+            android:id="@+id/imgBreakRoute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            android:onClick="onBtnBreakRouteClick"
+            android:padding="0dp"
+            android:src="@drawable/break_route_selector" />
+
+        <RelativeLayout
+            android:id="@+id/viewDistance"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imgBreakRoute"
+            android:layout_alignTop="@+id/imgBreakRoute"
+            android:layout_marginRight="-15dp"
+            android:layout_toLeftOf="@+id/imgBreakRoute"
+            android:background="@null"
+            android:visibility="gone" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentTop="true"
+                android:background="@null"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/distance_white" />
+
+            <TextView
+                android:id="@+id/textTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:paddingLeft="14dp"
+                android:text=""
+                android:textColor="@color/Black"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/routeFinishedContainer"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:background="@color/White"
+            android:visibility="gone" >
+
+            <ImageButton
+                android:id="@+id/imgClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@null"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/routecomplete_close_btn" />
+
+            <TextView
+                android:id="@+id/textGoodRide"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:text=""
+                android:textColor="#ff0009"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/textDestAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textGoodRide"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="0dp"
+                android:text=""
+                android:textColor="@color/Black"
+                android:textSize="18sp" />
+
+            <RelativeLayout
+                android:id="@+id/bottomContainer2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@color/LightGrey"
+                android:padding="5dp" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/textReport2"
+                    android:layout_alignTop="@+id/textReport2"
+                    android:layout_marginRight="5dp"
+                    android:layout_toLeftOf="@+id/textReport2"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/warning_icon" />
+
+                <TextView
+                    android:id="@+id/textReport2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/TextGrey" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" >
+        </ProgressBar>
+
+        <TextView
+            android:id="@+id/textRecalculating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progressBar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:textColor="#747474"
+            android:textSize="12sp"
+            android:visibility="gone" >
+        </TextView>
+    </RelativeLayout>
+
+</RelativeLayout>

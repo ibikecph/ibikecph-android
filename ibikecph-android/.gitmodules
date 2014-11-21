@@ -1,0 +1,3 @@
+[submodule "ibikecph-lib-android"]
+	path = ibikecph-lib-android
+	url = https://github.com/ibikecph/ibikecph-lib-android

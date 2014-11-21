@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/DarkGrey" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null" >
+
+        <include
+            android:id="@+id/navBar"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            layout="@layout/nav_bar" />
+
+        <ImageView
+            android:id="@+id/pictureContainer"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_below="@+id/navBar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/profile_default_image"
+            android:clickable="true"
+            android:contentDescription="@string/app_name"
+            android:onClick="onImageContainerClick"
+            android:scaleType="centerCrop" >
+        </ImageView>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/pictureContainer"
+            android:layout_alignLeft="@+id/pictureContainer"
+            android:layout_alignRight="@+id/pictureContainer"
+            android:layout_alignTop="@+id/pictureContainer"
+            android:background="@drawable/rounded_image_frame"
+            android:contentDescription="@string/app_name" >
+        </ImageView>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/pictureContainer"
+            android:layout_alignLeft="@+id/pictureContainer"
+            android:layout_alignRight="@+id/pictureContainer"
+            android:layout_alignTop="@+id/pictureContainer"
+            android:background="@drawable/image_frame"
+            android:contentDescription="@string/app_name" >
+        </ImageView>
+
+        <EditText
+            android:id="@+id/textName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pictureContainer"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/input_on_black_selector"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:paddingRight="25dp"
+            android:textSize="14sp" >
+
+            <requestFocus />
+        </EditText>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textName"
+            android:layout_alignRight="@+id/textName"
+            android:layout_alignTop="@+id/textName"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            android:paddingRight="10dp"
+            android:src="@drawable/icon_name" />
+
+        <EditText
+            android:id="@+id/textEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textName"
+            android:layout_alignRight="@+id/textName"
+            android:layout_below="@+id/textName"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/input_on_black_selector"
+            android:inputType="textEmailAddress"
+            android:paddingLeft="10dp"
+            android:paddingRight="25dp"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textEmail"
+            android:layout_alignRight="@+id/textEmail"
+            android:layout_alignTop="@+id/textEmail"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            android:paddingRight="10dp"
+            android:src="@drawable/icon_email" />
+
+        <EditText
+            android:id="@+id/textNewPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textName"
+            android:layout_alignRight="@+id/textName"
+            android:layout_below="@+id/textEmail"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/input_on_black_selector"
+            android:inputType="textPassword"
+            android:paddingLeft="10dp"
+            android:paddingRight="25dp"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textNewPassword"
+            android:layout_alignRight="@+id/textNewPassword"
+            android:layout_alignTop="@+id/textNewPassword"
+            android:background="@null"
+            android:contentDescription="@string/app_name"
+            android:paddingRight="15dp"
+            android:src="@drawable/icon_pass" />
+
+        <EditText
+            android:id="@+id/textPasswordConfirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textName"
+            android:layout_alignRight="@+id/textName"
+            android:layout_below="@+id/textNewPassword"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/input_on_black_selector"
+            android:inputType="textPassword"
+            android:paddingLeft="10dp"
+            android:paddingRight="25dp"
+            android:textSize="14sp" />
+
+        <com.spoiledmilk.ibikecph.controls.TexturedButton
+            android:id="@+id/btnRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignLeft="@+id/textName"
+            android:layout_alignRight="@+id/textName"
+            android:layout_below="@+id/textPasswordConfirm"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@null"
+            android:textColor="@color/White"
+            android:textSize="16sp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+</ScrollView>

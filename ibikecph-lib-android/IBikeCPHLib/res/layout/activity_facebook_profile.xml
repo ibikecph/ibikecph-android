@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/DarkGrey" >
+
+    <include
+        android:id="@+id/navBar"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        layout="@layout/nav_bar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navBar"
+        android:layout_marginTop="10dp" >
+
+        <RelativeLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null" >
+
+            <TextView
+                android:id="@+id/textLogedIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/TextLightGrey" />
+
+            <ImageView
+                android:id="@+id/pictureContainer"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_below="@+id/textLogedIn"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rounded_imageview"
+                android:contentDescription="@string/app_name" >
+            </ImageView>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/pictureContainer"
+                android:layout_alignLeft="@+id/pictureContainer"
+                android:layout_alignRight="@+id/pictureContainer"
+                android:layout_alignTop="@+id/pictureContainer"
+                android:background="@drawable/rounded_image_frame"
+                android:contentDescription="@string/app_name" >
+            </ImageView>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/pictureContainer"
+                android:layout_alignLeft="@+id/pictureContainer"
+                android:layout_alignRight="@+id/pictureContainer"
+                android:layout_alignTop="@+id/pictureContainer"
+                android:background="@drawable/image_frame"
+                android:contentDescription="@string/app_name" >
+            </ImageView>
+
+            <TextView
+                android:id="@+id/textName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pictureContainer"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/TextLightGrey" />
+
+            <ImageView
+                android:id="@+id/imgLinked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textName"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:background="@null"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/fb_linked_icon" />
+
+            <TextView
+                android:id="@+id/textLinked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imgLinked"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:text=""
+                android:textColor="@color/TextLightGrey" />
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_below="@+id/textLinked"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/btn_delete_selector"
+                android:onClick="onBtnDelete"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text=""
+                android:textColor="@color/White" />
+        </RelativeLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" >
+    </ProgressBar>
+
+</RelativeLayout>

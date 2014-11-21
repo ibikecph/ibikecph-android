@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_ibikecph" default="compile.module.ibikecph">
+  <dirname property="module.ibikecph.basedir" file="${ant.file.module_ibikecph}"/>
+  
+  <property name="module.jdk.home.ibikecph" value="${jdk.home.android_4.2.2_platform}"/>
+  <property name="module.jdk.bin.ibikecph" value="${jdk.bin.android_4.2.2_platform}"/>
+  <property name="module.jdk.classpath.ibikecph" value="jdk.classpath.android_4.2.2_platform"/>
+  
+  <property name="compiler.args.ibikecph" value="${compiler.args}"/>
+  
+  <property name="ibikecph.output.dir" value="${module.ibikecph.basedir}/out/production/IBikeCPH"/>
+  <property name="ibikecph.testoutput.dir" value="${module.ibikecph.basedir}/out/test/IBikeCPH"/>
+  
+  <path id="ibikecph.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="ibikecph.module.production.classpath">
+    <path refid="${module.jdk.classpath.ibikecph}"/>
+    <path refid="library.libs.classpath"/>
+    <pathelement location="${facebook.output.dir}"/>
+    <pathelement location="${osmdroid-lib.output.dir}"/>
+  </path>
+  
+  <path id="ibikecph.runtime.production.module.classpath">
+    <pathelement location="${ibikecph.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+    <path refid="facebook.runtime.production.module.classpath"/>
+    <path refid="osmdroid-lib.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="ibikecph.module.classpath">
+    <path refid="${module.jdk.classpath.ibikecph}"/>
+    <pathelement location="${ibikecph.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+    <pathelement location="${facebook.testoutput.dir}"/>
+    <pathelement location="${facebook.output.dir}"/>
+    <pathelement location="${osmdroid-lib.testoutput.dir}"/>
+    <pathelement location="${osmdroid-lib.output.dir}"/>
+  </path>
+  
+  <path id="ibikecph.runtime.module.classpath">
+    <pathelement location="${ibikecph.testoutput.dir}"/>
+    <pathelement location="${ibikecph.output.dir}"/>
+    <path refid="library.libs.classpath"/>
+    <path refid="facebook.runtime.module.classpath"/>
+    <path refid="osmdroid-lib.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.ibikecph">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.ibikecph">
+    <patternset refid="compiler.excluded"/>
+    <patternset refid="excluded.from.module.ibikecph"/>
+  </patternset>
+  
+  <path id="ibikecph.module.sourcepath">
+    <dirset dir="${module.ibikecph.basedir}">
+      <include name="gen"/>
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.ibikecph" depends="compile.module.ibikecph.production,compile.module.ibikecph.tests" description="Compile module IBikeCPH"/>
+  
+  <target name="compile.module.ibikecph.production" depends="register.custom.compilers,compile.module.facebook,compile.module.osmdroid-lib" description="Compile module IBikeCPH; production classes">
+    <mkdir dir="${ibikecph.output.dir}"/>
+    <javac2 destdir="${ibikecph.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.ibikecph}/javac">
+      <compilerarg line="${compiler.args.ibikecph}"/>
+      <bootclasspath refid="ibikecph.module.bootclasspath"/>
+      <classpath refid="ibikecph.module.production.classpath"/>
+      <src refid="ibikecph.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.ibikecph"/>
+    </javac2>
+    
+    <copy todir="${ibikecph.output.dir}">
+      <fileset dir="${module.ibikecph.basedir}/gen">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+        <patternset refid="excluded.from.compilation.ibikecph"/>
+      </fileset>
+      <fileset dir="${module.ibikecph.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+        <patternset refid="excluded.from.compilation.ibikecph"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.ibikecph.tests" depends="register.custom.compilers,compile.module.ibikecph.production" description="compile module IBikeCPH; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.ibikecph" description="cleanup module">
+    <delete dir="${ibikecph.output.dir}"/>
+    <delete dir="${ibikecph.testoutput.dir}"/>
+  </target>
+</project>

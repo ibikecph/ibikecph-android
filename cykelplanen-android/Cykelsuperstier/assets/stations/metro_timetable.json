@@ -1,0 +1,135 @@
+{
+	"lines" : [
+		{
+			"name" : "M1 / M2",
+			"timetable" : {
+				"weekdays_rushour" : [
+					{
+						"start_time" : 7,
+						"end_time" : 9,
+						"period" : 2
+					},
+					{
+						"start_time" : 14,
+						"end_time" : 18,
+						"period" : 2
+					}
+				],
+				"weekdays_outside_rushour" :[
+					{
+						"start_time" : 9,
+						"end_time" : 14,
+						"period" : 3
+					},
+					{
+						"start_time" : 18,
+						"end_time" : 24,
+						"period" : 3
+					}
+				],
+				"friday_saturday_night" :[
+					{
+						"start_time" : 0,
+						"end_time" : 7,
+						"period" : 8
+					}
+				],
+				"sunday_thursday_night" :[
+					{
+						"start_time" : 0,
+						"end_time" : 5,
+						"period" : 20
+					}
+				]
+			}
+		},
+
+		{
+			"name" : "M1",
+			"timetable" : {
+				"weekdays_rushour" : [
+					{
+						"start_time" : 7,
+						"end_time" : 9,
+						"period" : 4
+					},
+					{
+						"start_time" : 14,
+						"end_time" : 18,
+						"period" : 4
+					}
+				],
+				"weekdays_outside_rushour" :[
+					{
+						"start_time" : 9,
+						"end_time" : 14,
+						"period" : 6
+					},
+					{
+						"start_time" : 18,
+						"end_time" : 24,
+						"period" : 6
+					}
+				],
+				"friday_saturday_night" :[
+					{
+						"start_time" : 0,
+						"end_time" : 7,
+						"period" : 15
+					}
+				],
+				"sunday_thursday_night" :[
+					{
+						"start_time" : 0,
+						"end_time" : 5,
+						"period" : 30
+					}
+				]
+			}
+		},
+
+		{
+			"name" : "M2",
+			"timetable" : {
+				"weekdays_rushour" : [
+					{
+						"start_time" : 7,
+						"end_time" : 9,
+						"period" : 4
+					},
+					{
+						"start_time" : 14,
+						"end_time" : 18,
+						"period" : 4
+					}
+				],
+				"weekdays_outside_rushour" :[
+					{
+						"start_time" : 9,
+						"end_time" : 14,
+						"period" : 6
+					},
+					{
+						"start_time" : 18,
+						"end_time" : 24,
+						"period" : 6
+					}
+				],
+				"friday_saturday_night" :[
+					{
+						"start_time" : 0,
+						"end_time" : 7,
+						"period" : 15
+					}
+				],
+				"sunday_thursday_night" :[
+					{
+						"start_time" : 0,
+						"end_time" : 5,
+						"period" : 20
+					}
+				]
+			}
+		}
+	]
+}

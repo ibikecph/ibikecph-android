@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">I Bike CPH</string>
+    <string name="unknown">Unknown</string>
+    <string name="map_mode">Map mode</string>
+    <string name="my_location">My location</string>
+    <string name="format_distance_meters">%s m</string>
+    <string name="format_distance_kilometers">%s km</string>
+    <string name="format_distance_miles">%s mi</string>
+    <string name="format_distance_nautical_miles">%s nm</string>
+    <string name="format_distance_feet">%s ft</string>
+    <string name="compass">Compass</string>
+    <string name="app_id">478150322233312</string>
+    <string name="account_source">ibikecph</string>
+
+</resources>
