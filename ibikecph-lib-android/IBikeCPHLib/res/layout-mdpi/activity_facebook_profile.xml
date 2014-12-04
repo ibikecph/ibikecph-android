@@ -6,8 +6,6 @@
 
     <include
         android:id="@+id/navBar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         layout="@layout/nav_bar" />
 
     <ScrollView

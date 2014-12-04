@@ -2,13 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/DarkGrey" >
+    android:background="@color/DarkGrey" xmlns:tools="http://schemas.android.com/tools">
 
     <include
         android:id="@+id/navBar"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        layout="@layout/nav_bar" />
+        layout="@layout/nav_bar"
+        tools:ignore="IncludeLayoutParam" />
 
     <ScrollView
         android:layout_width="match_parent"

@@ -10,6 +10,15 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.R;
 
+/**
+ * Represents search results from Kortforsyningen.
+ * 
+ * TODO: Wrap out the OIORest stuff into its own class.
+ * Maybe resurrect this one that was removed becasuse it was unused:
+ * https://github.com/ibikecph/ibikecph-lib-android/blob/master/IBikeCPHLib/src/com/spoiledmilk/ibikecph/search/OriestData.java
+ * @author jens
+ *
+ */
 public class KortforData extends SearchListItem {
 
 	private String name;

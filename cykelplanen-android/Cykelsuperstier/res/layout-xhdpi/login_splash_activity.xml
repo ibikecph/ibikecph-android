@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -61,7 +62,8 @@
         android:paddingLeft="35dp"
         android:text=""
         android:textColor="@color/Black"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
         android:id="@+id/textLoginExplanation"
@@ -101,7 +103,8 @@
         android:onClick="onFacebookLoginClick"
         android:paddingLeft="10dp"
         android:textColor="@color/White"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        tools:ignore="RtlSymmetry" />
 
     <Button
         android:id="@+id/btnLogin"

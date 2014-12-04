@@ -57,6 +57,7 @@
             android:layout_height="wrap_content"
             android:gravity="left"
             android:paddingLeft="24dp"
+            android:paddingRight="24dp"
             android:text=""
             android:textColor="@color/Black" />
 
@@ -80,6 +81,7 @@
         android:background="@drawable/facebook_login_selector"
         android:onClick="onFacebookLoginClick"
         android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:textColor="@color/White"
         android:textSize="12sp" />
 
