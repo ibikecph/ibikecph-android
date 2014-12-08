@@ -162,7 +162,6 @@
 	</RelativeLayout>
 	</FrameLayout>
 	
-	
 	<!-- Side drawer -->
 
 	<FrameLayout 
@@ -171,14 +170,7 @@
 	        android:layout_gravity="start"
 	        android:background="@color/DarkGrey"
 	        android:id="@+id/leftContainerDrawer">
-	<include layout="@layout/fragment_left_menu" />
-	<!-- <ListView android:id="@+id/left_drawer"
-       android:layout_width="240dp"
-       android:layout_height="match_parent"
-       android:choiceMode="singleChoice"
-       android:divider="@android:color/transparent"
-       android:dividerHeight="0dp"
-       android:background="#111" /> -->
+		<include layout="@layout/fragment_left_menu" />
 	</FrameLayout>
 
 </android.support.v4.widget.DrawerLayout>

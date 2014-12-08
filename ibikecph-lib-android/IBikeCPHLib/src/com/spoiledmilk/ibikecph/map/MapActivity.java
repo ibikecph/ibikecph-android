@@ -268,8 +268,11 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     float newTouchX, delta;
 
     protected boolean onImgSwiperTouch(View view, MotionEvent event) {
-        if (leftContainer.getVisibility() != View.VISIBLE) {
-            leftContainer.setVisibility(View.VISIBLE);
+        
+    	// TODO: This doesn't work
+    	if (drawerLayout.getVisibility() != View.VISIBLE) {
+            drawerLayout.setVisibility(View.VISIBLE);
+            drawerLayout.invalidate();
         }
         if (mapDisabledView.getVisibility() != View.VISIBLE) {
             mapDisabledView.setVisibility(View.VISIBLE);
