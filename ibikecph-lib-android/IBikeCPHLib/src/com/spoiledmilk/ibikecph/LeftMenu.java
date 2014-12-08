@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -254,6 +255,8 @@ public class LeftMenu extends Fragment {
             }
         });
 
+        
+        
         return ret;
     }
 
@@ -351,7 +354,7 @@ public class LeftMenu extends Fragment {
         AddFavoriteFragment aff = getAddFavoriteFragment();
         FragmentTransaction fragmentTransaction = ((FragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        fragmentTransaction.replace(R.id.leftContainer, aff);
+        fragmentTransaction.replace(R.id.leftContainerDrawer, aff);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         ((FragmentActivity) getActivity()).getSupportFragmentManager().executePendingTransactions();
@@ -563,7 +566,7 @@ public class LeftMenu extends Fragment {
         eff.setArguments(args);
         FragmentTransaction fragmentTransaction = ((FragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        fragmentTransaction.replace(R.id.leftContainer, eff);
+        fragmentTransaction.replace(R.id.leftContainerDrawer, eff);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         ((FragmentActivity) getActivity()).getSupportFragmentManager().executePendingTransactions();

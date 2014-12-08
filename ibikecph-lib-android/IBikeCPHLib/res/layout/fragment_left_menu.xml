@@ -73,7 +73,8 @@
         android:layout_below="@+id/horizontalDivider1"
         android:layout_centerHorizontal="true"
         android:clickable="true"
-        android:paddingRight="1dp" >
+        android:paddingRight="1dp" 
+        android:paddingLeft="0dp">
 
         <RelativeLayout
             android:id="@+id/favoritesListContainer"
@@ -130,6 +131,7 @@
             android:orientation="horizontal"
             android:paddingBottom="7dp"
             android:paddingLeft="31dp"
+            android:paddingRight="0dp"
             android:paddingTop="7dp" >
 
             <ImageView

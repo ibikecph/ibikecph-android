@@ -14,10 +14,12 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -99,6 +101,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     boolean isSaveFaveoriteEnabled = true;
     FavoritesData favoritesData = null;
     boolean addFavEnabled = true;
+    private DrawerLayout drawerLayout;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -107,9 +110,11 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         LOG.d("Map activity onCreate");
         this.maxSlide = (int) (4 * Util.getScreenWidth() / 5);
         this.setContentView(R.layout.main_map_activity);
+        
         mapFragment = new SMMapFragment();
         FragmentManager fm = this.getSupportFragmentManager();
         fm.beginTransaction().add(R.id.map_container, mapFragment).commit();
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mapContainer = (FrameLayout) findViewById(R.id.map_container);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         leftContainer = (RelativeLayout) findViewById(R.id.leftContainer);
@@ -133,7 +138,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         });
         btnSaveFavorite = (ImageButton) findViewById(R.id.btnSaveFavorite);
         btnSaveFavorite.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
                 DB db = new DB(MapActivity.this);
@@ -209,6 +213,8 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             }
 
         });
+        
+        
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth() * 4 / 5,
                 RelativeLayout.LayoutParams.MATCH_PARENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -224,9 +230,10 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         leftMenu = getLeftMenu();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
-            fragmentTransaction.add(R.id.leftContainer, leftMenu);
+            //fragmentTransaction.add(R.id.leftContainer, leftMenu);
+            fragmentTransaction.add(R.id.leftContainerDrawer, leftMenu);
         } else {
-            fragmentTransaction.replace(R.id.leftContainer, leftMenu);
+            fragmentTransaction.replace(R.id.leftContainerDrawer, leftMenu);
         }
         fragmentTransaction.commit();
         findViewById(R.id.rootLayout).invalidate();
