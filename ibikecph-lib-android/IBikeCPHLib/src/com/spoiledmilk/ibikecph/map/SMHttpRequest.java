@@ -9,8 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.osmdroid.api.IGeoPoint;
-
 import android.location.Location;
 import android.os.Handler;
 import android.os.Message;
@@ -223,6 +221,7 @@ public class SMHttpRequest {
         }
     }
 
+    /*
     public void findNearestPoint(final IGeoPoint loc, final SMHttpRequestListener listener) {
         new Thread(new Runnable() {
             @Override
@@ -240,13 +239,13 @@ public class SMHttpRequest {
             }
         }).start();
     }
-
+*/
     public void findPlacesForLocation(final Location loc, final SMHttpRequestListener listener) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String url = String.format(Locale.US, "%s/%f,%f.json", Config.GEOCODER, loc.getLatitude(), loc.getLongitude()); // ,%d
-                                                                                                                                // ,
+                
                 // GEOCODER_SEARCH_RADIUS
                 JsonNode response = HttpUtils.get(url);
                 Address a = null;

@@ -110,7 +110,8 @@ public class HTTPAccountHandler {
 		}
 		return message;
 	}
-
+	
+	// Updates the user account details
 	public static Message performPutUser(UserData userData) {
 		Message message = new Message();
 		JsonNode result = null;

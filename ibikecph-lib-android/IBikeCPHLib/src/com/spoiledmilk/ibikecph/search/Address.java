@@ -13,7 +13,7 @@ package com.spoiledmilk.ibikecph.search;
  * @author jens
  *
  */
-class Address {
+public class Address {
 	public String zip = "";
 	public String street = "";
 	public String city = "";
