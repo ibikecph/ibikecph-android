@@ -7,6 +7,8 @@ package com.spoiledmilk.cykelsuperstier.map;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -51,6 +53,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 	TextView textMetro;
 	TextView textLocalTrain;
 	View swiperDisabledView;
+	DrawerLayout drawerLayout;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -74,38 +77,22 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 		textStrain = (TextView) findViewById(R.id.textStrain);
 		textMetro = (TextView) findViewById(R.id.textMetro);
 		textLocalTrain = (TextView) findViewById(R.id.textLocalTrain);
+		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		stationsContainer = (LinearLayout) findViewById(R.id.stationsContainer);
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth() * 4 / 5,
 				RelativeLayout.LayoutParams.MATCH_PARENT);
 		params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		stationsContainer.setLayoutParams(params);
+		
 		imgSwiperStations = (ImageView) findViewById(R.id.imgSwiperStations);
 		imgSwiperStations.setOnTouchListener(new OnTouchListener() {
 			// Swipe the view horizontally
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				if (MapActivity.this.isSlidden())
-					return MapActivity.this.onImgSwiperTouch(v, event);
-				else
-					return onImgSwiperStationsTouch(v, event);
+				return onImgSwiperStationsTouch(v, event);
 			}
-
 		});
-
-		mapDisabledView.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				// used to disable the map touching when sliden
-				if (MapActivity.this.isSlidden())
-					return MapActivity.this.onImgSwiperTouch(v, event);
-				else
-					return onImgSwiperStationsTouch(v, event);
-			}
-
-		});
-
 	}
 
 	private boolean onImgSwiperStationsTouch(View v, MotionEvent event) {

@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -184,24 +185,14 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         rootLayout.setLayoutParams(rootParams);
         parentContainer = (RelativeLayout) findViewById(R.id.parent_container);
         imgSwiper = (ImageView) findViewById(R.id.imgSwiper);
-        imgSwiper.setOnTouchListener(new OnTouchListener() {
-            // Swipe the view horizontally
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return onImgSwiperTouch(v, event);
-            }
+        
+        imgSwiper.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				drawerLayout.openDrawer(Gravity.START);
+			}
+		});
 
-        });
-        mapDisabledView = findViewById(R.id.mapDisabledView);
-        mapDisabledView.setOnTouchListener(new OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // used to disable the map touching when sliden
-                return onImgSwiperTouch(v, event); // true
-            }
-
-        });
         btnSearch = (ImageButton) findViewById(R.id.btnSearch);
         btnSearch.setOnClickListener(new OnClickListener() {
 
@@ -213,7 +204,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             }
 
         });
-        
         
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth() * 4 / 5,
                 RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -228,6 +218,8 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         findViewById(R.id.pinInfoLayout).setLayoutParams(params);
         leftMenu = getLeftMenu();
+        
+        // Add the menu to the Navigation Drawer
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
             //fragmentTransaction.add(R.id.leftContainer, leftMenu);
@@ -266,47 +258,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     }
 
     float newTouchX, delta;
-
-    protected boolean onImgSwiperTouch(View view, MotionEvent event) {
-        
-    	// TODO: This doesn't work
-    	if (drawerLayout.getVisibility() != View.VISIBLE) {
-            drawerLayout.setVisibility(View.VISIBLE);
-            drawerLayout.invalidate();
-        }
-        if (mapDisabledView.getVisibility() != View.VISIBLE) {
-            mapDisabledView.setVisibility(View.VISIBLE);
-        }
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                view.setPressed(false);
-                if (moveCount <= 3)
-                    translate(slidden ? -maxSlide : maxSlide, true);
-                else
-                    translate(0, true);
-                break;
-            case MotionEvent.ACTION_DOWN:
-                moveCount = 0;
-                view.setPressed(true);
-                touchX = event.getX();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (moveCount++ < 3)
-                    break;
-                newTouchX = event.getX();
-                delta = newTouchX - touchX;
-                translate(delta, false);
-                touchX = newTouchX;
-                break;
-        }
-
-        if (slidden && mapDisabledView.getVisibility() != View.GONE) {
-            mapDisabledView.setVisibility(View.GONE);
-        }
-
-        return true;
-    }
 
     protected Class<?> getSplashActivityClass() {
         return SplashActivity.class;
