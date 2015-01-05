@@ -15,16 +15,6 @@
             android:background="@null" >
 
             <RelativeLayout
-                android:id="@+id/leftContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:background="@color/DarkGrey"
-                android:visibility="gone" >
-            </RelativeLayout>
-
-            <RelativeLayout
                 android:id="@+id/parent_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

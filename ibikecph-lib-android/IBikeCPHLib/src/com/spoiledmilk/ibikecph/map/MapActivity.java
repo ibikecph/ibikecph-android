@@ -89,7 +89,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     ImageView imgSwiper;
     protected RelativeLayout parentContainer;
     RelativeLayout rootLayout;
-    RelativeLayout leftContainer;
     protected View mapDisabledView;
     FrameLayout mapContainer;
     ImageButton btnSearch;
@@ -118,7 +117,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mapContainer = (FrameLayout) findViewById(R.id.map_container);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        leftContainer = (RelativeLayout) findViewById(R.id.leftContainer);
         pinInfoLayout = (RelativeLayout) findViewById(R.id.pinInfoLayout);
         pinInfoLine1 = (TextView) pinInfoLayout.findViewById(R.id.pinAddressLine1);
         pinInfoLine1.setTypeface(IbikeApplication.getBoldFont());
@@ -205,12 +203,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
 
         });
         
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth() * 4 / 5,
-                RelativeLayout.LayoutParams.MATCH_PARENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        findViewById(R.id.leftContainer).setLayoutParams(params);
-        params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth(), RelativeLayout.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth(), RelativeLayout.LayoutParams.MATCH_PARENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         findViewById(R.id.parent_container).setLayoutParams(params);
@@ -222,7 +215,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         // Add the menu to the Navigation Drawer
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
-            //fragmentTransaction.add(R.id.leftContainer, leftMenu);
             fragmentTransaction.add(R.id.leftContainerDrawer, leftMenu);
         } else {
             fragmentTransaction.replace(R.id.leftContainerDrawer, leftMenu);
@@ -490,11 +482,11 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             }
         } else if (resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             try {
-                ((AddFavoriteFragment) getSupportFragmentManager().findFragmentById(R.id.leftContainer)).onActivityResult(requestCode, resultCode,
+                ((AddFavoriteFragment) getSupportFragmentManager().findFragmentById(R.id.leftContainerDrawer)).onActivityResult(requestCode, resultCode,
                         data);
             } catch (Exception e) {
                 try {
-                    ((EditFavoriteFragment) getSupportFragmentManager().findFragmentById(R.id.leftContainer)).onActivityResult(requestCode,
+                    ((EditFavoriteFragment) getSupportFragmentManager().findFragmentById(R.id.leftContainerDrawer)).onActivityResult(requestCode,
                             resultCode, data);
                 } catch (Exception ex) {
                 }
@@ -514,6 +506,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
 
     float newX;
 
+    /* NO NEED??
     private void translate(float deltaX, final boolean finalAnim) {
         // mapFragment.mapView.setEnabled(false);
         if (leftMenu != null && leftMenu.getView() != null) {
@@ -569,7 +562,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
 
                         if (slidden == newSlidden) {
                             if (!slidden) {
-                                leftContainer.setVisibility(View.GONE);
+                                //leftContainer.setVisibility(View.GONE);
                                 mapDisabledView.setVisibility(View.GONE);
                                 leftMenu.getView().invalidate();
                             } else {
@@ -586,14 +579,14 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
                         lp.setMargins(leftmargin, lp.topMargin, rightMargin, lp.bottomMargin);
                         parentContainer.setLayoutParams(lp);
                         if (leftmargin == 0) {
-                            leftContainer.setVisibility(View.GONE);
+                            //leftContainer.setVisibility(View.GONE);
                             mapDisabledView.setVisibility(View.GONE);
                             leftMenu.getView().invalidate();
                         }
 
                         posX = 0;
 
-                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.leftContainer);
+                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.leftContainerDrawer);
                         if (fr != null && fr instanceof EditFavoriteFragment) {
                             ((EditFavoriteFragment) fr).hideKeyboard();
                         } else if (fr != null && fr instanceof AddFavoriteFragment) {
@@ -609,6 +602,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             parentContainer.startAnimation(animation);
         }
     }
+    */
 
     public void reloadStrings() {
         leftMenu.initStrings();
