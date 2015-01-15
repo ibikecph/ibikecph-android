@@ -6,6 +6,7 @@
 package com.spoiledmilk.ibikecph;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,7 +16,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,11 +24,13 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -93,6 +95,14 @@ public class LeftMenu extends Fragment {
         settingsContainer = (RelativeLayout) ret.findViewById(R.id.settingsContainer);
         aboutContainer = (RelativeLayout) ret.findViewById(R.id.aboutContainer);
         btnEditFavorites = (ImageButton) ret.findViewById(R.id.btnEditFavourites);
+        
+        /*  FOR POPULATING THE LISTVIEW.
+        ListView menuList = (ListView) ret.findViewById(R.id.listView1);
+        List<String> listItems = new ArrayList<String>();
+        listItems.add("Hejsa");
+        menuList.setAdapter(new ArrayAdapter<String>(inflater.getContext(), android.R.layout.simple_list_item_1, listItems));
+        */
+        
         btnEditFavorites.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -114,12 +114,12 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         mapFragment = new SMMapFragment();
         FragmentManager fm = this.getSupportFragmentManager();
         fm.beginTransaction().add(R.id.map_container, mapFragment).commit();
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mapContainer = (FrameLayout) findViewById(R.id.map_container);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         pinInfoLayout = (RelativeLayout) findViewById(R.id.pinInfoLayout);
         pinInfoLine1 = (TextView) pinInfoLayout.findViewById(R.id.pinAddressLine1);
         pinInfoLine1.setTypeface(IbikeApplication.getBoldFont());
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnStart = (Button) findViewById(R.id.btnStart);
         btnStart.setOnClickListener(new OnClickListener() {
             @Override
@@ -175,8 +175,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
                 }
             }
         });
-        LOG.d("Map activity btnTrack = " + btnTrack);
-
+        
         rootLayout = (RelativeLayout) findViewById(R.id.rootLayout);
         FrameLayout.LayoutParams rootParams = new FrameLayout.LayoutParams((int) (9 * Util.getScreenWidth() / 5),
                 FrameLayout.LayoutParams.MATCH_PARENT);

@@ -34,7 +34,6 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 	// private static final String HOCKEY_APP_ID =
 	// "a678431adeb2e89877a2bac70a1a0bba";
 
-	private ImageView imgSwiperStations;
 	TranslateAnimation animation;
 	float posX = 0;
 	float touchX = 0;
@@ -47,11 +46,6 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 	boolean isStrainSelected = false;
 	boolean isMetroSelected = false;
 	boolean isLocalTrainSelected = false;
-	TextView textPath;
-	TextView textService;
-	TextView textStrain;
-	TextView textMetro;
-	TextView textLocalTrain;
 	View swiperDisabledView;
 	DrawerLayout drawerLayout;
 
@@ -59,24 +53,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		maxSlide = (int) (4 * Util.getScreenWidth() / 5);
-		textPath = (TextView) findViewById(R.id.textPath);
-		swiperDisabledView = findViewById(R.id.swiperDisabledView);
-		swiperDisabledView.setVisibility(View.GONE);
-		swiperDisabledView.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View arg0, MotionEvent arg1) {
-				// used to disable the swiper touching when the bottom left menu
-				// is slidden
-				return onImgSwiperStationsTouch(arg0, arg1);
-			}
-
-		});
-
-		textService = (TextView) findViewById(R.id.textService);
-		textStrain = (TextView) findViewById(R.id.textStrain);
-		textMetro = (TextView) findViewById(R.id.textMetro);
-		textLocalTrain = (TextView) findViewById(R.id.textLocalTrain);
+		
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		stationsContainer = (LinearLayout) findViewById(R.id.stationsContainer);
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth() * 4 / 5,
@@ -84,49 +61,6 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 		params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 		stationsContainer.setLayoutParams(params);
-		
-		imgSwiperStations = (ImageView) findViewById(R.id.imgSwiperStations);
-		imgSwiperStations.setOnTouchListener(new OnTouchListener() {
-			// Swipe the view horizontally
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				return onImgSwiperStationsTouch(v, event);
-			}
-		});
-	}
-
-	private boolean onImgSwiperStationsTouch(View v, MotionEvent event) {
-		stationsContainer.setVisibility(View.VISIBLE);
-		mapDisabledView.setVisibility(View.VISIBLE);
-		swiperDisabledView.setVisibility(View.VISIBLE);
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_CANCEL:
-		case MotionEvent.ACTION_UP:
-			v.setPressed(false);
-			if (moveCount <= 3)
-				translate2(slidden ? -maxSlide : maxSlide, true);
-			else
-				translate2(0, true);
-			break;
-		case MotionEvent.ACTION_DOWN:
-			moveCount = 0;
-			v.setPressed(true);
-			touchX = event.getX();
-			break;
-		case MotionEvent.ACTION_MOVE:
-			if (moveCount++ < 3)
-				break;
-			float newTouchX = event.getX();
-			float delta = newTouchX - touchX;
-			translate2(delta, false);
-			touchX = newTouchX;
-			break;
-		}
-
-		if (slidden)
-			mapDisabledView.setVisibility(View.GONE);
-
-		return true;
 	}
 
 	private boolean isSlidden() {
@@ -150,6 +84,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		
 		reloadStrings();
 	}
 
@@ -170,24 +105,16 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 	@Override
 	public void reloadStrings() {
 		super.reloadStrings();
-		textPath.setTypeface(CykelsuperstierApplication.getNormalFont());
-		textPath.setText(CykelsuperstierApplication.getString("marker_type_1"));
-		textService.setTypeface(CykelsuperstierApplication.getNormalFont());
-		textService.setText(CykelsuperstierApplication.getString("marker_type_2"));
-		textStrain.setTypeface(CykelsuperstierApplication.getNormalFont());
-		textStrain.setText(CykelsuperstierApplication.getString("marker_type_3"));
-		textMetro.setTypeface(CykelsuperstierApplication.getNormalFont());
-		textMetro.setText(CykelsuperstierApplication.getString("marker_type_4"));
-		textLocalTrain.setTypeface(CykelsuperstierApplication.getNormalFont());
-		textLocalTrain.setText(CykelsuperstierApplication.getString("marker_type_5"));
 	}
 
 	public void onPatchContainerClick(View v) {
+		
 		v.setBackgroundColor(isPathSelected ? Color.rgb(255, 255, 255) : Color.rgb(236, 104, 0));
 		((ImageView) findViewById(R.id.imgCheckbox1))
 				.setImageResource(isPathSelected ? R.drawable.check_field : R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgPath)).setImageResource(isPathSelected ? R.drawable.bike_icon_gray : R.drawable.bike_icon_white);
-		textPath.setTextColor(isPathSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+				
+		//textPath.setTextColor(isPathSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
 		if (isPathSelected)
 			mapFragment.overlaysManager.removeBikeRoutes();
 		else
@@ -201,7 +128,8 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 				: R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgService)).setImageResource(isServiceSelected ? R.drawable.service_pump_icon_gray
 				: R.drawable.service_pump_icon_white);
-		textService.setTextColor(isServiceSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+			
+		// textService.setTextColor(isServiceSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
 		if (isServiceSelected)
 			mapFragment.overlaysManager.removeServiceStations();
 		else
@@ -215,7 +143,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 				: R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgStrain)).setImageResource(isStrainSelected ? R.drawable.s_togs_icon
 				: R.drawable.s_togs_icon_white);
-		textStrain.setTextColor(isStrainSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+		// textStrain.setTextColor(isStrainSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
 		if (isStrainSelected)
 			mapFragment.overlaysManager.removesTrainStations();
 		else
@@ -228,7 +156,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 		((ImageView) findViewById(R.id.imgCheckbox4)).setImageResource(isMetroSelected ? R.drawable.check_field
 				: R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgMetro)).setImageResource(isMetroSelected ? R.drawable.metro_icon : R.drawable.metro_icon_white);
-		textMetro.setTextColor(isMetroSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+		//textMetro.setTextColor(isMetroSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
 		if (isMetroSelected)
 			mapFragment.overlaysManager.removeMetroStations();
 		else
@@ -242,7 +170,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 				: R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgLocalTrain)).setImageResource(isLocalTrainSelected ? R.drawable.local_train_icon_gray
 				: R.drawable.local_train_icon_white);
-		textLocalTrain.setTextColor(isLocalTrainSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+		//textLocalTrain.setTextColor(isLocalTrainSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
 		if (isLocalTrainSelected)
 			mapFragment.overlaysManager.removelocalTrainStations();
 		else

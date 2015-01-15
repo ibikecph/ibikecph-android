@@ -33,7 +33,7 @@
                 android:background="#d9d9d9"
                 android:orientation="vertical"
                 android:visibility="gone" >
-
+<!-- 
                 <RelativeLayout
                     android:id="@+id/pathContainer"
                     android:layout_width="wrap_content"
@@ -261,6 +261,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#aeaeae" />
+                     -->
             </LinearLayout>
 
             <RelativeLayout
@@ -381,17 +382,6 @@
                     android:contentDescription="@string/app_name"
                     android:src="@drawable/home_btn_active" />
 
-                <View
-                    android:id="@+id/swiperDisabledView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/imgSwiper"
-                    android:layout_alignLeft="@id/imgSwiper"
-                    android:layout_alignRight="@id/imgSwiper"
-                    android:layout_alignTop="@id/imgSwiper"
-                    android:background="@null"
-                    android:visibility="gone" />
-
                 <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyle"
@@ -399,20 +389,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:visibility="gone" />
-
-                <ImageView
-                    android:id="@+id/imgSwiperStations"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/pinInfoLayout"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignWithParentIfMissing="true"
-                    android:layout_marginBottom="20dp"
-                    android:background="@null"
-                    android:contentDescription="@string/app_name"
-                    android:paddingBottom="15dp"
-                    android:paddingTop="15dp"
-                    android:src="@drawable/cargo_slider" />
             </RelativeLayout>
         </RelativeLayout>
     </FrameLayout>
