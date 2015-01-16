@@ -48,8 +48,7 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 	int repetition;
 	int settingsHeight = 0;
 	boolean isAnimationStarted = false;
-	boolean checked1 = false, checked2 = false, checked3 = false,
-			checked4 = false, checked5 = false;
+	boolean checked1 = false, checked2 = false, checked3 = false, checked4 = false, checked5 = false;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,20 +59,12 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 					@Override
 					public boolean onTouch(View v, MotionEvent event) {
 						if (event.getAction() == MotionEvent.ACTION_DOWN) {
-							ret.findViewById(R.id.remindersBackground)
-							.setBackgroundColor(
-									getActivity().getResources()
-									.getColor(R.color.Orange));
+							ret.findViewById(R.id.remindersBackground).setBackgroundColor(getActivity().getResources().getColor(R.color.Orange));
 							final Handler handler = new Handler();
 							handler.postDelayed(new Runnable() {
 								@Override
 								public void run() {
-									ret.findViewById(R.id.remindersBackground)
-									.setBackgroundColor(
-											getActivity()
-											.getResources()
-											.getColor(
-													R.color.MenuItemBackground));
+									ret.findViewById(R.id.remindersBackground).setBackgroundColor(getActivity().getResources().getColor(R.color.MenuItemBackground));
 								}
 							}, 250);
 						}
@@ -110,11 +101,9 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 				new OnClickListener() {
 					@Override
 					public void onClick(View arg0) {
-						Intent i = new Intent(getActivity(),
-								AboutActivity.class);
+						Intent i = new Intent(getActivity(), AboutActivity.class);
 						getActivity().startActivity(i);
-						getActivity().overridePendingTransition(
-								R.anim.slide_in_right, R.anim.slide_out_left);
+						getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 					}
 
 				});
@@ -126,6 +115,7 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 						colapseReminders();
 					else
 						expandReminders();
+					
 					remindersExpanded = !remindersExpanded;
 				}
 			}
@@ -134,16 +124,11 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 
 		repetition = PreferenceManager.getDefaultSharedPreferences(
 				getActivity()).getInt("alarm_repetition", 0);
-		final ImageView imgSwitch1 = (ImageView) getView().findViewById(
-				R.id.switch1);
-		final ImageView imgSwitch2 = (ImageView) getView().findViewById(
-				R.id.switch2);
-		final ImageView imgSwitch3 = (ImageView) getView().findViewById(
-				R.id.switch3);
-		final ImageView imgSwitch4 = (ImageView) getView().findViewById(
-				R.id.switch4);
-		final ImageView imgSwitch5 = (ImageView) getView().findViewById(
-				R.id.switch5);
+		final ImageView imgSwitch1 = (ImageView) getView().findViewById(R.id.switch1);
+		final ImageView imgSwitch2 = (ImageView) getView().findViewById(R.id.switch2);
+		final ImageView imgSwitch3 = (ImageView) getView().findViewById(R.id.switch3);
+		final ImageView imgSwitch4 = (ImageView) getView().findViewById(R.id.switch4);
+		final ImageView imgSwitch5 = (ImageView) getView().findViewById(R.id.switch5);
 		if ((repetition & 64) > 0) {
 			checked1 = true;
 			imgSwitch1.setImageResource(R.drawable.switch_on);
@@ -173,11 +158,9 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 					repetition = repetition | 64;
 				else
 					repetition = repetition & 63;
-				PreferenceManager.getDefaultSharedPreferences(getActivity())
-				.edit().putInt("alarm_repetition", repetition).commit();
+				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putInt("alarm_repetition", repetition).commit();
 				AlarmUtils.setAlarm(getActivity(), repetition);
-				imgSwitch1.setImageResource(checked1 ? R.drawable.switch_on
-						: R.drawable.switch_off);
+				imgSwitch1.setImageResource(checked1 ? R.drawable.switch_on : R.drawable.switch_off);
 				LOG.d("repetition = " + repetition);
 			}
 		});
@@ -190,11 +173,9 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 					repetition = repetition | 1;
 				else
 					repetition = repetition & 126;
-				PreferenceManager.getDefaultSharedPreferences(getActivity())
-				.edit().putInt("alarm_repetition", repetition).commit();
+				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putInt("alarm_repetition", repetition).commit();
 				AlarmUtils.setAlarm(getActivity(), repetition);
-				imgSwitch2.setImageResource(checked2 ? R.drawable.switch_on
-						: R.drawable.switch_off);
+				imgSwitch2.setImageResource(checked2 ? R.drawable.switch_on : R.drawable.switch_off);
 				LOG.d("repetition = " + repetition);
 			}
 		});
@@ -206,11 +187,9 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 					repetition = repetition | 2;
 				else
 					repetition = repetition & 125;
-				PreferenceManager.getDefaultSharedPreferences(getActivity())
-				.edit().putInt("alarm_repetition", repetition).commit();
+				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putInt("alarm_repetition", repetition).commit();
 				AlarmUtils.setAlarm(getActivity(), repetition);
-				imgSwitch3.setImageResource(checked3 ? R.drawable.switch_on
-						: R.drawable.switch_off);
+				imgSwitch3.setImageResource(checked3 ? R.drawable.switch_on : R.drawable.switch_off);
 				LOG.d("repetition = " + repetition);
 			}
 		});
@@ -222,11 +201,9 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 					repetition = repetition | 4;
 				else
 					repetition = repetition & 123;
-				PreferenceManager.getDefaultSharedPreferences(getActivity())
-				.edit().putInt("alarm_repetition", repetition).commit();
+				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putInt("alarm_repetition", repetition).commit();
 				AlarmUtils.setAlarm(getActivity(), repetition);
-				imgSwitch4.setImageResource(checked4 ? R.drawable.switch_on
-						: R.drawable.switch_off);
+				imgSwitch4.setImageResource(checked4 ? R.drawable.switch_on : R.drawable.switch_off);
 				LOG.d("repetition = " + repetition);
 			}
 		});
@@ -238,11 +215,9 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 					repetition = repetition | 8;
 				else
 					repetition = repetition & 119;
-				PreferenceManager.getDefaultSharedPreferences(getActivity())
-				.edit().putInt("alarm_repetition", repetition).commit();
+				PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putInt("alarm_repetition", repetition).commit();
 				AlarmUtils.setAlarm(getActivity(), repetition);
-				imgSwitch5.setImageResource(checked5 ? R.drawable.switch_on
-						: R.drawable.switch_off);
+				imgSwitch5.setImageResource(checked5 ? R.drawable.switch_on : R.drawable.switch_off);
 				LOG.d("repetition = " + repetition);
 			}
 		});

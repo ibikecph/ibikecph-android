@@ -55,12 +55,11 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 		maxSlide = (int) (4 * Util.getScreenWidth() / 5);
 		
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-		stationsContainer = (LinearLayout) findViewById(R.id.stationsContainer);
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth() * 4 / 5,
 				RelativeLayout.LayoutParams.MATCH_PARENT);
 		params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-		stationsContainer.setLayoutParams(params);
+
 	}
 
 	private boolean isSlidden() {
@@ -107,6 +106,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 		super.reloadStrings();
 	}
 
+	// TODO: Perhaps move these to LeftMenu?
 	public void onPatchContainerClick(View v) {
 		
 		v.setBackgroundColor(isPathSelected ? Color.rgb(255, 255, 255) : Color.rgb(236, 104, 0));
@@ -114,7 +114,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 				.setImageResource(isPathSelected ? R.drawable.check_field : R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgPath)).setImageResource(isPathSelected ? R.drawable.bike_icon_gray : R.drawable.bike_icon_white);
 				
-		//textPath.setTextColor(isPathSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+		((TextView) v.findViewById(R.id.textPath)).setTextColor(isPathSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
 		if (isPathSelected)
 			mapFragment.overlaysManager.removeBikeRoutes();
 		else
@@ -128,8 +128,11 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 				: R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgService)).setImageResource(isServiceSelected ? R.drawable.service_pump_icon_gray
 				: R.drawable.service_pump_icon_white);
-			
-		// textService.setTextColor(isServiceSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+		
+		Log.d("JC", Boolean.toString(v == null));
+		
+		((TextView) v.findViewById(R.id.textService)).setTextColor(isServiceSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+		
 		if (isServiceSelected)
 			mapFragment.overlaysManager.removeServiceStations();
 		else
@@ -143,7 +146,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 				: R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgStrain)).setImageResource(isStrainSelected ? R.drawable.s_togs_icon
 				: R.drawable.s_togs_icon_white);
-		// textStrain.setTextColor(isStrainSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+		((TextView) v.findViewById(R.id.textStrain)).setTextColor(isStrainSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
 		if (isStrainSelected)
 			mapFragment.overlaysManager.removesTrainStations();
 		else
@@ -156,7 +159,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 		((ImageView) findViewById(R.id.imgCheckbox4)).setImageResource(isMetroSelected ? R.drawable.check_field
 				: R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgMetro)).setImageResource(isMetroSelected ? R.drawable.metro_icon : R.drawable.metro_icon_white);
-		//textMetro.setTextColor(isMetroSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+		((TextView) v.findViewById(R.id.textMetro)).setTextColor(isMetroSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
 		if (isMetroSelected)
 			mapFragment.overlaysManager.removeMetroStations();
 		else
@@ -170,91 +173,12 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 				: R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgLocalTrain)).setImageResource(isLocalTrainSelected ? R.drawable.local_train_icon_gray
 				: R.drawable.local_train_icon_white);
-		//textLocalTrain.setTextColor(isLocalTrainSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+		((TextView) v.findViewById(R.id.textLocalTrain)).setTextColor(isLocalTrainSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
 		if (isLocalTrainSelected)
 			mapFragment.overlaysManager.removelocalTrainStations();
 		else
 			mapFragment.overlaysManager.drawlocalTrainStations(this);
 		isLocalTrainSelected = !isLocalTrainSelected;
-	}
-
-	void translate2(float deltaX, final boolean finalAnim) {
-		float newX = posX + deltaX;
-		if (slidden) {
-			if (newX < -maxSlide)
-				newX = -maxSlide;
-			else if (newX > 0)
-				newX = 0;
-		} else {
-			if (newX < 0)
-				newX = 0;
-			else if (newX > maxSlide)
-				newX = maxSlide;
-		}
-		LOG.d("translate from " + posX + " to " + newX);
-
-		if (((int) newX) <= 0)
-			findViewById(R.id.mapDisabledView).setVisibility(View.GONE);
-
-		final boolean newSlidden = slidden ? newX > -SLIDE_THRESHOLD : newX > SLIDE_THRESHOLD;
-		LOG.d("view slidden: " + slidden + " -> " + newSlidden);
-		if (finalAnim) {
-			newX = (slidden == newSlidden) ? 0 : (slidden ? -maxSlide : maxSlide);
-		}
-
-		if (animation != null && animation.isInitialized())
-			animation.cancel();
-		animation = new TranslateAnimation(posX, newX, 0, 0);
-		animation.setDuration(finalAnim ? 100 : 0);
-
-		animation.setAnimationListener(new AnimationListener() {
-			@Override
-			public void onAnimationStart(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationRepeat(Animation animation) {
-			}
-
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				if (!finalAnim) {
-					animation.setFillEnabled(true);
-					animation.setFillAfter(true);
-				} else {
-					parentContainer.clearAnimation();
-
-					if (slidden == newSlidden) {
-						if (!slidden) {
-							stationsContainer.setVisibility(View.GONE);
-							mapDisabledView.setVisibility(View.GONE);
-							swiperDisabledView.setVisibility(View.GONE);
-						} else {
-							swiperDisabledView.setVisibility(View.VISIBLE);
-							mapDisabledView.setVisibility(View.VISIBLE);
-						}
-						return;
-					}
-					slidden = newSlidden;
-
-					int leftmargin = slidden ? maxSlide : 0;
-					int rightMargin = slidden ? 0 : maxSlide;
-					RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) parentContainer.getLayoutParams();
-					lp.setMargins(leftmargin, lp.topMargin, rightMargin, lp.bottomMargin);
-					parentContainer.setLayoutParams(lp);
-					if (leftmargin == 0) {
-						stationsContainer.setVisibility(View.GONE);
-						mapDisabledView.setVisibility(View.GONE);
-						swiperDisabledView.setVisibility(View.GONE);
-					}
-					posX = 0;
-				}
-			}
-		});
-
-		posX = newX;
-
-		parentContainer.startAnimation(animation);
 	}
 
 	@Override
