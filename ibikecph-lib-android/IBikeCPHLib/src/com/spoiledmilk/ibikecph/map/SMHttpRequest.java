@@ -48,6 +48,7 @@ public class SMHttpRequest {
         }
     }
 
+    // TODO: There is also a com.spoiledmilk.ibikecph.search.Address!
     public static class Address {
         public String street;
         public String houseNumber;

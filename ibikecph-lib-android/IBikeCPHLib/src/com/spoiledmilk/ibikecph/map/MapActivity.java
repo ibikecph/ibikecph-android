@@ -14,10 +14,13 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -86,7 +89,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     ImageView imgSwiper;
     protected RelativeLayout parentContainer;
     RelativeLayout rootLayout;
-    RelativeLayout leftContainer;
     protected View mapDisabledView;
     FrameLayout mapContainer;
     ImageButton btnSearch;
@@ -99,6 +101,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     boolean isSaveFaveoriteEnabled = true;
     FavoritesData favoritesData = null;
     boolean addFavEnabled = true;
+    private DrawerLayout drawerLayout;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -107,15 +110,16 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         LOG.d("Map activity onCreate");
         this.maxSlide = (int) (4 * Util.getScreenWidth() / 5);
         this.setContentView(R.layout.main_map_activity);
+        
         mapFragment = new SMMapFragment();
         FragmentManager fm = this.getSupportFragmentManager();
         fm.beginTransaction().add(R.id.map_container, mapFragment).commit();
         mapContainer = (FrameLayout) findViewById(R.id.map_container);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        leftContainer = (RelativeLayout) findViewById(R.id.leftContainer);
         pinInfoLayout = (RelativeLayout) findViewById(R.id.pinInfoLayout);
         pinInfoLine1 = (TextView) pinInfoLayout.findViewById(R.id.pinAddressLine1);
         pinInfoLine1.setTypeface(IbikeApplication.getBoldFont());
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         btnStart = (Button) findViewById(R.id.btnStart);
         btnStart.setOnClickListener(new OnClickListener() {
             @Override
@@ -133,7 +137,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         });
         btnSaveFavorite = (ImageButton) findViewById(R.id.btnSaveFavorite);
         btnSaveFavorite.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
                 DB db = new DB(MapActivity.this);
@@ -172,32 +175,21 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
                 }
             }
         });
-        LOG.d("Map activity btnTrack = " + btnTrack);
-
+        
         rootLayout = (RelativeLayout) findViewById(R.id.rootLayout);
         FrameLayout.LayoutParams rootParams = new FrameLayout.LayoutParams((int) (9 * Util.getScreenWidth() / 5),
                 FrameLayout.LayoutParams.MATCH_PARENT);
         rootLayout.setLayoutParams(rootParams);
         parentContainer = (RelativeLayout) findViewById(R.id.parent_container);
         imgSwiper = (ImageView) findViewById(R.id.imgSwiper);
-        imgSwiper.setOnTouchListener(new OnTouchListener() {
-            // Swipe the view horizontally
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return onImgSwiperTouch(v, event);
-            }
+        
+        imgSwiper.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				drawerLayout.openDrawer(Gravity.START);
+			}
+		});
 
-        });
-        mapDisabledView = findViewById(R.id.mapDisabledView);
-        mapDisabledView.setOnTouchListener(new OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // used to disable the map touching when sliden
-                return onImgSwiperTouch(v, event); // true
-            }
-
-        });
         btnSearch = (ImageButton) findViewById(R.id.btnSearch);
         btnSearch.setOnClickListener(new OnClickListener() {
 
@@ -209,12 +201,8 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             }
 
         });
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth() * 4 / 5,
-                RelativeLayout.LayoutParams.MATCH_PARENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        findViewById(R.id.leftContainer).setLayoutParams(params);
-        params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth(), RelativeLayout.LayoutParams.MATCH_PARENT);
+        
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth(), RelativeLayout.LayoutParams.MATCH_PARENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         findViewById(R.id.parent_container).setLayoutParams(params);
@@ -222,11 +210,13 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         findViewById(R.id.pinInfoLayout).setLayoutParams(params);
         leftMenu = getLeftMenu();
+        
+        // Add the menu to the Navigation Drawer
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
-            fragmentTransaction.add(R.id.leftContainer, leftMenu);
+            fragmentTransaction.add(R.id.leftContainerDrawer, leftMenu);
         } else {
-            fragmentTransaction.replace(R.id.leftContainer, leftMenu);
+            fragmentTransaction.replace(R.id.leftContainerDrawer, leftMenu);
         }
         fragmentTransaction.commit();
         findViewById(R.id.rootLayout).invalidate();
@@ -259,44 +249,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     }
 
     float newTouchX, delta;
-
-    protected boolean onImgSwiperTouch(View view, MotionEvent event) {
-        if (leftContainer.getVisibility() != View.VISIBLE) {
-            leftContainer.setVisibility(View.VISIBLE);
-        }
-        if (mapDisabledView.getVisibility() != View.VISIBLE) {
-            mapDisabledView.setVisibility(View.VISIBLE);
-        }
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                view.setPressed(false);
-                if (moveCount <= 3)
-                    translate(slidden ? -maxSlide : maxSlide, true);
-                else
-                    translate(0, true);
-                break;
-            case MotionEvent.ACTION_DOWN:
-                moveCount = 0;
-                view.setPressed(true);
-                touchX = event.getX();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (moveCount++ < 3)
-                    break;
-                newTouchX = event.getX();
-                delta = newTouchX - touchX;
-                translate(delta, false);
-                touchX = newTouchX;
-                break;
-        }
-
-        if (slidden && mapDisabledView.getVisibility() != View.GONE) {
-            mapDisabledView.setVisibility(View.GONE);
-        }
-
-        return true;
-    }
 
     protected Class<?> getSplashActivityClass() {
         return SplashActivity.class;
@@ -529,11 +481,11 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             }
         } else if (resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             try {
-                ((AddFavoriteFragment) getSupportFragmentManager().findFragmentById(R.id.leftContainer)).onActivityResult(requestCode, resultCode,
+                ((AddFavoriteFragment) getSupportFragmentManager().findFragmentById(R.id.leftContainerDrawer)).onActivityResult(requestCode, resultCode,
                         data);
             } catch (Exception e) {
                 try {
-                    ((EditFavoriteFragment) getSupportFragmentManager().findFragmentById(R.id.leftContainer)).onActivityResult(requestCode,
+                    ((EditFavoriteFragment) getSupportFragmentManager().findFragmentById(R.id.leftContainerDrawer)).onActivityResult(requestCode,
                             resultCode, data);
                 } catch (Exception ex) {
                 }
@@ -553,6 +505,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
 
     float newX;
 
+    /* NO NEED??
     private void translate(float deltaX, final boolean finalAnim) {
         // mapFragment.mapView.setEnabled(false);
         if (leftMenu != null && leftMenu.getView() != null) {
@@ -608,7 +561,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
 
                         if (slidden == newSlidden) {
                             if (!slidden) {
-                                leftContainer.setVisibility(View.GONE);
+                                //leftContainer.setVisibility(View.GONE);
                                 mapDisabledView.setVisibility(View.GONE);
                                 leftMenu.getView().invalidate();
                             } else {
@@ -625,14 +578,14 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
                         lp.setMargins(leftmargin, lp.topMargin, rightMargin, lp.bottomMargin);
                         parentContainer.setLayoutParams(lp);
                         if (leftmargin == 0) {
-                            leftContainer.setVisibility(View.GONE);
+                            //leftContainer.setVisibility(View.GONE);
                             mapDisabledView.setVisibility(View.GONE);
                             leftMenu.getView().invalidate();
                         }
 
                         posX = 0;
 
-                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.leftContainer);
+                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.leftContainerDrawer);
                         if (fr != null && fr instanceof EditFavoriteFragment) {
                             ((EditFavoriteFragment) fr).hideKeyboard();
                         } else if (fr != null && fr instanceof AddFavoriteFragment) {
@@ -648,6 +601,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             parentContainer.startAnimation(animation);
         }
     }
+    */
 
     public void reloadStrings() {
         leftMenu.initStrings();

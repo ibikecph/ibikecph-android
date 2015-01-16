@@ -6,6 +6,7 @@
 package com.spoiledmilk.ibikecph;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,11 +24,13 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -92,6 +95,14 @@ public class LeftMenu extends Fragment {
         settingsContainer = (RelativeLayout) ret.findViewById(R.id.settingsContainer);
         aboutContainer = (RelativeLayout) ret.findViewById(R.id.aboutContainer);
         btnEditFavorites = (ImageButton) ret.findViewById(R.id.btnEditFavourites);
+        
+        /*  FOR POPULATING THE LISTVIEW.
+        ListView menuList = (ListView) ret.findViewById(R.id.listView1);
+        List<String> listItems = new ArrayList<String>();
+        listItems.add("Hejsa");
+        menuList.setAdapter(new ArrayAdapter<String>(inflater.getContext(), android.R.layout.simple_list_item_1, listItems));
+        */
+        
         btnEditFavorites.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -254,6 +265,8 @@ public class LeftMenu extends Fragment {
             }
         });
 
+        
+        
         return ret;
     }
 
@@ -351,7 +364,7 @@ public class LeftMenu extends Fragment {
         AddFavoriteFragment aff = getAddFavoriteFragment();
         FragmentTransaction fragmentTransaction = ((FragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        fragmentTransaction.replace(R.id.leftContainer, aff);
+        fragmentTransaction.replace(R.id.leftContainerDrawer, aff);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         ((FragmentActivity) getActivity()).getSupportFragmentManager().executePendingTransactions();
@@ -563,7 +576,7 @@ public class LeftMenu extends Fragment {
         eff.setArguments(args);
         FragmentTransaction fragmentTransaction = ((FragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        fragmentTransaction.replace(R.id.leftContainer, eff);
+        fragmentTransaction.replace(R.id.leftContainerDrawer, eff);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
         ((FragmentActivity) getActivity()).getSupportFragmentManager().executePendingTransactions();

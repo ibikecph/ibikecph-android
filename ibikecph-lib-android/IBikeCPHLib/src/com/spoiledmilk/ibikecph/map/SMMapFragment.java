@@ -38,9 +38,7 @@ import com.spoiledmilk.ibikecph.util.Util;
 public class SMMapFragment extends MapFragmentBase implements MapListener, OnMapLongPressListener {
 
     LongPressGestureOverlay longPressOverlay;
-
     ImageView pinView;
-
     ItemizedIconOverlay<OverlayItem> pinB;
 
     @Override

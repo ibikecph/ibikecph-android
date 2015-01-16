@@ -82,7 +82,7 @@ public class MapFragmentBase extends Fragment implements SMLocationListener {
 			LOG.d(e.getLocalizedMessage());
 		}
 		mapView.setUseSafeCanvas(true);
-		setHardwareAccelerationOff();
+		//setHardwareAccelerationOff();
 		mapView.addView(textStationInfo);
 		return mapView;
 	}

@@ -74,15 +74,12 @@ public class AddFavoriteFragment extends Fragment {
 		textAddress = (EditText) ret.findViewById(R.id.textAddress);
 		textAddress.setClickable(true);
 		textAddress.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View arg0) {
 				Intent i = new Intent(getActivity(), SearchAutocompleteActivity.class);
 				i.putExtra("isA", true);
 				getActivity().startActivityForResult(i, 2);
-
 			}
-
 		});
 
 		textFavoriteName = (EditText) ret.findViewById(R.id.textFavoriteName);

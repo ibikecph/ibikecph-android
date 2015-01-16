@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import com.spoiledmilk.cykelsuperstier.login.LoginSplashActivity;
 import com.spoiledmilk.cykelsuperstier.map.MapActivity;
@@ -34,6 +35,7 @@ public class SplashActivity extends Activity {
 			public void run() {
 				Intent i;
 				if (CykelsuperstierApplication.isUserLogedIn()) {
+					Log.i("JC", "going to map activity");
 					i = new Intent(SplashActivity.this, MapActivity.class);
 				} else {
 					i = new Intent(SplashActivity.this, LoginSplashActivity.class);

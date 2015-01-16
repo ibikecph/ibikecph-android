@@ -73,7 +73,8 @@
         android:layout_below="@+id/horizontalDivider1"
         android:layout_centerHorizontal="true"
         android:clickable="true"
-        android:paddingRight="1dp" >
+        android:paddingRight="1dp" 
+        android:paddingLeft="0dp">
 
         <RelativeLayout
             android:id="@+id/favoritesListContainer"
@@ -130,6 +131,7 @@
             android:orientation="horizontal"
             android:paddingBottom="7dp"
             android:paddingLeft="31dp"
+            android:paddingRight="0dp"
             android:paddingTop="7dp" >
 
             <ImageView
@@ -297,5 +299,15 @@
         android:layout_below="@+id/aboutContainer"
         android:layout_centerHorizontal="true"
         android:background="#333333" />
+ 
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/aboutContainer"
+        android:visibility="visible" >
+
+    </ListView>
 
 </RelativeLayout>
