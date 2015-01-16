@@ -37,18 +37,6 @@ public class AboutActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.about_activity);
 
-		btnBack = ((ImageButton) findViewById(R.id.btnBack));
-		btnBack.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				AboutActivity.this.finish();
-				overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-
-			}
-
-		});
-
 		textAboutTitle = (TextView) findViewById(R.id.textAboutTitle);
 		textAboutText = (TextView) findViewById(R.id.textAboutText);
 		// textAboutText.setMovementMethod(new ScrollingMovementMethod());
