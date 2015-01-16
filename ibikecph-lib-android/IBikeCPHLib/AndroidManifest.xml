@@ -45,7 +45,6 @@
         
         <!-- <activity android:name="net.hockeyapp.android.UpdateActivity" /> -->
 
-        
         <activity
             android:name="com.spoiledmilk.ibikecph.SplashActivity"
             android:screenOrientation="portrait" >

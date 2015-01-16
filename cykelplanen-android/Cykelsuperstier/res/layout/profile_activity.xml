@@ -4,16 +4,10 @@
     android:layout_height="match_parent"
     android:background="#f0f0f0" >
 
-    <include
-        android:id="@+id/navBar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        layout="@layout/nav_bar" />
-
     <ScrollView
+        android:id="@+id/scrollView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/navBar"
         android:layout_marginTop="10dp" >
 
         <RelativeLayout
@@ -33,7 +27,8 @@
                 android:background="@drawable/rounded_imageview"
                 android:clickable="true"
                 android:contentDescription="@string/app_name"
-                android:onClick="onImageContainerClick" >
+                android:onClick="onImageContainerClick"
+                android:scaleType="centerCrop" >
             </ImageView>
 
             <ImageView
@@ -111,7 +106,7 @@
                 android:src="@drawable/icon_email" />
 
             <EditText
-                android:id="@+id/textNewPassword"
+                android:id="@+id/textOldPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/textName"
@@ -127,13 +122,27 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/textNewPassword"
-                android:layout_alignRight="@+id/textNewPassword"
-                android:layout_alignTop="@+id/textNewPassword"
+                android:layout_alignBottom="@+id/textOldPassword"
+                android:layout_alignRight="@+id/textOldPassword"
+                android:layout_alignTop="@+id/textOldPassword"
                 android:background="@null"
                 android:contentDescription="@string/app_name"
-                android:paddingRight="8dp"
+                android:paddingRight="15dp"
                 android:src="@drawable/icon_pass" />
+
+            <EditText
+                android:id="@+id/textNewPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textName"
+                android:layout_alignRight="@+id/textName"
+                android:layout_below="@+id/textOldPassword"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input_on_black_selector"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp"
+                android:paddingRight="25dp"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/textPasswordConfirm"
@@ -175,7 +184,22 @@
                 android:background="@drawable/btn_delete_selector"
                 android:textColor="@color/White"
                 android:textSize="14sp" />
+            
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="170dp"
+                android:layout_height="45dp"
+                android:layout_below="@+id/btnDelete"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_delete_selector"
+                android:textColor="@color/White"
+                android:textSize="14sp" />
+
         </RelativeLayout>
+
     </ScrollView>
 
     <ProgressBar

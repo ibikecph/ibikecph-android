@@ -8,6 +8,7 @@ package com.spoiledmilk.ibikecph.login;
 import java.io.InputStream;
 import java.net.URL;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -22,12 +23,11 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.analytics.tracking.android.EasyTracker;
@@ -44,8 +44,7 @@ import com.spoiledmilk.ibikecph.util.Util;
 public class ProfileActivity extends Activity implements ImagerPrefetcherListener {
 
     static final long API_REQUESTS_TIMEOUT = 2000;
-    TextView textTitle;
-    ImageButton btnBack;
+
     Button btnLogout;
     EditText textName, textEmail, textOldPassword, textNewPassword, textPasswordConfirm;
     TexturedButton btnSave;
@@ -60,37 +59,18 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
     private static final int IMAGE_REQUEST = 1888;
     Thread tfetchUser;
     long lastAPIRequestTimestamp = 0;
-
+    ActionBar actionbar;
+    
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+    	actionbar = getActionBar();
+    	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         pictureContainer = (ImageView) findViewById(R.id.pictureContainer);
-        textTitle = (TextView) findViewById(R.id.textTitle);
-        textTitle.setVisibility(View.VISIBLE);
-        btnBack = (ImageButton) findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                if (userData != null && userData.getName() != null && textName.getText() != null)
-                    if (!userData.getName().equals(textName.getText().toString())
-                            || !userData.getEmail().equals(textEmail.getText().toString())
-                            || !base64Image.equals(userData.getBase64Image())
-                            || (!textNewPassword.getText().toString().equals(userData.getPassword()) && !textNewPassword.getText().toString()
-                                    .equals(""))) {
-                        launchBackDialog();
-                    } else {
-                        finish();
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                    }
-                else {
-                    finish();
-                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                }
-            }
 
-        });
         btnLogout = (Button) findViewById(R.id.btnLogout);
         btnLogout.setVisibility(View.VISIBLE);
         btnLogout.setOnClickListener(new OnClickListener() {
@@ -104,6 +84,8 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
             }
 
         });
+        
+        
         textName = (EditText) findViewById(R.id.textName);
         textEmail = (EditText) findViewById(R.id.textEmail);
         textNewPassword = (EditText) findViewById(R.id.textNewPassword);
@@ -235,9 +217,12 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
 
     @Override
     public void onResume() {
+    	//actionbar.show();
+    	
         super.onResume();
         initStrings();
         disableButtons();
+        
     }
 
     public void onImageContainerClick(View v) {
@@ -260,8 +245,8 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
     }
 
     private void initStrings() {
-        textTitle.setText(IbikeApplication.getString("account"));
-        textTitle.setTypeface(IbikeApplication.getNormalFont());
+        //textTitle.setText(IbikeApplication.getString("account"));
+        //textTitle.setTypeface(IbikeApplication.getNormalFont());
         btnLogout.setText(IbikeApplication.getString("logout"));
         btnLogout.setTypeface(IbikeApplication.getNormalFont());
         textOldPassword.setHint(IbikeApplication.getString("old_password"));

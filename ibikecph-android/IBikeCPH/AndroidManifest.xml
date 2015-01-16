@@ -72,7 +72,9 @@
         </activity>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+            android:theme="@android:style/Theme.Holo"
+            >
         </activity>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.LoginActivity"
@@ -91,7 +93,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.search.SearchActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" 
+            android:theme="@android:style/Theme.Holo"
+            />
         <activity
             android:name="com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity"
             android:screenOrientation="portrait" />

@@ -388,3 +388,5 @@
 "activate_gps" = "Turn GPS On";
 "leave_no_gps" = "Leave GPS off";
 "error_no_gps" = "GPS location not found";
+
+"old_password" = "Current password";
