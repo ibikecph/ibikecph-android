@@ -9,17 +9,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -27,6 +30,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.Log;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.ObservableScrollView;
@@ -42,8 +46,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     public static final int RESULT_SEARCH_ROUTE = 102;
     private static final long HISTORY_FETCHING_TIMEOUT = 120 * 1000;
 
-    private Button btnBack;
-    protected TexturedButton btnStart;
+    protected MenuItem btnStart;
     private ImageButton btnSwitch;
     private TextView textCurrentLoc, textB, textA, textFavorites, textRecent, textShowMore, textOverviewHeader;
     private ListView listHistory, listFavorites;
@@ -57,6 +60,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     ArrayList<SearchListItem> searchHistory = new ArrayList<SearchListItem>();
     private long timestampHistoryFetched = 0;
     private boolean isDestroyed = false;
+    private ActionBar actionBar;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -69,54 +73,9 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         textOverviewHeader = (TextView) findViewById(R.id.textOverviewHeader);
         scrollView = (ObservableScrollView) findViewById(R.id.scrollView);
         scrollView.setScrollViewListener(this);
-        btnBack = (Button) findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                overridePendingTransition(R.anim.slide_out_down, R.anim.fixed);
-            }
-
-        });
-
-        btnStart = (TexturedButton) findViewById(R.id.btnStart);
-        btnStart.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Start routing
-                Intent intent = new Intent();
-                if (ALatitude == -1 || ALongitude == -1) {
-                    Location start = SMLocationManager.getInstance().getLastValidLocation();
-                    if (start == null) {
-                        start = SMLocationManager.getInstance().getLastKnownLocation();
-                    }
-                    if (start != null) {
-                        ALatitude = start.getLatitude();
-                        ALongitude = start.getLongitude();
-                    }
-                } else {
-
-                    IbikeApplication.getTracker().sendEvent("Route", "From", textA.getText().toString(), (long) 0);
-                }
-                String st = "Start: " + textA.getText().toString() + " (" + ALatitude + "," + ALongitude + ") End: " + textB.getText().toString()
-                        + " (" + BLongitude + "," + BLatitude + ")";
-
-                IbikeApplication.getTracker().sendEvent("Route", "Finder", st, (long) 0);
-                intent.putExtra("startLng", ALongitude);
-                intent.putExtra("startLat", ALatitude);
-                intent.putExtra("endLng", BLongitude);
-                intent.putExtra("endLat", BLatitude);
-                intent.putExtra("fromName", fromName);
-                intent.putExtra("toName", toName);
-                if (historyData != null)
-                    new DB(SearchActivity.this).saveSearchHistory(historyData, new HistoryData(fromName, ALatitude, ALongitude), SearchActivity.this);
-                setResult(RESULT_SEARCH_ROUTE, intent);
-                finish();
-                overridePendingTransition(R.anim.slide_out_down, R.anim.fixed);
-            }
-
-        });
-        btnStart.setTextureResource(R.drawable.btn_pattern_repeteable);
+        
+        actionBar = getActionBar();
+        
         textCurrentLoc = (TextView) findViewById(R.id.textCurrentLoc);
         textCurrentLoc.setOnClickListener(new OnClickListener() {
 
@@ -190,6 +149,67 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         }
     }
 
+    /**
+     * Init the ActionBar, setting the relevant strings
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.search_activity_actions, menu);
+        
+        menu.getItem(0).setTitle(IbikeApplication.getString("marker_start"));
+        this.btnStart = menu.getItem(0);
+        return super.onCreateOptionsMenu(menu);
+    }
+ 
+    @Override
+    /**
+     * Handler for the menu items in the ActionBar. 
+     */
+    public boolean onOptionsItemSelected(MenuItem item) {
+	    if(item.getItemId() == R.id.btnActionStart) {
+	    	startButtonHandler();
+    		return true;
+    	}
+    	return false;
+    }
+
+    /**
+     * Handler for the Start routing button.
+     */
+    public void startButtonHandler() {
+    	// Start routing
+        Intent intent = new Intent();
+        if (ALatitude == -1 || ALongitude == -1) {
+            Location start = SMLocationManager.getInstance().getLastValidLocation();
+            if (start == null) {
+                start = SMLocationManager.getInstance().getLastKnownLocation();
+            }
+            if (start != null) {
+                ALatitude = start.getLatitude();
+                ALongitude = start.getLongitude();
+            }
+        } else {
+            IbikeApplication.getTracker().sendEvent("Route", "From", textA.getText().toString(), (long) 0);
+        }
+        String st = "Start: " + textA.getText().toString() + " (" + ALatitude + "," + ALongitude + ") End: " + textB.getText().toString()
+                + " (" + BLongitude + "," + BLatitude + ")";
+
+        IbikeApplication.getTracker().sendEvent("Route", "Finder", st, (long) 0);
+        intent.putExtra("startLng", ALongitude);
+        intent.putExtra("startLat", ALatitude);
+        intent.putExtra("endLng", BLongitude);
+        intent.putExtra("endLat", BLatitude);
+        intent.putExtra("fromName", fromName);
+        intent.putExtra("toName", toName);
+        if (historyData != null)
+            new DB(SearchActivity.this).saveSearchHistory(historyData, new HistoryData(fromName, ALatitude, ALongitude), SearchActivity.this);
+        setResult(RESULT_SEARCH_ROUTE, intent);
+        finish();
+        overridePendingTransition(R.anim.slide_out_down, R.anim.fixed);
+    }
+    
     @SuppressWarnings("deprecation")
     private void enableSwitchButton(boolean b) {
         btnSwitch.setEnabled(b);
@@ -230,15 +250,12 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         }
         boolean switchEnabled = ALatitude != -1 && ALongitude != -1 && BLatitude != -1 && BLongitude != -1;
         enableSwitchButton(switchEnabled);
-        if (BLongitude == -1 || BLatitude == -1) {
-            btnStart.setBackgroundResource(R.drawable.btn_grey_selector);
-            btnStart.hideTexture();
-        } else {
-            btnStart.setBackgroundResource(R.drawable.btn_blue_selector);
-            btnStart.showTexture();
-        }
+
         boolean enableStart = BLongitude != -1 && BLatitude != -1;
-        btnStart.setEnabled(enableStart);
+        if (btnStart != null) {
+        	btnStart.setEnabled(enableStart);
+        }
+        
         if (System.currentTimeMillis() - timestampHistoryFetched > HISTORY_FETCHING_TIMEOUT) {
             searchHistory = new ArrayList<SearchListItem>();
             tFetchSearchHistory thread = new tFetchSearchHistory();
@@ -261,10 +278,8 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 BLatitude = hd.getLatitude();
                 BLongitude = hd.getLongitude();
                 btnStart.setEnabled(true);
-                btnStart.setBackgroundResource(R.drawable.btn_blue_selector);
-                btnStart.showTexture();
+                
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Favorites", (long) 0);
-                btnStart.setTextColor(Color.WHITE);
                 textB.setTypeface(IbikeApplication.getNormalFont());
                 if (SMLocationManager.getInstance().hasValidLocation()) {
                     enableSwitchButton(true);
@@ -292,10 +307,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                     toName = toName.substring(0, toName.indexOf(','));
                 }
                 btnStart.setEnabled(true);
-                btnStart.setBackgroundResource(R.drawable.btn_blue_selector);
-                btnStart.showTexture();
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Recent", (long) 0);
-                btnStart.setTextColor(Color.WHITE);
                 textB.setTypeface(IbikeApplication.getNormalFont());
                 if (SMLocationManager.getInstance().hasValidLocation()) {
                     enableSwitchButton(true);
@@ -348,9 +360,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     }
 
     private void initStrings() {
-        btnStart.setText(IbikeApplication.getString("marker_start"));
-        btnStart.setTypeface(IbikeApplication.getBoldFont());
-        btnStart.setTextColor(Color.WHITE);
         textCurrentLoc.setText(IbikeApplication.getString("current_position"));
         textCurrentLoc.setTypeface(IbikeApplication.getNormalFont());
         textB.setHint(IbikeApplication.getString("B_hint"));

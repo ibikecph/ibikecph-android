@@ -5,9 +5,10 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.cykelsuperstier.search;
 
-import java.util.Locale;
-
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -32,15 +33,23 @@ public class SearchActivity extends com.spoiledmilk.ibikecph.search.SearchActivi
 	@Override
 	public void onResume() {
 		super.onResume();
-		btnStart.setText(IbikeApplication.getString("marker_start").toUpperCase(Locale.US));
-		btnStart.setTypeface(IbikeApplication.getBoldFont());
-		btnStart.setTextColor(getResources().getColor(R.color.BtnStardDisabled));
-
+		
 		if (CykelsuperstierApplication.isUserLogedIn()) {
 			findViewById(R.id.lineShowMoreTopSeparator).setVisibility(View.VISIBLE);
 		} else {
 			findViewById(R.id.lineShowMoreTopSeparator).setVisibility(View.INVISIBLE);
 		}
+	}
+	
+	public boolean onCreateOptionsMenu(Menu menu) {
+		boolean ret = super.onCreateOptionsMenu(menu);
+		this.btnStart = menu.getItem(0);
+		return ret;
+        // Inflate the menu items for use in the action bar
+	}
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		return super.onOptionsItemSelected(item);
 	}
 
 }

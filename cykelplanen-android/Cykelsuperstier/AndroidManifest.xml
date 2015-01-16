@@ -47,7 +47,6 @@
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -92,7 +91,8 @@
         <activity
             android:name="com.spoiledmilk.ibikecph.search.SearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo" />
+            android:theme="@android:style/Theme.Holo"
+          	 />
         <activity
             android:name="com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity"
             android:screenOrientation="portrait" />
@@ -145,7 +145,8 @@
         </activity>
         <activity
             android:name="com.spoiledmilk.cykelsuperstier.search.SearchActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+            android:theme="@android:style/Theme.Holo">
         </activity>
     </application>
 

@@ -7,49 +7,9 @@
     android:paddingBottom="5dp" >
 
     <RelativeLayout
-        android:id="@+id/navBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/route_enter_header"
-        android:padding="5dp" >
-
-        <ImageView
-            android:id="@+id/imgLogo"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/search_logo" />
-
-        <Button
-            android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/btn_back_white_selector" />
-
-        <com.spoiledmilk.ibikecph.controls.TexturedButton
-            android:id="@+id/btnStart"
-            android:layout_width="65dp"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/btnBack"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/btnBack"
-            android:layout_marginBottom="-2dp"
-            android:background="@null"
-            android:minHeight="35dp"
-            android:textColor="@color/White" />
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/imgInput"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_below="@+id/navBar"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="-5dp"
         android:layout_marginLeft="10dp"
