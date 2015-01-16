@@ -4,16 +4,9 @@
     android:layout_height="match_parent"
     android:background="@color/DarkGrey" >
 
-    <include
-        android:id="@+id/navBar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        layout="@layout/nav_bar" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/navBar"
         android:layout_marginTop="10dp" >
 
         <RelativeLayout
@@ -183,6 +176,19 @@
                 android:layout_width="170dp"
                 android:layout_height="45dp"
                 android:layout_below="@+id/btnSave"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_delete_selector"
+                android:textColor="@color/White"
+                android:textSize="14sp" />
+            
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="170dp"
+                android:layout_height="45dp"
+                android:layout_below="@+id/btnDelete"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"

@@ -337,3 +337,6 @@
 "activate_gps" = "Aktiver GPS";
 "leave_no_gps" = "Deaktiver GPS";
 "error_no_gps" = "GPS lokationen blev ikke fundet";
+
+
+"old_password" = "Gammel adgangskode";
