@@ -301,7 +301,7 @@
         android:background="#333333" />
  
     <ListView
-        android:id="@+id/listView1"
+        android:id="@+id/menuListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
