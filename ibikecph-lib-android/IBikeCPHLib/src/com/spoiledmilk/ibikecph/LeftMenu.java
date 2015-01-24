@@ -197,7 +197,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         listItems.add(IbikeApplication.getString("about_app"));
         listItems.add(IbikeApplication.getString("tts_settings"));
         
-        this.menuList.setAdapter(new ArrayAdapter<String>(IbikeApplication.getContext(), android.R.layout.simple_list_item_1, listItems));
+        this.menuList.setAdapter(new ArrayAdapter<String>(IbikeApplication.getContext(), R.layout.leftmenu_listitem, listItems));
     }
 
 	@Override

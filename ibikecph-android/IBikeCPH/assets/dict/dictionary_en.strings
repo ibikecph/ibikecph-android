@@ -410,7 +410,6 @@
 "register_email_placeholder" = "E-mail";
 "register_password_placeholder" = "Password";
 "register_password_repeat_placeholder" = "Repeat password";
-"login" = "LOG IN";
 "choose_image_source" = "Select image source";
 "image_source_camera" = "Camera";
 "image_source_library" = "Library";
@@ -420,7 +419,6 @@
 "favorites_text" = "Now you can easily and quick access your favorite routes. Start by adding your home and work address.";
 "favorites_home_placeholder" = "Home address ...";
 "favorites_work_placeholder" = "Work address ...";
-"log_in" = "Log in";
 
 "add_favorite" = "ADD A FAVORITE";
 "cell_add_favorite" = "ADD NEW FAVORITE";
