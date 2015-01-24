@@ -224,8 +224,9 @@ public class LeftMenu extends Fragment {
 	}
     
 	private void spawnTTSSettingsActivity() {
-		// TODO Auto-generated method stub
-		
+        Intent i = new Intent(getActivity(), TTSSettingsActivity.class);
+        getActivity().startActivity(i);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
     
     protected int getMenuItemSelectedColor() {

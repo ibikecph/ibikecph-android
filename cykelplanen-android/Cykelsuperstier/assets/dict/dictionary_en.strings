@@ -5,6 +5,7 @@
 "choose_language" = "Change language";
 
 "tts_settings" = "Voice guide";
+"tts_enable" = "Voice guide";
 
 "current_position" = "Current position";
 "today" = "Today";

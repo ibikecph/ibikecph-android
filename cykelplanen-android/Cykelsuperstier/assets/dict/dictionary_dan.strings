@@ -5,6 +5,7 @@
 "choose_language" = "Skift sprog";
 
 "tts_settings" = "Stemmeindstillinger";
+"tts_enable" = "Stemmeguide";
 
 "current_position" = "Nuværende position";
 "today" = "I dag";

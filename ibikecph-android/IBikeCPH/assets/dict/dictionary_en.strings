@@ -145,6 +145,7 @@
 "language" = "Language";
 
 "tts_settings" = "Voice guide";
+"tts_enable" = "Voice guide";
 
 "where_are_we_going" = "Where should we go?";
 "ibikecph_route_planner" = "I Bike CPH";

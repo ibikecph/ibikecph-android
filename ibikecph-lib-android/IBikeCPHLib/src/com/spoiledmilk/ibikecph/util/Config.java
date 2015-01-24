@@ -41,4 +41,5 @@ public class Config {
 	public static final boolean ANALYTICS_ENABLED = false;
 	
 	public static boolean EXTENDED_PULL_TOUCH = true;
+	public static boolean TTS_ENABLED = true;
 }
