@@ -57,7 +57,7 @@ import com.spoiledmilk.ibikecph.util.Util;
  * @author jens
  *
  */
-public class LeftMenu extends Fragment {
+public class LeftMenu extends Fragment implements iLanguageListener {
 
     protected static final int menuItemHeight = Util.dp2px(40);
     protected static final int dividerHeight = Util.dp2px(2);
@@ -76,7 +76,8 @@ public class LeftMenu extends Fragment {
     private boolean isEditMode = false;
     public boolean favoritesEnabled = true;
     private ListAdapter listAdapter;
-
+    protected ListView menuList;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -94,19 +95,15 @@ public class LeftMenu extends Fragment {
         
         
         // Initialize the menu
-        ListView menuList = (ListView) ret.findViewById(R.id.menuListView);
-        List<String> listItems = new ArrayList<String>();
-        listItems.add(IbikeApplication.getString("login"));
-        listItems.add(IbikeApplication.getString("choose_language"));
-        listItems.add(IbikeApplication.getString("about_app"));
-        listItems.add(IbikeApplication.getString("tts_settings"));
+        this.menuList = (ListView) ret.findViewById(R.id.menuListView);
+        populateMenuList();
         
-        menuList.setAdapter(new ArrayAdapter<String>(inflater.getContext(), android.R.layout.simple_list_item_1, listItems));
-        menuList.setOnItemClickListener(new OnItemClickListener() {
 
+		// TODO: Do this right by passing this as the OnItemClickListener. But wait until we
+        // have a proper Adapter for the menu items in place.
+        this.menuList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				// TODO: Do this right (but maybe wait until we have real buttons with icons)
 				switch (position) {
 				case 0:			// Login
 	                spawnLoginActivity();
@@ -121,7 +118,6 @@ public class LeftMenu extends Fragment {
 					spawnTTSSettingsActivity();
 					break;
 				}
-				
 			}
 		});
         
@@ -192,7 +188,24 @@ public class LeftMenu extends Fragment {
        
         return ret;
     }
+    
+    protected void populateMenuList() {
+    	
+        List<String> listItems = new ArrayList<String>();
+        listItems.add(IbikeApplication.getString("login"));
+        listItems.add(IbikeApplication.getString("choose_language"));
+        listItems.add(IbikeApplication.getString("about_app"));
+        listItems.add(IbikeApplication.getString("tts_settings"));
+        
+        this.menuList.setAdapter(new ArrayAdapter<String>(IbikeApplication.getContext(), android.R.layout.simple_list_item_1, listItems));
+    }
 
+	@Override
+	public void reloadStrings() {
+		Log.d("JC: LeftMenu reloadStrings");
+		this.populateMenuList();
+	}
+	
     private void spawnLoginActivity() {
     	if (!Util.isNetworkConnected(getActivity())) {
             Util.launchNoConnectionDialog(getActivity());
@@ -228,14 +241,6 @@ public class LeftMenu extends Fragment {
         getActivity().startActivity(i);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
-    
-    protected int getMenuItemSelectedColor() {
-        return getActivity().getResources().getColor(R.color.BlueListBackground);
-    }
-
-    protected int getMenuItemBackgroundColor() {
-        return getActivity().getResources().getColor(R.color.Black);
-    }
 
     public void onListItemClick(int position) {
         if (!Util.isNetworkConnected(getActivity())) {
@@ -536,5 +541,6 @@ public class LeftMenu extends Fragment {
         else
             lastListDivider.setVisibility(View.VISIBLE);
     }
+
 
 }
