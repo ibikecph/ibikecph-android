@@ -156,7 +156,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/DarkGrey" >
+        android:background="#fff3f3f3"
+        >
 
         <!-- Will be populated by MapActivity.java -->
     </FrameLayout>
