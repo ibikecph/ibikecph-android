@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView android:layout_width="match_parent" android:layout_height="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+
 <RelativeLayout
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
@@ -155,406 +156,44 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/remindersContainer"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/favoritesContainer"
-        android:layout_marginTop="0dp"
-        android:background="@color/MenuItemBackground"
-        android:clickable="true"
-        android:orientation="vertical" >
-
-        <View
-            android:id="@+id/horizontalDivider8"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#4d4d4d" />
-
-        <RelativeLayout
-            android:id="@+id/remindersBackground"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="@null"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp" >
-
-            <ImageView
-                android:id="@+id/imgReminders"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/notification_white" />
-
-            <TextView
-                android:id="@+id/textReminders"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:layout_toRightOf="@+id/imgReminders"
-                android:textColor="@color/White"
-                android:textSize="16sp"
-                android:visibility="visible" />
-
-            <ImageView
-                android:id="@+id/imgExpand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/notification_arrow_down" />
-        </RelativeLayout>
-
-        <View
-            android:id="@+id/horizontalDivider4"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#4d4d4d" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/remindersSettingsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/remindersContainer"
-        android:background="#f1f1f1"
-        android:orientation="vertical"
-        android:visibility="gone" >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:paddingBottom="4dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="10dp"
-            android:paddingTop="4dp" >
-
-            <TextView
-                android:id="@+id/textMonday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/DarkGrey" />
-
-            <ImageView
-                android:id="@+id/switch1"
-                android:layout_width="94dp"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/switch_off" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#d4d4d4" >
-        </View>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:paddingBottom="4dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="10dp"
-            android:paddingTop="4dp" >
-
-            <TextView
-                android:id="@+id/textTuesday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/DarkGrey" />
-
-            <ImageView
-                android:id="@+id/switch2"
-                android:layout_width="94dp"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/switch_off" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#d4d4d4" >
-        </View>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:paddingBottom="4dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="10dp"
-            android:paddingTop="4dp" >
-
-            <TextView
-                android:id="@+id/textWednesday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/DarkGrey" />
-
-            <ImageView
-                android:id="@+id/switch3"
-                android:layout_width="94dp"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/switch_off" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#d4d4d4" >
-        </View>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:paddingBottom="4dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="10dp"
-            android:paddingTop="4dp" >
-
-            <TextView
-                android:id="@+id/textThursday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/DarkGrey" />
-
-            <ImageView
-                android:id="@+id/switch4"
-                android:layout_width="94dp"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/switch_off" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#d4d4d4" >
-        </View>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:paddingBottom="4dp"
-            android:paddingLeft="40dp"
-            android:paddingRight="10dp"
-            android:paddingTop="4dp" >
-
-            <TextView
-                android:id="@+id/textFriday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/DarkGrey" />
-
-            <ImageView
-                android:id="@+id/switch5"
-                android:layout_width="94dp"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/switch_off" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="#d4d4d4" >
-        </View>
-    </LinearLayout>
-
-    <View
-        android:id="@+id/overlayView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/remindersSettingsContainer"
-        android:background="#f1f1f1" />
-
-    <View
-        android:id="@+id/overlayView2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/horizontalDivider2"
-        android:background="#f1f1f1" />
-
-    <RelativeLayout
-        android:id="@+id/profileContainer"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/remindersContainer"
-        android:layout_marginTop="0dp"
-        android:background="@color/MenuItemBackground"
-        android:clickable="true"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
-
-        <ImageView
-            android:id="@+id/imgProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/profile" />
-
-        <TextView
-            android:id="@+id/textProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/imgProfile"
-            android:text=""
-            android:textColor="@color/White"
-            android:textSize="16sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/textLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/imgProfile"
-            android:text=""
-            android:textColor="@color/White"
-            android:textSize="16sp" />
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/horizontalDivider2"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@+id/profileContainer"
-        android:layout_centerHorizontal="true"
-        android:background="#4d4d4d" />
-
-    <RelativeLayout
-        android:id="@+id/settingsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/horizontalDivider2"
-        android:layout_marginTop="0dp"
-        android:background="@color/MenuItemBackground"
-        android:clickable="true"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
-
-        <ImageView
-            android:id="@+id/imgSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/settings_icon_white" />
-
-        <TextView
-            android:id="@+id/textSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/imgSettings"
-            android:text=""
-            android:textColor="@color/White"
-            android:textSize="16sp" />
-    </RelativeLayout>
-
     <View
         android:id="@+id/horizontalDivider5"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_below="@+id/settingsContainer"
+        android:layout_below="@id/favoritesContainer"
         android:layout_centerHorizontal="true"
         android:background="#4d4d4d" />
 
-    <RelativeLayout
-        android:id="@+id/aboutContainer"
+    <ListView
+        android:id="@+id/menuListView"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/horizontalDivider5"
-        android:layout_marginTop="0dp"
-        android:background="@color/MenuItemBackground"
-        android:clickable="true"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
-
-        <ImageView
-            android:id="@+id/imgInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/info" />
-
-        <TextView
-            android:id="@+id/textAbout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/imgInfo"
-            android:text=""
-            android:textColor="@color/White"
-            android:textSize="16sp" />
-    </RelativeLayout>
+        android:visibility="visible" >
+    </ListView>
 
     <View
         android:id="@+id/horizontalDivider3"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_below="@+id/aboutContainer"
+        android:layout_below="@+id/menuListView"
         android:layout_centerHorizontal="true"
         android:background="#4d4d4d" />
 
-   	<!--  Cykel superstier knap -->
+    <!-- Cykel superstier knap -->
+
     <RelativeLayout
         android:id="@+id/pathContainer"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/aboutContainer"
+        android:layout_below="@+id/horizontalDivider3"
         android:background="@color/White"
         android:clickable="true"
         android:onClick="onPatchContainerClick"
         android:paddingLeft="8dp"
-        android:paddingRight="8dp">
+        android:paddingRight="8dp" >
 
         <ImageView
             android:id="@+id/imgPath"
@@ -589,7 +228,8 @@
             android:src="@drawable/check_field" />
     </RelativeLayout>
 
-    <!--  Lokalbaner -->
+    <!-- Lokalbaner -->
+
     <RelativeLayout
         android:id="@+id/localTrainContainer"
         android:layout_width="wrap_content"
@@ -634,7 +274,8 @@
             android:src="@drawable/check_field" />
     </RelativeLayout>
 
-    <!--  Metroer -->
+    <!-- Metroer -->
+
     <RelativeLayout
         android:id="@+id/metroContainer"
         android:layout_width="wrap_content"
@@ -678,7 +319,8 @@
             android:src="@drawable/check_field" />
     </RelativeLayout>
 
-    <!--  S-tog -->
+    <!-- S-tog -->
+
     <RelativeLayout
         android:id="@+id/strainContainer"
         android:layout_width="wrap_content"
@@ -723,7 +365,7 @@
             android:src="@drawable/check_field" />
     </RelativeLayout>
 
-    <!--  Reparation -->
+    <!-- Reparation -->
 
     <RelativeLayout
         android:id="@+id/serviceContainer"
@@ -766,8 +408,7 @@
             android:layout_centerVertical="true"
             android:contentDescription="@string/app_name"
             android:src="@drawable/check_field" />
-
     </RelativeLayout>
-
 </RelativeLayout>
+
 </ScrollView>

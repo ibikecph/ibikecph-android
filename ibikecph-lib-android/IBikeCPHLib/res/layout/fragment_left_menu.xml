@@ -10,7 +10,6 @@
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@color/Black"
         android:paddingLeft="8dp"
         android:paddingRight="8dp" >
 
@@ -73,8 +72,8 @@
         android:layout_below="@+id/horizontalDivider1"
         android:layout_centerHorizontal="true"
         android:clickable="true"
-        android:paddingRight="1dp" 
-        android:paddingLeft="0dp">
+        android:paddingLeft="0dp"
+        android:paddingRight="1dp" >
 
         <RelativeLayout
             android:id="@+id/favoritesListContainer"
@@ -90,11 +89,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:listSelector="@color/BlackOverlay"
                 android:cacheColorHint="@android:color/transparent"
                 android:divider="@null"
                 android:dividerHeight="0dp"
                 android:layerType="none"
+                android:listSelector="@color/BlackOverlay"
                 android:visibility="gone" />
         </RelativeLayout>
 
@@ -159,155 +158,19 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginRight="5dp"
-            android:visibility="invisible"
             android:layout_marginTop="70dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/right_arrow" />
+            android:src="@drawable/right_arrow"
+            android:visibility="invisible" />
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/profileContainer"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/favoritesContainer"
-        android:layout_marginTop="2dp"
-        android:background="@color/Black"
-        android:clickable="true"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
-
-        <ImageView
-            android:id="@+id/imgProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/profile" />
-
-        <TextView
-            android:id="@+id/textProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/imgProfile"
-            android:text=""
-            android:textColor="@color/TextLightGrey"
-            android:textSize="16sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/textLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/imgProfile"
-            android:text=""
-            android:textColor="@color/TextLightGrey"
-            android:textSize="16sp" />
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/horizontalDivider2"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@+id/profileContainer"
-        android:layout_centerHorizontal="true"
-        android:background="#333333" />
-
-    <RelativeLayout
-        android:id="@+id/settingsContainer"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/horizontalDivider2"
-        android:layout_marginTop="2dp"
-        android:background="@color/Black"
-        android:clickable="true"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
-
-        <ImageView
-            android:id="@+id/imgSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/settings_icon_white" />
-
-        <TextView
-            android:id="@+id/textSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/imgSettings"
-            android:text=""
-            android:textColor="@color/TextLightGrey"
-            android:textSize="16sp" />
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/horizontalDivider4"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@+id/settingsContainer"
-        android:layout_centerHorizontal="true"
-        android:background="#333333" />
-
-    <RelativeLayout
-        android:id="@+id/aboutContainer"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/horizontalDivider4"
-        android:layout_marginTop="2dp"
-        android:background="@color/Black"
-        android:clickable="true"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
-
-        <ImageView
-            android:id="@+id/imgInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/info" />
-
-        <TextView
-            android:id="@+id/textAbout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_toRightOf="@+id/imgInfo"
-            android:text=""
-            android:textColor="@color/TextLightGrey"
-            android:textSize="16sp" />
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/horizontalDivider3"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@+id/aboutContainer"
-        android:layout_centerHorizontal="true"
-        android:background="#333333" />
- 
     <ListView
         android:id="@+id/menuListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/aboutContainer"
+        android:layout_below="@+id/favoritesContainer"
         android:visibility="visible" >
-
     </ListView>
 
 </RelativeLayout>

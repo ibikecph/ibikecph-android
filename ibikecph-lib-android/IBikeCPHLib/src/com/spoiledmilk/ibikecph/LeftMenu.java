@@ -8,6 +8,7 @@ package com.spoiledmilk.ibikecph;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
@@ -34,6 +35,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.analytics.tracking.android.Log;
 import com.spoiledmilk.ibikecph.controls.SortableListView;
 import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
 import com.spoiledmilk.ibikecph.favorites.EditFavoriteFragment;
@@ -55,13 +57,13 @@ import com.spoiledmilk.ibikecph.util.Util;
  * @author jens
  *
  */
-public class LeftMenu extends Fragment {
+public class LeftMenu extends Fragment implements iLanguageListener {
 
     protected static final int menuItemHeight = Util.dp2px(40);
     protected static final int dividerHeight = Util.dp2px(2);
 
     protected int favoritesContainerHeight;
-    TextView textFavorites, textProfile, textAbout, textLogin, textSettings, textNewFavorite, textFavoriteHint;
+    TextView textFavorites,  textNewFavorite, textFavoriteHint;
     SortableListView favoritesList;
     protected ArrayList<FavoritesData> favorites = new ArrayList<FavoritesData>();
     ImageView imgAdd;
@@ -74,7 +76,8 @@ public class LeftMenu extends Fragment {
     private boolean isEditMode = false;
     public boolean favoritesEnabled = true;
     private ListAdapter listAdapter;
-
+    protected ListView menuList;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -84,24 +87,39 @@ public class LeftMenu extends Fragment {
         textFavorites = (TextView) ret.findViewById(R.id.textFavorites);
         textNewFavorite = (TextView) ret.findViewById(R.id.textNewFavorite);
         textFavoriteHint = (TextView) ret.findViewById(R.id.textFavoriteHint);
-        textProfile = (TextView) ret.findViewById(R.id.textProfile);
-        textLogin = (TextView) ret.findViewById(R.id.textLogin);
-        textSettings = (TextView) ret.findViewById(R.id.textSettings);
-        textAbout = (TextView) ret.findViewById(R.id.textAbout);
         imgAdd = (ImageView) ret.findViewById(R.id.imgAdd);
         addContainer = (LinearLayout) ret.findViewById(R.id.addContainer);
         favoritesContainer = (RelativeLayout) ret.findViewById(R.id.favoritesContainer);
         favoritesHeaderContainer = (RelativeLayout) ret.findViewById(R.id.favoritesHeaderContainer);
-        settingsContainer = (RelativeLayout) ret.findViewById(R.id.settingsContainer);
-        aboutContainer = (RelativeLayout) ret.findViewById(R.id.aboutContainer);
         btnEditFavorites = (ImageButton) ret.findViewById(R.id.btnEditFavourites);
         
-        /*  FOR POPULATING THE LISTVIEW.
-        ListView menuList = (ListView) ret.findViewById(R.id.listView1);
-        List<String> listItems = new ArrayList<String>();
-        listItems.add("Hejsa");
-        menuList.setAdapter(new ArrayAdapter<String>(inflater.getContext(), android.R.layout.simple_list_item_1, listItems));
-        */
+        
+        // Initialize the menu
+        this.menuList = (ListView) ret.findViewById(R.id.menuListView);
+        populateMenuList();
+        
+
+		// TODO: Do this right by passing this as the OnItemClickListener. But wait until we
+        // have a proper Adapter for the menu items in place.
+        this.menuList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				switch (position) {
+				case 0:			// Login
+	                spawnLoginActivity();
+					break;
+				case 1:			// Language
+					spawnLanguageActivity();
+					break;
+				case 2:			// About
+					spawnAboutActivity();
+					break;
+				case 3:			// TTS settings
+					spawnTTSSettingsActivity();
+					break;
+				}
+			}
+		});
         
         btnEditFavorites.setOnClickListener(new OnClickListener() {
             @Override
@@ -118,7 +136,6 @@ public class LeftMenu extends Fragment {
                 updateControls();
             }
         });
-
         btnDone = (Button) ret.findViewById(R.id.btnDone);
         btnDone.setEnabled(false);
         btnDone.setOnClickListener(new OnClickListener() {
@@ -138,51 +155,6 @@ public class LeftMenu extends Fragment {
             }
 
         });
-
-        profileContainer = (RelativeLayout) ret.findViewById(R.id.profileContainer);
-        profileContainer.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                if (!Util.isNetworkConnected(getActivity())) {
-                    Util.launchNoConnectionDialog(getActivity());
-                } else {
-                    Intent i;
-                    if (textLogin.getVisibility() == View.VISIBLE) {
-                        i = new Intent(getActivity(), LoginActivity.class);
-                    } else {
-                        if (IbikeApplication.isFacebookLogin())
-                            i = new Intent(getActivity(), FacebookProfileActivity.class);
-                        else
-                            i = new Intent(getActivity(), ProfileActivity.class);
-                    }
-                    getActivity().startActivityForResult(i, 1);
-                    getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
-            }
-
-        });
-
-        ret.findViewById(R.id.aboutContainer).setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                Intent i = new Intent(getActivity(), AboutActivity.class);
-                getActivity().startActivity(i);
-                getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-
-        });
-
-        settingsContainer.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                Util.showLanguageDialog(getActivity());
-            }
-
-        });
-
         ret.findViewById(R.id.favoritesContainer).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -190,7 +162,6 @@ public class LeftMenu extends Fragment {
                     openNewFavoriteFragment();
             }
         });
-
         addContainer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -198,7 +169,6 @@ public class LeftMenu extends Fragment {
                     openNewFavoriteFragment();
             }
         });
-
         favoritesList = (SortableListView) ret.findViewById(R.id.favoritesList);
         favoritesList.setParentContainer(this);
         favoritesList.setOnItemClickListener(new OnItemClickListener() {
@@ -215,68 +185,62 @@ public class LeftMenu extends Fragment {
             }
 
         });
-
-        ret.findViewById(R.id.profileContainer).setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    ret.findViewById(R.id.profileContainer).setBackgroundColor(getMenuItemSelectedColor());
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            ret.findViewById(R.id.profileContainer).setBackgroundColor(getMenuItemBackgroundColor());
-                        }
-                    }, 250);
-                }
-                return false;
-            }
-        });
-        ret.findViewById(R.id.settingsContainer).setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    ret.findViewById(R.id.settingsContainer).setBackgroundColor(getMenuItemSelectedColor());
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            ret.findViewById(R.id.settingsContainer).setBackgroundColor(getMenuItemBackgroundColor());
-                        }
-                    }, 250);
-                }
-                return false;
-            }
-        });
-        ret.findViewById(R.id.aboutContainer).setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    ret.findViewById(R.id.aboutContainer).setBackgroundColor(getMenuItemSelectedColor());
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            ret.findViewById(R.id.aboutContainer).setBackgroundColor(getMenuItemBackgroundColor());
-                        }
-                    }, 250);
-                }
-                return false;
-            }
-        });
-
-        
-        
+       
         return ret;
     }
-
-    protected int getMenuItemSelectedColor() {
-        return getActivity().getResources().getColor(R.color.BlueListBackground);
+    
+    protected void populateMenuList() {
+    	
+        List<String> listItems = new ArrayList<String>();
+        listItems.add(IbikeApplication.getString("login"));
+        listItems.add(IbikeApplication.getString("choose_language"));
+        listItems.add(IbikeApplication.getString("about_app"));
+        listItems.add(IbikeApplication.getString("tts_settings"));
+        
+        this.menuList.setAdapter(new ArrayAdapter<String>(IbikeApplication.getContext(), R.layout.leftmenu_listitem, listItems));
     }
 
-    protected int getMenuItemBackgroundColor() {
-        return getActivity().getResources().getColor(R.color.Black);
+	@Override
+	public void reloadStrings() {
+		Log.d("JC: LeftMenu reloadStrings");
+		this.populateMenuList();
+	}
+	
+    private void spawnLoginActivity() {
+    	if (!Util.isNetworkConnected(getActivity())) {
+            Util.launchNoConnectionDialog(getActivity());
+        } else {
+            Intent i;
+            
+            // If the user is not logged in, show her a login screen, otherwise show the relevant profile activity. 
+            if ( !IbikeApplication.isUserLogedIn() && !IbikeApplication.isFacebookLogin()) {
+                i = new Intent(getActivity(), LoginActivity.class);
+            } else {
+                if (IbikeApplication.isFacebookLogin())
+                    i = new Intent(getActivity(), FacebookProfileActivity.class);
+                else
+                    i = new Intent(getActivity(), ProfileActivity.class);
+            }
+            getActivity().startActivityForResult(i, 1);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        }
     }
+    
+	protected void spawnAboutActivity() {
+        Intent i = new Intent(getActivity(), AboutActivity.class);
+        getActivity().startActivity(i);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+	}
+	
+	private void spawnLanguageActivity() {
+        Util.showLanguageDialog(getActivity());
+	}
+    
+	private void spawnTTSSettingsActivity() {
+        Intent i = new Intent(getActivity(), TTSSettingsActivity.class);
+        getActivity().startActivity(i);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+	}
 
     public void onListItemClick(int position) {
         if (!Util.isNetworkConnected(getActivity())) {
@@ -304,14 +268,10 @@ public class LeftMenu extends Fragment {
         initStrings();
         if (IbikeApplication.isUserLogedIn()) {
             favorites = (new DB(getActivity())).getFavorites(favorites);
-            textLogin.setVisibility(View.GONE);
-            textProfile.setVisibility(View.VISIBLE);
             fetchFavorites = new tFetchFavorites();
             fetchFavorites.start();
-        } else {
-            textLogin.setVisibility(View.VISIBLE);
-            textProfile.setVisibility(View.GONE);
-        }
+        } 
+        
         listAdapter = getAdapter();
         favoritesList.setAdapter(listAdapter);
         textNewFavorite.setTextColor(getAddFavoriteTextColor());
@@ -341,12 +301,6 @@ public class LeftMenu extends Fragment {
     public void initStrings() {
         textFavorites.setText(IbikeApplication.getString("favorites"));
         textFavorites.setTypeface(IbikeApplication.getBoldFont());
-        textProfile.setText(IbikeApplication.getString("account"));
-        textProfile.setTypeface(IbikeApplication.getBoldFont());
-        textAbout.setText(IbikeApplication.getString("about_ibikecph"));
-        textAbout.setTypeface(IbikeApplication.getBoldFont());
-        textLogin.setText(IbikeApplication.getString("login"));
-        textLogin.setTypeface(IbikeApplication.getBoldFont());
         textNewFavorite.setText(IbikeApplication.getString("cell_add_favorite"));
         textNewFavorite.setTypeface(IbikeApplication.getBoldFont());
         if (IbikeApplication.isUserLogedIn())
@@ -356,8 +310,6 @@ public class LeftMenu extends Fragment {
         textFavoriteHint.setTypeface(IbikeApplication.getItalicFont());
         btnDone.setText(IbikeApplication.getString("Done"));
         btnDone.setTypeface(IbikeApplication.getBoldFont());
-        textSettings.setTypeface(IbikeApplication.getBoldFont());
-        textSettings.setText(IbikeApplication.getString("settings"));
     }
 
     private void openNewFavoriteFragment() {
@@ -589,5 +541,6 @@ public class LeftMenu extends Fragment {
         else
             lastListDivider.setVisibility(View.VISIBLE);
     }
+
 
 }

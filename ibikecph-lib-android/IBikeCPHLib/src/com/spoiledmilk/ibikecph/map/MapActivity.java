@@ -605,6 +605,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
 
     public void reloadStrings() {
         leftMenu.initStrings();
+        leftMenu.reloadStrings();
         source = IbikeApplication.getString("current_position");
     }
 

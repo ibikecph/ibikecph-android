@@ -9,7 +9,7 @@
 "tomorrow" = "Tomorrow";
 "account" = "Account";
 "settings" = "SETTINGS";
-"about_ibikecph" = "ABOUT I BIKE CPH";
+"about_app" = "About I BIKE CPH";
 "contacts" = "CONTACTS";
 "favorites" = "FAVORITES";
 
@@ -142,6 +142,10 @@
 "recalculating" = "Recalculating...";
 
 "marker_start" = "Start";
+"language" = "Language";
+
+"tts_settings" = "Voice guide";
+"tts_enable" = "Voice guide";
 
 "where_are_we_going" = "Where should we go?";
 "ibikecph_route_planner" = "I Bike CPH";
@@ -184,7 +188,7 @@
 "register_email_placeholder" = "E-mail";
 "register_password_placeholder" = "Password";
 "register_password_repeat_placeholder" = "Repeat password";
-"login" = "LOG IN";
+"login" = "Log in";
 "choose_image_source" = "Select image source";
 "image_source_camera" = "Camera";
 "image_source_library" = "Library";
@@ -406,7 +410,6 @@
 "register_email_placeholder" = "E-mail";
 "register_password_placeholder" = "Password";
 "register_password_repeat_placeholder" = "Repeat password";
-"login" = "LOG IN";
 "choose_image_source" = "Select image source";
 "image_source_camera" = "Camera";
 "image_source_library" = "Library";
@@ -416,7 +419,6 @@
 "favorites_text" = "Now you can easily and quick access your favorite routes. Start by adding your home and work address.";
 "favorites_home_placeholder" = "Home address ...";
 "favorites_work_placeholder" = "Work address ...";
-"log_in" = "Log in";
 
 "add_favorite" = "ADD A FAVORITE";
 "cell_add_favorite" = "ADD NEW FAVORITE";

@@ -4,12 +4,15 @@
 "language_eng" = "English";
 "choose_language" = "Change language";
 
+"tts_settings" = "Voice guide";
+"tts_enable" = "Voice guide";
+
 "current_position" = "Current position";
 "today" = "Today";
 "tomorrow" = "Tomorrow";
 "account" = "Account";
 "settings" = "Settings";
-"about_ibikecph" = "About I Bike CPH";
+"about_app" = "About CykelPlanen";
 "about_cykelsuperstier" = "About CykelPlanen";
 "about_cykelsuperstier_title" = "About CykelPlanen";
 "favorites" = "FAVORITES";
@@ -187,7 +190,7 @@
 "register_email_placeholder" = "E-mail";
 "register_password_placeholder" = "Password";
 "register_password_repeat_placeholder" = "Repeat password";
-"login" = "LOG IN";
+"login" = "Log in";
 "choose_image_source" = "Select image source";
 "image_source_camera" = "Camera";
 "image_source_library" = "Library";

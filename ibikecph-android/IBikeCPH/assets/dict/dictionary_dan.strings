@@ -4,14 +4,17 @@
 "language_eng" = "English";
 "choose_language" = "Skift sprog";
 
+"tts_settings" = "Stemmeindstillinger";
+"tts_enable" = "Stemmeguide";
+
 "current_position" = "Nuværende position";
 "today" = "I dag";
 "tomorrow" = "I morgen";
 "accounts" = "Konto";
-"settings" = "INDSTILLINGER";
-"about_ibikecph" = "OM I BIKE CPH";
+"settings" = "Indstillinger";
+"about_app" = "Om I BIKE CPH";
 "contacts" = "Kontakter";
-"favorites" = "FAVORITTER";
+"favorites" = "Favoritter";
 
 "direction_0" = "";
 "direction_1" = "Fortsæt ad";
@@ -127,6 +130,8 @@
 
 "marker_start" = "Start";
 
+"language" = "Sprog";
+
 
 // these are in the storyboard
 
@@ -177,7 +182,7 @@
 "register_email_placeholder" = "Email";
 "register_password_placeholder" = "Kodeord";
 "register_password_repeat_placeholder" = "Gentag kodeord";
-"login" = "LOG IND";
+"login" = "Log ind";
 "choose_image_source" = "Vælg profilbillede";
 "image_source_camera" = "Fra kamera";
 "image_source_library" = "Fra bibliotek";
@@ -293,3 +298,4 @@
 "password_blank" = "Kodeord skal udfyldes";
 "password_confirm_blank" = "Bekræft kodeord skal udfyldes";
 "password_short" = "Kodeord er for kort (mindst 3 tegn)";
+
