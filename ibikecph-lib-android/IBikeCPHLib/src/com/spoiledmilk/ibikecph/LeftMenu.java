@@ -243,6 +243,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         return Color.rgb(24, 138, 230);
     }
 
+    // TODO: Get rid of this
     public void reloadFavorites() {
         DB db = new DB(getActivity());
         favorites = db.getFavorites(favorites);
