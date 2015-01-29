@@ -82,7 +82,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     Button btnStart;
     ImageButton btnTrack;
     ImageView imgSwiper;
-    protected RelativeLayout parentContainer;
     RelativeLayout rootLayout;
     protected View mapDisabledView;
     FrameLayout mapContainer;
@@ -175,9 +174,9 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         FrameLayout.LayoutParams rootParams = new FrameLayout.LayoutParams((int) (9 * Util.getScreenWidth() / 5),
                 FrameLayout.LayoutParams.MATCH_PARENT);
         rootLayout.setLayoutParams(rootParams);
-        parentContainer = (RelativeLayout) findViewById(R.id.parent_container);
-        imgSwiper = (ImageView) findViewById(R.id.imgSwiper);
         
+        // Make the I BIKE CPH logo open the Navigation Drawer.
+        imgSwiper = (ImageView) findViewById(R.id.imgSwiper);
         imgSwiper.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -269,24 +268,17 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         mapFragment.infoLayoutHeight = pinInfoLayout.getMeasuredHeight();
         if (!IbikeApplication.isUserLogedIn()) {
             btnSaveFavorite.setImageResource(R.drawable.drop_pin_add_fav_btn_active);
-            if (android.os.Build.VERSION.SDK_INT >= 16) {
-                btnSaveFavorite.setImageAlpha(100);
-            } else {
-                btnSaveFavorite.setAlpha(100);
-            }
+            btnSaveFavorite.setImageAlpha(100);
+
         } else {
             if (!isSaveFaveoriteEnabled) {
                 btnSaveFavorite.setImageResource(R.drawable.drop_pin_add_fav_btn_active);
             } else {
                 btnSaveFavorite.setImageResource(R.drawable.drop_pin_selector);
             }
-            if (android.os.Build.VERSION.SDK_INT >= 16) {
-                btnSaveFavorite.setImageAlpha(255);
-            } else {
-                btnSaveFavorite.setAlpha(255);
-            }
-
+            btnSaveFavorite.setImageAlpha(255);
         }
+        
         if (!Util.isNetworkConnected(this)) {
             Util.launchNoConnectionDialog(this);
         }
@@ -521,104 +513,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     }
 
     float newX;
-
-    /* NO NEED??
-    private void translate(float deltaX, final boolean finalAnim) {
-        // mapFragment.mapView.setEnabled(false);
-        if (leftMenu != null && leftMenu.getView() != null) {
-            newX = posX + deltaX;
-            if (slidden) {
-                if (newX < -maxSlide)
-                    newX = -maxSlide;
-                else if (newX > 0)
-                    newX = 0;
-            } else {
-                if (newX < 0)
-                    newX = 0;
-                else if (newX > maxSlide)
-                    newX = maxSlide;
-            }
-
-            if (((int) newX) <= 0) {
-                mapDisabledView.setVisibility(View.GONE);
-            }
-
-            final boolean newSlidden = slidden ? newX > -SLIDE_THRESHOLD : newX > SLIDE_THRESHOLD;
-
-            if (finalAnim) {
-                newX = (slidden == newSlidden) ? 0 : (slidden ? -maxSlide : maxSlide);
-            }
-
-            if (animation != null && animation.isInitialized()) {
-                parentContainer.clearAnimation();
-                animation.cancel();
-                leftMenu.getView().invalidate();
-            }
-
-            LOG.d("translate animation from posX " + posX + " to " + newX);
-            animation = new TranslateAnimation(posX, newX, 0, 0);
-            animation.setDuration(finalAnim ? 100 : 0);
-
-            animation.setAnimationListener(new AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    if (!finalAnim) {
-                        animation.setFillEnabled(true);
-                        animation.setFillAfter(true);
-                    } else {
-                        parentContainer.clearAnimation();
-
-                        if (slidden == newSlidden) {
-                            if (!slidden) {
-                                //leftContainer.setVisibility(View.GONE);
-                                mapDisabledView.setVisibility(View.GONE);
-                                leftMenu.getView().invalidate();
-                            } else {
-                                mapDisabledView.setVisibility(View.VISIBLE);
-                                leftMenu.getView().invalidate();
-                            }
-                            return;
-                        }
-                        slidden = newSlidden;
-
-                        int leftmargin = slidden ? maxSlide : 0;
-                        int rightMargin = slidden ? 0 : maxSlide;
-                        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) parentContainer.getLayoutParams();
-                        lp.setMargins(leftmargin, lp.topMargin, rightMargin, lp.bottomMargin);
-                        parentContainer.setLayoutParams(lp);
-                        if (leftmargin == 0) {
-                            //leftContainer.setVisibility(View.GONE);
-                            mapDisabledView.setVisibility(View.GONE);
-                            leftMenu.getView().invalidate();
-                        }
-
-                        posX = 0;
-
-                        Fragment fr = getSupportFragmentManager().findFragmentById(R.id.leftContainerDrawer);
-                        if (fr != null && fr instanceof EditFavoriteFragment) {
-                            ((EditFavoriteFragment) fr).hideKeyboard();
-                        } else if (fr != null && fr instanceof AddFavoriteFragment) {
-                            ((AddFavoriteFragment) fr).hideKeyboard();
-                        }
-
-                    }
-                }
-            });
-
-            posX = newX;
-
-            parentContainer.startAnimation(animation);
-        }
-    }
-    */
 
     public void reloadStrings() {
         leftMenu.initStrings();
