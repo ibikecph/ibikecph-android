@@ -8,24 +8,19 @@ package com.spoiledmilk.ibikecph;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -121,6 +116,9 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 			}
 		});
         
+        
+        
+        // TODO: Get rid of all these handlers...
         btnEditFavorites.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,13 +189,14 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     
     protected void populateMenuList() {
     	
-        List<String> listItems = new ArrayList<String>();
-        listItems.add(IbikeApplication.getString("login"));
-        listItems.add(IbikeApplication.getString("choose_language"));
-        listItems.add(IbikeApplication.getString("about_app"));
-        listItems.add(IbikeApplication.getString("tts_settings"));
+        LeftMenuItem listItems[] = {
+        	new LeftMenuItem("login"),
+        	new LeftMenuItem("choose_language"),
+        	new LeftMenuItem("about_app"),
+        	new LeftMenuItem("tts_settings")
+        };
         
-        this.menuList.setAdapter(new ArrayAdapter<String>(IbikeApplication.getContext(), R.layout.leftmenu_listitem, listItems));
+        this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), listItems));
     }
 
 	@Override
@@ -541,6 +540,5 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         else
             lastListDivider.setVisibility(View.VISIBLE);
     }
-
 
 }
