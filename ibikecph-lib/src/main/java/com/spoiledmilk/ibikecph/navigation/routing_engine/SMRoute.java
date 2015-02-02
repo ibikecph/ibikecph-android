@@ -453,7 +453,6 @@ public class SMRoute implements SMHttpRequestListener {
 
     // Turn by Turn
     public void visitLocation(Location loc) {
-
         if (lastLocation != null && loc != null) {
             distancePassed += loc.distanceTo(lastLocation);
         }
@@ -479,7 +478,7 @@ public class SMRoute implements SMHttpRequestListener {
 
         int timeToFinish = 100;
         if (speed > 0) {
-            timeToFinish = (int) (distanceToFinish / speed);
+            timeToFinish = (int) (distanceToFinish / speed); // A bike travels approximately 5 meters per second
         }
 
         // are we close to the finish (< 10m or 3s left)?

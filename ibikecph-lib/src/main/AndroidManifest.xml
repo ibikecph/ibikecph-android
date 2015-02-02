@@ -111,6 +111,7 @@
         <activity
             android:name=".TTSSettingsActivity"
             android:label="@string/title_activity_ttssettings"
+<<<<<<< HEAD:ibikecph-lib/src/main/AndroidManifest.xml
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
         </activity>
         <activity
@@ -124,8 +125,9 @@
         </activity>
         <activity
             android:name=".favorites.EditFavoriteActivity"
-            android:label="@string/title_activity_edit_favorite" >
-        </activity>
+            android:label="@string/title_activity_edit_favorite"
+            android:theme="@android:style/Theme.Holo.Light.DarkActionBar"></activity>
+        <service android:name="com.spoiledmilk.ibikecph.BikeLocationService"></service>
     </application>
 
 </manifest>
