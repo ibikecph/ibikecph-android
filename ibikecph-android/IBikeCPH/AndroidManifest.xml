@@ -116,6 +116,7 @@
             android:name="com.spoiledmilk.ibikecph.TTSSettingsActivity"
             android:label="@string/title_activity_ttssettings"
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar"></activity>
+        <service android:name="com.spoiledmilk.ibikecph.BikeLocationService"></service>
     </application>
 
 </manifest>

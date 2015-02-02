@@ -358,8 +358,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
 
                         }
                     }, 200);
-
-                    // new SMHttpRequest().findPlacesForLocation(loc, this);
                 }
                 break;
             case SMHttpRequest.REQUEST_FIND_PLACES_FOR_LOC:
