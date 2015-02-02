@@ -35,6 +35,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -160,7 +161,6 @@ public class SMRouteNavigationMapFragment extends MapFragmentBase implements SMR
 
         mapView.directionShown = true;
         mapView.isNavigation = true;
-
     }
 
     protected int getRouteColor() {
@@ -179,12 +179,15 @@ public class SMRouteNavigationMapFragment extends MapFragmentBase implements SMR
 
     @Override
     public void onResume() {
+    	Log.d("JC", "SMRouteNavigationMapFragment onResume");
+    	
         super.onResume();
         mLastAccelerometerSet = false;
         mLastMagnetometerSet = false;
-        // mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
-        // mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_UI);
-        // mSensorManager.registerListener(this, mOrientSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        
+        // make sure we've updated the route
+        onLocationChanged(SMLocationManager.getInstance().getPrevLastValidLocation());
+        onLocationChanged(SMLocationManager.getInstance().getLastValidLocation());
     }
 
     @Override
@@ -237,8 +240,7 @@ public class SMRouteNavigationMapFragment extends MapFragmentBase implements SMR
     }
 
     // restart the route after it's been broken
-    public void restartRoute(Location startStation, Location endStation, JsonNode jsonRoot, String startStationName, String endStationName,
-            int statonIcon) {
+    public void restartRoute(Location startStation, Location endStation, JsonNode jsonRoot, String startStationName, String endStationName, int statonIcon) {
         route = new SMRoute();
         route.isRouteBroken = true;
         route.startStation = startStation;
@@ -273,11 +275,7 @@ public class SMRouteNavigationMapFragment extends MapFragmentBase implements SMR
             @Override
             public void onGlobalLayout() {
                 if (!ran) {
-                    if (Build.VERSION.SDK_INT < 16) {
-                        mapView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    } else {
-                        mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
+                    mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     mapView.zoomToBoundingBox(boundingBox);
                 }
                 ran = true;
@@ -495,6 +493,7 @@ public class SMRouteNavigationMapFragment extends MapFragmentBase implements SMR
         lastAnimLoc = location;
         if (currentlyRouting && route != null && location != null) {
             route.visitLocation(location);
+            
             try {
                 getMapActivity().updateTime(getEstimatedArrivalTime());
             } catch (Exception e) {

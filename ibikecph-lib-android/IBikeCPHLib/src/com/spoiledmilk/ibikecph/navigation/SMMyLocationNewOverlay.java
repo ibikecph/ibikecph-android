@@ -77,6 +77,7 @@ public class SMMyLocationNewOverlay extends SafeDrawOverlay implements IMyLocati
     private final Matrix mMatrix = new Matrix();
     private final Rect mMyLocationRect = new Rect();
     private final Rect mMyLocationPreviousRect = new Rect();
+    
     // is icon rotating according to bearing direction
     public boolean isDirection = true;
     private SMRoute route = null;
