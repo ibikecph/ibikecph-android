@@ -5,8 +5,8 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -73,9 +73,13 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     private ListAdapter listAdapter;
     protected ListView menuList;
     
+    public ArrayList<LeftMenuItem> menuItems;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+    	LeftMenu self = this;
+    	
         LOG.d("Left menu on createView");
         final View ret = inflater.inflate(R.layout.fragment_left_menu, container, false);
         lastListDivider = ret.findViewById(R.id.lastListDivider);
@@ -91,32 +95,31 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         
         // Initialize the menu
         this.menuList = (ListView) ret.findViewById(R.id.menuListView);
+        this.menuItems = new ArrayList<LeftMenuItem>();
+        
+        menuItems.add(new LeftMenuItem("favorites"));
+        
+        if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
+        	menuItems.add(new LeftMenuItem("account", "spawnLoginActivity"));
+        } else {
+        	menuItems.add(new LeftMenuItem("login", "spawnLoginActivity"));
+        }
+        
+        menuItems.add(new LeftMenuItem("about_app", "spawnAboutActivity"));
+        menuItems.add(new LeftMenuItem("tts_settings", "spawnTTSSettingsActivity"));
+        
         populateMenuList();
         
-
-		// TODO: Do this right by passing this as the OnItemClickListener. But wait until we
-        // have a proper Adapter for the menu items in place.
+		// This is kind of magical. Each LeftMenuItem has a handler field that describes
+		// a method to be called when that element is tapped. Here we read out that field
+		// and launch the right method by reflection.
         this.menuList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				switch (position) {
-				case 0:			// Login
-	                spawnLoginActivity();
-					break;
-				case 1:			// Language
-					spawnLanguageActivity();
-					break;
-				case 2:			// About
-					spawnAboutActivity();
-					break;
-				case 3:			// TTS settings
-					spawnTTSSettingsActivity();
-					break;
-				}
+				String handler = menuItems.get(position).getHandler();
+				spawnFunction(handler);
 			}
 		});
-        
-        
         
         // TODO: Get rid of all these handlers...
         btnEditFavorites.setOnClickListener(new OnClickListener() {
@@ -187,25 +190,29 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         return ret;
     }
     
-    protected void populateMenuList() {
-    	
-        LeftMenuItem listItems[] = {
-        	new LeftMenuItem("login"),
-        	new LeftMenuItem("choose_language"),
-        	new LeftMenuItem("about_app"),
-        	new LeftMenuItem("tts_settings")
-        };
-        
-        this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), listItems));
+    public void spawnFunction(String name) {
+		Method handlerMethod;
+		try {
+			handlerMethod = this.getClass().getDeclaredMethod(name, null);
+			handlerMethod.invoke(this);
+		} catch (Exception e) {
+			Log.e("Handler " + name + " not found");
+			e.printStackTrace();
+		}
+    }
+    
+    protected void populateMenuList() {      
+        this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), menuItems));
     }
 
 	@Override
 	public void reloadStrings() {
 		Log.d("JC: LeftMenu reloadStrings");
-		this.populateMenuList();
+		//this.populateMenuList();
+		this.menuList.invalidate();
 	}
 	
-    private void spawnLoginActivity() {
+    public void spawnLoginActivity() {
     	if (!Util.isNetworkConnected(getActivity())) {
             Util.launchNoConnectionDialog(getActivity());
         } else {
@@ -225,17 +232,17 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         }
     }
     
-	protected void spawnAboutActivity() {
+    public void spawnAboutActivity() {
         Intent i = new Intent(getActivity(), AboutActivity.class);
         getActivity().startActivity(i);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
 	
-	private void spawnLanguageActivity() {
+    public void spawnLanguageActivity() {
         Util.showLanguageDialog(getActivity());
 	}
     
-	private void spawnTTSSettingsActivity() {
+    public void spawnTTSSettingsActivity() {
         Intent i = new Intent(getActivity(), TTSSettingsActivity.class);
         getActivity().startActivity(i);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

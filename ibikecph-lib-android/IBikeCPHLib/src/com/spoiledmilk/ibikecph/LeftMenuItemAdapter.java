@@ -1,20 +1,22 @@
 package com.spoiledmilk.ibikecph;
 
-import android.app.Activity;
+import java.util.List;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
 public class LeftMenuItemAdapter extends ArrayAdapter<LeftMenuItem> {
     Context context; 
     int layoutResourceId = R.layout.leftmenu_listitem;
-    LeftMenuItem data[] = null;
+    List<LeftMenuItem> data = null;
     
-	public LeftMenuItemAdapter(Context context, LeftMenuItem[] data) {
+	public LeftMenuItemAdapter(Context context, List<LeftMenuItem> data) {
         super(context, R.layout.leftmenu_listitem, data);
         this.context = context;
         this.data = data;
@@ -29,11 +31,16 @@ public class LeftMenuItemAdapter extends ArrayAdapter<LeftMenuItem> {
 			row = inflater.inflate(layoutResourceId, parent, false);
 		}
 
-		LeftMenuItem item = this.data[position];
+		LeftMenuItem item = this.data.get(position);
 		TextView tv = (TextView) row.findViewById(R.id.menuItemTextView);
+		ImageView iv = (ImageView) row.findViewById(R.id.menuItemIcon);
 		
 		// Set the label of the button to the string denoted in the item.
 		tv.setText(IbikeApplication.getString(item.getLabelID()));
+		
+		if (item.getIconResource() != -1) {
+			iv.setImageResource(item.getIconResource());
+		}
 		
 		return row;
 	}
