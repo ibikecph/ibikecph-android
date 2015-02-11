@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f1f1f1" >
-<!-- 
+<!--
     <RelativeLayout
         android:id="@+id/favoritesHeaderContainer"
         android:layout_width="match_parent"
@@ -174,240 +174,47 @@
     </ListView>
 
     <View
-        android:id="@+id/horizontalDivider3"
+        android:id="@+id/horizontalDivider6"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_below="@+id/menuListView"
         android:layout_centerHorizontal="true"
         android:background="#4d4d4d" />
 
-    <!-- Cykel superstier knap -->
 
+    <!-- Overlays -->
     <RelativeLayout
-        android:id="@+id/pathContainer"
-        android:layout_width="wrap_content"
+        android:id="@+id/overlaysContainer"
+        android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/horizontalDivider3"
-        android:background="@color/White"
+        android:layout_below="@+id/horizontalDivider6"
+        android:layout_marginTop="0dp"
+        android:background="@color/MenuItemBackground"
         android:clickable="true"
-        android:onClick="onPatchContainerClick"
         android:paddingLeft="8dp"
         android:paddingRight="8dp" >
 
         <ImageView
-            android:id="@+id/imgPath"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/bike_icon_gray" />
-
-        <TextView
-            android:id="@+id/textPath"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toLeftOf="@+id/imgCheckbox1"
-            android:layout_toRightOf="@id/imgPath"
-            android:gravity="left"
-            android:paddingLeft="8dp"
-            android:textColor="@color/TextDarkGrey"
-            android:textSize="14sp" />
-
-        <ImageView
-            android:id="@+id/imgCheckbox1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/check_field" />
-    </RelativeLayout>
-
-    <!-- Lokalbaner -->
-
-    <RelativeLayout
-        android:id="@+id/localTrainContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/pathContainer"
-        android:background="@color/White"
-        android:clickable="true"
-        android:onClick="onLocalTrainContainerClick"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
-
-        <ImageView
-            android:id="@+id/imgLocalTrain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/local_train_icon_gray" />
-
-        <TextView
-            android:id="@+id/textLocalTrain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="26dp"
-            android:layout_toLeftOf="@+id/imgCheckbox5"
-            android:layout_toRightOf="@+id/imgLocalTrain"
-            android:gravity="left"
-            android:textColor="@color/TextDarkGrey"
-            android:textSize="14sp" />
-
-        <ImageView
-            android:id="@+id/imgCheckbox5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/check_field" />
-    </RelativeLayout>
-
-    <!-- Metroer -->
-
-    <RelativeLayout
-        android:id="@+id/metroContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/localTrainContainer"
-        android:background="@color/White"
-        android:clickable="true"
-        android:onClick="onMetroContainerClick"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
-
-        <ImageView
-            android:id="@+id/imgMetro"
+            android:id="@+id/imgOverlays"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/metro_icon" />
+            android:src="@drawable/service_pump_icon_white" />
+        <!--TODO: change icon-->
 
         <TextView
-            android:id="@+id/textMetro"
+            android:id="@+id/textOverlays"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toLeftOf="@+id/imgCheckbox4"
-            android:layout_toRightOf="@id/imgMetro"
-            android:gravity="left"
-            android:textColor="@color/TextDarkGrey"
-            android:textSize="14sp" />
-
-        <ImageView
-            android:id="@+id/imgCheckbox4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/check_field" />
-    </RelativeLayout>
-
-    <!-- S-tog -->
-
-    <RelativeLayout
-        android:id="@+id/strainContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/metroContainer"
-        android:background="@color/White"
-        android:clickable="true"
-        android:onClick="onStrainContainerClick"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
-
-        <ImageView
-            android:id="@+id/imgStrain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/s_togs_icon" />
-
-        <TextView
-            android:id="@+id/textStrain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toLeftOf="@+id/imgCheckbox3"
-            android:layout_toRightOf="@id/imgStrain"
-            android:gravity="left"
-            android:paddingLeft="8dp"
-            android:textColor="@color/TextDarkGrey"
-            android:textSize="14sp" />
-
-        <ImageView
-            android:id="@+id/imgCheckbox3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/check_field" />
-    </RelativeLayout>
-
-    <!-- Reparation -->
-
-    <RelativeLayout
-        android:id="@+id/serviceContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/strainContainer"
-        android:background="@color/White"
-        android:clickable="true"
-        android:onClick="onServiceContainerClick"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
-
-        <ImageView
-            android:id="@+id/imgService"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/service_pump_icon_gray" />
-
-        <TextView
-            android:id="@+id/textService"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_toLeftOf="@+id/imgCheckbox2"
-            android:layout_toRightOf="@id/imgService"
-            android:gravity="left"
-            android:textColor="@color/TextDarkGrey"
-            android:textSize="14sp" />
-
-        <ImageView
-            android:id="@+id/imgCheckbox2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/check_field" />
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/imgOverlays"
+            android:text=""
+            android:textColor="@color/White"
+            android:textSize="16sp" />
     </RelativeLayout>
 </RelativeLayout>
 

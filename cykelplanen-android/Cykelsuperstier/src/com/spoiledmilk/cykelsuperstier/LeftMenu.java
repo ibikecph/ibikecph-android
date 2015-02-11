@@ -1,7 +1,7 @@
 // Copyright (C) 2013 The Capital Region of Copenhagen.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at 
+// If a copy of the MPL was not distributed with this file, You can obtain one at
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.cykelsuperstier;
 
@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.spoiledmilk.cykelsuperstier.favorites.AddFavoriteFragment;
 import com.spoiledmilk.cykelsuperstier.favorites.EditFavoriteFragment;
 import com.spoiledmilk.cykelsuperstier.favorites.FavoritesAdapter;
+import com.spoiledmilk.cykelsuperstier.map.OverlaysActivity;
 import com.spoiledmilk.cykelsuperstier.reminders.AlarmUtils;
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.ibikecph.AboutActivity;
@@ -46,12 +47,7 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 	boolean wasBtnDoneVisible = false;
 	LinearLayout remindersContainer;
 	LinearLayout remindersSettingsContainer;
-	TextView textPath;
-	TextView textService;
-	TextView textStrain;
-	TextView textMetro;
-	TextView textLocalTrain;
-	
+
 	int repetition;
 	int settingsHeight = 0;
 	boolean isAnimationStarted = false;
@@ -60,7 +56,7 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		final View ret = super.onCreateView(inflater, container, savedInstanceState);
-		
+
 		/*
 		ret.findViewById(R.id.remindersBackground).setOnTouchListener(
 				new OnTouchListener() {
@@ -79,17 +75,8 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 						return false;
 					}
 				});
+        */
 
-		*/
-		
-		this.textPath = (TextView) ret.findViewById(R.id.textPath);		
-		this.textService = (TextView) ret.findViewById(R.id.textService);
-		this.textStrain = (TextView) ret.findViewById(R.id.textStrain);
-		this.textMetro = (TextView) ret.findViewById(R.id.textMetro);
-		this.textLocalTrain = (TextView) ret.findViewById(R.id.textLocalTrain);
-		
-		this.menuItems.add(new LeftMenuItem("overlays", -1, "spawnOverlaysActivity"));
-		
 		return ret;
 	}
 
@@ -99,18 +86,18 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
         getActivity().startActivity(i);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
-	
+
 	public void spawnTTSSettingsActivity() {
 		Log.i("JC", "CP: Spawning TTS settings");
 		super.spawnTTSSettingsActivity();
 	}
 
-	
+
 	public void spawnOverlaysActivity() {
 		// TODO: Actually do something
 		Log.d("JC", "CP: Spawning overlays");
 	}
-	
+
 	public void spawnFavoritesListActivity() {
 		Log.i("JC", "CP: Spawning Favorites settings");
 		super.spawnFavoritesListActivity();
@@ -128,10 +115,21 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 	@Override
 	public void onResume() {
 		super.onResume();
-		
+
 		/*
 		remindersContainer = (LinearLayout) getView().findViewById(R.id.remindersContainer);
 		remindersSettingsContainer = (LinearLayout) getView().findViewById(R.id.remindersSettingsContainer);
+
+        getView().findViewById(R.id.overlaysContainer).setOnClickListener(
+                new OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        Intent i = new Intent(getActivity(), OverlaysActivity.class);
+                        getActivity().startActivity(i);
+                        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    }
+
+                });
 
 		remindersContainer.setOnClickListener(new OnClickListener() {
 			@Override
@@ -141,7 +139,7 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 						colapseReminders();
 					else
 						expandReminders();
-					
+
 					remindersExpanded = !remindersExpanded;
 				}
 			}
@@ -246,10 +244,10 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 				LOG.d("repetition = " + repetition);
 			}
 		});
-		
-		 */
+
+		*/
 		LOG.d("repetition = " + repetition);
-		settingsHeight = Util.dp2px(220);		
+		settingsHeight = Util.dp2px(220);
 	}
 
 	@Override
@@ -257,6 +255,8 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 		super.initStrings();
 		try {
 			/*
+            ((TextView) getActivity().findViewById(R.id.textOverlays))
+                    .setText("Dummy"); // TODO: get real title
 			((TextView) getActivity().findViewById(R.id.textReminders))
 			.setTypeface(CykelsuperstierApplication.getBoldFont());
 			((TextView) getActivity().findViewById(R.id.textReminders))
@@ -264,14 +264,14 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 					.getString("reminder_title"));
 			((Button) getActivity().findViewById(R.id.btnStart)).setText("");
 			*/
-			
+
 			/*
 			final TextView textMonday = (TextView) getView().findViewById(R.id.textMonday);
 			final TextView textTuesday = (TextView) getView().findViewById(R.id.textTuesday);
 			final TextView textWednesday = (TextView) getView().findViewById(R.id.textWednesday);
 			final TextView textThursday = (TextView) getView().findViewById(R.id.textThursday);
 			final TextView textFriday = (TextView) getView().findViewById(R.id.textFriday);
-			
+
 			textMonday.setTypeface(CykelsuperstierApplication.getNormalFont());
 			textMonday.setText(CykelsuperstierApplication.getString("monday"));
 			textTuesday.setTypeface(CykelsuperstierApplication.getNormalFont());
@@ -283,23 +283,11 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 			textFriday.setTypeface(CykelsuperstierApplication.getNormalFont());
 			textFriday.setText(CykelsuperstierApplication.getString("friday"));
 			*/
-			
-			textPath.setTypeface(CykelsuperstierApplication.getNormalFont());
-			textPath.setText(CykelsuperstierApplication.getString("marker_type_1"));
-			textService.setTypeface(CykelsuperstierApplication.getNormalFont());
-			textService.setText(CykelsuperstierApplication.getString("marker_type_2"));
-			textStrain.setTypeface(CykelsuperstierApplication.getNormalFont());
-			textStrain.setText(CykelsuperstierApplication.getString("marker_type_3"));
-			textMetro.setTypeface(CykelsuperstierApplication.getNormalFont());
-			textMetro.setText(CykelsuperstierApplication.getString("marker_type_4"));
-			textLocalTrain.setTypeface(CykelsuperstierApplication.getNormalFont());
-			textLocalTrain.setText(CykelsuperstierApplication.getString("marker_type_5"));
-			
 		} catch (Exception e) {
 
 		}
 	}
-	
+
 	@Override
 	protected AddFavoriteFragment getAddFavoriteFragment() {
 		return new AddFavoriteFragment();

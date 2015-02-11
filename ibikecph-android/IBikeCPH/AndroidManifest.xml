@@ -67,15 +67,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
-<<<<<<< HEAD
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo"
-            >
-        </activity>
-=======
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo" />
->>>>>>> clean inconsistency in manifests
         <activity
             android:name="com.spoiledmilk.ibikecph.login.LoginActivity"
             android:screenOrientation="portrait"
