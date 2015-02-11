@@ -137,8 +137,8 @@
 
         <activity
             android:name="com.spoiledmilk.cykelsuperstier.break_rote.BreakRouteActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
         <activity
             android:name="com.spoiledmilk.cykelsuperstier.break_rote.TransportationActivity"
             android:screenOrientation="portrait" >
