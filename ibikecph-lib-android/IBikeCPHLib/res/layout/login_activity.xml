@@ -11,17 +11,10 @@
         android:focusable="true"
         android:focusableInTouchMode="true" >
 
-        <include
-            android:id="@+id/navBar"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            layout="@layout/nav_bar" />
-
         <TextView
             android:id="@+id/textLoginTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/navBar"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="25dp"
             android:text=""
@@ -41,8 +34,7 @@
             android:inputType="textEmailAddress"
             android:paddingLeft="10dp"
             android:paddingRight="25dp"
-            android:textSize="14sp" >
-        </EditText>
+            android:textSize="14sp" />
 
         <ImageView
             android:layout_width="wrap_content"

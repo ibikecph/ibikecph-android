@@ -78,8 +78,8 @@
         </activity>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.LoginActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
