@@ -18,8 +18,7 @@
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" >
-    </uses-feature>
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.location.network"
         android:required="false" />
@@ -53,29 +52,30 @@
         </activity>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.LoginSplashActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.map.MapActivity"
             android:alwaysRetainTaskState="true"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.navigation.SMRouteNavigationActivity"
             android:alwaysRetainTaskState="true"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.AboutActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
+<<<<<<< HEAD
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo"
             >
         </activity>
+=======
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+>>>>>>> clean inconsistency in manifests
         <activity
             android:name="com.spoiledmilk.ibikecph.login.LoginActivity"
             android:screenOrientation="portrait"
@@ -94,19 +94,16 @@
         <activity
             android:name="com.spoiledmilk.ibikecph.search.SearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo"
-            />
+            android:theme="@android:style/Theme.Holo" />
         <activity
             android:name="com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.favorites.FavoritesActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.IssuesActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.login.FacebookProfileActivity"
             android:screenOrientation="portrait"
