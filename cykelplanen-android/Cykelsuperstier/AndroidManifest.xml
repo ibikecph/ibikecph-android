@@ -65,6 +65,10 @@
             android:name="com.spoiledmilk.cykelsuperstier.AboutActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.spoiledmilk.cykelsuperstier.map.OverlaysActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+        <activity
             android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo" />
