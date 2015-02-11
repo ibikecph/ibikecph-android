@@ -68,11 +68,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 
 	@Override
 	public com.spoiledmilk.ibikecph.LeftMenu getLeftMenu() {
-		if (leftMenu == null) {
-			return leftMenu = new LeftMenu();
-		} else {
-			return leftMenu;
-		}
+        return (leftMenu == null ? new LeftMenu() : leftMenu);
 	}
 
 	@Override
@@ -107,13 +103,13 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 	}
 
 	// TODO: Perhaps move these to LeftMenu?
-	public void onPatchContainerClick(View v) {
-		
+	public void onPathContainerClick(View v) {
+
 		v.setBackgroundColor(isPathSelected ? Color.rgb(255, 255, 255) : Color.rgb(236, 104, 0));
 		((ImageView) findViewById(R.id.imgCheckbox1))
 				.setImageResource(isPathSelected ? R.drawable.check_field : R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgPath)).setImageResource(isPathSelected ? R.drawable.bike_icon_gray : R.drawable.bike_icon_white);
-				
+
 		((TextView) v.findViewById(R.id.textPath)).setTextColor(isPathSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
 		if (isPathSelected)
 			mapFragment.overlaysManager.removeBikeRoutes();
@@ -128,11 +124,11 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 				: R.drawable.check_in_orange);
 		((ImageView) findViewById(R.id.imgService)).setImageResource(isServiceSelected ? R.drawable.service_pump_icon_gray
 				: R.drawable.service_pump_icon_white);
-		
+
 		Log.d("JC", Boolean.toString(v == null));
-		
+
 		((TextView) v.findViewById(R.id.textService)).setTextColor(isServiceSelected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
-		
+
 		if (isServiceSelected)
 			mapFragment.overlaysManager.removeServiceStations();
 		else
@@ -188,7 +184,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 
 	public void refreshOverlays(int overlaysShown) {
 		if (((overlaysShown & 1) > 0 && !isPathSelected) || ((overlaysShown & 1) == 0 && isPathSelected))
-			onPatchContainerClick(findViewById(R.id.pathContainer));
+			onPathContainerClick(findViewById(R.id.pathContainer));
 		if (((overlaysShown & 2) > 0 && !isServiceSelected) || ((overlaysShown & 2) == 0 && isServiceSelected))
 			onServiceContainerClick(findViewById(R.id.serviceContainer));
 		if (((overlaysShown & 4) > 0 && !isStrainSelected) || ((overlaysShown & 4) == 0 && isStrainSelected))
