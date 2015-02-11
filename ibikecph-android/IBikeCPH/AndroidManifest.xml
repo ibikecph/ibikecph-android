@@ -72,7 +72,7 @@
         </activity>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
-            android:screenOrientation="portrait" 
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo"
             >
         </activity>
@@ -93,7 +93,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.search.SearchActivity"
-            android:screenOrientation="portrait" 
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo"
             />
         <activity
@@ -109,20 +109,20 @@
         </activity>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.FacebookProfileActivity"
-            android:screenOrientation="portrait" >
-        </activity>
-        
-        <activity 
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+
+        <activity
             android:name="com.spoiledmilk.ibikecph.TTSSettingsActivity"
             android:label="@string/title_activity_ttssettings"
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar"></activity>
-        
+
         <activity
             android:name="com.spoiledmilk.ibikecph.favorites.FavoritesListActivity"
-            android:screenOrientation="portrait" 
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Light">
         </activity>
-        
+
         <activity
             android:name="com.spoiledmilk.ibikecph.favorites.AddFavoriteActivity"
             android:label="@string/title_activity_add_favorite" >

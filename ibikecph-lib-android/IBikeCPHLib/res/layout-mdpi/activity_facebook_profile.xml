@@ -4,10 +4,6 @@
     android:layout_height="match_parent"
     android:background="@color/DarkGrey" >
 
-    <include
-        android:id="@+id/navBar"
-        layout="@layout/nav_bar" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

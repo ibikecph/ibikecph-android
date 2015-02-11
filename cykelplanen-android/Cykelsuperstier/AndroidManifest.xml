@@ -106,8 +106,8 @@
         </activity>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.FacebookProfileActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
         <activity
             android:name="com.spoiledmilk.cykelsuperstier.BreakRouteSplashActivity"
             android:screenOrientation="portrait" >
