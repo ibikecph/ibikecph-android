@@ -36,6 +36,7 @@ import com.spoiledmilk.ibikecph.AboutActivity;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenuItem;
 import com.spoiledmilk.ibikecph.LeftMenuItemAdapter;
+import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -100,9 +101,21 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 	}
 	
 	public void spawnTTSSettingsActivity() {
+		Log.i("JC", "CP: Spawning TTS settings");
 		super.spawnTTSSettingsActivity();
 	}
+
 	
+	public void spawnOverlaysActivity() {
+		// TODO: Actually do something
+		Log.d("JC", "CP: Spawning overlays");
+	}
+	
+	public void spawnFavoritesListActivity() {
+		Log.i("JC", "CP: Spawning Favorites settings");
+		super.spawnFavoritesListActivity();
+	}
+
 	protected int getMenuItemSelectedColor() {
 		return getActivity().getResources().getColor(R.color.Orange);
 	}
@@ -287,12 +300,6 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 		}
 	}
 	
-	
-	public void spawnOverlaysActivity() {
-		// TODO: Actually do something
-		Log.d("JC", "Spawning overlays");
-	}
-
 	@Override
 	protected AddFavoriteFragment getAddFavoriteFragment() {
 		return new AddFavoriteFragment();
