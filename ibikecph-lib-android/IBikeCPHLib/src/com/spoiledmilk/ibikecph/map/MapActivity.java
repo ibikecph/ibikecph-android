@@ -14,19 +14,15 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
+import android.os.Parcel;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -500,6 +496,24 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             if (data != null && data.getExtras() != null && data.getExtras().containsKey("overlaysShown")) {
                 refreshOverlays(data.getIntExtra("overlaysShown", 0));
             }
+            
+        // *** DANGER, WILL ROBINSON: I'm looking at the request code, not the return code from this point on. /jc ***
+        // Take care of starting navigation once a favorite has been clicked in the FavoritesListActivity
+        } else if (requestCode == LeftMenu.LAUNCH_FAVORITE && resultCode == RESULT_OK){ 
+        	FavoritesData fd = (FavoritesData) data.getExtras().getParcelable("ROUTE_TO");
+
+        	Location start = SMLocationManager.getInstance().getLastValidLocation();
+			IbikeApplication.getTracker().sendEvent("Route", "Menu", "Favorites", (long) 0);
+			new SMHttpRequest().getRoute(start, Util.locationFromCoordinates(fd.getLatitude(), fd.getLongitude()), null, this);
+			
+			Log.i("JC", "Fav coordinates: "+ fd.getLatitude() + ", " + fd.getLongitude());
+			
+        	Log.i("JC", "Launching favorite " + fd.getName());
+        	
+        } else if (resultCode == RESULT_CANCELED) {
+        	Log.i("JC", "Canceled sub activity");
+        } else {
+        	Log.e("JC", "MapActivity: Didn't have an activity handler for " + requestCode);
         }
     }
 
@@ -663,9 +677,11 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
 
     @Override
     public void onPause() {
-        if (loginDlg != null && loginDlg.isShowing()) {
+    	/*
+    	if (loginDlg != null && loginDlg.isShowing()) {
             loginDlg.dismiss();
         }
+        */
         super.onPause();
     }
 

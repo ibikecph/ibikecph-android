@@ -3,7 +3,7 @@
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-
+<!-- 
     <RelativeLayout
         android:id="@+id/favoritesHeaderContainer"
         android:layout_width="match_parent"
@@ -163,7 +163,7 @@
             android:src="@drawable/right_arrow"
             android:visibility="invisible" />
     </RelativeLayout>
-
+ -->
     <ListView
         android:id="@+id/menuListView"
         android:layout_width="match_parent"

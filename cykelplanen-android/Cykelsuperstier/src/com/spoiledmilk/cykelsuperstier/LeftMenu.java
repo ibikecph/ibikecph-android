@@ -33,6 +33,10 @@ import com.spoiledmilk.cykelsuperstier.favorites.FavoritesAdapter;
 import com.spoiledmilk.cykelsuperstier.reminders.AlarmUtils;
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.ibikecph.AboutActivity;
+import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.LeftMenuItem;
+import com.spoiledmilk.ibikecph.LeftMenuItemAdapter;
+import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -84,16 +88,34 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 		this.textMetro = (TextView) ret.findViewById(R.id.textMetro);
 		this.textLocalTrain = (TextView) ret.findViewById(R.id.textLocalTrain);
 		
+		this.menuItems.add(new LeftMenuItem("overlays", -1, "spawnOverlaysActivity"));
+		
 		return ret;
 	}
 
 	@Override
-	protected void spawnAboutActivity() {
+	public void spawnAboutActivity() {
         Intent i = new Intent(getActivity(), com.spoiledmilk.cykelsuperstier.AboutActivity.class);
         getActivity().startActivity(i);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
 	
+	public void spawnTTSSettingsActivity() {
+		Log.i("JC", "CP: Spawning TTS settings");
+		super.spawnTTSSettingsActivity();
+	}
+
+	
+	public void spawnOverlaysActivity() {
+		// TODO: Actually do something
+		Log.d("JC", "CP: Spawning overlays");
+	}
+	
+	public void spawnFavoritesListActivity() {
+		Log.i("JC", "CP: Spawning Favorites settings");
+		super.spawnFavoritesListActivity();
+	}
+
 	protected int getMenuItemSelectedColor() {
 		return getActivity().getResources().getColor(R.color.Orange);
 	}
@@ -277,7 +299,7 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 
 		}
 	}
-
+	
 	@Override
 	protected AddFavoriteFragment getAddFavoriteFragment() {
 		return new AddFavoriteFragment();

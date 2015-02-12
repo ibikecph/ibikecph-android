@@ -11,7 +11,7 @@
 "settings" = "SETTINGS";
 "about_app" = "About I BIKE CPH";
 "contacts" = "CONTACTS";
-"favorites" = "FAVORITES";
+"favorites" = "Favorites";
 
 "direction_0" = "";
 "direction_1" = "Continue on";
@@ -214,7 +214,7 @@
 "done" = "DONE";
 "add_favorite_name_placeholder" = "Enter name ...";
 "add_favorite_address_placeholder" = "Find address ...";
-"account" = "MY PROFILE";
+"account" = "My profile";
 
 "report_send" = "SEND REPORT";
 "describe_problem" = "DESCRIBE A PROBLEM";
@@ -232,7 +232,6 @@
 "account" = "Account";
 "about_ibikecph" = "About I Bike CPH";
 "contacts" = "CONTACTS";
-"favorites" = "FAVORITES";
 
 "direction_0" = "";
 "direction_1" = "Continue on";
@@ -434,7 +433,6 @@
 "done" = "DONE";
 "add_favorite_name_placeholder" = "Enter name ...";
 "add_favorite_address_placeholder" = "Find address ...";
-"account" = "MY PROFILE";
 
 "report_send" = "SEND REPORT";
 "describe_problem" = "DESCRIBE A PROBLEM";
