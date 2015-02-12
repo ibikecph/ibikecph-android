@@ -112,23 +112,19 @@ public class FavoritesListActivity extends Activity {
 			FavoritesData fd = (FavoritesData) (favoritesList.getAdapter().getItem(position));
 
 			Log.d("JC", "Clicked favorite: " + fd.getName());
+			Log.d("JC", "Coords: " + fd.getLatitude() + " , "+ fd.getLongitude());
 
 			if (SMLocationManager.getInstance().hasValidLocation()) {
 				Intent returnIntent = new Intent();
-				
-				//this.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-
-				Location start = SMLocationManager.getInstance().getLastValidLocation();
-				IbikeApplication.getTracker().sendEvent("Route", "Menu", "Favorites", (long) 0);
-				new SMHttpRequest().getRoute(start, Util.locationFromCoordinates(fd.getLatitude(), fd.getLongitude()), null, (MapActivity) getParent());
 
 				// Return some information as to where to route, so the MapActivity knows and can handle it.
+				
+				
 				
 				returnIntent.putExtra("ROUTE_TO", fd);
 				setResult(RESULT_OK, returnIntent);
 				finishActivity(LeftMenu.LAUNCH_FAVORITE);
 				finish();
-
 				Log.d("JC", "Should have finished activity");
 
 			} else {

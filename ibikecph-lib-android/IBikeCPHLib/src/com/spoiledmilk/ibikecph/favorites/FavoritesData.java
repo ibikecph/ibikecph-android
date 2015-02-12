@@ -10,7 +10,6 @@ import android.os.Parcelable;
 
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.search.SearchListItem;
-import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
 /**
@@ -144,7 +143,7 @@ public class FavoritesData extends SearchListItem implements Parcelable {
 
 	public FavoritesData(Parcel in) {
 		super(nodeType.FAVORITE);
-		String[] data = new String[4];
+		String[] data = new String[6];
 		in.readStringArray(data);
 		try {
 			this.id = Integer.parseInt(data[0]);
@@ -154,6 +153,10 @@ public class FavoritesData extends SearchListItem implements Parcelable {
 		this.name = data[1];
 		this.address = data[2];
 		this.subSource = data[3];
+		
+		// This is a horrible hack. /jc
+		this.latitude = Double.parseDouble(data[4]);
+		this.longitude = Double.parseDouble(data[5]);
 	}
 
 	@Override
@@ -163,7 +166,7 @@ public class FavoritesData extends SearchListItem implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeStringArray(new String[] { this.id + "", this.name, this.address, this.subSource });
+		dest.writeStringArray(new String[] { this.id + "", this.name, this.address, this.subSource, Double.toString(this.latitude), Double.toString(this.longitude) });
 	}
 
 	public static final Parcelable.Creator<FavoritesData> CREATOR = new Parcelable.Creator<FavoritesData>() {

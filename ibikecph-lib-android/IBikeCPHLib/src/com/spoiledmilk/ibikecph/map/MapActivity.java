@@ -498,13 +498,20 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             }
             
         // *** DANGER, WILL ROBINSON: I'm looking at the request code, not the return code from this point on. /jc ***
+        // Take care of starting navigation once a favorite has been clicked in the FavoritesListActivity
         } else if (requestCode == LeftMenu.LAUNCH_FAVORITE && resultCode == RESULT_OK){ 
-        	Log.i("JC", "Should launch a favorite");
-        	
         	FavoritesData fd = (FavoritesData) data.getExtras().getParcelable("ROUTE_TO");
-        	//new FavoritesData()
+
+        	Location start = SMLocationManager.getInstance().getLastValidLocation();
+			IbikeApplication.getTracker().sendEvent("Route", "Menu", "Favorites", (long) 0);
+			new SMHttpRequest().getRoute(start, Util.locationFromCoordinates(fd.getLatitude(), fd.getLongitude()), null, this);
+			
+			Log.i("JC", "Fav coordinates: "+ fd.getLatitude() + ", " + fd.getLongitude());
+			
         	Log.i("JC", "Launching favorite " + fd.getName());
         	
+        } else if (resultCode == RESULT_CANCELED) {
+        	Log.i("JC", "Canceled sub activity");
         } else {
         	Log.e("JC", "MapActivity: Didn't have an activity handler for " + requestCode);
         }
