@@ -34,8 +34,10 @@ import com.google.analytics.tracking.android.Log;
 import com.spoiledmilk.ibikecph.controls.SortableListView;
 import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
 import com.spoiledmilk.ibikecph.favorites.EditFavoriteFragment;
+import com.spoiledmilk.ibikecph.favorites.FavoritesActivity;
 import com.spoiledmilk.ibikecph.favorites.FavoritesAdapter;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
@@ -53,7 +55,9 @@ import com.spoiledmilk.ibikecph.util.Util;
  *
  */
 public class LeftMenu extends Fragment implements iLanguageListener {
-
+	public static final int LAUNCH_LOGIN = 501;
+	public static final int LAUNCH_FAVORITE = 502;
+	
     protected static final int menuItemHeight = Util.dp2px(40);
     protected static final int dividerHeight = Util.dp2px(2);
 
@@ -97,7 +101,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         this.menuList = (ListView) ret.findViewById(R.id.menuListView);
         this.menuItems = new ArrayList<LeftMenuItem>();
         
-        menuItems.add(new LeftMenuItem("favorites"));
+        menuItems.add(new LeftMenuItem("favorites", R.drawable.ic_menu_favorite, "spawnFavoritesListActivity"));
         
         if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
         	menuItems.add(new LeftMenuItem("account", "spawnLoginActivity"));
@@ -190,6 +194,12 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         return ret;
     }
     
+    /**
+     * This method is called as a click handler on all items in the menu. It is called with the 
+     * name parameter corresponding to the method that the particular FavoritesListActivity denotes,
+     * for example spawnAboutActivity for the About button. 
+     * @param name Name of the method to be called. 
+     */
     public void spawnFunction(String name) {
 		Method handlerMethod;
 		try {
@@ -227,7 +237,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
                 else
                     i = new Intent(getActivity(), ProfileActivity.class);
             }
-            getActivity().startActivityForResult(i, 1);
+            getActivity().startActivityForResult(i, LAUNCH_LOGIN);
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
     }
@@ -235,6 +245,12 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     public void spawnAboutActivity() {
         Intent i = new Intent(getActivity(), AboutActivity.class);
         getActivity().startActivity(i);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+	}
+    
+    public void spawnFavoritesListActivity() {
+        Intent i = new Intent(getActivity(), FavoritesListActivity.class);
+        getActivity().startActivityForResult(i, LAUNCH_FAVORITE);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
 	

@@ -35,18 +35,18 @@
         android:required="false" />
 
     <application
-        android:name="com.spoiledmilk.ibikecph.IbikeApplication"
+        android:name=".IbikeApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/iBikeCPHTheme" >
-        
+
         <!-- <activity android:name="net.hockeyapp.android.UpdateActivity" /> -->
 
         <activity
-            android:name="com.spoiledmilk.ibikecph.SplashActivity"
+            android:name=".SplashActivity"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -55,28 +55,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.spoiledmilk.ibikecph.login.LoginSplashActivity"
+            android:name=".login.LoginSplashActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.spoiledmilk.ibikecph.map.MapActivity"
+            android:name=".map.MapActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity
-            android:name="com.spoiledmilk.ibikecph.navigation.SMRouteNavigationActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.spoiledmilk.ibikecph.AboutActivity"
+            android:name=".navigation.SMRouteNavigationActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
+            android:name=".AboutActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.spoiledmilk.ibikecph.login.LoginActivity"
+            android:name=".login.ProfileActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".login.LoginActivity"
             android:screenOrientation="portrait" >
         </activity>
 
@@ -88,33 +88,37 @@
             android:name="com.facebook.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.spoiledmilk.ibikecph.login.RegisterActivity"
+            android:name=".login.RegisterActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.spoiledmilk.ibikecph.search.SearchActivity"
-            android:screenOrientation="portrait" 
-            android:theme="@android:style/Theme.Holo"/>
+            android:name=".search.SearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
         <activity
-            android:name="com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity"
+            android:name=".search.SearchAutocompleteActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.spoiledmilk.ibikecph.favorites.FavoritesActivity"
+            android:name=".favorites.FavoritesActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.spoiledmilk.ibikecph.IssuesActivity"
+            android:name=".IssuesActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.spoiledmilk.ibikecph.login.FacebookProfileActivity"
+            android:name=".login.FacebookProfileActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <activity 
-            android:name="com.spoiledmilk.ibikecph.TTSSettingsActivity"
+        <activity
+            android:name=".TTSSettingsActivity"
             android:label="@string/title_activity_ttssettings"
-            android:theme="@android:style/Theme.Holo.Light.DarkActionBar"></activity>
-
-
+            android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
+        </activity>
+        <activity
+            android:name="com.spoiledmilk.ibikecph.favorites.FavoritesListActivity"
+            android:label="@string/title_activity_favorites_list"
+            android:theme="@android:style/Theme.Holo" >
+        </activity>
     </application>
 
 </manifest>

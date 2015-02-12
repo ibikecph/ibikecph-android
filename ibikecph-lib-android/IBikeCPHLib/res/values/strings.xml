@@ -16,5 +16,6 @@
     <string name="title_activity_ttssettings"></string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_favorites_list">FavoritesListActivity</string>
 
 </resources>

@@ -14,19 +14,15 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
+import android.os.Parcel;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -500,6 +496,17 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             if (data != null && data.getExtras() != null && data.getExtras().containsKey("overlaysShown")) {
                 refreshOverlays(data.getIntExtra("overlaysShown", 0));
             }
+            
+        // *** DANGER, WILL ROBINSON: I'm looking at the request code, not the return code from this point on. /jc ***
+        } else if (requestCode == LeftMenu.LAUNCH_FAVORITE && resultCode == RESULT_OK){ 
+        	Log.i("JC", "Should launch a favorite");
+        	
+        	FavoritesData fd = (FavoritesData) data.getExtras().getParcelable("ROUTE_TO");
+        	//new FavoritesData()
+        	Log.i("JC", "Launching favorite " + fd.getName());
+        	
+        } else {
+        	Log.e("JC", "MapActivity: Didn't have an activity handler for " + requestCode);
         }
     }
 
