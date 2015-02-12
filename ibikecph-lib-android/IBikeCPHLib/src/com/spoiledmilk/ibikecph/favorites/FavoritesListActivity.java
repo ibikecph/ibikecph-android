@@ -90,7 +90,8 @@ public class FavoritesListActivity extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.addButton) {
+			Log.i("JC", "pressed add button");
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -152,6 +153,13 @@ public class FavoritesListActivity extends Activity {
 		if (!dialog.isShowing()) {
 			dialog.show();
 		}
+	}
+	
+	public void onPause() {
+		super.onPause();
+        if (fetchFavorites != null && fetchFavorites.isAlive()) {
+            fetchFavorites.interrupt();
+        }
 	}
 
 	private class tFetchFavorites extends Thread {

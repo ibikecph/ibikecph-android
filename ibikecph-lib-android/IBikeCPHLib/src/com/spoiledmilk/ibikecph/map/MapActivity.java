@@ -677,9 +677,11 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
 
     @Override
     public void onPause() {
-        if (loginDlg != null && loginDlg.isShowing()) {
+    	/*
+    	if (loginDlg != null && loginDlg.isShowing()) {
             loginDlg.dismiss();
         }
+        */
         super.onPause();
     }
 

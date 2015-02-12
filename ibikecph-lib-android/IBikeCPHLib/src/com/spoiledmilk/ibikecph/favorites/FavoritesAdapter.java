@@ -60,15 +60,7 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
 		ImageButton btnEdit = (ImageButton) view.findViewById(R.id.btnEdit);
 		final FavoritesData fd = getItem(position);
 		tv.setPadding(getPadding(fd), 0, 0, 0);
-		btnEdit.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				fragment.onEditFavorite(fd);
-			}
-
-		});
-
+		
 		final ImageView imgIcon = ((ImageView) view.findViewById(R.id.icon));
 
 		if (!isEditMode) {
