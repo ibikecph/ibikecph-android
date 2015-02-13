@@ -12,11 +12,15 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
 import com.spoiledmilk.cykelsuperstier.R;
+import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.map.OverlayType;
+import com.spoiledmilk.ibikecph.util.IbikePreferences;
 
 /**
  * Activity for toggling station overlays on map.
@@ -25,26 +29,19 @@ import com.spoiledmilk.cykelsuperstier.R;
  */
 public class OverlaysActivity extends Activity {
 
+    boolean isPathSelected,
+        isServiceSelected,
+        isStrainSelected,
+        isMetroSelected,
+        isLocalTrainSelected;
+
     ActionBar actionBar;
+
     TextView textPath,
             textService,
             textStrain,
             textMetro,
             textLocalTrain;
-
-    boolean isPathSelected,
-            isServiceSelected,
-            isStrainSelected,
-            isMetroSelected,
-            isLocalTrainSelected;
-
-    enum OverlayType {
-        PATH,
-        SERVICE,
-        S_TRAIN,
-        METRO,
-        LOCAL_TRAIN
-    }
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -53,6 +50,13 @@ public class OverlaysActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.overlays_activity);
 
+        IbikePreferences settings = IbikeApplication.getSettings();
+        isPathSelected       = settings.getOverlay(OverlayType.PATH);
+        isServiceSelected    = settings.getOverlay(OverlayType.SERVICE);
+        isStrainSelected     = settings.getOverlay(OverlayType.S_TRAIN);
+        isMetroSelected      = settings.getOverlay(OverlayType.METRO);
+        isLocalTrainSelected = settings.getOverlay(OverlayType.LOCAL_TRAIN);
+
         actionBar = getActionBar();
 
         textPath       = (TextView) findViewById(R.id.pathText);
@@ -60,6 +64,8 @@ public class OverlaysActivity extends Activity {
         textStrain     = (TextView) findViewById(R.id.strainText);
         textMetro      = (TextView) findViewById(R.id.metroText);
         textLocalTrain = (TextView) findViewById(R.id.localTrainText);
+
+        refreshOverlays();
     }
 
     @Override
@@ -69,94 +75,55 @@ public class OverlaysActivity extends Activity {
     }
 
     public void onPathContainerClick(View v) {
-        updateOverlay(OverlayType.PATH, isPathSelected);
-
-//        TODO:
-//        if (isPathSelected)
-//            mapFragment.overlaysManager.removeBikeRoutes();
-//        else
-//            mapFragment.overlaysManager.drawBikeRoutes(this);
-
         isPathSelected = !isPathSelected;
+        updateContainer(OverlayType.PATH, isPathSelected);
+        IbikeApplication.getSettings().setOverlay(OverlayType.PATH, isPathSelected);
     }
 
     public void onServiceContainerClick(View v) {
-        updateOverlay(OverlayType.SERVICE, isServiceSelected);
-
-//        TODO:
-//        if (isServiceSelected)
-//            mapFragment.overlaysManager.removeServiceStations();
-//        else
-//            mapFragment.overlaysManager.drawServiceStations(this);
-
         isServiceSelected = !isServiceSelected;
+        updateContainer(OverlayType.SERVICE, isServiceSelected);
+        IbikeApplication.getSettings().setOverlay(OverlayType.SERVICE, isServiceSelected);
     }
 
     public void onStrainContainerClick(View v) {
-        updateOverlay(OverlayType.S_TRAIN, isStrainSelected);
-
-//        TODO:
-//        if (isStrainSelected)
-//            mapFragment.overlaysManager.removesTrainStations();
-//        else
-//            mapFragment.overlaysManager.drawsTrainStations(this);
-
         isStrainSelected = !isStrainSelected;
+        updateContainer(OverlayType.S_TRAIN, isStrainSelected);
+        IbikeApplication.getSettings().setOverlay(OverlayType.S_TRAIN, isStrainSelected);
     }
 
     public void onMetroContainerClick(View v) {
-        updateOverlay(OverlayType.METRO, isMetroSelected);
-
-//        TODO:
-//        if (isMetroSelected)
-//            mapFragment.overlaysManager.removeMetroStations();
-//        else
-//            mapFragment.overlaysManager.drawMetroStations(this);
-
         isMetroSelected = !isMetroSelected;
+        updateContainer(OverlayType.METRO, isMetroSelected);
+        IbikeApplication.getSettings().setOverlay(OverlayType.METRO, isMetroSelected);
     }
 
     public void onLocalTrainContainerClick(View v) {
-        updateOverlay(OverlayType.LOCAL_TRAIN, isLocalTrainSelected);
-
-//        TODO:
-//        if (isLocalTrainSelected)
-//            mapFragment.overlaysManager.removelocalTrainStations();
-//        else
-//            mapFragment.overlaysManager.drawlocalTrainStations(this);
-
         isLocalTrainSelected = !isLocalTrainSelected;
+        updateContainer(OverlayType.LOCAL_TRAIN, isLocalTrainSelected);
+        IbikeApplication.getSettings().setOverlay(OverlayType.LOCAL_TRAIN, isLocalTrainSelected);
     }
 
+    public void refreshOverlays() {
+        updateContainer(OverlayType.PATH, isPathSelected);
+        updateContainer(OverlayType.SERVICE, isServiceSelected);
+        updateContainer(OverlayType.S_TRAIN, isStrainSelected);
+        updateContainer(OverlayType.METRO, isMetroSelected);
+        updateContainer(OverlayType.LOCAL_TRAIN, isLocalTrainSelected);
 
-    public void refreshOverlays(int overlaysShown) {
-        if (((overlaysShown & 1) > 0 && !isPathSelected) || ((overlaysShown & 1) == 0 && isPathSelected))
-            onPathContainerClick(findViewById(R.id.pathContainer));
-        if (((overlaysShown & 2) > 0 && !isServiceSelected) || ((overlaysShown & 2) == 0 && isServiceSelected))
-            onServiceContainerClick(findViewById(R.id.serviceContainer));
-        if (((overlaysShown & 4) > 0 && !isStrainSelected) || ((overlaysShown & 4) == 0 && isStrainSelected))
-            onStrainContainerClick(findViewById(R.id.strainContainer));
-        if (((overlaysShown & 8) > 0 && !isMetroSelected) || ((overlaysShown & 8) == 0 && isMetroSelected))
-            onMetroContainerClick(findViewById(R.id.metroContainer));
-        if (((overlaysShown & 16) > 0 && !isLocalTrainSelected) || ((overlaysShown & 16) == 0 && isLocalTrainSelected))
-            onLocalTrainContainerClick(findViewById(R.id.localTrainContainer));
+//        if (((overlaysShown & 1) > 0 && !isPathSelected) || ((overlaysShown & 1) == 0 && isPathSelected))
+//            onPathContainerClick(findViewById(R.id.pathContainer));
+//        if (((overlaysShown & 2) > 0 && !isServiceSelected) || ((overlaysShown & 2) == 0 && isServiceSelected))
+//            onServiceContainerClick(findViewById(R.id.serviceContainer));
+//        if (((overlaysShown & 4) > 0 && !isStrainSelected) || ((overlaysShown & 4) == 0 && isStrainSelected))
+//            onStrainContainerClick(findViewById(R.id.strainContainer));
+//        if (((overlaysShown & 8) > 0 && !isMetroSelected) || ((overlaysShown & 8) == 0 && isMetroSelected))
+//            onMetroContainerClick(findViewById(R.id.metroContainer));
+//        if (((overlaysShown & 16) > 0 && !isLocalTrainSelected) || ((overlaysShown & 16) == 0 && isLocalTrainSelected))
+//            onLocalTrainContainerClick(findViewById(R.id.localTrainContainer));
     }
 
-    private void initStrings() {
-        actionBar.setTitle("Dummy"); // TODO: get real title
-        textPath.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textPath.setText(CykelsuperstierApplication.getString("marker_type_1"));
-        textService.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textService.setText(CykelsuperstierApplication.getString("marker_type_2"));
-        textStrain.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textStrain.setText(CykelsuperstierApplication.getString("marker_type_3"));
-        textMetro.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textMetro.setText(CykelsuperstierApplication.getString("marker_type_4"));
-        textLocalTrain.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textLocalTrain.setText(CykelsuperstierApplication.getString("marker_type_5"));
-    }
-
-    private void updateOverlay(OverlayType type, boolean selected) {
+    private void updateContainer(OverlayType type, boolean selected) {
         View view;
         ImageView checkbox;
         ImageView image;
@@ -213,10 +180,23 @@ public class OverlaysActivity extends Activity {
                 return;
         }
 
-        view.setBackgroundColor(selected ? Color.rgb(255, 255, 255) : Color.rgb(236, 104, 0));
-        checkbox.setImageResource(selected ? R.drawable.check_field : R.drawable.check_in_orange);
-        image.setImageResource(selected ? imageGrey : imageWhite);
-        text.setTextColor(selected ? getResources().getColor(R.color.DarkGrey) : Color.WHITE);
+        view.setBackgroundColor(selected ? Color.rgb(236, 104, 0) : Color.rgb(255, 255, 255));
+        checkbox.setImageResource(selected ? R.drawable.check_in_orange : R.drawable.check_field);
+        image.setImageResource(selected ? imageWhite : imageGrey);
+        text.setTextColor(selected ? Color.WHITE : getResources().getColor(R.color.DarkGrey));
     }
 
+    private void initStrings() {
+        actionBar.setTitle("Dummy"); // TODO: get real title
+        textPath.setTypeface(CykelsuperstierApplication.getNormalFont());
+        textPath.setText(CykelsuperstierApplication.getString("marker_type_1"));
+        textService.setTypeface(CykelsuperstierApplication.getNormalFont());
+        textService.setText(CykelsuperstierApplication.getString("marker_type_2"));
+        textStrain.setTypeface(CykelsuperstierApplication.getNormalFont());
+        textStrain.setText(CykelsuperstierApplication.getString("marker_type_3"));
+        textMetro.setTypeface(CykelsuperstierApplication.getNormalFont());
+        textMetro.setText(CykelsuperstierApplication.getString("marker_type_4"));
+        textLocalTrain.setTypeface(CykelsuperstierApplication.getNormalFont());
+        textLocalTrain.setText(CykelsuperstierApplication.getString("marker_type_5"));
+    }
 }

@@ -22,13 +22,15 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.MapFragmentBase;
+import com.spoiledmilk.ibikecph.map.OverlayData;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
 /**
  * Manages overlays, that is paths and icons.
- * @see OverlayData
+ * @see com.spoiledmilk.ibikecph.map.OverlayData
  * @author jens
  *
  */
