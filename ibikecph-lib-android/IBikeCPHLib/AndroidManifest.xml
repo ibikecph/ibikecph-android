@@ -115,9 +115,13 @@
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
         </activity>
         <activity
-            android:name="com.spoiledmilk.ibikecph.favorites.FavoritesListActivity"
+            android:name=".favorites.FavoritesListActivity"
             android:label="@string/title_activity_favorites_list"
             android:theme="@android:style/Theme.Holo" >
+        </activity>
+        <activity
+            android:name="com.spoiledmilk.ibikecph.favorites.AddFavoriteActivity"
+            android:label="@string/title_activity_add_favorite" >
         </activity>
     </application>
 

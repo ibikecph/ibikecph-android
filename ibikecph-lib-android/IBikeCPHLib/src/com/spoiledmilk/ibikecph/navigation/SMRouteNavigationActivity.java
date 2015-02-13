@@ -8,11 +8,11 @@ package com.spoiledmilk.ibikecph.navigation;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.LayoutInflater;
@@ -173,7 +173,7 @@ public class SMRouteNavigationActivity extends FragmentActivity implements View.
         instructionList = (ListView) instructionsViewMax.findViewById(R.id.listView);
         instructionList.addFooterView(reportProblemsView);
         setInstructionViewState(InstrcutionViewState.Invisible);
-        FragmentManager fm = this.getSupportFragmentManager();
+        FragmentManager fm = this.getFragmentManager();
         mapFragment = getMapFragment();
         if (savedInstanceState == null) {
             fm.beginTransaction().add(R.id.map_container, mapFragment).commit();
@@ -512,7 +512,7 @@ public class SMRouteNavigationActivity extends FragmentActivity implements View.
     }
 
     protected void showStopDlg() {
-        FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getFragmentManager();
         FinishRouteDialog roteFinishDialog = new FinishRouteDialog();
         roteFinishDialog.show(fm, "dialog_stop");
     }

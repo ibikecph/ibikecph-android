@@ -122,6 +122,11 @@
             android:screenOrientation="portrait" 
             android:theme="@android:style/Theme.Holo.Light">
         </activity>
+        
+        <activity
+            android:name="com.spoiledmilk.ibikecph.favorites.AddFavoriteActivity"
+            android:label="@string/title_activity_add_favorite" >
+        </activity>
     </application>
 
 </manifest>

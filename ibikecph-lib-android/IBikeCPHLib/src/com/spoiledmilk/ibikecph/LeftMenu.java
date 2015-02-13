@@ -8,16 +8,14 @@ package com.spoiledmilk.ibikecph;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -31,19 +29,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.analytics.tracking.android.Log;
-import com.spoiledmilk.ibikecph.controls.SortableListView;
 import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
 import com.spoiledmilk.ibikecph.favorites.EditFavoriteFragment;
-import com.spoiledmilk.ibikecph.favorites.FavoritesActivity;
 import com.spoiledmilk.ibikecph.favorites.FavoritesAdapter;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
-import com.spoiledmilk.ibikecph.map.MapActivity;
-import com.spoiledmilk.ibikecph.map.SMHttpRequest;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -269,7 +262,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 
     private void openNewFavoriteFragment() {
         AddFavoriteFragment aff = getAddFavoriteFragment();
-        FragmentTransaction fragmentTransaction = ((FragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = ((FragmentActivity) getActivity()).getFragmentManager().beginTransaction();
         fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
         fragmentTransaction.replace(R.id.leftContainerDrawer, aff);
         fragmentTransaction.addToBackStack(null);

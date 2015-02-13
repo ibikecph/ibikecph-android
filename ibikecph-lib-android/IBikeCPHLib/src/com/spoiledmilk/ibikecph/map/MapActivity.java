@@ -9,15 +9,14 @@ import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcel;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
@@ -108,7 +107,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         this.setContentView(R.layout.main_map_activity);
         
         mapFragment = new SMMapFragment();
-        FragmentManager fm = this.getSupportFragmentManager();
+        FragmentManager fm = this.getFragmentManager();
         fm.beginTransaction().add(R.id.map_container, mapFragment).commit();
         mapContainer = (FrameLayout) findViewById(R.id.map_container);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -208,7 +207,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         leftMenu = getLeftMenu();
         
         // Add the menu to the Navigation Drawer
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
             fragmentTransaction.add(R.id.leftContainerDrawer, leftMenu);
         } else {
@@ -477,11 +476,11 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             }
         } else if (resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             try {
-                ((AddFavoriteFragment) getSupportFragmentManager().findFragmentById(R.id.leftContainerDrawer)).onActivityResult(requestCode, resultCode,
+                ((AddFavoriteFragment) getFragmentManager().findFragmentById(R.id.leftContainerDrawer)).onActivityResult(requestCode, resultCode,
                         data);
             } catch (Exception e) {
                 try {
-                    ((EditFavoriteFragment) getSupportFragmentManager().findFragmentById(R.id.leftContainerDrawer)).onActivityResult(requestCode,
+                    ((EditFavoriteFragment) getFragmentManager().findFragmentById(R.id.leftContainerDrawer)).onActivityResult(requestCode,
                             resultCode, data);
                 } catch (Exception ex) {
                 }

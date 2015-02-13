@@ -7,9 +7,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,8 +20,6 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.SortableListView;
-import com.spoiledmilk.ibikecph.map.MapActivity;
-import com.spoiledmilk.ibikecph.map.SMHttpRequest;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -91,7 +87,10 @@ public class FavoritesListActivity extends Activity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.addButton) {
-			Log.i("JC", "pressed add button");
+			Intent i = new Intent(this, AddFavoriteActivity.class);
+	        this.startActivity(i);
+	        this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+			
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

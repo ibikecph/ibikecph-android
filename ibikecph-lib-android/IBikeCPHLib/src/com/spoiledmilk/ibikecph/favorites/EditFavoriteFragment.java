@@ -9,12 +9,12 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -340,8 +340,8 @@ public class EditFavoriteFragment extends Fragment implements APIListener {
 	}
 
 	private void popFragment() {
-		((FragmentActivity) getActivity()).getSupportFragmentManager().popBackStack();
-		((FragmentActivity) getActivity()).getSupportFragmentManager().executePendingTransactions();
+		((FragmentActivity) getActivity()).getFragmentManager().popBackStack();
+		((FragmentActivity) getActivity()).getFragmentManager().executePendingTransactions();
 	}
 
 	@Override

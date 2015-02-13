@@ -13,14 +13,14 @@ import org.osmdroid.views.overlay.ScaledTilesOverlay;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 
 import android.annotation.TargetApi;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -162,7 +162,7 @@ public class MapFragmentBase extends Fragment implements SMLocationListener {
 	}
 
 	private void launchGPSDialog() {
-		FragmentManager fm = getActivity().getSupportFragmentManager();
+		FragmentManager fm = getActivity().getFragmentManager();
 		NoGPSDialog noGPSGialog = new NoGPSDialog();
 		noGPSGialog.show(fm, "no_gps");
 	}
