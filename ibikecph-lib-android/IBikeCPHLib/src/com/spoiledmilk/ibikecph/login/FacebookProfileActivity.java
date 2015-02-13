@@ -75,6 +75,8 @@ public class FacebookProfileActivity extends Activity {
             @Override
             public void onClick(View v) {
                 logout();
+                
+                setResult(RESULT_OK);
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }

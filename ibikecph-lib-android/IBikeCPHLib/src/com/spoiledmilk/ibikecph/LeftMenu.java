@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.analytics.tracking.android.Log;
 import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
 import com.spoiledmilk.ibikecph.favorites.EditFavoriteFragment;
 import com.spoiledmilk.ibikecph.favorites.FavoritesAdapter;
@@ -81,20 +81,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         
         // Initialize the menu
         this.menuList = (ListView) ret.findViewById(R.id.menuListView);
-        this.menuItems = new ArrayList<LeftMenuItem>();
-        
-        menuItems.add(new LeftMenuItem("favorites", R.drawable.ic_menu_favorite, "spawnFavoritesListActivity"));
-        
-        if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
-        	menuItems.add(new LeftMenuItem("account", R.drawable.profile, "spawnLoginActivity"));
-        } else {
-        	menuItems.add(new LeftMenuItem("login", R.drawable.profile, "spawnLoginActivity"));
-        }
-        
-        menuItems.add(new LeftMenuItem("about_app", "spawnAboutActivity"));
-        menuItems.add(new LeftMenuItem("tts_settings", "spawnTTSSettingsActivity"));
-        
-        populateMenuList();
+        populateMenu();
         
 		// This is kind of magical. Each LeftMenuItem has a handler field that describes
 		// a method to be called when that element is tapped. Here we read out that field
@@ -163,6 +150,29 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     }
     
     /**
+     * This method adds elements to the menu. It is called onCreate, but also when the menu needs
+     * to be updated, e.g. when the user has logged in and the "Log in" button needs to change to
+     * "account".
+     */
+    public void populateMenu()  {
+    	this.menuItems = new ArrayList<LeftMenuItem>();
+        
+        menuItems.add(new LeftMenuItem("favorites", R.drawable.ic_menu_favorite, "spawnFavoritesListActivity"));
+        
+        if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
+        	menuItems.add(new LeftMenuItem("account", R.drawable.profile, "spawnLoginActivity"));
+        } else {
+        	menuItems.add(new LeftMenuItem("login", R.drawable.profile, "spawnLoginActivity"));
+        }
+        
+        menuItems.add(new LeftMenuItem("about_app", "spawnAboutActivity"));
+        menuItems.add(new LeftMenuItem("tts_settings", "spawnTTSSettingsActivity"));
+        
+        populateMenuList();
+    	
+    }
+    
+    /**
      * This method is called as a click handler on all items in the menu. It is called with the 
      * name parameter corresponding to the method that the particular FavoritesListActivity denotes,
      * for example spawnAboutActivity for the About button. 
@@ -174,7 +184,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 			handlerMethod = this.getClass().getDeclaredMethod(name, null);
 			handlerMethod.invoke(this);
 		} catch (Exception e) {
-			Log.e("Handler " + name + " not found");
+			Log.e("JC", "Handler " + name + " not found");
 			e.printStackTrace();
 		}
     }
@@ -185,7 +195,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 
 	@Override
 	public void reloadStrings() {
-		Log.d("JC: LeftMenu reloadStrings");
+		Log.d("JC", "LeftMenu reloadStrings");
 		//this.populateMenuList();
 		this.menuList.invalidate();
 	}

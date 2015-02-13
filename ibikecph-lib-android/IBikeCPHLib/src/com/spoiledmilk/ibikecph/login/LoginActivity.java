@@ -71,6 +71,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
 
             @Override
             public void onClick(View arg0) {
+            	setResult(RESULT_CANCELED);
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
@@ -104,7 +105,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                             handler.sendMessage(message);
 
                             dismissProgressDialog();
-
+                            
                         }
                     }).start();
                 }
@@ -134,6 +135,8 @@ public class LoginActivity extends Activity implements FBLoginListener {
                             PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).edit().putString("auth_token", auth_token).commit();
                             PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).edit().putInt("id", id).commit();
                             LOG.d("Loged in token = " + auth_token + ", id = " + id);
+                            
+                            setResult(RESULT_OK);
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         }
@@ -204,7 +207,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                 Message message = HTTPAccountHandler.performFacebookLogin(Session.getActiveSession().getAccessToken());
                 handler.sendMessage(message);
                 dismissProgressDialog();
-
+                
             }
         }).start();
     }

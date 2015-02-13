@@ -449,6 +449,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        
         if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(IbikeApplication.getString("account_deleted"));
@@ -508,6 +509,9 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
 			Log.i("JC", "Fav coordinates: "+ fd.getLatitude() + ", " + fd.getLongitude());
 			
         	Log.i("JC", "Launching favorite " + fd.getName());
+        	
+        } else if (requestCode == LeftMenu.LAUNCH_LOGIN && resultCode == RESULT_OK) {
+        	leftMenu.populateMenu();
         	
         } else if (resultCode == RESULT_CANCELED) {
         	Log.i("JC", "Canceled sub activity");

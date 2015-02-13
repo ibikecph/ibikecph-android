@@ -79,6 +79,9 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                 IbikeApplication.logout();
                 (new DB(ProfileActivity.this)).deleteFavorites();
                 IbikeApplication.setIsFacebookLogin(false);
+                
+                // Set the result so the MapActivity causes the LeftMenu to reload 
+                setResult(RESULT_OK);
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
