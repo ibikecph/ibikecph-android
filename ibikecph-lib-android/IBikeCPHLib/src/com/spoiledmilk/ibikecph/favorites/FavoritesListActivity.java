@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListAdapter;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -58,7 +59,18 @@ public class FavoritesListActivity extends Activity {
 					}
 				}
 			}
+			
 
+		});
+		
+		favoritesList.setOnItemLongClickListener( new OnItemLongClickListener() {
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+				Log.d("JC", "Long clicked on some favorite");
+				
+				// TODO: We want to spawn a dialog to ask about editing or deleting a favorite here. 
+				
+				return true;
+			}
 		});
 
 		reloadFavorites();
