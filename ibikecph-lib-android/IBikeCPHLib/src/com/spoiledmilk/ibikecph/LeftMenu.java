@@ -187,14 +187,6 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 			e.printStackTrace();
 		}
     }
-    
-
-	@Override
-	public void reloadStrings() {
-		Log.d("JC", "LeftMenu reloadStrings");
-		//this.populateMenuList();
-		this.menuList.invalidate();
-	}
 	
     public void spawnLoginActivity() {
     	if (!Util.isNetworkConnected(getActivity())) {
@@ -258,6 +250,11 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         updateControls();
     }
 
+    @Override
+    public void reloadStrings() {
+    	this.reloadFavorites();
+    }
+    
     @Override
     public void onPause() {
         super.onPause();
