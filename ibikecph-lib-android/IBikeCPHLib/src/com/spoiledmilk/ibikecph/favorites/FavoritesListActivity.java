@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListAdapter;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -62,7 +61,7 @@ public class FavoritesListActivity extends Activity {
 			
 
 		});
-		
+		/*
 		favoritesList.setOnItemLongClickListener( new OnItemLongClickListener() {
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 				Log.d("JC", "Long clicked on some favorite");
@@ -72,7 +71,9 @@ public class FavoritesListActivity extends Activity {
 				return true;
 			}
 		});
-
+		*/
+		
+		registerForContextMenu(favoritesList);
 		reloadFavorites();
 	}
 
@@ -85,6 +86,39 @@ public class FavoritesListActivity extends Activity {
 			fetchFavorites = new tFetchFavorites();
 			fetchFavorites.start();
 		}
+	}
+	
+	@Override
+	public void onCreateContextMenu(android.view.ContextMenu menu, View v, android.view.ContextMenu.ContextMenuInfo menuInfo) {
+		Log.d("JC", "FavoritesList context menu");
+	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+	    menu.setHeaderTitle(favorites.get(info.position).getName());
+	    String[] menuItems = {"Edit", "Delete"};
+	    for (int i = 0; i<menuItems.length; i++) {
+	    	menu.add(Menu.NONE, i, i, menuItems[i]);
+	    }
+
+	};
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {		
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		int menuItemIndex = item.getItemId();
+		String[] menuItems = {"Edit", "Delete"};
+		FavoritesData fav = favorites.get(info.position);
+		
+		switch (menuItemIndex) {
+		case 0:
+			Log.d("JC", "Editing "+fav.getName());
+			break;
+			
+		case 1:
+			Log.d("JC", "Deleting "+fav.getName());
+			break;
+		
+		}
+				
+		return true;
 	}
 	
 	@Override
