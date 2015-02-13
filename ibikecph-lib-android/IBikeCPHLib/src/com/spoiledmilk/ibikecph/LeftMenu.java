@@ -86,13 +86,14 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         menuItems.add(new LeftMenuItem("favorites", R.drawable.ic_menu_favorite, "spawnFavoritesListActivity"));
         
         if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
-        	menuItems.add(new LeftMenuItem("account", "spawnLoginActivity"));
+        	menuItems.add(new LeftMenuItem("account", R.drawable.ic_menu_profile, "spawnLoginActivity"));
         } else {
-        	menuItems.add(new LeftMenuItem("login", "spawnLoginActivity"));
+        	menuItems.add(new LeftMenuItem("login", R.drawable.ic_menu_profile, "spawnLoginActivity"));
         }
-        
-        menuItems.add(new LeftMenuItem("about_app", "spawnAboutActivity"));
-        menuItems.add(new LeftMenuItem("tts_settings", "spawnTTSSettingsActivity"));
+
+        menuItems.add(new LeftMenuItem("tts_settings", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
+
+        menuItems.add(new LeftMenuItem("about_app", R.drawable.ic_menu_info, "spawnAboutActivity"));
         
         populateMenuList();
         

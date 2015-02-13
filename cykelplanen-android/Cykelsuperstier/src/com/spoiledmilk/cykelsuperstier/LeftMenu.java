@@ -38,7 +38,7 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		final View ret = super.onCreateView(inflater, container, savedInstanceState);
 
-        this.menuItems.add(new LeftMenuItem("overlays", -1, "spawnOverlaysActivity"));
+        this.menuItems.add(new LeftMenuItem("overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
 		/*
 		ret.findViewById(R.id.remindersBackground).setOnTouchListener(
 				new OnTouchListener() {
