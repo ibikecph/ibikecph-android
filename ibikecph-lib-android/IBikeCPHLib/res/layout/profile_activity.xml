@@ -65,7 +65,8 @@
                 android:inputType="text"
                 android:paddingLeft="10dp"
                 android:paddingRight="25dp"
-                android:textSize="14sp" >
+                android:textSize="14sp"
+                android:textColor="#000" >
             </EditText>
 
             <ImageView
@@ -91,7 +92,9 @@
                 android:inputType="textEmailAddress"
                 android:paddingLeft="10dp"
                 android:paddingRight="30dp"
-                android:textSize="14sp" />
+                android:textSize="14sp" 
+                android:textColor="#000"
+                />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -116,7 +119,8 @@
                 android:inputType="textPassword"
                 android:paddingLeft="10dp"
                 android:paddingRight="25dp"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:textColor="#000" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -141,7 +145,8 @@
                 android:inputType="textPassword"
                 android:paddingLeft="10dp"
                 android:paddingRight="25dp"
-                android:textSize="14sp" />
+                android:textSize="14sp" 
+                android:textColor="#000"/>
 
             <EditText
                 android:id="@+id/textPasswordConfirm"
@@ -155,7 +160,8 @@
                 android:inputType="textPassword"
                 android:paddingLeft="10dp"
                 android:paddingRight="25dp"
-                android:textSize="14sp" />
+                android:textSize="14sp" 
+                android:textColor="#000"/>
 
             <com.spoiledmilk.ibikecph.controls.TexturedButton
                 android:id="@+id/btnSave"
