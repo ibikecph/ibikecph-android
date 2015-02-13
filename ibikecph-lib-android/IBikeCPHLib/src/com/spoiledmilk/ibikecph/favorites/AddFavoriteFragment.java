@@ -41,8 +41,6 @@ import com.spoiledmilk.ibikecph.util.Util;
  */
 public class AddFavoriteFragment extends Fragment {
 
-	private ImageButton btnBack;
-	private TextView textTitle;
 	protected EditText textAddress;
 	protected EditText textFavoriteName;
 	private ImageButton btnFavorite;
@@ -64,15 +62,6 @@ public class AddFavoriteFragment extends Fragment {
 		super.onCreateView(inflater, container, savedInstanceState);
 		View ret = inflater.inflate(R.layout.fragment_add_favorite, container, false);
 
-		btnBack = (ImageButton) ret.findViewById(R.id.btnBack);
-		btnBack.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				((FragmentActivity) getActivity()).getSupportFragmentManager().popBackStack();
-				((FragmentActivity) getActivity()).getSupportFragmentManager().executePendingTransactions();
-			}
-		});
-
-		textTitle = (TextView) ret.findViewById(R.id.textTitle);
 		textAddress = (EditText) ret.findViewById(R.id.textAddress);
 		textAddress.setClickable(true);
 		textAddress.setOnClickListener(new OnClickListener() {
@@ -217,9 +206,6 @@ public class AddFavoriteFragment extends Fragment {
 	}
 
 	private void initStrings() {
-		textTitle.setText(IbikeApplication.getString("add_favorite"));
-		textTitle.setVisibility(View.VISIBLE);
-		textTitle.setTypeface(IbikeApplication.getNormalFont());
 		textAddress.setHint(IbikeApplication.getString("add_favorite_address_placeholder"));
 		textAddress.setHintTextColor(getActivity().getResources().getColor(R.color.HintColor));
 		textAddress.setTypeface(IbikeApplication.getNormalFont());
