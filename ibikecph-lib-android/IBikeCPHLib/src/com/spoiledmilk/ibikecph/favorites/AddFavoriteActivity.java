@@ -3,7 +3,9 @@ package com.spoiledmilk.ibikecph.favorites;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,30 +19,15 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
 
 public class AddFavoriteActivity extends Activity {
-	private ImageButton btnBack;
-	private TextView textTitle;
-	protected EditText textAddress;
-	protected EditText textFavoriteName;
-	private ImageButton btnFavorite;
-	private ImageButton btnHome;
-	private ImageButton btnWork;
-	private ImageButton btnSchool;
-	private TextView textFavorite;
-	private TextView textHome;
-	private TextView textWork;
-	private TextView textSchool;
-	private TexturedButton btnSave;
-	private FavoritesData favoritesData = null;
-	private String currentFavoriteType = "";
-	private AlertDialog dialog;
-	boolean isTextChanged = false;
-	
+
+	Fragment addFavoriteFragment;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_favorite);
 		
-		Fragment addFavoriteFragment = new AddFavoriteFragment();
+		addFavoriteFragment = new AddFavoriteFragment();
 		
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction().add(R.id.container, addFavoriteFragment).commit();
@@ -83,5 +70,14 @@ public class AddFavoriteActivity extends Activity {
 					container, false);
 			return rootView;
 		}
+	}
+	
+
+	// We're delegating the result from the address dialog directly to the fragment 
+	// in order for it to take care of things.
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		Log.i("JC", "AddFavoriteActivity on address result");
+		addFavoriteFragment.onActivityResult(requestCode, resultCode, data);
 	}
 }

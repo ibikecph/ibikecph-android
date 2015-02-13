@@ -26,6 +26,8 @@ import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
 public class FavoritesListActivity extends Activity {
+	public static final int ADD_FAVORITE = 510;
+	
 	SortableListView favoritesList;
 	private ListAdapter listAdapter;
 	private FavoritesAdapter adapter;
@@ -59,20 +61,20 @@ public class FavoritesListActivity extends Activity {
 
 		});
 
-		if (IbikeApplication.isUserLogedIn()) {
-			fetchFavorites = new tFetchFavorites();
-			fetchFavorites.start();
-		} 
-
+		reloadFavorites();
 	}
 
 	public void onResume(View v) {
+		reloadFavorites();
+	}
+
+	public void reloadFavorites() {
 		if (IbikeApplication.isUserLogedIn()) {
 			fetchFavorites = new tFetchFavorites();
 			fetchFavorites.start();
 		}
 	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -88,7 +90,7 @@ public class FavoritesListActivity extends Activity {
 		int id = item.getItemId();
 		if (id == R.id.addButton) {
 			Intent i = new Intent(this, AddFavoriteActivity.class);
-	        this.startActivity(i);
+	        this.startActivityForResult(i, ADD_FAVORITE);
 	        this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 			
 			return true;
@@ -117,10 +119,7 @@ public class FavoritesListActivity extends Activity {
 			if (SMLocationManager.getInstance().hasValidLocation()) {
 				Intent returnIntent = new Intent();
 
-				// Return some information as to where to route, so the MapActivity knows and can handle it.
-				
-				
-				
+				// Return some information as to where to route, so the MapActivity knows and can handle it.				
 				returnIntent.putExtra("ROUTE_TO", fd);
 				setResult(RESULT_OK, returnIntent);
 				finishActivity(LeftMenu.LAUNCH_FAVORITE);
@@ -159,6 +158,12 @@ public class FavoritesListActivity extends Activity {
         if (fetchFavorites != null && fetchFavorites.isAlive()) {
             fetchFavorites.interrupt();
         }
+	}
+	
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == ADD_FAVORITE && resultCode == RESULT_OK) {
+			this.reloadFavorites();
+		}
 	}
 
 	private class tFetchFavorites extends Thread {

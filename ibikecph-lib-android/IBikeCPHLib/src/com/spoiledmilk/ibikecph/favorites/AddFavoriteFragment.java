@@ -5,6 +5,7 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.favorites;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Fragment;
@@ -14,6 +15,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -176,9 +178,10 @@ public class AddFavoriteFragment extends Fragment {
 							} catch (Exception e) {
 								e.getLocalizedMessage();
 							}
-
-							((FragmentActivity) getActivity()).getSupportFragmentManager().popBackStack();
-							((FragmentActivity) getActivity()).getSupportFragmentManager().executePendingTransactions();
+							
+							getActivity().setResult(FavoritesListActivity.RESULT_OK);
+							getActivity().finish();
+							
 						} else {
 							Builder builder = new AlertDialog.Builder(getActivity());
 							builder.setMessage(IbikeApplication.getString("name_used"));
@@ -253,6 +256,8 @@ public class AddFavoriteFragment extends Fragment {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
+		Log.i("JC", "AddFavoriteFragment on address result");
+		
 		if (data != null) {
 			Bundle b = data.getExtras();
 			if (b.containsKey("address") && b.containsKey("lat") && b.containsKey("lon")) {
