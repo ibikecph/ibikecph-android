@@ -13,6 +13,7 @@
 "accounts" = "Konto";
 "settings" = "Indstillinger";
 "about_app" = "Om I BIKE CPH";
+"overlays" = "Kortlag";
 "contacts" = "Kontakter";
 "favorites" = "Favoritter";
 
@@ -298,4 +299,3 @@
 "password_blank" = "Kodeord skal udfyldes";
 "password_confirm_blank" = "Bekræft kodeord skal udfyldes";
 "password_short" = "Kodeord er for kort (mindst 3 tegn)";
-

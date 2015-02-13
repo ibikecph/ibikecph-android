@@ -7,6 +7,7 @@ package com.spoiledmilk.ibikecph.login;
 
 import java.util.Arrays;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -41,8 +43,7 @@ import com.spoiledmilk.ibikecph.util.LOG;
 
 public class LoginActivity extends Activity implements FBLoginListener {
 
-    TextView textTitle;
-    ImageButton btnBack;
+    ActionBar actionBar;
     TextView textLoginTitle;
     EditText textEmail;
     EditText textPassword;
@@ -60,24 +61,13 @@ public class LoginActivity extends Activity implements FBLoginListener {
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.login_activity);
-        textTitle = (TextView) findViewById(R.id.textTitle);
-        textTitle.setVisibility(View.VISIBLE);
-        btnBack = (ImageButton) findViewById(R.id.btnBack);
+        setContentView(R.layout.login_activity);
+
+        actionBar = getActionBar();
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        // textFacebookLogin = (TextView) findViewById(R.id.textFacebookLogin);
-        btnBack.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-            	setResult(RESULT_CANCELED);
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            }
-
-        });
-
         textLoginTitle = (TextView) findViewById(R.id.textLoginTitle);
         textOr = (TextView) findViewById(R.id.textOr);
         textEmail = (EditText) findViewById(R.id.textEmail);
@@ -225,9 +215,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
     }
 
     private void initStrings() {
-        textTitle.setText(IbikeApplication.getString("account"));
-        textTitle.setVisibility(View.VISIBLE);
-        textTitle.setTypeface(IbikeApplication.getNormalFont());
+        actionBar.setTitle(IbikeApplication.getString("login"));
         textLoginTitle.setText(IbikeApplication.getString("please_login"));
         textLoginTitle.setTypeface(IbikeApplication.getItalicFont());
         textOr.setText(IbikeApplication.getString("or"));

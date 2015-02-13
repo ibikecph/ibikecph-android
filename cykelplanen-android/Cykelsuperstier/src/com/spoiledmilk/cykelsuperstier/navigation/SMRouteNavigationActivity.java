@@ -165,7 +165,7 @@ public class SMRouteNavigationActivity extends com.spoiledmilk.ibikecph.navigati
 		return (InstructionListAdapter) adapter;
 	}
 
-	public void onPatchContainerClick(View v) {
+	public void onPathContainerClick(View v) {
 		v.setBackgroundColor(isPathSelected ? Color.rgb(255, 255, 255) : Color.rgb(236, 104, 0));
 		((ImageView) findViewById(R.id.imgCheckbox1))
 				.setImageResource(isPathSelected ? R.drawable.check_field : R.drawable.check_in_orange);

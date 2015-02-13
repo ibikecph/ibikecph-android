@@ -5,7 +5,9 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.util;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,6 +15,7 @@ import android.graphics.Color;
 import android.preference.PreferenceManager;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.map.OverlayType;
 
 public class IbikePreferences {
     public static final boolean DEBUGMODE = true;
@@ -28,6 +31,8 @@ public class IbikePreferences {
 
     public static final String PREFS_LANGUAGE = "language";
 
+    public static final String PREFS_OVERLAYS = "overlays";
+
     public static final int ROUTE_COLOR = Color.rgb(0, 174, 239);
     public static final float ROUTE_STROKE_WIDTH = 10.0f;
     public static final int ROUTE_ALPHA = 0xc0;
@@ -40,6 +45,8 @@ public class IbikePreferences {
     }
 
     public Language language = Language.UNDEFINED;
+
+//    private Map<OverlayType, Boolean> overlays = new HashMap<OverlayType, Boolean>();
 
     private Context context;
 
@@ -60,7 +67,6 @@ public class IbikePreferences {
             else
                 language = Language.ENG;
         }
-
     }
 
     public Language getLanguage() {
@@ -87,5 +93,21 @@ public class IbikePreferences {
         languageNames[0] = IbikeApplication.getString("language_eng");
         languageNames[1] = IbikeApplication.getString("language_dan");
         return languageNames;
+    }
+
+    public void setOverlay(OverlayType type, boolean value) {
+        getPrefs().edit().putBoolean(getPrefOverlayKey(type), value).commit();
+    }
+
+    public boolean getOverlay(OverlayType type) {
+        return getPrefs().getBoolean(getPrefOverlayKey(type), false);
+    }
+
+    public String getPrefOverlayKey(OverlayType type) {
+        return String.format("%s_%s", PREFS_OVERLAYS, type.toString().toLowerCase());
+    }
+
+    public SharedPreferences getPrefs() {
+        return PreferenceManager.getDefaultSharedPreferences(this.context);
     }
 }

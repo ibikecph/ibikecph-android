@@ -12,6 +12,7 @@ import java.util.Iterator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
@@ -46,7 +48,7 @@ public class BreakRouteActivity extends Activity implements
 
 	public static final int RESULT_ROUTE_BROKEN = 100;
 
-	TextView textTitle;
+    ActionBar actionBar;
 	TextView textDistance;
 	TextView textDistanceKm;
 	TexturedButton btnBreak;
@@ -79,10 +81,13 @@ public class BreakRouteActivity extends Activity implements
 	int timeToAStation = -1;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_break_route);
-		textTitle = (TextView) findViewById(R.id.textTitle);
+
+        actionBar = getActionBar();
 		textDistance = (TextView) findViewById(R.id.textDistance);
 		textDistanceKm = (TextView) findViewById(R.id.textDistanceKm);
 		btnBreak = (TexturedButton) findViewById(R.id.btnBreak);
@@ -507,9 +512,7 @@ public class BreakRouteActivity extends Activity implements
 	}
 
 	private void initStrings() {
-		textTitle.setTypeface(CykelsuperstierApplication.getBoldFont());
-		textTitle.setText(CykelsuperstierApplication
-				.getString("break_route_title"));
+        actionBar.setTitle(CykelsuperstierApplication.getString("break_route_title"));
 		textDistance.setTypeface(CykelsuperstierApplication.getBoldFont());
 		textDistance.setText(CykelsuperstierApplication
 				.getString("break_route_header_title"));

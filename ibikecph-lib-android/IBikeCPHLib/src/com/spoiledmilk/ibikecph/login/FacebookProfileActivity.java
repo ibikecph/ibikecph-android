@@ -8,6 +8,7 @@ package com.spoiledmilk.ibikecph.login;
 import java.io.InputStream;
 import java.net.URL;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -35,9 +37,8 @@ import com.spoiledmilk.ibikecph.util.Util;
 
 public class FacebookProfileActivity extends Activity {
 
-    private ImageButton btnBack;
+    private ActionBar actionBar;
     private Button btnLogout;
-    private TextView textTitle;
     private TextView textLogedIn;
     private TextView textName;
     private TextView textLinked;
@@ -50,25 +51,18 @@ public class FacebookProfileActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_facebook_profile);
+
+        actionBar = getActionBar();
         pictureContainer = (ImageView) findViewById(R.id.pictureContainer);
-        textTitle = (TextView) findViewById(R.id.textTitle);
-        textTitle.setVisibility(View.VISIBLE);
         textLogedIn = (TextView) findViewById(R.id.textLogedIn);
         textName = (TextView) findViewById(R.id.textName);
         textLinked = (TextView) findViewById(R.id.textLinked);
         btnDelete = (Button) findViewById(R.id.btnDelete);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        btnBack = (ImageButton) findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            }
-
-        });
         btnLogout = (Button) findViewById(R.id.btnLogout);
         btnLogout.setVisibility(View.VISIBLE);
         btnLogout.setOnClickListener(new OnClickListener() {
@@ -162,8 +156,7 @@ public class FacebookProfileActivity extends Activity {
     }
 
     private void initStrings() {
-        textTitle.setText(IbikeApplication.getString("account"));
-        textTitle.setTypeface(IbikeApplication.getNormalFont());
+        actionBar.setTitle(IbikeApplication.getString("account"));
         btnLogout.setText(IbikeApplication.getString("logout"));
         btnLogout.setTypeface(IbikeApplication.getNormalFont());
         textLogedIn.setText(IbikeApplication.getString("you_are_logged_in_as"));

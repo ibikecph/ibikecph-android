@@ -95,7 +95,7 @@
                 android:layout_height="60dp"
                 android:background="@color/White"
                 android:clickable="true"
-                android:onClick="onPatchContainerClick"
+                android:onClick="onPathContainerClick"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp" >
 

@@ -29,7 +29,7 @@ public class LeftMenuItem {
 		this(labelID, -1, null);
 	}
 	
-	public LeftMenuItem(String labelID, String handler) {
+    public LeftMenuItem(String labelID, String handler) {
 		this(labelID, -1, handler);
 	}
 

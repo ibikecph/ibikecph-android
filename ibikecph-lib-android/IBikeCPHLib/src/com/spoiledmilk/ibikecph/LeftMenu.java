@@ -167,9 +167,8 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         
         menuItems.add(new LeftMenuItem("about_app", "spawnAboutActivity"));
         menuItems.add(new LeftMenuItem("tts_settings", "spawnTTSSettingsActivity"));
-        
-        populateMenuList();
-    	
+
+        this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), menuItems));
     }
     
     /**
@@ -189,9 +188,6 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 		}
     }
     
-    protected void populateMenuList() {      
-        this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), menuItems));
-    }
 
 	@Override
 	public void reloadStrings() {
