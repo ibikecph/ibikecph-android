@@ -4,39 +4,9 @@
     android:layout_height="match_parent"
     android:background="#f0f0f0" >
 
-    <RelativeLayout
-        android:id="@+id/navBarContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="#3c3c3c"
-        android:padding="3dp" >
-
-        <TextView
-            android:id="@+id/textTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/btnBack"
-            android:textColor="@color/White"
-            android:visibility="gone" />
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:background="@null"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/btn_back_selector" />
-    </RelativeLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/navBarContainer"
         android:layout_centerHorizontal="true" >
 
         <RelativeLayout
