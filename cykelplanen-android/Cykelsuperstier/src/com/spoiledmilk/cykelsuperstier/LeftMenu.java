@@ -87,6 +87,10 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 		super.spawnFavoritesListActivity();
 	}
 
+	public void spawnLoginActivity() {
+		super.spawnLoginActivity();
+	}
+	
 	protected int getMenuItemSelectedColor() {
 		return getActivity().getResources().getColor(R.color.Orange);
 	}
