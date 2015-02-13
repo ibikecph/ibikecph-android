@@ -7,7 +7,6 @@ package com.spoiledmilk.cykelsuperstier.map;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
@@ -19,7 +18,6 @@ import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.cykelsuperstier.SplashActivity;
 import com.spoiledmilk.cykelsuperstier.navigation.SMRouteNavigationActivity;
 import com.spoiledmilk.cykelsuperstier.search.SearchActivity;
-import com.spoiledmilk.ibikecph.IBikeCPHApplication;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.map.OverlayType;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
@@ -58,15 +56,11 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 		params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 
-        drawnPath = drawnService = drawnStrain = drawnMetro = drawnLocalTrain = false;
-
         // overlay listener
         SharedPreferences prefs = IbikeApplication.getSettings().getPrefs();
         overlayListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             public void onSharedPreferenceChanged(SharedPreferences p, String key) {
                 IbikePreferences settings = IbikeApplication.getSettings();
-
-                System.out.println(String.format("listener: %s", key));
 
                 if (key.equals(settings.getPrefOverlayKey(OverlayType.PATH))) {
                     updateOverlay(OverlayType.PATH);
@@ -163,9 +157,6 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 
     synchronized private void updateOverlay(OverlayType type) {
         if (mapFragment.overlaysManager == null) return;
-
-        System.out.println(String.format("upate: %s", type));
-
 
         IbikePreferences settings = IbikeApplication.getSettings();
 

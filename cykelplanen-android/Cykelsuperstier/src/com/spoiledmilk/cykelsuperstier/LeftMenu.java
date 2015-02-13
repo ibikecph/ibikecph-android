@@ -8,36 +8,17 @@ package com.spoiledmilk.cykelsuperstier;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.spoiledmilk.cykelsuperstier.favorites.AddFavoriteFragment;
 import com.spoiledmilk.cykelsuperstier.favorites.EditFavoriteFragment;
 import com.spoiledmilk.cykelsuperstier.favorites.FavoritesAdapter;
 import com.spoiledmilk.cykelsuperstier.map.OverlaysActivity;
-import com.spoiledmilk.cykelsuperstier.reminders.AlarmUtils;
-import com.spoiledmilk.cykelsuperstier.R;
-import com.spoiledmilk.ibikecph.AboutActivity;
-import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenuItem;
-import com.spoiledmilk.ibikecph.LeftMenuItemAdapter;
-import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -57,6 +38,7 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		final View ret = super.onCreateView(inflater, container, savedInstanceState);
 
+        this.menuItems.add(new LeftMenuItem("overlays", -1, "spawnOverlaysActivity"));
 		/*
 		ret.findViewById(R.id.remindersBackground).setOnTouchListener(
 				new OnTouchListener() {
@@ -94,8 +76,10 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 
 
 	public void spawnOverlaysActivity() {
-		// TODO: Actually do something
 		Log.d("JC", "CP: Spawning overlays");
+        Intent i = new Intent(getActivity(), OverlaysActivity.class);
+        getActivity().startActivity(i);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
 
 	public void spawnFavoritesListActivity() {

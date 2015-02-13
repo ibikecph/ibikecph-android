@@ -187,7 +187,7 @@ public class OverlaysActivity extends Activity {
     }
 
     private void initStrings() {
-        actionBar.setTitle("Dummy"); // TODO: get real title
+        actionBar.setTitle(CykelsuperstierApplication.getString("overlays"));
         textPath.setTypeface(CykelsuperstierApplication.getNormalFont());
         textPath.setText(CykelsuperstierApplication.getString("marker_type_1"));
         textService.setTypeface(CykelsuperstierApplication.getNormalFont());
