@@ -143,7 +143,7 @@ public class FavoritesData extends SearchListItem implements Parcelable {
 
 	public FavoritesData(Parcel in) {
 		super(nodeType.FAVORITE);
-		String[] data = new String[6];
+		String[] data = new String[7];
 		in.readStringArray(data);
 		try {
 			this.id = Integer.parseInt(data[0]);
@@ -157,6 +157,7 @@ public class FavoritesData extends SearchListItem implements Parcelable {
 		// This is a horrible hack. /jc
 		this.latitude = Double.parseDouble(data[4]);
 		this.longitude = Double.parseDouble(data[5]);
+		this.apiId = Integer.parseInt(data[6]);
 	}
 
 	@Override
@@ -166,7 +167,15 @@ public class FavoritesData extends SearchListItem implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeStringArray(new String[] { this.id + "", this.name, this.address, this.subSource, Double.toString(this.latitude), Double.toString(this.longitude) });
+		dest.writeStringArray(new String[] { 
+				Integer.toString(this.id), 
+				this.name, 
+				this.address, 
+				this.subSource, 
+				Double.toString(this.latitude), 
+				Double.toString(this.longitude), 
+				Integer.toString(this.apiId) 
+				});
 	}
 
 	public static final Parcelable.Creator<FavoritesData> CREATOR = new Parcelable.Creator<FavoritesData>() {

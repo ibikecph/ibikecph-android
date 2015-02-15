@@ -7,6 +7,7 @@ package com.spoiledmilk.ibikecph.favorites;
 
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Fragment;
@@ -15,7 +16,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -47,8 +47,6 @@ import com.spoiledmilk.ibikecph.util.Util;
  */
 public class EditFavoriteFragment extends Fragment implements APIListener {
 
-	private ImageButton btnBack;
-	private TextView textTitle;
 	protected EditText textAddress;
 	protected EditText textFavoriteName;
 	private ImageButton btnFavorite;
@@ -74,14 +72,6 @@ public class EditFavoriteFragment extends Fragment implements APIListener {
 			favoritesData = getArguments().getParcelable("favoritesData");
 		}
 
-		btnBack = (ImageButton) ret.findViewById(R.id.btnBack);
-		btnBack.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				popFragment();
-			}
-		});
-
-		textTitle = (TextView) ret.findViewById(R.id.textTitle);
 		textAddress = (EditText) ret.findViewById(R.id.textAddress);
 		textAddress.setClickable(true);
 		textAddress.setOnClickListener(new OnClickListener() {
@@ -269,9 +259,6 @@ public class EditFavoriteFragment extends Fragment implements APIListener {
 	}
 
 	private void initStrings() {
-		textTitle.setText(IbikeApplication.getString("edit_favorite"));
-		textTitle.setVisibility(View.VISIBLE);
-		textTitle.setTypeface(IbikeApplication.getNormalFont());
 		textAddress.setText(favoritesData.getAdress());
 		textAddress.setTypeface(IbikeApplication.getNormalFont());
 		textFavoriteName.setText(favoritesData.getName());
@@ -340,8 +327,12 @@ public class EditFavoriteFragment extends Fragment implements APIListener {
 	}
 
 	private void popFragment() {
-		((FragmentActivity) getActivity()).getFragmentManager().popBackStack();
-		((FragmentActivity) getActivity()).getFragmentManager().executePendingTransactions();
+		
+		getActivity().setResult(FavoritesListActivity.RESULT_OK);
+		getActivity().finish();
+		
+/*		((Activity) getActivity()).getFragmentManager().popBackStack();
+		((Activity) getActivity()).getFragmentManager().executePendingTransactions(); */
 	}
 
 	@Override

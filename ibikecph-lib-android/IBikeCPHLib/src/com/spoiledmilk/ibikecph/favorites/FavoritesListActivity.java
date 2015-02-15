@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
 
+import com.spoiledmilk.ibikecph.AboutActivity;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
@@ -102,7 +103,7 @@ public class FavoritesListActivity extends Activity {
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {		
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		int menuItemIndex = item.getItemId();
 		String[] menuItems = {"Edit", "Delete"};
 		FavoritesData fav = favorites.get(info.position);
@@ -110,6 +111,15 @@ public class FavoritesListActivity extends Activity {
 		switch (menuItemIndex) {
 		case 0:
 			Log.d("JC", "Editing "+fav.getName());
+			
+	        Intent i = new Intent(this, EditFavoriteActivity.class);
+	        
+	        // Add the favorite to the intent so it can be passed on to the EditFavoriteFragment later on.
+	        i.putExtra("favoritesData", fav);
+	        
+	        this.startActivityForResult(i, ADD_FAVORITE);
+	        this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
 			break;
 			
 		case 1:
