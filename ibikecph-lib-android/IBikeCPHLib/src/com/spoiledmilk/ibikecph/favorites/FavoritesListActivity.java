@@ -94,7 +94,7 @@ public class FavoritesListActivity extends Activity {
 		Log.d("JC", "FavoritesList context menu");
 	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
 	    menu.setHeaderTitle(favorites.get(info.position).getName());
-	    String[] menuItems = {"Edit", "Delete"};
+	    String[] menuItems = {"Edit" /*, "Delete" */};
 	    for (int i = 0; i<menuItems.length; i++) {
 	    	menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -105,7 +105,7 @@ public class FavoritesListActivity extends Activity {
 	public boolean onContextItemSelected(MenuItem item) {		
 		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 		int menuItemIndex = item.getItemId();
-		String[] menuItems = {"Edit", "Delete"};
+		String[] menuItems = {"Edit" /*, "Delete" */};
 		FavoritesData fav = favorites.get(info.position);
 		
 		switch (menuItemIndex) {
