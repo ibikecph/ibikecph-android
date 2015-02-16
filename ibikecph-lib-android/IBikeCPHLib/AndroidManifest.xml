@@ -126,6 +126,8 @@
             android:name=".favorites.EditFavoriteActivity"
             android:label="@string/title_activity_edit_favorite" >
         </activity>
+        <service android:name="com.spoiledmilk.ibikecph.BikeLocationService"></service>
+
     </application>
 
 </manifest>
