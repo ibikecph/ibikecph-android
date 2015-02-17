@@ -59,7 +59,7 @@ public class SMLocationManager implements LocationListener {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         locationServicesEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        Log.i("JC", "LocationServicesEnabled = "+locationServicesEnabled);
+        Log.i("JC", "LocationServicesEnabled = " + locationServicesEnabled);
         
         if (locationServicesEnabled) {
             context.startService(new Intent(context, BikeLocationService.class));
