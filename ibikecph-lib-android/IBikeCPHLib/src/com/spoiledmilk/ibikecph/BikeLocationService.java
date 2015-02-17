@@ -12,19 +12,17 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
+import com.google.android.gms.*;
 
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.util.LOG;
 
 /**
- * A Service responsible for keeping track of a navigation context while the 
- * screen is off.
- * 
- * TODO: Think about whether it's a good idea to get the context from the 
- * SMLocationManager.
+ * A Service responsible for keeping track of GPS updates. This is done so that
+ * we can still keep track of a navigation context, even if the screen is off.
+ * And we can use it for recording tracks when the app is in the background.
  * 
  * @author jens
- *
  */
 public class BikeLocationService extends Service implements LocationListener {
 	static final int UPDATE_INTERVAL = 2000;
@@ -33,12 +31,18 @@ public class BikeLocationService extends Service implements LocationListener {
 	LocationManager androidLocationManager;
 	WakeLock wakeLock;
     boolean locationServicesEnabled;
-
+    
+    /**
+     * Start the service. Instantiates a location manager and an (as yet unused) wake lock.
+     */
 	public BikeLocationService() {
 		this.smLocationManager = SMLocationManager.getInstance();
+		this.androidLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		
-		this.androidLocationManager = (LocationManager) this.smLocationManager.getContext().getSystemService(Context.LOCATION_SERVICE);
-		
+		/**
+		 * Instantiate a wake lock so we can keep tracking while the phone is off. We're not acquiring it until the 
+		 * user starts navigation.
+		 */
 		PowerManager pm = (PowerManager) this.smLocationManager.getContext().getSystemService(Service.POWER_SERVICE);
 		this.wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BikeLocationService");
 		
@@ -69,7 +73,6 @@ public class BikeLocationService extends Service implements LocationListener {
 	
 	@Override
 	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
 		Log.i("com.spoiledmilk.ibikecph", "BikeLocationService new location");
 	}
 
