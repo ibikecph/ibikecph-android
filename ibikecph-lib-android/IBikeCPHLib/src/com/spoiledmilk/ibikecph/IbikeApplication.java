@@ -8,6 +8,7 @@ package com.spoiledmilk.ibikecph;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.text.Spanned;
@@ -27,7 +28,8 @@ public class IbikeApplication extends Application {
     public IbikePreferences settings;
     public SMDictionary dictionary;
     private static Typeface normalFont, boldFont, italicFont;
-
+    private static BikeLocationService bikeLocationService;
+    
     @Override
     public void onCreate() {
         LOG.d("Creating Application");
@@ -41,6 +43,11 @@ public class IbikeApplication extends Application {
         boldFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Bd.ttf");
         italicFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
         GoogleAnalytics.getInstance(this).setAppOptOut(!Config.ANALYTICS_ENABLED);
+        
+        
+        
+    	bikeLocationService = new BikeLocationService();
+    	//startService(new Intent(this, bikeLocationService.getClass() ));
     }
 
     public static Spanned getSpanned(String key) {
@@ -55,6 +62,10 @@ public class IbikeApplication extends Application {
         return instance.getApplicationContext();
     }
 
+    public static BikeLocationService getService() {	
+    	return bikeLocationService;
+    }
+    
     public void changeLanguage(Language language) {
         if (settings.getLanguage() != language) {
             LOG.d("Changing language to " + language.name());

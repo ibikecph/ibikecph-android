@@ -1,5 +1,7 @@
 package com.spoiledmilk.ibikecph;
 
+import java.util.ArrayList;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,10 +14,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
-import com.google.android.gms.*;
-
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
-import com.spoiledmilk.ibikecph.util.LOG;
 
 /**
  * A Service responsible for keeping track of GPS updates. This is done so that
@@ -27,23 +25,25 @@ import com.spoiledmilk.ibikecph.util.LOG;
 public class BikeLocationService extends Service implements LocationListener {
 	static final int UPDATE_INTERVAL = 2000;
 	private final IBinder binder = new BikeLocationServiceBinder();
-	SMLocationManager smLocationManager;
 	LocationManager androidLocationManager;
 	WakeLock wakeLock;
-    boolean locationServicesEnabled;
+	
+    boolean locationServicesEnabledOnPhone;
+    ArrayList<LocationListener> gpsListeners = new ArrayList<LocationListener>();
+    boolean isListeningForGPS = false;
     
     /**
-     * Start the service. Instantiates a location manager and an (as yet unused) wake lock.
+     * Instantiates a location manager and an (as yet unused) wake lock.
      */
 	public BikeLocationService() {
-		this.smLocationManager = SMLocationManager.getInstance();
-		this.androidLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		Context context = IbikeApplication.getContext();
+		this.androidLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		
 		/**
 		 * Instantiate a wake lock so we can keep tracking while the phone is off. We're not acquiring it until the 
 		 * user starts navigation.
 		 */
-		PowerManager pm = (PowerManager) this.smLocationManager.getContext().getSystemService(Service.POWER_SERVICE);
+		PowerManager pm = (PowerManager) context.getSystemService(Service.POWER_SERVICE);
 		this.wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BikeLocationService");
 		
 		Log.i("com.spoiledmilk.ibikecph", "BikeLocationService instantiated.");
@@ -53,41 +53,86 @@ public class BikeLocationService extends Service implements LocationListener {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.i("com.spoiledmilk.ibikecph", "BikeLocationService started");
 		
-		this.androidLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, 0, this.smLocationManager);
-        try {
-            this.androidLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, UPDATE_INTERVAL, 0, this.smLocationManager);
-        } catch (Exception e) {
-            LOG.e(e.getLocalizedMessage());
-        }
-		
+
 		return START_STICKY;
 	};
 	
 	
+	public void addGPSListener(LocationListener listener) {
+		gpsListeners.add(listener);
+		onListenersChange();
+	}
+	
+	public void removeGPSListener(LocationListener listener) {
+		gpsListeners.remove(listener);
+		onListenersChange();
+	}
+	
+	/**
+	 * Called whenever a GPS listener is registered or unregistered. Registers or unregisters the 
+	 * service as a GPS listener with the Android operating system, as needed.
+	 * 
+	 * This event is always called *after* adding or removing listeners from the list, so we need
+	 * to take care of two cases. If 
+	 */
+	public void onListenersChange() {
+		
+		// We registered a listener (and we can't be down from 2 because we weren't listening for 
+		// GPS in the first place)
+		if (gpsListeners.size() == 1 && !isListeningForGPS) {
+			Log.d("JC", "GPS listener added to the BikeLocationService, started listening for locations upstream.");
+			
+			this.androidLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, 0, this);
+			try {
+				this.androidLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, UPDATE_INTERVAL, 0, this);
+			} catch (IllegalArgumentException exp) {
+				// Would throw exception if NETWORK_PROVIDER isn't available. We don't care because it would just
+				// add to the precision, but it's not strictly needed since we're already getting GPS coords.
+			}
+
+			isListeningForGPS = true;
+		}
+		
+		// We unregistered the last listener. Unregister the service.
+		if (gpsListeners.size() == 0 && isListeningForGPS) {
+			Log.d("JC", "No more listeners in BikeLocationSerivce, unregistering for upstream locations.");
+			this.androidLocationManager.removeUpdates(this);
+			isListeningForGPS = false;
+		}
+	}
+	
+	
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.i("com.spoiledmilk.ibikecph", "BikeLocationService bound.");
+		Log.d("JC", "BikeLocationService bound.");
 		
 		return binder;
 	}
 	
 	@Override
 	public void onLocationChanged(Location location) {
-		Log.i("com.spoiledmilk.ibikecph", "BikeLocationService new location");
+		Log.d("JC", "BikeLocationService new location");
+		
+		// Tell all listeners about the new location.
+		for (LocationListener l : gpsListeners) {
+			l.onLocationChanged(location);
+		}
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
+        locationServicesEnabledOnPhone = androidLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || androidLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
+		locationServicesEnabledOnPhone = androidLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || androidLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
+		locationServicesEnabledOnPhone = androidLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || androidLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 	}
-
 	
 	public class BikeLocationServiceBinder extends Binder {
 		BikeLocationService getService() {
