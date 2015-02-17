@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.spoiledmilk.ibikecph.BikeLocationService;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.util.LOG;
 
 public class SMLocationManager implements LocationListener {
@@ -62,9 +63,9 @@ public class SMLocationManager implements LocationListener {
         Log.i("JC", "LocationServicesEnabled = " + locationServicesEnabled);
         
         if (locationServicesEnabled) {
-            context.startService(new Intent(context, BikeLocationService.class));
+            IbikeApplication.getService().addGPSListener(this);
         	
-            this.listener = listener;
+        	this.listener = listener;
             //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, 0, this);
             try {
                 //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, UPDATE_INTERVAL, 0, this);
