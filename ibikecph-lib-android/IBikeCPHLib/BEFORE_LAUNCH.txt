@@ -1,4 +1,0 @@
-Disable log in Config.java.
-Set the alternate tilesource to IBike in Config.java.
-Disable the Hockey update procedure in Config.java.
-Enable Google Analytics in Config.java.

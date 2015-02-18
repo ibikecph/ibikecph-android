@@ -11,7 +11,10 @@
 # generated files
 bin/
 gen/
-/build
+build
+/libraries/*/build/
+/*/build/
+out
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -26,3 +29,7 @@ local.properties
 # Emacs temporary files
 *~
 #*#
+
+/gradle/
+/gradlew
+/gradlew.bat
