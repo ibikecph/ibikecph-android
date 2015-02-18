@@ -11,6 +11,7 @@
 # generated files
 bin/
 gen/
+/build
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -18,6 +19,9 @@ local.properties
 .classpath
 .project
 .metadata
+.gradle
+/local.properties
+.idea
 
 # Emacs temporary files
 *~
