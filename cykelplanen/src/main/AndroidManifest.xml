@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.spoiledmilk.cykelsuperstier"
+    android:versionCode="27"
+    android:versionName="1.0.3">
+
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.network"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
+
+    <application
+        tools:replace="android:name, android:theme"
+        android:name="com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/CykelsuperstierTheme" >
+
+        <activity android:name="net.hockeyapp.android.UpdateActivity" />
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.SplashActivity"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.login.LoginSplashActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.map.MapActivity"
+            android:configChanges="keyboard|keyboardHidden"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.navigation.SMRouteNavigationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.map.OverlaysActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+        <activity
+            android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+        <activity
+            android:name="com.spoiledmilk.ibikecph.login.LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.spoiledmilk.ibikecph.login.RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.spoiledmilk.ibikecph.search.SearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+        <activity
+            android:name="com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.favorites.FavoritesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.spoiledmilk.ibikecph.IssuesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.spoiledmilk.ibikecph.login.FacebookProfileActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.BreakRouteSplashActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.reminders.RemindersSplashActivity"
+            android:screenOrientation="portrait" />
+
+        <receiver
+            android:name="com.spoiledmilk.cykelsuperstier.reminders.AlarmReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.spoiledmilk.cykelsuperstier.ALARM_ACTION" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.spoiledmilk.cykelsuperstier.reminders.BootReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.spoiledmilk.cykelsuperstier.reminders.ResetAlarmsService" />
+
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.break_rote.BreakRouteActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.break_rote.TransportationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.search.SearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo" />
+        <activity
+            android:name="com.spoiledmilk.ibikecph.TTSSettingsActivity"
+            android:label="@string/title_activity_ttssettings"
+            android:theme="@android:style/Theme.Holo.Light.DarkActionBar" />
+        <activity
+            android:name="com.spoiledmilk.ibikecph.favorites.FavoritesListActivity"
+            android:screenOrientation="portrait"
+            tools:replace="android:theme"
+            android:theme="@android:style/Theme.Holo.Light" />
+        <activity
+            android:name="com.spoiledmilk.ibikecph.favorites.AddFavoriteActivity"
+            android:label="@string/title_activity_add_favorite" />
+        <activity
+            android:name="com.spoiledmilk.ibikecph.favorites.EditFavoriteActivity"
+            android:label="@string/title_activity_edit_favorite" />
+
+    </application>
+
+</manifest>
