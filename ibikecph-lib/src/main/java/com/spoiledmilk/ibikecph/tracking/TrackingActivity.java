@@ -1,0 +1,60 @@
+package com.spoiledmilk.ibikecph.tracking;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
+import com.facebook.android.Util;
+import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.util.Config;
+import com.spoiledmilk.ibikecph.util.HttpUtils;
+import com.spoiledmilk.ibikecph.util.IbikePreferences;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class TrackingActivity extends Activity {
+
+    private TextView activityText, sinceText;
+
+    private String DATE_FORMAT = "dd MMMM yyyy";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_tracking);
+
+        this.activityText = (TextView) findViewById(R.id.tracking_activity_text);
+        this.sinceText    = (TextView) findViewById(R.id.tracking_activity_since);
+
+        this.activityText.setText(IbikeApplication.getString("tracking_activity"));
+        // TODO: get date of last activity
+        Date lastActivity = new Date();
+        String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(lastActivity);
+        this.sinceText.setText(IbikeApplication.getString("tracking_since") + " " + formattedDate);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_tracking, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.tracking_settings) {
+            startActivity(new Intent(this, TrackingSettingsActivity.class));
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+}

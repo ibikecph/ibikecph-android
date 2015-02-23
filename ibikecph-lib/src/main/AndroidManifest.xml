@@ -35,6 +35,8 @@
         android:name="android.hardware.wifi"
         android:required="false" />
 
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:name=".IbikeApplication"
         android:allowBackup="true"
@@ -127,8 +129,23 @@
         <activity
             android:name=".favorites.EditFavoriteActivity"
             android:label="@string/title_activity_edit_favorite"
-            android:theme="@android:style/Theme.Holo.Light.DarkActionBar"></activity>
-        <service android:name="com.spoiledmilk.ibikecph.BikeLocationService"></service>
+            android:theme="@android:style/Theme.Holo.Light.DarkActionBar" />
+
+        <service android:name=".BikeLocationService" />
+
+        <activity
+            android:name=".tracking.TrackingActivity"
+            android:label="@string/title_activity_tracking"
+            android:parentActivityName=".map.MapActivity"
+            android:theme="@android:style/Theme.Holo" />
+        <activity
+            android:name=".tracking.TrackingWelcomeActivity"
+            android:label="@string/title_activity_tracking"
+            android:theme="@android:style/Theme.Holo" />
+        <activity
+            android:name=".tracking.TrackingSettingsActivity"
+            android:label="@string/title_activity_tracking_settings"
+            android:theme="@android:style/Theme.Holo" />
     </application>
 
 </manifest>

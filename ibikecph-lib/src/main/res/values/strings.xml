@@ -19,5 +19,7 @@
     <string name="title_activity_favorites_list">FavoritesListActivity</string>
     <string name="title_activity_add_favorite">AddFavoriteActivity</string>
     <string name="title_activity_edit_favorite">EditFavoriteActivity</string>
+    <string name="title_activity_tracking">GPS Tracking</string>
+    <string name="title_activity_tracking_settings">GPS Tracking Settings</string>
 
 </resources>

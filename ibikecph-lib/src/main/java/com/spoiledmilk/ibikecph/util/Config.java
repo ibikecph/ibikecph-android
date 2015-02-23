@@ -42,4 +42,8 @@ public class Config {
 	
 	public static boolean EXTENDED_PULL_TOUCH = true;
 	public static boolean TTS_ENABLED = true;
+
+    // TODO: get real urls
+    public static String TRACKING_TERMS_URL = "http://google.com";
+    public static String TRACKING_USAGE_URL = "http://google.com";
 }

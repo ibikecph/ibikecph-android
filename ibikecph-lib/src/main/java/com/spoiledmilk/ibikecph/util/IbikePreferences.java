@@ -22,16 +22,18 @@ public class IbikePreferences {
 
     public static boolean REMEMBER_MAP_STATE = false;
 
-    public static final String PREFS_TILE_SOURCE = "tilesource";
-    public static final String PREFS_SCROLL_X = "scrollX";
-    public static final String PREFS_SCROLL_Y = "scrollY";
-    public static final String PREFS_ZOOM_LEVEL = "zoomLevel";
-    public static final String PREFS_SHOW_LOCATION = "showLocation";
-    public static final String PREFS_SHOW_COMPASS = "showCompass";
-
-    public static final String PREFS_LANGUAGE = "language";
-
-    public static final String PREFS_OVERLAYS = "overlays";
+    public static final String PREFS_TILE_SOURCE      = "tilesource";
+    public static final String PREFS_SCROLL_X         = "scrollX";
+    public static final String PREFS_SCROLL_Y         = "scrollY";
+    public static final String PREFS_ZOOM_LEVEL       = "zoomLevel";
+    public static final String PREFS_SHOW_LOCATION    = "showLocation";
+    public static final String PREFS_SHOW_COMPASS     = "showCompass";
+    public static final String PREFS_LANGUAGE         = "language";
+    public static final String PREFS_OVERLAYS         = "overlays";
+    public static final String PREFS_TRACKING_ENABLED = "trackingEnabled";
+    public static final String PREFS_NOTIFY_MILESTONE = "notifyMilestone";
+    public static final String PREFS_NOTIFY_WEEKLY    = "notifyWeekly";
+    public static final String PREFS_SHARE_DATA       = "notifyWeekly";
 
     public static final int ROUTE_COLOR = Color.rgb(0, 174, 239);
     public static final float ROUTE_STROKE_WIDTH = 10.0f;
@@ -39,6 +41,7 @@ public class IbikePreferences {
     public static final int ROUTE_DIMMED_COLOR = Color.LTGRAY;
 
     public static final float DEFAULT_ZOOM_LEVEL = 17.0f;
+
 
     public enum Language {
         UNDEFINED, ENG, DAN
@@ -93,6 +96,38 @@ public class IbikePreferences {
         languageNames[0] = IbikeApplication.getString("language_eng");
         languageNames[1] = IbikeApplication.getString("language_dan");
         return languageNames;
+    }
+
+    public void setTrackingEnabled(boolean trackingEnabled) {
+        getPrefs().edit().putBoolean(PREFS_TRACKING_ENABLED, trackingEnabled).commit();
+    }
+
+    public boolean getTrackingEnabled() {
+        return getPrefs().getBoolean(PREFS_TRACKING_ENABLED, false);
+    }
+
+    public void setNotifyMilestone(boolean notifyMilestone) {
+        getPrefs().edit().putBoolean(PREFS_NOTIFY_MILESTONE, notifyMilestone).commit();
+    }
+
+    public boolean getNotifyMilestone() {
+        return getPrefs().getBoolean(PREFS_NOTIFY_MILESTONE, true);
+    }
+
+    public void setNotifyWeekly(boolean notifyWeekly) {
+        getPrefs().edit().putBoolean(PREFS_NOTIFY_WEEKLY, notifyWeekly).commit();
+    }
+
+    public boolean getNotifyWeekly() {
+        return getPrefs().getBoolean(PREFS_NOTIFY_WEEKLY, true);
+    }
+
+    public boolean getShareData() {
+        return getPrefs().getBoolean(PREFS_SHARE_DATA, false);
+    }
+
+    public void setShareData(boolean shareData) {
+        getPrefs().edit().putBoolean(PREFS_SHARE_DATA, shareData).commit();
     }
 
     public void setOverlay(OverlayType type, boolean value) {
