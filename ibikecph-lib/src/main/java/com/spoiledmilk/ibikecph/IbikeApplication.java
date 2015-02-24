@@ -43,9 +43,7 @@ public class IbikeApplication extends Application {
         boldFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Bd.ttf");
         italicFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
         GoogleAnalytics.getInstance(this).setAppOptOut(!Config.ANALYTICS_ENABLED);
-        
-        
-        
+
     	bikeLocationService = new BikeLocationService();
     	//startService(new Intent(this, bikeLocationService.getClass() ));
     }

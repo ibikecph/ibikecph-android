@@ -1,7 +1,5 @@
 package com.spoiledmilk.ibikecph;
 
-import java.util.ArrayList;
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +12,14 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.ActivityRecognition;
+import com.google.android.gms.location.ActivityRecognitionResult;
+
+import java.util.ArrayList;
+
 
 /**
  * A Service responsible for keeping track of GPS updates. This is done so that
@@ -22,7 +28,7 @@ import android.util.Log;
  * 
  * @author jens
  */
-public class BikeLocationService extends Service implements LocationListener {
+public class BikeLocationService extends Service implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 	static final int UPDATE_INTERVAL = 2000;
 	private final IBinder binder = new BikeLocationServiceBinder();
 	LocationManager androidLocationManager;
@@ -31,7 +37,8 @@ public class BikeLocationService extends Service implements LocationListener {
     boolean locationServicesEnabledOnPhone;
     ArrayList<LocationListener> gpsListeners = new ArrayList<LocationListener>();
     boolean isListeningForGPS = false;
-    
+    private GoogleApiClient mGoogleApiClient;
+
     /**
      * Instantiates a location manager and an (as yet unused) wake lock.
      */
@@ -46,13 +53,27 @@ public class BikeLocationService extends Service implements LocationListener {
 		PowerManager pm = (PowerManager) context.getSystemService(Service.POWER_SERVICE);
 		this.wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BikeLocationService");
 		
-		Log.i("com.spoiledmilk.ibikecph", "BikeLocationService instantiated.");
+		Log.i("JC", "BikeLocationService instantiated.");
+
+        buildGoogleApiClient();
 	}
 
+    /**
+     * Establishes a connection to the Google API, and registers as listener for
+     * location updates (including activity recognition updates).
+     */
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(IbikeApplication.getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        Log.i("JC", "Registered for Google Location API");
+    }
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.i("com.spoiledmilk.ibikecph", "BikeLocationService started");
-		
+		Log.i("JC", "BikeLocationService started");
 
 		return START_STICKY;
 	};
@@ -133,8 +154,23 @@ public class BikeLocationService extends Service implements LocationListener {
 	public void onProviderDisabled(String provider) {
 		locationServicesEnabledOnPhone = androidLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || androidLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 	}
-	
-	public class BikeLocationServiceBinder extends Binder {
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    public class BikeLocationServiceBinder extends Binder {
 		BikeLocationService getService() {
 			return BikeLocationService.this;
 		}
