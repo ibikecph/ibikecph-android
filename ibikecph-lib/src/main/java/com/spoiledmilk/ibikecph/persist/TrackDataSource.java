@@ -3,6 +3,7 @@ package com.spoiledmilk.ibikecph.persist;
 import android.content.Context;
 
 import java.util.Date;
+import java.util.List;
 
 import io.realm.RealmResults;
 
@@ -55,6 +56,16 @@ public class TrackDataSource extends DataSource {
         realm.beginTransaction();
 
         track.getLocations().add(location);
+
+        realm.commitTransaction();
+    }
+
+    public void addLocationsToTrack(Track track, List<TrackLocation> locationList) {
+        realm.beginTransaction();
+
+        for (TrackLocation l : locationList) {
+            track.getLocations().add(l);
+        }
 
         realm.commitTransaction();
     }
