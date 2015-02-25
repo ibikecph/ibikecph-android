@@ -3,6 +3,7 @@ package com.spoiledmilk.ibikecph.tracking;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.facebook.android.Util;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
@@ -22,7 +24,7 @@ import java.util.Date;
 public class TrackingActivity extends Activity {
 
     private TextView activityText, sinceText;
-
+    TrackingManager trackingManager;
     private String DATE_FORMAT = "dd MMMM yyyy";
 
     @Override
@@ -38,6 +40,8 @@ public class TrackingActivity extends Activity {
         Date lastActivity = new Date();
         String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(lastActivity);
         this.sinceText.setText(IbikeApplication.getString("tracking_since") + " " + formattedDate);
+
+        trackingManager = TrackingManager.getInstance();
     }
 
 
@@ -56,5 +60,17 @@ public class TrackingActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void btnStartTrackingOnClick(View v) {
+        trackingManager.startTracking();
+    }
+
+    public void btnStopTrackingOnClick(View v) {
+        Track t = trackingManager.getLocationsAsTrack();
+
+        Log.d("JC", "Stopped tracking, got number of points: " + t.getLocations().size());
+
+        trackingManager.stopTracking();
     }
 }
