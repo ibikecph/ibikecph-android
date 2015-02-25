@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.location.Location;
+import io.realm.Realm;
 import io.realm.RealmObject;
 
 public class TrackLocation extends RealmObject {
@@ -64,18 +65,4 @@ public class TrackLocation extends RealmObject {
         this.verticalAccuracy = verticalAccuracy;
     }
 
-    public static TrackLocation fromLocation(Location l) {
-        TrackLocation tl = new TrackLocation();
-        tl.setLatitude(l.getLatitude());
-        tl.setLongitude(l.getLongitude());
-        tl.setTimestamp(new Date(l.getTime()));
-        tl.setAltitude(l.getAltitude());
-
-        // This is potentially bad. We don't have a measure of the horizontal and vertical accuracies, but we do have
-        // one for the accuracy all in all. We just set that for both fields.
-        tl.setHorizontalAccuracy(l.getAccuracy());
-        tl.setVerticalAccuracy(l.getAccuracy());
-
-        return tl;
-    }
 }

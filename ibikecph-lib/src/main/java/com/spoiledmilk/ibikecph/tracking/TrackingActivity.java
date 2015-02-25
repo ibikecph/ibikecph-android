@@ -16,6 +16,7 @@ import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
+import io.realm.Realm;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -26,6 +27,7 @@ public class TrackingActivity extends Activity {
     private TextView activityText, sinceText;
     TrackingManager trackingManager;
     private String DATE_FORMAT = "dd MMMM yyyy";
+    private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class TrackingActivity extends Activity {
         this.sinceText.setText(IbikeApplication.getString("tracking_since") + " " + formattedDate);
 
         trackingManager = TrackingManager.getInstance();
+        realm = Realm.getInstance(this);
     }
 
 
@@ -67,10 +70,17 @@ public class TrackingActivity extends Activity {
     }
 
     public void btnStopTrackingOnClick(View v) {
+        trackingManager.stopTracking();
+
+        // This is a hack. We shouldn't put the locations into a Track before we have a Realm instance.
+        // Refactor TrackingManager.
         Track t = trackingManager.getLocationsAsTrack();
 
         Log.d("JC", "Stopped tracking, got number of points: " + t.getLocations().size());
 
-        trackingManager.stopTracking();
+        realm.beginTransaction();
+        Track track = realm.createObject(Track.class);
+        track.setLocations(t.getLocations());
+        realm.commitTransaction();
     }
 }
