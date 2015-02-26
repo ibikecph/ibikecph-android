@@ -37,12 +37,14 @@ import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
+import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+import io.realm.Realm;
 
 /**
  * A menu that can be spawned in the MapActivity. It allows the user to access
@@ -215,10 +217,11 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     public void spawnTrackingActivity() {
         Intent i;
         IbikePreferences settings = IbikeApplication.getSettings();
-        if (settings.getTrackingEnabled()) {
-            i = new Intent(getActivity(), TrackingActivity.class);
-        } else {
+        if (!settings.getTrackingEnabled() &&
+            Realm.getInstance(IbikeApplication.getContext()).allObjects(Track.class).size() == 0) {
             i = new Intent(getActivity(), TrackingWelcomeActivity.class);
+        } else {
+            i = new Intent(getActivity(), TrackingActivity.class);
         }
         getActivity().startActivity(i);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
