@@ -60,6 +60,10 @@ public class TrackingManager implements LocationListener {
         return t;
     }
 
+    public boolean isTracking() {
+        return this.isTracking;
+    }
+
     /***
      * Called when the GPS service has a new location ready. Adds the given location to the current track if we're
      * tracking locations.

@@ -39,5 +39,43 @@
             android:id="@+id/btnStopTracking"
             android:onClick="btnStopTrackingOnClick" android:layout_alignTop="@+id/btnStartTracking"
             android:layout_alignParentRight="true" android:layout_alignParentEnd="true"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0"
+            android:id="@+id/distanceTextView"
+            android:layout_marginTop="45dp" android:layout_below="@+id/tracking_stats"
+            android:layout_alignRight="@+id/btnStartTracking" android:layout_alignEnd="@+id/btnStartTracking"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0"
+            android:id="@+id/speedTextView"
+            android:layout_alignTop="@+id/distanceTextView" android:layout_toRightOf="@+id/tracking_stats"
+            android:layout_toEndOf="@+id/tracking_stats"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0"
+            android:id="@+id/avgPerTrackDistanceTextView"
+            android:layout_alignTop="@+id/timeTextView" android:layout_alignLeft="@+id/distanceTextView"
+            android:layout_alignStart="@+id/distanceTextView"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0"
+            android:id="@+id/timeTextView"
+            android:layout_above="@+id/btnStopTracking" android:layout_alignLeft="@+id/btnStopTracking"
+            android:layout_alignStart="@+id/btnStopTracking"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/trackingStatusTextView" android:layout_below="@+id/btnStartTracking"
+            android:layout_centerHorizontal="true" android:layout_marginTop="56dp"/>
 
 </RelativeLayout>

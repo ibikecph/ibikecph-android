@@ -65,4 +65,16 @@ public class TrackLocation extends RealmObject {
         this.verticalAccuracy = verticalAccuracy;
     }
 
+    public double getDistanceTo(TrackLocation thereTrackLocation) {
+        Location here = new Location("TrackLocation");
+        here.setLatitude(this.getLatitude());
+        here.setLongitude(this.getLongitude());
+
+        Location there = new Location("TrackLocation");
+        there.setLatitude(thereTrackLocation.getLatitude());
+        there.setLongitude(thereTrackLocation.getLongitude());
+
+        return here.distanceTo(there);
+    }
+
 }
