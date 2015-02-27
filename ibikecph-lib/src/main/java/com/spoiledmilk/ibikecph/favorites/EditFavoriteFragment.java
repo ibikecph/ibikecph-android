@@ -7,7 +7,6 @@ package com.spoiledmilk.ibikecph.favorites;
 
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Fragment;
@@ -209,7 +208,7 @@ public class EditFavoriteFragment extends Fragment implements APIListener {
 										temp.setApiId(apiId);
 									}
 								}
-								JsonNode ret = HttpUtils.deleteFromServer(Config.serverUrl + "/favourites/" + temp.getApiId(), postObject);
+								JsonNode ret = HttpUtils.deleteFromServer(Config.API_URL + "/favourites/" + temp.getApiId(), postObject);
 								if (ret != null && ret.has("success")) {
 									if (ret.path("success").asBoolean()) {
 										if (getActivity() != null) {
