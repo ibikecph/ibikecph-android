@@ -7,12 +7,12 @@
 package com.spoiledmilk.ibikecph;
 
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.text.Spanned;
-
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
@@ -44,8 +44,9 @@ public class IbikeApplication extends Application {
         italicFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
         GoogleAnalytics.getInstance(this).setAppOptOut(!Config.ANALYTICS_ENABLED);
 
-    	bikeLocationService = new BikeLocationService();
-    	//startService(new Intent(this, bikeLocationService.getClass() ));
+    	// bikeLocationService = new BikeLocationService();
+        ComponentName serviceComponent = startService(new Intent(this, BikeLocationService.class ));
+        ComponentName activityServiceComponent = startService(new Intent(this, BikeActivityService.class));
     }
 
     public static Spanned getSpanned(String key) {

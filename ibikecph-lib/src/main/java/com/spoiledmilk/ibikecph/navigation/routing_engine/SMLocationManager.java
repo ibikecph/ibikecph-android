@@ -63,8 +63,11 @@ public class SMLocationManager implements LocationListener {
         Log.i("JC", "LocationServicesEnabled = " + locationServicesEnabled);
         
         if (locationServicesEnabled) {
-            IbikeApplication.getService().addGPSListener(this);
-        	
+            //IbikeApplication.getService().addGPSListener(this);
+
+            Intent subscriptionIntent = new Intent(getContext(), BikeLocationService.class);
+            getContext().startService(subscriptionIntent);
+
         	this.listener = listener;
             //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, 0, this);
             try {

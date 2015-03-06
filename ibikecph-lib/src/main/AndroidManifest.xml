@@ -131,7 +131,8 @@
             android:label="@string/title_activity_edit_favorite"
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar" />
 
-        <service android:name=".BikeLocationService" />
+        <service android:name=".BikeLocationService" > </service>
+        <service android:name=".BikeActivityService" > </service>
 
         <activity
             android:name=".tracking.TrackingActivity"

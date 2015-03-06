@@ -1,7 +1,5 @@
 package com.spoiledmilk.ibikecph;
 
-import android.app.Activity;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -14,12 +12,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
-import android.widget.Toast;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.*;
 
 import java.util.ArrayList;
 
@@ -31,7 +23,7 @@ import java.util.ArrayList;
  *
  * @author jens
  */
-public class BikeLocationService extends Service implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+public class BikeLocationService extends Service implements LocationListener {
 	static final int UPDATE_INTERVAL = 2000;
 	private final IBinder binder = new BikeLocationServiceBinder();
 	LocationManager androidLocationManager;
@@ -40,13 +32,13 @@ public class BikeLocationService extends Service implements LocationListener, Go
     boolean locationServicesEnabledOnPhone;
     ArrayList<LocationListener> gpsListeners = new ArrayList<LocationListener>();
     boolean isListeningForGPS = false;
-    private GoogleApiClient mGoogleApiClient;
-    private PendingIntent mActivityDetectionPendingIntent;
 
     /**
      * Instantiates a location manager and an (as yet unused) wake lock.
      */
-	public BikeLocationService() {
+	public BikeLocationService( ) {
+        super();
+
 		Context context = IbikeApplication.getContext();
 		this.androidLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
@@ -58,34 +50,10 @@ public class BikeLocationService extends Service implements LocationListener, Go
 		this.wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BikeLocationService");
 
 		Log.i("JC", "BikeLocationService instantiated.");
-
-        buildGoogleApiClient();
 	}
 
-    /**
-     * Establishes a connection to the Google API, and registers as listener for
-     * location updates (including activity recognition updates).
-     */
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(IbikeApplication.getContext())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(ActivityRecognition.API)
-                .build();
-
-        mGoogleApiClient.connect();
-
-        Log.i("JC", "Registered for Google Activity Recognition API");
-        Toast.makeText(IbikeApplication.getContext(), "Got Google Activity Recognition API", Toast.LENGTH_LONG).show();
-    }
 
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.d("JC", "BikeLocationService started");
-
-        // ensure the google api client is running
-        if (mGoogleApiClient != null && !mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
-            mGoogleApiClient.connect();
-        }
 
 		return START_STICKY;
 	}
@@ -100,53 +68,6 @@ public class BikeLocationService extends Service implements LocationListener, Go
 		onListenersChange();
 	}
 
-    /**
-     * Intent handler used for the Activity recognition
-     * @param intent
-     */
-    public void onHandleIntent(Intent intent) {
-        Log.i("JC", "BikeLocationService got an intent");
-
-        if (ActivityRecognitionResult.hasResult(intent)) {
-            Log.i("JC", "BikeLocationService got activity update");
-            ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
-            DetectedActivity mostProbableActivity = result.getMostProbableActivity();
-            int confidence = mostProbableActivity.getConfidence();
-            int activityType = mostProbableActivity.getType();
-            mostProbableActivity.getVersionCode();
-
-            Log.d("JC", "BikeLocationService: Activity: " + getNameFromType(activityType) + "confidence: "+confidence);
-            Toast.makeText(IbikeApplication.getContext(), getNameFromType(activityType), Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /**
-     * Map detected activity types to strings
-     * Copied from: http://stackoverflow.com/questions/24818517/activity-recognition-api /jc
-     *
-     * @param activityType The detected activity type
-     * @return A user-readable name for the type
-     */
-    private String getNameFromType(int activityType) {
-        switch (activityType) {
-            case DetectedActivity.IN_VEHICLE:
-                return "in_vehicle";
-            case DetectedActivity.ON_BICYCLE:
-                return "on_bicycle";
-            case DetectedActivity.RUNNING:
-                return "running";
-            case DetectedActivity.WALKING:
-                return "walking";
-            case DetectedActivity.ON_FOOT:
-                return "on_foot";
-            case DetectedActivity.STILL:
-                return "still";
-            case DetectedActivity.TILTING:
-                return "tilting";
-            default:
-                return "unknown";
-        }
-    }
 
 	/**
 	 * Called whenever a GPS listener is registered or unregistered. Registers or unregisters the
@@ -212,68 +133,6 @@ public class BikeLocationService extends Service implements LocationListener, Go
 		locationServicesEnabledOnPhone = androidLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || androidLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 	}
 
-    /**
-     * Gets a PendingIntent to be sent for each activity detection.
-     */
-    private PendingIntent getActivityDetectionPendingIntent() {
-        // Reuse the PendingIntent if we already have it.
-        if (mActivityDetectionPendingIntent != null) {
-            return mActivityDetectionPendingIntent;
-        }
-        Intent intent = new Intent(IbikeApplication.getContext(), BikeLocationService.class);
-
-        // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
-        // requestActivityUpdates() and removeActivityUpdates().
-        return PendingIntent.getService(IbikeApplication.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    /**
-     * When connected to the Google Play API
-     * @param bundle
-     */
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.d("JC", "Connected to the Google API");
-
-        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
-                mGoogleApiClient,
-                5000,
-                getActivityDetectionPendingIntent()
-        ).setResultCallback(this);
-
-        Log.d("JC", "Asked for activity recognition updates");
-    }
-
-
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.d("JC", "Suspended from the Google API");
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d("JC", "Failed to connect to the Google API");
-
-    }
-
-    /**
-     * Runs when the result of calling requestActivityUpdates() and removeActivityUpdates() becomes
-     * available. Either method can complete successfully or with an error.
-     *
-     * @param status The Status returned through a PendingIntent when requestActivityUpdates()
-     *               or removeActivityUpdates() are called.
-     */
-    @Override
-    public void onResult(Status status) {
-        if(status.isSuccess()) {
-            Log.d("JC", "BikeLocationService.onResult success");
-
-        } else {
-            Log.d("JC", "BikeLocationService.onResult fail");
-        }
-    }
 
     public class BikeLocationServiceBinder extends Binder {
 		BikeLocationService getService() {

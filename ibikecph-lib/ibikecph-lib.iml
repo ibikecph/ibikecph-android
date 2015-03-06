@@ -9,6 +9,7 @@
     <facet type="android" name="Android">
       <configuration>
         <option name="SELECTED_BUILD_VARIANT" value="debug" />
+        <option name="SELECTED_TEST_ARTIFACT" value="_android_test_" />
         <option name="ASSEMBLE_TASK_NAME" value="assembleDebug" />
         <option name="COMPILE_JAVA_TASK_NAME" value="compileDebugSources" />
         <option name="ASSEMBLE_TEST_TASK_NAME" value="assembleDebugTest" />
@@ -87,18 +88,19 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="HockeySDK-3.0.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-location-6.5.87" level="project" />
-    <orderEntry type="library" exported="" name="realm-android-0.78.0" level="project" />
-    <orderEntry type="library" exported="" name="play-services-location-6.5.87" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="play-services-maps-6.5.87" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="jackson-annotations-2.0.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-base-6.5.87" level="project" />
+    <orderEntry type="library" exported="" name="jackson-databind-2.0.0" level="project" />
+    <orderEntry type="library" exported="" name="libGoogleAnalyticsV2" level="project" />
+    <orderEntry type="library" exported="" name="realm-android-0.78.0" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
+    <orderEntry type="library" exported="" name="cwac-wakeful-1.0.5" level="project" />
     <orderEntry type="library" exported="" name="bolts-android-1.1.4" level="project" />
     <orderEntry type="library" exported="" name="facebook-android-sdk-3.22.0" level="project" />
-    <orderEntry type="library" exported="" name="libGoogleAnalyticsV2" level="project" />
-    <orderEntry type="library" exported="" name="jackson-databind-2.0.0" level="project" />
     <orderEntry type="library" exported="" name="jackson-core-2.0.0" level="project" />
     <orderEntry type="module" module-name="osmdroid-lib" exported="" />
   </component>
 </module>
+
