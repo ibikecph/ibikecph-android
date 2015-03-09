@@ -1,10 +1,10 @@
 package com.spoiledmilk.ibikecph.tracking;
 
-import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
+import com.google.android.gms.location.DetectedActivity;
 import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.persist.Track;
@@ -101,5 +101,13 @@ public class TrackingManager implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
         this.stopTracking();
+    }
+
+    public void onActivityChanged(int activityType, int confidence) {
+        if (activityType == DetectedActivity.ON_BICYCLE && !this.isTracking) {
+            startTracking();
+        } else if(activityType != DetectedActivity.ON_BICYCLE && this.isTracking) {
+            stopTracking();
+        }
     }
 }

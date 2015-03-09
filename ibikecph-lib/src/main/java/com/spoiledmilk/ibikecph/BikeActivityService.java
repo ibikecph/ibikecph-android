@@ -12,6 +12,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
+import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 
 /**
  * Created by jens on 3/6/15.
@@ -19,6 +20,7 @@ import com.google.android.gms.location.DetectedActivity;
 public class BikeActivityService extends WakefulIntentService implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
 
+    private static final int CONFIDENCE_THRESHOLD = 0 ;
     private GoogleApiClient mGoogleApiClient;
     private PendingIntent mActivityDetectionPendingIntent;
 
@@ -44,6 +46,7 @@ public class BikeActivityService extends WakefulIntentService implements GoogleA
         mGoogleApiClient.connect();
 
     }
+    
     public void ensureGoogle() {
         // ensure the google api client is running
         if (mGoogleApiClient == null)
@@ -70,7 +73,11 @@ public class BikeActivityService extends WakefulIntentService implements GoogleA
             mostProbableActivity.getVersionCode();
 
             Log.d("JC", "BikeActivityService: Activity: " + getNameFromType(activityType) + ", confidence: "+confidence);
-            // Toast.makeText(IbikeApplication.getContext(), getNameFromType(activityType), Toast.LENGTH_LONG).show();
+
+            // If we trust the reading, send it downstream.
+            if (confidence > CONFIDENCE_THRESHOLD) {
+                TrackingManager.getInstance().onActivityChanged(activityType, confidence);
+            }
         }
     }
 
@@ -81,7 +88,7 @@ public class BikeActivityService extends WakefulIntentService implements GoogleA
      * @param activityType The detected activity type
      * @return A user-readable name for the type
      */
-    private String getNameFromType(int activityType) {
+    private static String getNameFromType(int activityType) {
         switch (activityType) {
             case DetectedActivity.IN_VEHICLE:
                 return "in_vehicle";
