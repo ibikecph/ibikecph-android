@@ -91,7 +91,7 @@ public class TrackingActivity extends Activity {
     public void btnStopTrackingOnClick(View v) {
         trackingManager.stopTracking(true);
 
-        Log.d("JC", "Stopped tracking, got number of points: " + t.getLocations().size());
+        Log.d("JC", "Stopped tracking");
 
         getTracks();
         this.updateStrings();
