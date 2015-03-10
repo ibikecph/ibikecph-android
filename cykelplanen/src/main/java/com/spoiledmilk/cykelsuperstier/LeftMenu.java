@@ -18,9 +18,15 @@ import com.spoiledmilk.cykelsuperstier.favorites.AddFavoriteFragment;
 import com.spoiledmilk.cykelsuperstier.favorites.EditFavoriteFragment;
 import com.spoiledmilk.cykelsuperstier.favorites.FavoritesAdapter;
 import com.spoiledmilk.cykelsuperstier.map.OverlaysActivity;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenuItem;
+import com.spoiledmilk.ibikecph.persist.Track;
+import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
+import com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity;
+import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+import io.realm.Realm;
 
 public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 
@@ -90,8 +96,22 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 	public void spawnLoginActivity() {
 		super.spawnLoginActivity();
 	}
-	
-	protected int getMenuItemSelectedColor() {
+
+    public void spawnTrackingActivity() {
+        Intent i;
+        IbikePreferences settings = IbikeApplication.getSettings();
+        if (!settings.getTrackingEnabled() &&
+                Realm.getInstance(IbikeApplication.getContext()).allObjects(Track.class).size() == 0) {
+            i = new Intent(getActivity(), TrackingWelcomeActivity.class);
+        } else {
+            i = new Intent(getActivity(), TrackingActivity.class);
+        }
+        getActivity().startActivity(i);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+
+    protected int getMenuItemSelectedColor() {
 		return getActivity().getResources().getColor(R.color.Orange);
 	}
 

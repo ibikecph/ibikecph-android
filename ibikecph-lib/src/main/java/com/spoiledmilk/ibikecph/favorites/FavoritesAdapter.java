@@ -14,7 +14,6 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -113,7 +112,7 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						HttpUtils.postToServer(Config.serverUrl + "/favourites/reorder", postObject);
+						HttpUtils.postToServer(Config.API_URL + "/favourites/reorder", postObject);
 					}
 				}).start();
 			} catch (JSONException e) {

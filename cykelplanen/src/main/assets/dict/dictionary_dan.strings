@@ -344,3 +344,16 @@
 
 
 "old_password" = "Gammel adgangskode";
+
+"tracking" = "GPS Tracking";
+"tracking_intro" = "Se hvor meget og hvor hurtigt du cykler";
+"tracking_enable" = "Slå GPS tracking til";
+"tracking_terms" = "Når du har slået tracking til gemmes data om dine cykelture på telefonen. Dine data er ikke tilgængelige for andre. Hvis du sletter denne app slettes dine data også. Du kan altid slå tracking, notifikationer og opsummeringer fra og til under indstillinger for tracking.";
+"tracking_terms_link" = "Læs om vores politik, persondata- og datalagring her.";
+"tracking_notify_milestone" = "Notifikation om milepæle";
+"tracking_notify_weekly" = "Ugentligt status nitifikation";
+"tracking_share_data" = "Del data med Københavns Kommune";
+"tracking_share_data_info" = "Når du deler data med kommunen vil dine data blive anonymiseret således at ingen kan se hvem du er. Men kun se hvilke ruter du har kørt.";
+"tracking_share_data_usage" = "Læs mere om hvad kommunen bruger dine data til.";
+"tracking_activity" = "DIN CYKEL CYKELAKTIVITET";
+"tracking_since" = "SIDEN";

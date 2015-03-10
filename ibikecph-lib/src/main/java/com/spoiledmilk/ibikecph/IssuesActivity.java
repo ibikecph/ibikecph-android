@@ -232,7 +232,7 @@ public class IssuesActivity extends Activity {
 						}
 						jsonIssue.put("comment", comment);
 						jsonPost.put("issue", jsonIssue);
-						response = HttpUtils.postToServer(Config.serverUrl + "/issues", jsonPost);
+						response = HttpUtils.postToServer(Config.API_URL + "/issues", jsonPost);
 						IbikeApplication.getTracker().sendEvent("Report", "Completed", "", (long) 0);
 					} catch (JSONException e) {
 						LOG.e(e.getLocalizedMessage());

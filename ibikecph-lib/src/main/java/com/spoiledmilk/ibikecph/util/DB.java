@@ -269,8 +269,8 @@ public class DB extends SQLiteOpenHelper {
 				Thread thread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						LOG.d("Server request: " + Config.serverUrl + "/routes");
-						HttpUtils.postToServer(Config.serverUrl + "/routes", postObject);
+						LOG.d("Server request: " + Config.API_URL + "/routes");
+						HttpUtils.postToServer(Config.API_URL + "/routes", postObject);
 					}
 				});
 				thread.start();
@@ -286,7 +286,7 @@ public class DB extends SQLiteOpenHelper {
 		if (IbikeApplication.isUserLogedIn()) {
 			String authToken = IbikeApplication.getAuthToken();
 			try {
-				JsonNode getObject = HttpUtils.getFromServer(Config.serverUrl + "/routes?auth_token=" + authToken);
+				JsonNode getObject = HttpUtils.getFromServer(Config.API_URL + "/routes?auth_token=" + authToken);
 				if (getObject != null) {
 					IbikeApplication.setHistoryFetched(true);
 					boolean success = getObject.get("success").asBoolean();
@@ -352,8 +352,8 @@ public class DB extends SQLiteOpenHelper {
 					Thread thread = new Thread(new Runnable() {
 						@Override
 						public void run() {
-							LOG.d("Server request: " + Config.serverUrl + "/favourites");
-							JsonNode responseNode = HttpUtils.postToServer(Config.serverUrl + "/favourites", postObject);
+							LOG.d("Server request: " + Config.API_URL + "/favourites");
+							JsonNode responseNode = HttpUtils.postToServer(Config.API_URL + "/favourites", postObject);
 							if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
 								int id = responseNode.get("data").get("id").asInt();
 								SQLiteDatabase db = getWritableDatabase();
@@ -369,8 +369,8 @@ public class DB extends SQLiteOpenHelper {
 					});
 					thread.start();
 				} else {
-					LOG.d("Server request: " + Config.serverUrl + "/favourites");
-					JsonNode responseNode = HttpUtils.postToServer(Config.serverUrl + "/favourites", postObject);
+					LOG.d("Server request: " + Config.API_URL + "/favourites");
+					JsonNode responseNode = HttpUtils.postToServer(Config.API_URL + "/favourites", postObject);
 					if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
 						int id = responseNode.get("data").get("id").asInt();
 						SQLiteDatabase db = getWritableDatabase();
@@ -434,7 +434,7 @@ public class DB extends SQLiteOpenHelper {
 		if (IbikeApplication.isUserLogedIn()) {
 			String authToken = IbikeApplication.getAuthToken();
 			try {
-				JsonNode getObject = HttpUtils.getFromServer(Config.serverUrl + "/favourites?auth_token=" + authToken);
+				JsonNode getObject = HttpUtils.getFromServer(Config.API_URL + "/favourites?auth_token=" + authToken);
 				if (getObject != null && getObject.has("data")) {
 					SQLiteDatabase db = this.getWritableDatabase();
 					if (db != null) {
@@ -657,7 +657,7 @@ public class DB extends SQLiteOpenHelper {
 				Thread thread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						JsonNode node = HttpUtils.putToServer(Config.serverUrl + "/favourites/" + fd.getApiId(), postObject);
+						JsonNode node = HttpUtils.putToServer(Config.API_URL + "/favourites/" + fd.getApiId(), postObject);
 						if (listener != null) {
 							boolean success = false;
 							if (node != null && node.has("success") && node.get("success").asBoolean()) {
@@ -683,7 +683,7 @@ public class DB extends SQLiteOpenHelper {
 				Thread thread = new Thread(new Runnable() {
 					@Override
 					public void run() {
-						HttpUtils.deleteFromServer(Config.serverUrl + "/favourites/" + fd.getApiId(), postObject);
+						HttpUtils.deleteFromServer(Config.API_URL + "/favourites/" + fd.getApiId(), postObject);
 					}
 				});
 				thread.start();
@@ -716,7 +716,7 @@ public class DB extends SQLiteOpenHelper {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						HttpUtils.postToServer(Config.serverUrl + "/routes", postObject);
+						HttpUtils.postToServer(Config.API_URL + "/routes", postObject);
 					}
 				}).start();
 

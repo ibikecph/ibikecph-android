@@ -63,8 +63,11 @@ public class SMLocationManager implements LocationListener {
         Log.i("JC", "LocationServicesEnabled = " + locationServicesEnabled);
         
         if (locationServicesEnabled) {
-            IbikeApplication.getService().addGPSListener(this);
-        	
+            //IbikeApplication.getService().addGPSListener(this);
+
+            Intent subscriptionIntent = new Intent(getContext(), BikeLocationService.class);
+            getContext().startService(subscriptionIntent);
+
         	this.listener = listener;
             //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, 0, this);
             try {
@@ -112,7 +115,7 @@ public class SMLocationManager implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-		Log.i("JC", "SMLocationManager new location");
+		//Log.i("JC", "SMLocationManager new location");
         // Ignore temporary non-gps fix
         if (shouldIgnore(location.getProvider(), System.currentTimeMillis())) {
             LOG.d("SMLocationManager onLocationChanged() location ignored: [" + location.getProvider() + "," + location.getLatitude() + ","
@@ -124,9 +127,9 @@ public class SMLocationManager implements LocationListener {
         lastValidLocation = location;
 
         if (location != null) {
-        	Log.d("JC", "Listener is null: " + (listener == null) );
+        	//Log.d("JC", "Listener is null: " + (listener == null) );
             if (listener != null) {
-            	Log.d("JC", "SMLocationManager telling downstream");
+            	//Log.d("JC", "SMLocationManager telling downstream");
             	
                 listener.onLocationChanged(location);
             }

@@ -37,9 +37,14 @@ import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
+import com.spoiledmilk.ibikecph.persist.Track;
+import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
+import com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity;
 import com.spoiledmilk.ibikecph.util.DB;
+import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+import io.realm.Realm;
 
 /**
  * A menu that can be spawned in the MapActivity. It allows the user to access
@@ -164,7 +169,8 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         } else {
         	menuItems.add(new LeftMenuItem("login", R.drawable.ic_menu_profile, "spawnLoginActivity"));
         }
-        
+
+        menuItems.add(new LeftMenuItem("tracking", R.drawable.ic_menu_tracking, "spawnTrackingActivity"));
         menuItems.add(new LeftMenuItem("about_app", R.drawable.ic_menu_info, "spawnAboutActivity"));
         menuItems.add(new LeftMenuItem("tts_settings", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
 
@@ -206,6 +212,19 @@ public class LeftMenu extends Fragment implements iLanguageListener {
             getActivity().startActivityForResult(i, LAUNCH_LOGIN);
             getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
+    }
+
+    public void spawnTrackingActivity() {
+        Intent i;
+        IbikePreferences settings = IbikeApplication.getSettings();
+        if (!settings.getTrackingEnabled() &&
+            Realm.getInstance(IbikeApplication.getContext()).allObjects(Track.class).size() == 0) {
+            i = new Intent(getActivity(), TrackingWelcomeActivity.class);
+        } else {
+            i = new Intent(getActivity(), TrackingActivity.class);
+        }
+        getActivity().startActivity(i);
+        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
     
     public void spawnAboutActivity() {
