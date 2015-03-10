@@ -9,21 +9,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
-import com.facebook.android.Util;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
-import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.HttpUtils;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import io.realm.Realm;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
-import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -92,12 +84,12 @@ public class TrackingActivity extends Activity {
     }
 
     public void btnStartTrackingOnClick(View v) {
-        trackingManager.startTracking();
+        trackingManager.startTracking(true);
         this.updateStrings();
     }
 
     public void btnStopTrackingOnClick(View v) {
-        trackingManager.stopTracking();
+        trackingManager.stopTracking(true);
 
         // This is a hack. We shouldn't put the locations into a Track before we have a Realm instance.
         // Refactor TrackingManager.

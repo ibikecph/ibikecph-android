@@ -28,7 +28,6 @@ public class IbikeApplication extends Application {
     public IbikePreferences settings;
     public SMDictionary dictionary;
     private static Typeface normalFont, boldFont, italicFont;
-    private static BikeLocationService bikeLocationService;
     
     @Override
     public void onCreate() {
@@ -62,7 +61,7 @@ public class IbikeApplication extends Application {
     }
 
     public static BikeLocationService getService() {	
-    	return bikeLocationService;
+    	return BikeLocationService.getInstance();
     }
     
     public void changeLanguage(Language language) {

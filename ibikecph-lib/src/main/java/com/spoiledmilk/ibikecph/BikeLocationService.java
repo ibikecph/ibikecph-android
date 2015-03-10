@@ -32,6 +32,7 @@ public class BikeLocationService extends Service implements LocationListener {
     boolean locationServicesEnabledOnPhone;
     ArrayList<LocationListener> gpsListeners = new ArrayList<LocationListener>();
     boolean isListeningForGPS = false;
+    private static BikeLocationService instance;
 
     /**
      * Instantiates a location manager and an (as yet unused) wake lock.
@@ -54,7 +55,8 @@ public class BikeLocationService extends Service implements LocationListener {
 
 
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
+        instance = this;
+        Log.d("JC", "BikeLocationService started");
 		return START_STICKY;
 	}
 
@@ -102,6 +104,13 @@ public class BikeLocationService extends Service implements LocationListener {
 		}
 	}
 
+    public void onCreate(Intent i) {
+        instance = this;
+    }
+
+    public static BikeLocationService getInstance() {
+        return instance;
+    }
 
 	@Override
 	public IBinder onBind(Intent intent) {

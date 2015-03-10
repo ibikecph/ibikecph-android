@@ -25,9 +25,12 @@ public class TrackingManager implements LocationListener {
     private RealmList<TrackLocation> curLocationList;
     private Realm realm;
 
+    // Sometimes we want to start tracking, overriding the ActivityRecognition
+    private boolean manualOverride;
+
     public TrackingManager() {
-        bikeLocationService = IbikeApplication.getService();
-        realm = Realm.getInstance(IbikeApplication.getContext());
+        bikeLocationService = BikeLocationService.getInstance();
+
     }
 
     public static TrackingManager getInstance() {
@@ -37,6 +40,11 @@ public class TrackingManager implements LocationListener {
         return instance;
     }
 
+    public void startTracking(boolean override) {
+        startTracking();
+        this.manualOverride = override;
+    }
+
     public void startTracking() {
         Log.d("JC", "TrackingManager: Starting to track");
         bikeLocationService.addGPSListener(this);
@@ -44,11 +52,26 @@ public class TrackingManager implements LocationListener {
         this.isTracking = true;
     }
 
-    public void stopTracking() {
-        bikeLocationService.removeGPSListener(this);
-        this.isTracking = false;
+    public void stopTracking(boolean override) {
+        // We stop the tracking, either if we've not manually overridden, or if we
+        // locally overrode the override. This nomenclature sucks.
+        if (!manualOverride || override) {
+            Log.d("JC", "TrackingManager: Stopping track");
+            bikeLocationService.removeGPSListener(this);
+            this.isTracking = false;
 
-        Track track = getLocationsAsTrack();
+            Track track = getLocationsAsTrack();
+
+            // TODO: Do something with this track
+
+            // If we just stopped, manualOverride should be false, regardless whether
+            // we came from an overridden state or not.
+            this.manualOverride = false;
+        }
+    }
+
+    public void stopTracking()   {
+        stopTracking(false);
     }
 
     public Track getLocationsAsTrack() {
@@ -71,6 +94,9 @@ public class TrackingManager implements LocationListener {
      */
     @Override
     public void onLocationChanged(Location givenLocation) {
+        // TODO: The `realm` field would be nice to have on the class instead of potentially constructing it on each GPS update
+        realm = Realm.getInstance(IbikeApplication.getContext());
+
         if (isTracking) {
             realm.beginTransaction();
             // Instantiate the object the right way
@@ -104,10 +130,12 @@ public class TrackingManager implements LocationListener {
     }
 
     public void onActivityChanged(int activityType, int confidence) {
+
         if (activityType == DetectedActivity.ON_BICYCLE && !this.isTracking) {
             startTracking();
         } else if(activityType != DetectedActivity.ON_BICYCLE && this.isTracking) {
             stopTracking();
         }
+
     }
 }
