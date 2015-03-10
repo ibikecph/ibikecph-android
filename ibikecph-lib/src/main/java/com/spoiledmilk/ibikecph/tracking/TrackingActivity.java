@@ -97,10 +97,7 @@ public class TrackingActivity extends Activity {
 
         Log.d("JC", "Stopped tracking, got number of points: " + t.getLocations().size());
 
-        realm.beginTransaction();
-        Track track = realm.createObject(Track.class);
-        track.setLocations(t.getLocations());
-        realm.commitTransaction();
+
 
         getTracks();
         this.updateStrings();

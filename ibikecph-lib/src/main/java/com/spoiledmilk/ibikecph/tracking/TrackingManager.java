@@ -20,13 +20,13 @@ import java.util.Date;
 public class TrackingManager implements LocationListener {
     private static TrackingManager instance = null;
     private BikeLocationService bikeLocationService;
-    private boolean isTracking;
+    private boolean isTracking = false;
 
     private RealmList<TrackLocation> curLocationList;
     private Realm realm;
 
     // Sometimes we want to start tracking, overriding the ActivityRecognition
-    private boolean manualOverride;
+    private boolean manualOverride = false;
 
     public TrackingManager() {
         bikeLocationService = BikeLocationService.getInstance();
@@ -46,23 +46,27 @@ public class TrackingManager implements LocationListener {
     }
 
     public void startTracking() {
-        Log.d("JC", "TrackingManager: Starting to track");
-        bikeLocationService.addGPSListener(this);
-        this.curLocationList = new RealmList<TrackLocation>();
-        this.isTracking = true;
+        if (!this.isTracking) {
+            Log.d("JC", "TrackingManager: Starting to track");
+            bikeLocationService.addGPSListener(this);
+            this.curLocationList = new RealmList<TrackLocation>();
+            this.isTracking = true;
+        }
     }
 
     public void stopTracking(boolean override) {
         // We stop the tracking, either if we've not manually overridden, or if we
         // locally overrode the override. This nomenclature sucks.
-        if (!manualOverride || override) {
+        if (this.isTracking && (!manualOverride || override)) {
             Log.d("JC", "TrackingManager: Stopping track");
             bikeLocationService.removeGPSListener(this);
             this.isTracking = false;
 
-            Track track = getLocationsAsTrack();
-
-            // TODO: Do something with this track
+            // Save the track to the DB
+            realm.beginTransaction();
+            Track track = realm.createObject(Track.class);
+            track.setLocations(curLocationList);
+            realm.commitTransaction();
 
             // If we just stopped, manualOverride should be false, regardless whether
             // we came from an overridden state or not.
@@ -74,14 +78,6 @@ public class TrackingManager implements LocationListener {
         stopTracking(false);
     }
 
-    public Track getLocationsAsTrack() {
-        Track t = new Track();
-        t.setLocations(curLocationList);
-
-        // TODO: Match against favorites
-
-        return t;
-    }
 
     public boolean isTracking() {
         return this.isTracking;
@@ -132,8 +128,10 @@ public class TrackingManager implements LocationListener {
     public void onActivityChanged(int activityType, int confidence) {
 
         if (activityType == DetectedActivity.ON_BICYCLE && !this.isTracking) {
+            Log.i("JC", "Activity changed to bicycle, starting track.");
             startTracking();
         } else if(activityType != DetectedActivity.ON_BICYCLE && this.isTracking) {
+            Log.i("JC", "Activity changed away from bicycle, stopping track.");
             stopTracking();
         }
 
