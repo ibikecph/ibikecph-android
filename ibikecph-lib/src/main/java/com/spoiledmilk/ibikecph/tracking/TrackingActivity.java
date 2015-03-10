@@ -91,13 +91,7 @@ public class TrackingActivity extends Activity {
     public void btnStopTrackingOnClick(View v) {
         trackingManager.stopTracking(true);
 
-        // This is a hack. We shouldn't put the locations into a Track before we have a Realm instance.
-        // Refactor TrackingManager.
-        Track t = trackingManager.getLocationsAsTrack();
-
         Log.d("JC", "Stopped tracking, got number of points: " + t.getLocations().size());
-
-
 
         getTracks();
         this.updateStrings();
