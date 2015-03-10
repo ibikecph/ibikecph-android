@@ -55,7 +55,7 @@ public class TrackingActivity extends Activity {
         trackingManager = TrackingManager.getInstance();
         realm = Realm.getInstance(this);
 
-        getTracks();
+        printTracks();
         updateStrings();
     }
 
@@ -63,7 +63,7 @@ public class TrackingActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        getTracks();
+        printTracks();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class TrackingActivity extends Activity {
 
         Log.d("JC", "Stopped tracking");
 
-        getTracks();
+        printTracks();
         this.updateStrings();
     }
 
@@ -124,22 +124,38 @@ public class TrackingActivity extends Activity {
     /**
      * Prints all tracks.
      */
-    public void getTracks() {
+    public void printTracks() {
         Log.d("JC", "Printing tracks:");
         RealmResults<Track> results  = realm.allObjects(Track.class);
         ArrayList<Location> locations;
 
         double totalDistance = 0;
+        double totalSeconds = 0;
+        double speedAggregate = 0;
 
         for (Track t : results) {
             double curDist = getDistanceOfTrack(t);
+
+            // We get the duration of the trip by subtractign the timestamp of the first GPS coord from the timestamp
+            // of the last.
+            int elapsedSeconds = (int) (t.getLocations().last().getTimestamp().getTime() -
+                    t.getLocations().first().getTimestamp().getTime()) / 1000;
+
             totalDistance += curDist;
+            totalSeconds += elapsedSeconds;
+            double speed = curDist / elapsedSeconds; // Unit: m/s
+            speedAggregate += speed;
+
             Log.d("JC", "Track " + t.hashCode() + ", distance: " + curDist + " meters");
+
         }
 
-        distanceTextView.setText(String.format("%.2f", totalDistance/1000));
+        distanceTextView.setText(String.format("%.1f", totalDistance/1000));
+        avgPerTrackDistanceTextView.setText(String.format("%.1f", totalDistance/1000/results.size()));
+        timeTextView.setText(String.format("%.1f", totalSeconds / 3600));
 
-
+        // The speedAggregate is i meters/sec, we multiply with 3.6 to get km/h
+        speedTextView.setText(String.format("%.1f", (speedAggregate / results.size()) * 3.6 ));
     }
 
 }

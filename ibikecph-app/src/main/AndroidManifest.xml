@@ -38,12 +38,13 @@
     <application
         android:name="com.spoiledmilk.ibikecph.IbikeApplication"
         android:allowBackup="true"
-        android:hardwareAccelerated="false"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         tools:replace="android:theme"
-        android:theme="@style/iBikeCPHTheme" >
+        android:theme="@style/iBikeCPHTheme"
+        android:screenOrientation="portrait">
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity
             android:name="com.spoiledmilk.ibikecph.SplashActivity"
