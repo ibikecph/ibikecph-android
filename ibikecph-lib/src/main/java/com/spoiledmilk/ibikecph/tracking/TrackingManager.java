@@ -63,6 +63,7 @@ public class TrackingManager implements LocationListener {
             this.isTracking = false;
 
             // Save the track to the DB
+            realm = Realm.getInstance(IbikeApplication.getContext());
             realm.beginTransaction();
             Track track = realm.createObject(Track.class);
             track.setLocations(curLocationList);
