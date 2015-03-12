@@ -12,7 +12,9 @@ import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import io.realm.Realm;
 import io.realm.RealmList;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by jens on 2/25/15.
@@ -22,7 +24,7 @@ public class TrackingManager implements LocationListener {
     private BikeLocationService bikeLocationService;
     private boolean isTracking = false;
 
-    private RealmList<TrackLocation> curLocationList;
+    private List<Location> curLocationList;
     private Realm realm;
 
     // Sometimes we want to start tracking, overriding the ActivityRecognition
@@ -45,15 +47,22 @@ public class TrackingManager implements LocationListener {
         this.manualOverride = override;
     }
 
+    /**
+     * Resets the list of location points and registers itself to receive GPS updates.
+     */
     public void startTracking() {
         if (!this.isTracking) {
             Log.d("JC", "TrackingManager: Starting to track");
             bikeLocationService.addGPSListener(this);
-            this.curLocationList = new RealmList<TrackLocation>();
+            this.curLocationList = new ArrayList<Location>();
             this.isTracking = true;
         }
     }
 
+    /**
+     * Deregisters for GPS updates and calls `makeAndSaveTrack` to create the track in the DB.
+     * @param override
+     */
     public void stopTracking(boolean override) {
         // We stop the tracking, either if we've not manually overridden, or if we
         // locally overrode the override. This nomenclature sucks.
@@ -62,17 +71,45 @@ public class TrackingManager implements LocationListener {
             bikeLocationService.removeGPSListener(this);
             this.isTracking = false;
 
-            // Save the track to the DB
-            realm = Realm.getInstance(IbikeApplication.getContext());
-            realm.beginTransaction();
-            Track track = realm.createObject(Track.class);
-            track.setLocations(curLocationList);
-            realm.commitTransaction();
+            makeAndSaveTrack();
 
             // If we just stopped, manualOverride should be false, regardless whether
             // we came from an overridden state or not.
             this.manualOverride = false;
         }
+    }
+
+    /**
+     * Creates a track from the currently saved locations and saves it to the database.
+     */
+    private void makeAndSaveTrack() {
+        // Save the track to the DB
+        realm = Realm.getInstance(IbikeApplication.getContext());
+        realm.beginTransaction();
+        Track track = realm.createObject(Track.class);
+        RealmList<TrackLocation> trackLocations = track.getLocations();
+
+        // We have a list of Location objects that represent our route. Convert these to TrackLocation objects
+        // and add them to the track we're working on.
+        for (Location l : curLocationList) {
+            TrackLocation trackLocation = realm.createObject(TrackLocation.class);
+
+            // Set all the relevant fields
+            trackLocation.setLatitude(l.getLatitude());
+            trackLocation.setLongitude(l.getLongitude());
+            trackLocation.setTimestamp(new Date(l.getTime()));
+            trackLocation.setAltitude(l.getAltitude());
+
+            // This is potentially bad. We don't have a measure of the horizontal and vertical accuracies, but we do have
+            // one for the accuracy all in all. We just set that for both fields.
+            trackLocation.setHorizontalAccuracy(l.getAccuracy());
+            trackLocation.setVerticalAccuracy(l.getAccuracy());
+
+            // Add it to the track
+            trackLocations.add(trackLocation);
+        }
+
+        realm.commitTransaction();
     }
 
     public void stopTracking()   {
@@ -95,7 +132,11 @@ public class TrackingManager implements LocationListener {
         realm = Realm.getInstance(IbikeApplication.getContext());
 
         if (isTracking) {
+            curLocationList.add(givenLocation);
+
+            /*
             realm.beginTransaction();
+
             // Instantiate the object the right way
             TrackLocation realmLocation = realm.createObject(TrackLocation.class);
 
@@ -112,6 +153,7 @@ public class TrackingManager implements LocationListener {
 
             curLocationList.add(realmLocation);
             realm.commitTransaction();
+            */
         }
     }
 

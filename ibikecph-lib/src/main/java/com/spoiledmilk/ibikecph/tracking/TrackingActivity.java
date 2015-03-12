@@ -25,7 +25,6 @@ public class TrackingActivity extends Activity {
     private TextView activityText, sinceText, distanceText;
     TrackingManager trackingManager;
     private String DATE_FORMAT = "dd MMMM yyyy";
-    private Realm realm;
     private TextView avgPerTrackDistanceTextView;
     private TextView distanceTextView;
     private TextView speedTextView;
@@ -53,7 +52,6 @@ public class TrackingActivity extends Activity {
         this.sinceText.setText(IbikeApplication.getString("tracking_since") + " " + formattedDate);
 
         trackingManager = TrackingManager.getInstance();
-        realm = Realm.getInstance(this);
 
         printTracks();
         updateStrings();
@@ -126,6 +124,8 @@ public class TrackingActivity extends Activity {
      */
     public void printTracks() {
         Log.d("JC", "Printing tracks:");
+
+        Realm realm = Realm.getInstance(this);
         RealmResults<Track> results  = realm.allObjects(Track.class);
         ArrayList<Location> locations;
 
@@ -138,13 +138,14 @@ public class TrackingActivity extends Activity {
 
             // We get the duration of the trip by subtractign the timestamp of the first GPS coord from the timestamp
             // of the last.
-            int elapsedSeconds = (int) (t.getLocations().last().getTimestamp().getTime() -
-                    t.getLocations().first().getTimestamp().getTime()) / 1000;
+            if (t.getLocations() != null && t.getLocations().size() > 0) {
+                int elapsedSeconds = (int) (t.getLocations().last().getTimestamp().getTime() - t.getLocations().first().getTimestamp().getTime()) / 1000;
+                totalSeconds += elapsedSeconds;
+                double speed = curDist / elapsedSeconds; // Unit: m/s
+                speedAggregate += speed;
+            }
 
             totalDistance += curDist;
-            totalSeconds += elapsedSeconds;
-            double speed = curDist / elapsedSeconds; // Unit: m/s
-            speedAggregate += speed;
 
             Log.d("JC", "Track " + t.hashCode() + ", distance: " + curDist + " meters");
 
