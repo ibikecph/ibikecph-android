@@ -20,7 +20,7 @@ import java.util.List;
  * Created by jens on 2/25/15.
  */
 public class TrackingManager implements LocationListener {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static TrackingManager instance = null;
     private boolean isTracking = false;
