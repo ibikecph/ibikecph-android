@@ -33,6 +33,7 @@ public class BikeLocationService extends Service implements LocationListener {
     ArrayList<LocationListener> gpsListeners = new ArrayList<LocationListener>();
     boolean isListeningForGPS = false;
     private static BikeLocationService instance;
+    private ActivityRecognitionClient activityRecognitionClient;
 
     /**
      * Instantiates a location manager and an (as yet unused) wake lock.
@@ -56,6 +57,14 @@ public class BikeLocationService extends Service implements LocationListener {
 
 	public int onStartCommand(Intent intent, int flags, int startId) {
         instance = this;
+
+        if (activityRecognitionClient == null) {
+            Log.d("JC", "Spawning new ActivityRecognitionClient");
+
+            activityRecognitionClient = new ActivityRecognitionClient();
+            activityRecognitionClient.enableTracking();
+        }
+
         Log.d("JC", "BikeLocationService started");
 		return START_STICKY;
 	}
@@ -93,6 +102,7 @@ public class BikeLocationService extends Service implements LocationListener {
 				// add to the precision, but it's not strictly needed since we're already getting GPS coords.
 			}
 
+            wakeLock.acquire();
 			isListeningForGPS = true;
 		}
 
@@ -100,6 +110,7 @@ public class BikeLocationService extends Service implements LocationListener {
 		if (gpsListeners.size() == 0 && isListeningForGPS) {
 			Log.d("JC", "No more listeners in BikeLocationSerivce, unregistering for upstream locations.");
 			this.androidLocationManager.removeUpdates(this);
+            wakeLock.release();
 			isListeningForGPS = false;
 		}
 	}
@@ -121,6 +132,8 @@ public class BikeLocationService extends Service implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
+        Log.d("JC", "BikeLocationService new GPS coord");
+
 		// Tell all listeners about the new location.
 		for (LocationListener l : gpsListeners) {
 			l.onLocationChanged(location);

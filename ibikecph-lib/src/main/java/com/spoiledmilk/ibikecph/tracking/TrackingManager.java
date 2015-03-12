@@ -20,8 +20,9 @@ import java.util.List;
  * Created by jens on 2/25/15.
  */
 public class TrackingManager implements LocationListener {
+    private static final boolean DEBUG = true;
+
     private static TrackingManager instance = null;
-    private BikeLocationService bikeLocationService;
     private boolean isTracking = false;
 
     private List<Location> curLocationList;
@@ -31,8 +32,7 @@ public class TrackingManager implements LocationListener {
     private boolean manualOverride = false;
 
     public TrackingManager() {
-        bikeLocationService = BikeLocationService.getInstance();
-
+        Log.d("JC", "TrackingManager instantiated");
     }
 
     public static TrackingManager getInstance() {
@@ -53,7 +53,7 @@ public class TrackingManager implements LocationListener {
     public void startTracking() {
         if (!this.isTracking) {
             Log.d("JC", "TrackingManager: Starting to track");
-            bikeLocationService.addGPSListener(this);
+            BikeLocationService.getInstance().addGPSListener(this);
             this.curLocationList = new ArrayList<Location>();
             this.isTracking = true;
         }
@@ -68,7 +68,7 @@ public class TrackingManager implements LocationListener {
         // locally overrode the override. This nomenclature sucks.
         if (this.isTracking && (!manualOverride || override)) {
             Log.d("JC", "TrackingManager: Stopping track");
-            bikeLocationService.removeGPSListener(this);
+            BikeLocationService.getInstance().removeGPSListener(this);
             this.isTracking = false;
 
             makeAndSaveTrack();
@@ -132,6 +132,7 @@ public class TrackingManager implements LocationListener {
         realm = Realm.getInstance(IbikeApplication.getContext());
 
         if (isTracking) {
+            Log.d("JC", "Got new GPS coord");
             curLocationList.add(givenLocation);
 
             /*
@@ -169,8 +170,8 @@ public class TrackingManager implements LocationListener {
     }
 
     public void onActivityChanged(int activityType, int confidence) {
-
-        if (activityType == DetectedActivity.ON_BICYCLE && !this.isTracking) {
+        Log.d("JC", "TrackingManager new activity");
+        if (!this.isTracking && activityType == DetectedActivity.ON_BICYCLE || (DEBUG && activityType == DetectedActivity.TILTING)) {
             Log.i("JC", "Activity changed to bicycle, starting track.");
             startTracking();
         } else if(activityType != DetectedActivity.ON_BICYCLE && this.isTracking) {
