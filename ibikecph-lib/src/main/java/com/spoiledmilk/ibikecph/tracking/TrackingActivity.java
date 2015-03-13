@@ -118,7 +118,7 @@ public class TrackingActivity extends Activity {
         Date lastActivity = new Date();
         String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(lastActivity);
 
-        this.activityText.setText(IbikeApplication.getString("tracking_activity"));
+        this.activityText.setText(IbikeApplication.getString("stats_description"));
         this.sinceText.setText(IbikeApplication.getString("Since") + " " + formattedDate.toUpperCase());
     }
 
