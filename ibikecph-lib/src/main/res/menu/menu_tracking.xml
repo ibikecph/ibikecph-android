@@ -3,5 +3,6 @@
     tools:context="com.spoiledmilk.ibikecph.tracking.TrackingActivity">
 
     <item android:id="@+id/tracking_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" android:showAsAction="never" />
+          android:icon="@drawable/settings"
+        android:orderInCategory="100" android:showAsAction="always" />
 </menu>

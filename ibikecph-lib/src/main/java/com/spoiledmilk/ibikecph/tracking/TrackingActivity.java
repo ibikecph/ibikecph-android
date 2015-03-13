@@ -114,9 +114,12 @@ public class TrackingActivity extends Activity {
         this.activityText.setText(IbikeApplication.getString("tracking_activity").toUpperCase());
         this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase());
 
-        // TODO: get date of last activity
-        Date lastActivity = new Date();
-        String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(lastActivity);
+        // Get the timestamp of the first recorded TrackLocation
+        Realm realm = Realm.getInstance(this);
+        RealmResults<TrackLocation> results  = realm.allObjects(TrackLocation.class);
+        Date firstActivity = results.first().getTimestamp();
+        String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(firstActivity);
+        // Done
 
         this.activityText.setText(IbikeApplication.getString("stats_description").toUpperCase());
         this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase() + " " + formattedDate.toUpperCase());
@@ -150,7 +153,6 @@ public class TrackingActivity extends Activity {
 
         Realm realm = Realm.getInstance(this);
         RealmResults<Track> results  = realm.allObjects(Track.class);
-        ArrayList<Location> locations;
 
         double totalDistance = 0;
         double totalSeconds = 0;
@@ -159,7 +161,7 @@ public class TrackingActivity extends Activity {
         for (Track t : results) {
             double curDist = getDistanceOfTrack(t);
 
-            // We get the duration of the trip by subtractign the timestamp of the first GPS coord from the timestamp
+            // We get the duration of the trip by subtracting the timestamp of the first GPS coord from the timestamp
             // of the last.
             if (t.getLocations() != null && t.getLocations().size() > 0) {
                 int elapsedSeconds = (int) (t.getLocations().last().getTimestamp().getTime() - t.getLocations().first().getTimestamp().getTime()) / 1000;
