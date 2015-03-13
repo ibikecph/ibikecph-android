@@ -1,53 +1,135 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity">
+    tools:context="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity"
+    android:layout_row="1"
+    android:layout_column="0" android:orientation="vertical">
 
     <TextView
         android:id="@+id/tracking_intro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:gravity="center|center_horizontal" android:textSize="16sp"
+        android:textAlignment="center"/>
 
-    <ImageView
-        android:id="@+id/tracking_image"
-        android:layout_below="@+id/tracking_intro"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+    <GridLayout  android:rowCount="6" android:columnCount="2" android:layout_width="wrap_content"
+                 android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginBottom="20dp">
+
+        <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_row="1"
+                android:layout_column="0" android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="55.3"
+                    android:id="@+id/distanceTextView"
+                    android:textSize="60dp"
+                    android:gravity="left"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="20dp"
+                    android:textColor="#db2023"/>
+
+            <TextView
+                    android:text="KM"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:gravity="start" android:id="@+id/kmText"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_row="1"
+                android:layout_column="1"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="-"
+                    android:id="@+id/speedTextView"
+                    android:textSize="60dp" android:layout_marginTop="20dp"
+                    android:gravity="right" android:layout_marginLeft="20dp" android:textColor="#db2023"
+                    android:layout_marginBottom="0dp"/>
+
+            <TextView
+                    android:text="KM/T"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:gravity="end" android:id="@+id/kmtText"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_row="2"
+                android:layout_column="0"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="12.4"
+                    android:id="@+id/avgPerTrackDistanceTextView"
+                    android:textSize="60dp" android:layout_marginTop="20dp" android:gravity="left"
+                    android:layout_marginRight="20dp" android:textColor="#db2023"/>
+
+            <TextView
+                    android:text="KM PR TUR"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start" android:id="@+id/kmPrTripText"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_row="2"
+                android:layout_column="1"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="14.3"
+                    android:id="@+id/timeTextView"
+                    android:textSize="60dp" android:gravity="right"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="0dp" android:textColor="#db2023"/>
+
+            <TextView
+                    android:text="TIMER"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end" android:id="@+id/hoursText"/>
+        </LinearLayout>
+
+    </GridLayout>
 
     <TextView
         android:id="@+id/tracking_enable_text"
-        android:layout_below="@+id/tracking_image"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tracking_terms"
-        android:layout_below="@id/tracking_enable_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        android:layout_height="wrap_content" android:visibility="gone"/>
 
     <TextView
         android:id="@+id/tracking_terms_link"
         android:onClick="onTermsClick"
-        android:layout_below="@+id/tracking_terms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/tracking_enable"
         android:onClick="onTrackingEnableClick"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_marginTop="35dp"
+            />
 
-</RelativeLayout>
+</LinearLayout>

@@ -53,6 +53,12 @@ public class TrackingActivity extends Activity {
         this.hoursText = (TextView) findViewById(R.id.hoursText);
 
 
+        try {
+            this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
+        } catch(NullPointerException e) {
+            // There was no ActionBar. Oh well...
+        }
+
         trackingManager = TrackingManager.getInstance();
 
         printTracks();
@@ -168,11 +174,19 @@ public class TrackingActivity extends Activity {
         }
 
         distanceTextView.setText(String.format("%.1f", totalDistance/1000));
-        avgPerTrackDistanceTextView.setText(String.format("%.1f", totalDistance/1000/results.size()));
+        if (results.size() > 0 ) {
+            avgPerTrackDistanceTextView.setText(String.format("%.1f", totalDistance / 1000 / results.size()));
+
+            // The speedAggregate is i meters/sec, we multiply with 3.6 to get km/h
+            speedTextView.setText(String.format("%.1f", (speedAggregate / results.size()) * 3.6 ));
+        }
+        else { // Can't divide by 0
+            avgPerTrackDistanceTextView.setText("0.0");
+            speedTextView.setText("0.0");
+        }
+
         timeTextView.setText(String.format("%.1f", totalSeconds / 3600));
 
-        // The speedAggregate is i meters/sec, we multiply with 3.6 to get km/h
-        speedTextView.setText(String.format("%.1f", (speedAggregate / results.size()) * 3.6 ));
     }
 
 }

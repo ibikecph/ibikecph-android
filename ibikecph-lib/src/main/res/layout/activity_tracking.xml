@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true" android:layout_row="0" android:layout_column="1"
         android:gravity="center|center_horizontal"/>
     <GridLayout  android:rowCount="6" android:columnCount="2" android:layout_width="wrap_content"
-                 android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
+                 android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginBottom="20dp">
 
         <LinearLayout
                 android:layout_height="wrap_content"
@@ -34,17 +34,15 @@
                 android:layout_row="1"
                 android:layout_column="0" android:orientation="vertical">
             <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="0"
+                    android:text="55.3"
                     android:id="@+id/distanceTextView"
                     android:textSize="60dp"
                     android:gravity="left"
-                    android:layout_margin="20dp"
-                    android:layout_marginRight="35dp"
-                    android:layout_marginLeft="0dp"
-                    android:layout_marginBottom="0dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="20dp"
                     android:textColor="#db2023"/>
 
             <TextView
@@ -59,13 +57,14 @@
                 android:layout_column="1"
                 android:orientation="vertical">
             <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="0"
+                    android:text="23.3"
                     android:id="@+id/speedTextView"
-                    android:textSize="60dp" android:layout_margin="20dp"
-                    android:gravity="right" android:layout_marginLeft="35dp" android:textColor="#db2023"/>
+                    android:textSize="60dp" android:layout_marginTop="20dp"
+                    android:gravity="right" android:layout_marginLeft="20dp" android:textColor="#db2023"
+                    android:layout_marginBottom="0dp"/>
 
             <TextView
                     android:text="KM/T"
@@ -79,13 +78,13 @@
                 android:layout_column="0"
                 android:orientation="vertical">
             <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="0"
+                    android:text="12.4"
                     android:id="@+id/avgPerTrackDistanceTextView"
-                    android:textSize="60dp" android:layout_margin="20dp" android:gravity="left"
-                    android:layout_marginRight="35dp" android:textColor="#db2023"/>
+                    android:textSize="60dp" android:layout_marginTop="20dp" android:gravity="left"
+                    android:layout_marginRight="20dp" android:textColor="#db2023"/>
 
             <TextView
                     android:text="KM PR TUR"
@@ -100,14 +99,15 @@
                 android:layout_column="1"
                 android:orientation="vertical">
             <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="0"
+                    android:text="14.3"
                     android:id="@+id/timeTextView"
-                    android:textSize="60dp"
-                    android:layout_margin="20dp" android:gravity="right"
-                    android:layout_marginLeft="35dp" android:textColor="#db2023"/>
+                    android:textSize="60dp" android:gravity="right"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="0dp" android:textColor="#db2023"/>
 
             <TextView
                     android:text="TIMER"
