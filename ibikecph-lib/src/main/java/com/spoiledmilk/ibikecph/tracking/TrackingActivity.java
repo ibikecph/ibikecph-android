@@ -31,6 +31,8 @@ public class TrackingActivity extends Activity {
     private TextView timeTextView;
     private TextView trackingStatusTextView;
 
+    private TextView kmText, kmtText, kmPrTripText, hoursText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,11 +47,11 @@ public class TrackingActivity extends Activity {
         this.timeTextView    = (TextView) findViewById(R.id.timeTextView);
         this.trackingStatusTextView = (TextView) findViewById(R.id.trackingStatusTextView);
 
-        this.activityText.setText(IbikeApplication.getString("tracking_activity"));
-        // TODO: get date of last activity
-        Date lastActivity = new Date();
-        String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(lastActivity);
-        this.sinceText.setText(IbikeApplication.getString("tracking_since") + " " + formattedDate);
+        this.kmText = (TextView) findViewById(R.id.kmText);
+        this.kmtText = (TextView) findViewById(R.id.kmtText);
+        this.kmPrTripText = (TextView) findViewById(R.id.kmPrTripText);
+        this.hoursText = (TextView) findViewById(R.id.hoursText);
+
 
         trackingManager = TrackingManager.getInstance();
 
@@ -97,6 +99,21 @@ public class TrackingActivity extends Activity {
 
     public void updateStrings() {
         this.trackingStatusTextView.setText("Tracking: "+trackingManager.isTracking());
+
+        this.kmText.setText(IbikeApplication.getString("unit_km").toUpperCase());
+        this.kmtText.setText(IbikeApplication.getString("unit_km_pr_h").toUpperCase());
+        this.kmPrTripText.setText(IbikeApplication.getString("unit_km_pr_trip").toUpperCase());
+        this.hoursText.setText(IbikeApplication.getString("unit_h_long").toUpperCase());
+
+        this.activityText.setText(IbikeApplication.getString("tracking_activity").toUpperCase());
+        this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase());
+
+        // TODO: get date of last activity
+        Date lastActivity = new Date();
+        String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(lastActivity);
+
+        this.activityText.setText(IbikeApplication.getString("tracking_activity"));
+        this.sinceText.setText(IbikeApplication.getString("Since") + " " + formattedDate.toUpperCase());
     }
 
     public static double getDistanceOfTrack(Track t)  {
@@ -148,7 +165,6 @@ public class TrackingActivity extends Activity {
             totalDistance += curDist;
 
             Log.d("JC", "Track " + t.hashCode() + ", distance: " + curDist + " meters");
-
         }
 
         distanceTextView.setText(String.format("%.1f", totalDistance/1000));

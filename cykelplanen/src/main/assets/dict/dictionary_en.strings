@@ -405,5 +405,15 @@
 "tracking_share_data" = "Del data med Københavns Kommune";
 "tracking_share_data_info" = "Når du deler data med kommunen vil dine data blive anonymiseret således at ingen kan se hvem du er. Men kun se hvilke ruter du har kørt.";
 "tracking_share_data_usage" = "Læs mere om hvad kommunen bruger dine data til.";
-"tracking_activity" = "DIN CYKEL CYKELAKTIVITET";
-"tracking_since" = "SIDEN";
+"tracking_activity" = "Your cycle activity";
+"Since" = "Since";
+
+"unit_km" = "km";
+"unit_km_pr_h" = "km/h";
+"unit_km_pr_trip" = "km/trip";
+"unit_h_long" = "hours";
+"unit_h_short" = "h";
+"dum_km" = "55.3";
+"dum_kmh" = "23.3";
+"dum_kmtrip" = "12.4";
+"dum_h" = "14.3";

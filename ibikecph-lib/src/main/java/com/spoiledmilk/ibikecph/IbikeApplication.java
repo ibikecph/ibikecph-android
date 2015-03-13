@@ -45,24 +45,6 @@ public class IbikeApplication extends Application {
         italicFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
         GoogleAnalytics.getInstance(this).setAppOptOut(!Config.ANALYTICS_ENABLED);
 
-        /*
-    	// bikeLocationService = new BikeLocationService();
-
-        ServiceConnection serviceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
-        };
-        boolean serviceBound = this.bindService(new Intent(this, BikeLocationService.class), serviceConnection, 0);
-        Log.d("JC", "BikeLocationService bound: " + serviceBound);
-
-        */
         this.startService(new Intent(this, BikeLocationService.class));
 
         trackingManager = TrackingManager.getInstance();
