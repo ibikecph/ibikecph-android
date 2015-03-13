@@ -321,3 +321,11 @@
 "dum_kmh" = "23.3";
 "dum_kmtrip" = "12.4";
 "dum_h" = "14.3";
+
+"milestone_distance_1_description" = "Sådan! Du har cyklet dine første %d km.";
+"milestone_distance_2_description" = "%d km, det begynder at ligne noget!";
+"milestone_distance_3_description" = "Se lige dig! %d km cyklet, fortsæt den gode stil!";
+"milestone_distance_4_description" = "Wow, det ruller, %d km cyklet, vi kan slet ikke følge med!";
+"milestone_distance_5_description" = "Yes, %d km cyklet!";
+"milestone_distance_6_description" = "%d km på cyklen, du er på vej mod stjernerne!";
+"milestone_distance_7_description" = "Klap dig selv på lårerne, du har cyklet %d km! Tillykke!";

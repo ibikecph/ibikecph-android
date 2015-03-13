@@ -601,3 +601,11 @@
 "dum_kmh" = "23.3";
 "dum_kmtrip" = "12.4";
 "dum_h" = "14.3";
+
+"milestone_distance_1_description" = "Alright! You have cycled your first %d km.";
+"milestone_distance_2_description" = "%d km, it's starting to look good!";
+"milestone_distance_3_description" = "Look at you! %d km cycled, keep up the good style!";
+"milestone_distance_4_description" = "Wow, %d km cycled, you are breaking away from the crowd!";
+"milestone_distance_5_description" = "Yes, %d km cycled!";
+"milestone_distance_6_description" = "%d km on the bike, you're on your way to the stars!";
+"milestone_distance_7_description" = "Give yourself a big cheer, you have cycled %d km! Congratulations!";

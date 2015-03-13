@@ -159,7 +159,21 @@
             android:label="@string/title_activity_edit_favorite" />
 
         <service android:name="com.spoiledmilk.ibikecph.BikeLocationService"></service>
+        <service android:name="com.spoiledmilk.ibikecph.BikeActivityService" > </service>
 
+        <activity
+                android:name="com.spoiledmilk.ibikecph.tracking.TrackingActivity"
+                android:label="@string/title_activity_tracking"
+                android:parentActivityName="com.spoiledmilk.ibikecph.map.MapActivity"
+                android:theme="@android:style/Theme.Holo.Light" />
+        <activity
+                android:name="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity"
+                android:label="@string/title_activity_tracking"
+                android:theme="@android:style/Theme.Holo.Light" />
+        <activity
+                android:name="com.spoiledmilk.ibikecph.tracking.TrackingSettingsActivity"
+                android:label="@string/title_activity_tracking_settings"
+                android:theme="@android:style/Theme.Holo.Light" />
     </application>
 
 </manifest>

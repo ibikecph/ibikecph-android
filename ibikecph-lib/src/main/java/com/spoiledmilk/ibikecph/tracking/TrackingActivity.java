@@ -112,15 +112,20 @@ public class TrackingActivity extends Activity {
         this.activityText.setText(IbikeApplication.getString("tracking_activity").toUpperCase());
         this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase());
 
+        this.activityText.setText(IbikeApplication.getString("stats_description").toUpperCase());
         // Get the timestamp of the first recorded TrackLocation
         Realm realm = Realm.getInstance(this);
         RealmResults<TrackLocation> results  = realm.allObjects(TrackLocation.class);
-        Date firstActivity = results.first().getTimestamp();
-        String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(firstActivity);
+
+        try {
+            Date firstActivity = results.first().getTimestamp();
+            String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(firstActivity);
+            this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase() + " " + formattedDate.toUpperCase());
+        } catch(ArrayIndexOutOfBoundsException e) {
+            this.sinceText.setText("");
+        }
         // Done
 
-        this.activityText.setText(IbikeApplication.getString("stats_description").toUpperCase());
-        this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase() + " " + formattedDate.toUpperCase());
     }
 
 
@@ -146,6 +151,7 @@ public class TrackingActivity extends Activity {
             if (t.getLocations() != null && t.getLocations().size() > 0) {
                 int elapsedSeconds = (int) (t.getLocations().last().getTimestamp().getTime() - t.getLocations().first().getTimestamp().getTime()) / 1000;
                 totalSeconds += elapsedSeconds;
+
                 double speed = curDist / elapsedSeconds; // Unit: m/s
                 speedAggregate += speed;
             }

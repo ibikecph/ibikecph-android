@@ -76,6 +76,9 @@ public class TrackingManager implements LocationListener {
             // If we just stopped, manualOverride should be false, regardless whether
             // we came from an overridden state or not.
             this.manualOverride = false;
+
+            // Check if we should notify the user of milestones reached
+            MilestoneManager.checkForMilestones();
         }
     }
 
