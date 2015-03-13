@@ -2,7 +2,6 @@ package com.spoiledmilk.ibikecph.tracking;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,7 +16,6 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class TrackingActivity extends Activity {
@@ -125,25 +123,7 @@ public class TrackingActivity extends Activity {
         this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase() + " " + formattedDate.toUpperCase());
     }
 
-    public static double getDistanceOfTrack(Track t)  {
-        double result = 0;
 
-        ArrayList<Location> locations = new ArrayList<Location>();
-
-        for (TrackLocation l : t.getLocations()) {
-            Location tmpl = new Location("TrackingActivity");
-            tmpl.setLongitude(l.getLongitude());
-            tmpl.setLatitude(l.getLatitude());
-
-            locations.add(tmpl);
-        }
-
-        for (int i = 0; i < locations.size()-1; i++) {
-            result += locations.get(i).distanceTo(locations.get(i + 1));
-        }
-
-        return result;
-    }
 
     /**
      * Prints all tracks.
@@ -159,7 +139,7 @@ public class TrackingActivity extends Activity {
         double speedAggregate = 0;
 
         for (Track t : results) {
-            double curDist = getDistanceOfTrack(t);
+            double curDist = TrackManager.getDistanceOfTrack(t);
 
             // We get the duration of the trip by subtracting the timestamp of the first GPS coord from the timestamp
             // of the last.
