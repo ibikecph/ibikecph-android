@@ -152,8 +152,10 @@ public class TrackingActivity extends Activity {
                 int elapsedSeconds = (int) (t.getLocations().last().getTimestamp().getTime() - t.getLocations().first().getTimestamp().getTime()) / 1000;
                 totalSeconds += elapsedSeconds;
 
-                double speed = curDist / elapsedSeconds; // Unit: m/s
-                speedAggregate += speed;
+                if (elapsedSeconds > 0 ) {
+                    double speed = curDist / elapsedSeconds; // Unit: m/s
+                    speedAggregate += speed;
+                }
             }
 
             totalDistance += curDist;
@@ -162,11 +164,13 @@ public class TrackingActivity extends Activity {
         }
 
         distanceTextView.setText(String.format("%.1f", totalDistance/1000));
+
         if (results.size() > 0 ) {
             avgPerTrackDistanceTextView.setText(String.format("%.1f", totalDistance / 1000 / results.size()));
 
             // The speedAggregate is i meters/sec, we multiply with 3.6 to get km/h
             speedTextView.setText(String.format("%.1f", (speedAggregate / results.size()) * 3.6 ));
+            Log.d("JC", "Avg speed: "+speedAggregate+" / " + results.size() + " * 3.6");
         }
         else { // Can't divide by 0
             avgPerTrackDistanceTextView.setText("0.0");
