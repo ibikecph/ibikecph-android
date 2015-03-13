@@ -171,7 +171,10 @@ public class TrackingManager implements LocationListener {
 
     public void onActivityChanged(int activityType, int confidence) {
         Log.d("JC", "TrackingManager new activity");
-        if (!this.isTracking && activityType == DetectedActivity.ON_BICYCLE || (DEBUG && activityType == DetectedActivity.TILTING)) {
+        if (
+                IbikeApplication.getSettings().getTrackingEnabled() &&
+                (!this.isTracking && activityType == DetectedActivity.ON_BICYCLE || (DEBUG && activityType == DetectedActivity.TILTING))
+           ) {
             Log.i("JC", "Activity changed to bicycle, starting track.");
             startTracking();
         } else if(activityType != DetectedActivity.ON_BICYCLE && this.isTracking) {
