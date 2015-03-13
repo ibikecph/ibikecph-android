@@ -7,7 +7,6 @@
 package com.spoiledmilk.ibikecph;
 
 import android.app.Application;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -16,6 +15,7 @@ import android.text.Spanned;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
+import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
@@ -28,7 +28,9 @@ public class IbikeApplication extends Application {
     public IbikePreferences settings;
     public SMDictionary dictionary;
     private static Typeface normalFont, boldFont, italicFont;
-    
+
+    private static TrackingManager trackingManager;
+
     @Override
     public void onCreate() {
         LOG.d("Creating Application");
@@ -43,10 +45,31 @@ public class IbikeApplication extends Application {
         italicFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
         GoogleAnalytics.getInstance(this).setAppOptOut(!Config.ANALYTICS_ENABLED);
 
+        /*
     	// bikeLocationService = new BikeLocationService();
-        ComponentName serviceComponent = startService(new Intent(this, BikeLocationService.class ));
-        ComponentName activityServiceComponent = startService(new Intent(this, BikeActivityService.class));
+
+        ServiceConnection serviceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+        boolean serviceBound = this.bindService(new Intent(this, BikeLocationService.class), serviceConnection, 0);
+        Log.d("JC", "BikeLocationService bound: " + serviceBound);
+
+        */
+        this.startService(new Intent(this, BikeLocationService.class));
+
+        trackingManager = TrackingManager.getInstance();
+
     }
+
+
 
     public static Spanned getSpanned(String key) {
         return instance.dictionary.get(key);
@@ -63,7 +86,11 @@ public class IbikeApplication extends Application {
     public static BikeLocationService getService() {	
     	return BikeLocationService.getInstance();
     }
-    
+
+    public static TrackingManager getTrackingManager() {
+        return trackingManager;
+    }
+
     public void changeLanguage(Language language) {
         if (settings.getLanguage() != language) {
             LOG.d("Changing language to " + language.name());

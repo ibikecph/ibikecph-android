@@ -12,25 +12,27 @@ import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import io.realm.Realm;
 import io.realm.RealmList;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by jens on 2/25/15.
  */
 public class TrackingManager implements LocationListener {
+    private static final boolean DEBUG = false;
+
     private static TrackingManager instance = null;
-    private BikeLocationService bikeLocationService;
     private boolean isTracking = false;
 
-    private RealmList<TrackLocation> curLocationList;
+    private List<Location> curLocationList;
     private Realm realm;
 
     // Sometimes we want to start tracking, overriding the ActivityRecognition
     private boolean manualOverride = false;
 
     public TrackingManager() {
-        bikeLocationService = BikeLocationService.getInstance();
-
+        Log.d("JC", "TrackingManager instantiated");
     }
 
     public static TrackingManager getInstance() {
@@ -45,34 +47,69 @@ public class TrackingManager implements LocationListener {
         this.manualOverride = override;
     }
 
+    /**
+     * Resets the list of location points and registers itself to receive GPS updates.
+     */
     public void startTracking() {
         if (!this.isTracking) {
             Log.d("JC", "TrackingManager: Starting to track");
-            bikeLocationService.addGPSListener(this);
-            this.curLocationList = new RealmList<TrackLocation>();
+            BikeLocationService.getInstance().addGPSListener(this);
+            this.curLocationList = new ArrayList<Location>();
             this.isTracking = true;
         }
     }
 
+    /**
+     * Deregisters for GPS updates and calls `makeAndSaveTrack` to create the track in the DB.
+     * @param override
+     */
     public void stopTracking(boolean override) {
         // We stop the tracking, either if we've not manually overridden, or if we
         // locally overrode the override. This nomenclature sucks.
         if (this.isTracking && (!manualOverride || override)) {
             Log.d("JC", "TrackingManager: Stopping track");
-            bikeLocationService.removeGPSListener(this);
+            BikeLocationService.getInstance().removeGPSListener(this);
             this.isTracking = false;
 
-            // Save the track to the DB
-            realm = Realm.getInstance(IbikeApplication.getContext());
-            realm.beginTransaction();
-            Track track = realm.createObject(Track.class);
-            track.setLocations(curLocationList);
-            realm.commitTransaction();
+            makeAndSaveTrack();
 
             // If we just stopped, manualOverride should be false, regardless whether
             // we came from an overridden state or not.
             this.manualOverride = false;
         }
+    }
+
+    /**
+     * Creates a track from the currently saved locations and saves it to the database.
+     */
+    private void makeAndSaveTrack() {
+        // Save the track to the DB
+        realm = Realm.getInstance(IbikeApplication.getContext());
+        realm.beginTransaction();
+        Track track = realm.createObject(Track.class);
+        RealmList<TrackLocation> trackLocations = track.getLocations();
+
+        // We have a list of Location objects that represent our route. Convert these to TrackLocation objects
+        // and add them to the track we're working on.
+        for (Location l : curLocationList) {
+            TrackLocation trackLocation = realm.createObject(TrackLocation.class);
+
+            // Set all the relevant fields
+            trackLocation.setLatitude(l.getLatitude());
+            trackLocation.setLongitude(l.getLongitude());
+            trackLocation.setTimestamp(new Date(l.getTime()));
+            trackLocation.setAltitude(l.getAltitude());
+
+            // This is potentially bad. We don't have a measure of the horizontal and vertical accuracies, but we do have
+            // one for the accuracy all in all. We just set that for both fields.
+            trackLocation.setHorizontalAccuracy(l.getAccuracy());
+            trackLocation.setVerticalAccuracy(l.getAccuracy());
+
+            // Add it to the track
+            trackLocations.add(trackLocation);
+        }
+
+        realm.commitTransaction();
     }
 
     public void stopTracking()   {
@@ -95,7 +132,12 @@ public class TrackingManager implements LocationListener {
         realm = Realm.getInstance(IbikeApplication.getContext());
 
         if (isTracking) {
+            Log.d("JC", "Got new GPS coord");
+            curLocationList.add(givenLocation);
+
+            /*
             realm.beginTransaction();
+
             // Instantiate the object the right way
             TrackLocation realmLocation = realm.createObject(TrackLocation.class);
 
@@ -112,6 +154,7 @@ public class TrackingManager implements LocationListener {
 
             curLocationList.add(realmLocation);
             realm.commitTransaction();
+            */
         }
     }
 
@@ -127,8 +170,8 @@ public class TrackingManager implements LocationListener {
     }
 
     public void onActivityChanged(int activityType, int confidence) {
-
-        if (activityType == DetectedActivity.ON_BICYCLE && !this.isTracking) {
+        Log.d("JC", "TrackingManager new activity");
+        if (!this.isTracking && activityType == DetectedActivity.ON_BICYCLE || (DEBUG && activityType == DetectedActivity.TILTING)) {
             Log.i("JC", "Activity changed to bicycle, starting track.");
             startTracking();
         } else if(activityType != DetectedActivity.ON_BICYCLE && this.isTracking) {
