@@ -34,11 +34,6 @@ public class TrackingWelcomeActivity extends Activity {
         this.kmPrTripText  = (TextView) findViewById(R.id.kmPrTripText);
         this.hoursText     = (TextView) findViewById(R.id.hoursText);
 
-        this.kmText = (TextView) findViewById(R.id.kmText);
-        this.kmtText = (TextView) findViewById(R.id.kmtText);
-        this.kmPrTripText = (TextView) findViewById(R.id.kmPrTripText);
-        this.hoursText = (TextView) findViewById(R.id.hoursText);
-
         try {
             this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
         } catch(NullPointerException e) {
@@ -67,5 +62,10 @@ public class TrackingWelcomeActivity extends Activity {
 
         this.termsLinkText.setPaintFlags(this.termsLinkText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         this.enableButton.setText(IbikeApplication.getString("enable_tracking"));
+
+        this.kmText.setText(IbikeApplication.getString("unit_km").toUpperCase());
+        this.kmtText.setText(IbikeApplication.getString("unit_km_pr_h").toUpperCase());
+        this.kmPrTripText.setText(IbikeApplication.getString("unit_km_pr_trip").toUpperCase());
+        this.hoursText.setText(IbikeApplication.getString("unit_h_long").toUpperCase());
     }
 }

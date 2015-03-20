@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -159,7 +160,21 @@
             android:label="@string/title_activity_edit_favorite" />
 
         <service android:name="com.spoiledmilk.ibikecph.BikeLocationService"></service>
+        <service android:name="com.spoiledmilk.ibikecph.BikeActivityService" > </service>
 
+        <activity
+                android:name="com.spoiledmilk.ibikecph.tracking.TrackingActivity"
+                android:label="@string/title_activity_tracking"
+                android:parentActivityName="com.spoiledmilk.ibikecph.map.MapActivity"
+                android:theme="@android:style/Theme.Holo.Light" />
+        <activity
+                android:name="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity"
+                android:label="@string/title_activity_tracking"
+                android:theme="@android:style/Theme.Holo.Light" />
+        <activity
+                android:name="com.spoiledmilk.ibikecph.tracking.TrackingSettingsActivity"
+                android:label="@string/title_activity_tracking_settings"
+                android:theme="@android:style/Theme.Holo.Light" />
     </application>
 
 </manifest>

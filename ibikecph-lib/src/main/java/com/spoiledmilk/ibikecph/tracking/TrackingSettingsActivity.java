@@ -79,11 +79,11 @@ public class TrackingSettingsActivity extends Activity {
     }
 
     private void initStrings() {
-        this.trackingEnableText.setText(IbikeApplication.getString("tracking_enable"));
+        this.trackingEnableText.setText(IbikeApplication.getString("enable_tracking"));
         this.trackingEnableSwitch.setChecked(settings.getTrackingEnabled());
-        this.notifyMilestoneText.setText(IbikeApplication.getString("tracking_notify_milestone"));
+        this.notifyMilestoneText.setText(IbikeApplication.getString("tracking_milestone_notifications"));
         this.notifyMilestoneCheckbox.setChecked(settings.getNotifyMilestone());
-        this.notifyWeeklyText.setText(IbikeApplication.getString("tracking_notify_weekly"));
+        this.notifyWeeklyText.setText(IbikeApplication.getString("tracking_weekly_status_notifications"));
         this.notifyWeeklyCheckbox.setChecked(settings.getNotifyWeekly());
         this.shareDataText.setText(IbikeApplication.getString("tracking_share_data"));
         this.shareDataSwitch.setChecked(settings.getShareData());

@@ -2,7 +2,6 @@ package com.spoiledmilk.ibikecph.tracking;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,7 +16,6 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class TrackingActivity extends Activity {
@@ -114,36 +112,23 @@ public class TrackingActivity extends Activity {
         this.activityText.setText(IbikeApplication.getString("tracking_activity").toUpperCase());
         this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase());
 
+        this.activityText.setText(IbikeApplication.getString("stats_description").toUpperCase());
         // Get the timestamp of the first recorded TrackLocation
         Realm realm = Realm.getInstance(this);
         RealmResults<TrackLocation> results  = realm.allObjects(TrackLocation.class);
-        Date firstActivity = results.first().getTimestamp();
-        String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(firstActivity);
+
+        try {
+            Date firstActivity = results.first().getTimestamp();
+            String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(firstActivity);
+            this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase() + " " + formattedDate.toUpperCase());
+        } catch(ArrayIndexOutOfBoundsException e) {
+            this.sinceText.setText("");
+        }
         // Done
 
-        this.activityText.setText(IbikeApplication.getString("stats_description").toUpperCase());
-        this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase() + " " + formattedDate.toUpperCase());
     }
 
-    public static double getDistanceOfTrack(Track t)  {
-        double result = 0;
 
-        ArrayList<Location> locations = new ArrayList<Location>();
-
-        for (TrackLocation l : t.getLocations()) {
-            Location tmpl = new Location("TrackingActivity");
-            tmpl.setLongitude(l.getLongitude());
-            tmpl.setLatitude(l.getLatitude());
-
-            locations.add(tmpl);
-        }
-
-        for (int i = 0; i < locations.size()-1; i++) {
-            result += locations.get(i).distanceTo(locations.get(i + 1));
-        }
-
-        return result;
-    }
 
     /**
      * Prints all tracks.
@@ -159,15 +144,18 @@ public class TrackingActivity extends Activity {
         double speedAggregate = 0;
 
         for (Track t : results) {
-            double curDist = getDistanceOfTrack(t);
+            double curDist = TrackManager.getDistanceOfTrack(t);
 
             // We get the duration of the trip by subtracting the timestamp of the first GPS coord from the timestamp
             // of the last.
             if (t.getLocations() != null && t.getLocations().size() > 0) {
                 int elapsedSeconds = (int) (t.getLocations().last().getTimestamp().getTime() - t.getLocations().first().getTimestamp().getTime()) / 1000;
                 totalSeconds += elapsedSeconds;
-                double speed = curDist / elapsedSeconds; // Unit: m/s
-                speedAggregate += speed;
+
+                if (elapsedSeconds > 0 ) {
+                    double speed = curDist / elapsedSeconds; // Unit: m/s
+                    speedAggregate += speed;
+                }
             }
 
             totalDistance += curDist;
@@ -176,14 +164,18 @@ public class TrackingActivity extends Activity {
         }
 
         distanceTextView.setText(String.format("%.1f", totalDistance/1000));
+
         if (results.size() > 0 ) {
             avgPerTrackDistanceTextView.setText(String.format("%.1f", totalDistance / 1000 / results.size()));
-
-            // The speedAggregate is i meters/sec, we multiply with 3.6 to get km/h
-            speedTextView.setText(String.format("%.1f", (speedAggregate / results.size()) * 3.6 ));
         }
         else { // Can't divide by 0
             avgPerTrackDistanceTextView.setText("0.0");
+        }
+
+        if (totalSeconds > 0 ) {
+            // The speedAggregate is i meters/sec, we multiply with 3.6 to get km/h
+            speedTextView.setText(String.format("%.1f", ((totalDistance / 1000) / totalSeconds) * 3.6));
+        } else {
             speedTextView.setText("0.0");
         }
 
