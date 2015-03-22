@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -28,6 +29,7 @@ public class TrackingActivity extends Activity {
     private TextView speedTextView;
     private TextView timeTextView;
     private TextView trackingStatusTextView;
+    private ListView tripListView;
 
     private TextView kmText, kmtText, kmPrTripText, hoursText;
 
@@ -50,6 +52,7 @@ public class TrackingActivity extends Activity {
         this.kmPrTripText = (TextView) findViewById(R.id.kmPrTripText);
         this.hoursText = (TextView) findViewById(R.id.hoursText);
 
+        this.tripListView = (ListView) findViewById(R.id.tripListView);
 
         try {
             this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
@@ -61,6 +64,15 @@ public class TrackingActivity extends Activity {
 
         printTracks();
         updateStrings();
+        updateListOfTracks();
+    }
+
+    private void updateListOfTracks() {
+        Realm realm = Realm.getInstance(this);
+        RealmResults<Track> tracks = realm.allObjects(Track.class);
+
+        TrackListAdapter trackListAdapter = new TrackListAdapter(this, R.layout.track_list_row_view, tracks);
+        this.tripListView.setAdapter(trackListAdapter);
     }
 
 
@@ -160,7 +172,7 @@ public class TrackingActivity extends Activity {
 
             totalDistance += curDist;
 
-            Log.d("JC", "Track " + t.hashCode() + ", distance: " + curDist + " meters");
+            //Log.d("JC", "Track " + t.hashCode() + ", distance: " + curDist + " meters");
         }
 
         distanceTextView.setText(String.format("%.1f", totalDistance/1000));
