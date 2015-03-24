@@ -3,6 +3,7 @@ package com.spoiledmilk.ibikecph.tracking;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -32,15 +33,20 @@ public class TrackMapView extends Activity {
         RealmResults<Track> tracks = realm.allObjects(Track.class);
         Track track = tracks.get(track_position);
 
-        PathOverlay path = new PathOverlay(Color.RED, 3);
+        PathOverlay path = new PathOverlay(Color.RED, 5);
         LatLng center = null;
 
         for (TrackLocation loc : track.getLocations()) {
+            if (loc.getHorizontalAccuracy() > 20) {
+                continue;
+            }
+
             if (center == null) {
                 center = new LatLng(loc.getLatitude(), loc.getLongitude());
             }
 
             path.addPoint(loc.getLatitude(), loc.getLongitude());
+            Log.d("JC", Double.toString(loc.getHorizontalAccuracy()));
         }
 
         mapView.getOverlays().add(path);

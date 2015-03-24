@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class TrackingManager implements LocationListener {
     private static final boolean DEBUG = false;
+    private static final int MAX_INACCURACY = 25;
 
     private static TrackingManager instance = null;
     private boolean isTracking = false;
@@ -134,30 +135,9 @@ public class TrackingManager implements LocationListener {
         // TODO: The `realm` field would be nice to have on the class instead of potentially constructing it on each GPS update
         realm = Realm.getInstance(IbikeApplication.getContext());
 
-        if (isTracking) {
+        if (isTracking && givenLocation.getAccuracy() <= MAX_INACCURACY) {
             Log.d("JC", "Got new GPS coord");
             curLocationList.add(givenLocation);
-
-            /*
-            realm.beginTransaction();
-
-            // Instantiate the object the right way
-            TrackLocation realmLocation = realm.createObject(TrackLocation.class);
-
-            // Set all the relevant fields
-            realmLocation.setLatitude(givenLocation.getLatitude());
-            realmLocation.setLongitude(givenLocation.getLongitude());
-            realmLocation.setTimestamp(new Date(givenLocation.getTime()));
-            realmLocation.setAltitude(givenLocation.getAltitude());
-
-            // This is potentially bad. We don't have a measure of the horizontal and vertical accuracies, but we do have
-            // one for the accuracy all in all. We just set that for both fields.
-            realmLocation.setHorizontalAccuracy(givenLocation.getAccuracy());
-            realmLocation.setVerticalAccuracy(givenLocation.getAccuracy());
-
-            curLocationList.add(realmLocation);
-            realm.commitTransaction();
-            */
         }
     }
 
