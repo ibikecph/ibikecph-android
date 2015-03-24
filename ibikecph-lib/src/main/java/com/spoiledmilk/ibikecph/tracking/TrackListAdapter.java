@@ -1,6 +1,7 @@
 package com.spoiledmilk.ibikecph.tracking;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,14 +31,14 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
      * @param parent
      * @return A view to put into the TrackListView
      */
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) IbikeApplication.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.track_list_row_view, parent, false);
 
         TextView titleView = (TextView) rowView.findViewById(R.id.trackTextView);
         TextView lengthView = (TextView) rowView.findViewById(R.id.trackLengthView);
 
-        Track track = this.getItem(position);
+        final Track track = this.getItem(position);
 
         titleView.setText("Track " + position);
 
@@ -46,6 +47,16 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         } catch(NullPointerException e) {
             lengthView.setText("-1 m");
         }
+
+        // Open the TrackMapView when clicking on a track
+        rowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(IbikeApplication.getContext(), TrackMapView.class);
+                i.putExtra("track_position", position);
+                getContext().startActivity(i);
+            }
+        });
 
         return rowView;
     }
