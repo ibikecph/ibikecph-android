@@ -80,6 +80,8 @@ public class TrackingActivity extends Activity {
     public void onResume() {
         super.onResume();
         printTracks();
+        updateStrings();
+        updateListOfTracks();
     }
 
     @Override
@@ -158,11 +160,10 @@ public class TrackingActivity extends Activity {
         for (Track t : results) {
             double curDist = TrackManager.getDistanceOfTrack(t);
 
-            // We get the duration of the trip by subtracting the timestamp of the first GPS coord from the timestamp
-            // of the last.
+            // Do the summary statistics
             if (t.getLocations() != null && t.getLocations().size() > 0) {
-                int elapsedSeconds = (int) (t.getLocations().last().getTimestamp().getTime() - t.getLocations().first().getTimestamp().getTime()) / 1000;
-                totalSeconds += elapsedSeconds;
+                int elapsedSeconds = (int)Math.round(t.getDuration());
+                totalSeconds += t.getDuration();
 
                 if (elapsedSeconds > 0 ) {
                     double speed = curDist / elapsedSeconds; // Unit: m/s
@@ -171,8 +172,6 @@ public class TrackingActivity extends Activity {
             }
 
             totalDistance += curDist;
-
-            //Log.d("JC", "Track " + t.hashCode() + ", distance: " + curDist + " meters");
         }
 
         distanceTextView.setText(String.format("%.1f", totalDistance/1000));
@@ -192,7 +191,6 @@ public class TrackingActivity extends Activity {
         }
 
         timeTextView.setText(String.format("%.1f", totalSeconds / 3600));
-
     }
 
 }
