@@ -132,8 +132,9 @@ public class TrackingManager implements LocationListener {
             lastLocation = l;
         }
 
-        // Set the duration. We say it's the duration of time from the first to the last timestamp.
-        track.setDuration(trackLocations.last().getTimestamp().getTime() - trackLocations.first().getTimestamp().getTime());
+        // Set the duration. We say it's the duration of time from the first to the last timestamp. We're dividing by
+        // 1000 because the timestamps are in milliseconds, and we want seconds.
+        track.setDuration((trackLocations.last().getTimestamp().getTime() - trackLocations.first().getTimestamp().getTime()) / 1000);
 
         // Set the distance
         track.setLength(dist);

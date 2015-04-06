@@ -42,7 +42,7 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
 
         // SET THE DURATION LABEL
         TextView trackDurationView = (TextView) rowView.findViewById(R.id.trackDurationView);
-        trackDurationView.setText( String.valueOf( (int) (track.getDuration() / 60)));
+        trackDurationView.setText( String.valueOf( (int) (track.getDuration() / 60 )));
 
         // SET THE DISTANCE LABEL
         TextView lengthView = (TextView) rowView.findViewById(R.id.trackLengthView);
@@ -50,14 +50,7 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         try {
             double distance = track.getLength();
 
-            // TODO: Figure out how we're solving this properly
-            if (true || distance > 1000) {
-                lengthView.setText( String.valueOf(((int) Math.round(distance/1000))));
-                trackLengthUnitTextView.setText("km");
-            } else {
-                lengthView.setText( String.valueOf(((int) Math.round(distance))));
-                trackLengthUnitTextView.setText("m");
-            }
+            lengthView.setText( String.valueOf(((int) Math.round(distance / 1000))));
         } catch(NullPointerException e) {
             lengthView.setText("-1 m");
         }
