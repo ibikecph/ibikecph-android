@@ -35,18 +35,23 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         LayoutInflater inflater = (LayoutInflater) IbikeApplication.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.track_list_row_view, parent, false);
 
-        TextView titleView = (TextView) rowView.findViewById(R.id.trackTextView);
-        TextView lengthView = (TextView) rowView.findViewById(R.id.trackLengthView);
-        TextView trackLengthUnitTextView = (TextView) rowView.findViewById(R.id.trackLengthUnitTextView);
+        //TextView titleView = (TextView) rowView.findViewById(R.id.trackTextView);
+
 
         final Track track = this.getItem(position);
 
-        titleView.setText("Track " + position);
+        // SET THE DURATION LABEL
+        TextView trackDurationView = (TextView) rowView.findViewById(R.id.trackDurationView);
+        trackDurationView.setText( String.valueOf( (int) (track.getDuration() / 60)));
 
+        // SET THE DISTANCE LABEL
+        TextView lengthView = (TextView) rowView.findViewById(R.id.trackLengthView);
+        TextView trackLengthUnitTextView = (TextView) rowView.findViewById(R.id.trackLengthUnitTextView);
         try {
-            double distance = TrackManager.getDistanceOfTrack(track);
+            double distance = track.getLength();
 
-            if (distance > 1000) {
+            // TODO: Figure out how we're solving this properly
+            if (true || distance > 1000) {
                 lengthView.setText( String.valueOf(((int) Math.round(distance/1000))));
                 trackLengthUnitTextView.setText("km");
             } else {
@@ -56,6 +61,9 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         } catch(NullPointerException e) {
             lengthView.setText("-1 m");
         }
+
+        // SET THE SPEED LABEL
+        TextView trackSpeedView = (TextView) rowView.findViewById(R.id.trackSpeedView);
 
         // Open the TrackMapView when clicking on a track
         rowView.setOnClickListener(new View.OnClickListener() {

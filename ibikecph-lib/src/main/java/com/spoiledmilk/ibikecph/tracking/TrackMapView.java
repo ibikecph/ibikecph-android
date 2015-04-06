@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
@@ -36,18 +37,37 @@ public class TrackMapView extends Activity {
         PathOverlay path = new PathOverlay(Color.RED, 5);
         LatLng center = null;
 
+        // Loop through all of the points, adding them to the path overlay. Create a BoundingBox in the meantime
+        double minLat = Double.MAX_VALUE, maxLat = Double.MIN_VALUE, minLong = Double.MAX_VALUE, maxLong = Double.MIN_VALUE;
         for (TrackLocation loc : track.getLocations()) {
-            if (loc.getHorizontalAccuracy() > 20) {
-                continue;
-            }
-
             if (center == null) {
                 center = new LatLng(loc.getLatitude(), loc.getLongitude());
+                minLat = loc.getLatitude();
+                maxLat = loc.getLatitude();
+                minLong = loc.getLongitude();
+                maxLong = loc.getLongitude();
             }
 
             path.addPoint(loc.getLatitude(), loc.getLongitude());
             Log.d("JC", Double.toString(loc.getHorizontalAccuracy()));
+
+            if (loc.getLatitude() < minLat)
+                minLat = loc.getLatitude();
+
+            if (loc.getLatitude() > maxLat)
+                maxLat = loc.getLatitude();
+
+            if (loc.getLongitude() < minLong)
+                minLong = loc.getLongitude();
+
+            if (loc.getLongitude() > maxLong)
+                maxLong = loc.getLongitude();
+
         }
+
+
+        BoundingBox bbox = new BoundingBox(minLat, maxLong, maxLat, minLong);
+        mapView.zoomToBoundingBox(bbox);
 
         mapView.getOverlays().add(path);
 
