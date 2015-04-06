@@ -105,6 +105,9 @@ public class TrackingManager implements LocationListener {
 
         // We have a list of Location objects that represent our route. Convert these to TrackLocation objects
         // and add them to the track we're working on.
+
+        Location lastLocation = null;
+        double dist = 0;
         for (Location l : curLocationList) {
             TrackLocation trackLocation = realm.createObject(TrackLocation.class);
 
@@ -121,7 +124,19 @@ public class TrackingManager implements LocationListener {
 
             // Add it to the track
             trackLocations.add(trackLocation);
+
+            // Update the distance counter
+            if (lastLocation != null) {
+                dist += lastLocation.distanceTo(l);
+            }
+            lastLocation = l;
         }
+
+        // Set the duration. We say it's the duration of time from the first to the last timestamp.
+        track.setDuration(trackLocations.last().getTimestamp().getTime() - trackLocations.first().getTimestamp().getTime());
+
+        // Set the distance
+        track.setLength(dist);
 
         realm.commitTransaction();
     }
