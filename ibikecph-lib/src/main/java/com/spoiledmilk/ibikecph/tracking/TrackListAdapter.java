@@ -37,13 +37,22 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
 
         TextView titleView = (TextView) rowView.findViewById(R.id.trackTextView);
         TextView lengthView = (TextView) rowView.findViewById(R.id.trackLengthView);
+        TextView trackLengthUnitTextView = (TextView) rowView.findViewById(R.id.trackLengthUnitTextView);
 
         final Track track = this.getItem(position);
 
         titleView.setText("Track " + position);
 
         try {
-            lengthView.setText(TrackManager.getDistanceOfTrack(track) + " m");
+            double distance = TrackManager.getDistanceOfTrack(track);
+
+            if (distance > 1000) {
+                lengthView.setText( String.valueOf(((int) Math.round(distance/1000))));
+                trackLengthUnitTextView.setText("km");
+            } else {
+                lengthView.setText( String.valueOf(((int) Math.round(distance))));
+                trackLengthUnitTextView.setText("m");
+            }
         } catch(NullPointerException e) {
             lengthView.setText("-1 m");
         }

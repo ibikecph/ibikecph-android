@@ -3,8 +3,39 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="64dp">
-    <TextView android:layout_width="wrap_content" android:layout_height="fill_parent" android:id="@+id/trackTextView"
-              android:layout_weight=".5"/>
-    <TextView android:layout_width="wrap_content" android:layout_height="fill_parent" android:id="@+id/trackLengthView"
-              android:layout_weight=".125"/>
+
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="fill_parent"
+              android:layout_weight=".7" android:orientation="vertical">
+        <TextView android:layout_width="wrap_content" android:layout_height="fill_parent" android:id="@+id/trackTextView"/>
+        </LinearLayout>
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  android:layout_weight=".1">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="time"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/trackTimeView"
+                  android:text="25" android:textColor="@android:color/black" android:textSize="22dp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="min"/>
+    </LinearLayout>
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  android:layout_weight=".1">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="dist"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/trackLengthView"
+                  android:text="25" android:textColor="@android:color/black" android:textSize="22dp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/trackLengthUnitTextView" android:text="km"/>
+    </LinearLayout>
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="wrap_content"
+                  android:layout_height="fill_parent"
+                  android:layout_weight=".1">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="speed"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/trackSpeedView"
+                  android:text="25" android:textColor="@android:color/black" android:textSize="22dp"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="km/h"/>
+    </LinearLayout>
 </LinearLayout>

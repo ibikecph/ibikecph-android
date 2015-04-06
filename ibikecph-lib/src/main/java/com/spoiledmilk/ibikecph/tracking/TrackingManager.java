@@ -90,7 +90,17 @@ public class TrackingManager implements LocationListener {
         // Save the track to the DB
         realm = Realm.getInstance(IbikeApplication.getContext());
         realm.beginTransaction();
-        Track track = realm.createObject(Track.class);
+
+        // TODO: Determine if we'd rather add the locations to the former track.
+
+        Track track;
+
+        if (previousTrackTooNew()) {
+            // TODO
+            track = null;
+        } else {
+            track = realm.createObject(Track.class);
+        }
         RealmList<TrackLocation> trackLocations = track.getLocations();
 
         // We have a list of Location objects that represent our route. Convert these to TrackLocation objects
@@ -114,6 +124,10 @@ public class TrackingManager implements LocationListener {
         }
 
         realm.commitTransaction();
+    }
+
+    private boolean previousTrackTooNew() {
+        return false;
     }
 
     public void stopTracking()   {
