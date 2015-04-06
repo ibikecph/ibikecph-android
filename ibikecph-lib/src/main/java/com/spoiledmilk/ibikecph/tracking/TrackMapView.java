@@ -28,7 +28,6 @@ public class TrackMapView extends Activity {
 
         mapView = (MapView) findViewById(R.id.mapview);
 
-
         // Get the route
         Realm realm = Realm.getInstance(this);
         RealmResults<Track> tracks = realm.allObjects(Track.class);
@@ -65,15 +64,18 @@ public class TrackMapView extends Activity {
 
         }
 
-
-        BoundingBox bbox = new BoundingBox(minLat, maxLong, maxLat, minLong);
-        mapView.zoomToBoundingBox(bbox);
-
         mapView.getOverlays().add(path);
 
         if (center != null) {
             mapView.setCenter(center);
         }
+
+        Log.d("JC", "Bounding box: [" + minLat + ", " + maxLat+"], ["+minLong + ", "+maxLong+"]");
+
+        // TODO: This doesn't work. Why?
+        final BoundingBox bbox = new BoundingBox(minLat, maxLong, maxLat, minLong);
+        mapView.zoomToBoundingBox(bbox, true, true);
+
     }
 
 

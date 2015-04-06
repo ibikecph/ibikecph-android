@@ -65,6 +65,11 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         // SET THE SPEED LABEL
         TextView trackSpeedView = (TextView) rowView.findViewById(R.id.trackSpeedView);
 
+        int speed = -1;
+        if (track.getDuration() != 0)
+            speed = (int) Math.round((track.getLength() / track.getDuration()) * 3.6);
+        trackSpeedView.setText(String.valueOf(speed));
+
         // Open the TrackMapView when clicking on a track
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
