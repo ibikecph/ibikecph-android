@@ -155,11 +155,9 @@ public class TrackingActivity extends Activity {
 
         double totalDistance = 0;
         double totalSeconds = 0;
-        double speedAggregate = 0;
 
         for (Track t : results) {
             totalDistance += t.getLength();
-            speedAggregate += t.getLength() / t.getDuration();
             totalSeconds += t.getDuration();
         }
 
@@ -174,7 +172,8 @@ public class TrackingActivity extends Activity {
 
         if (totalSeconds > 0 ) {
             // The speedAggregate is i meters/sec, we multiply with 3.6 to get km/h
-            speedTextView.setText(String.format("%.1f", ((totalDistance / 1000) / totalSeconds) * 3.6));
+            speedTextView.setText(String.format("%.1f", (totalDistance / totalSeconds) * 3.6));
+            Log.d("JC", "Total distance: "+totalDistance+", total seconds:" +totalSeconds);
         } else {
             speedTextView.setText("0.0");
         }
