@@ -66,7 +66,7 @@
     </LinearLayout>
 
     <LinearLayout android:layout_width="fill_parent" android:layout_height="64dp" android:paddingEnd="8dp"
-                  android:paddingStart="8dp">
+                  android:paddingStart="8dp" android:visibility="gone">
         <TextView
                 android:id="@+id/notify_weekly_text"
                 android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
     </LinearLayout>
 
     <LinearLayout android:layout_width="fill_parent" android:layout_height="64dp" android:paddingEnd="8dp"
-                  android:paddingStart="8dp">
+                  android:paddingStart="8dp" android:visibility="gone">
         <TextView
                 android:id="@+id/share_data_text"
                 android:layout_width="wrap_content"
@@ -105,18 +105,18 @@
     <TextView
             android:id="@+id/share_data_info_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:text="share_data_info_text"/>
+            android:layout_height="wrap_content" android:text="share_data_info_text" android:visibility="gone"/>
 
     <TextView
             android:id="@+id/share_data_usage_text"
             android:onClick="onUsageClick"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:text="share_data_usage_text"/>
+            android:layout_height="wrap_content" android:text="share_data_usage_text" android:visibility="gone"/>
 
     <TextView
             android:id="@+id/share_data_terms_text"
             android:onClick="onTermsClick"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:text="share_data_terms_text"/>
+            android:layout_height="wrap_content" android:text="share_data_terms_text" android:visibility="gone"/>
 
 </LinearLayout>
