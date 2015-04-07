@@ -9,6 +9,7 @@ public class Track extends RealmObject {
     private String start;
     private String end;
     private double length;
+    private double duration;
 
     public RealmList<TrackLocation> getLocations() {
         return locations;
@@ -42,4 +43,11 @@ public class Track extends RealmObject {
         this.length = length;
     }
 
+    public double getDuration() {
+        return duration;
+    }
+
+    public void setDuration(double duration) {
+        this.duration = duration;
+    }
 }

@@ -5,19 +5,18 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.map;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
 import android.location.Location;
 import android.os.Handler;
 import android.os.Message;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Implements the API calls to search for routes, find nearest points, etc.

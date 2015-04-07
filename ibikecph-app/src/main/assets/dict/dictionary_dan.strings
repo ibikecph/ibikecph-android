@@ -329,3 +329,6 @@
 "milestone_distance_5_description" = "Yes, %d km cyklet!";
 "milestone_distance_6_description" = "%d km på cyklen, du er på vej mod stjernerne!";
 "milestone_distance_7_description" = "Klap dig selv på lårerne, du har cyklet %d km! Tillykke!";
+
+"Speed" = "Fart";
+"Dist" = "Dist";

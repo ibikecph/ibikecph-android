@@ -16,6 +16,8 @@ public class TrackManager {
 
         ArrayList<Location> locations = new ArrayList<Location>();
 
+        if (t.getLocations() == null) return -1;
+
         for (TrackLocation l : t.getLocations()) {
             Location tmpl = new Location("TrackingActivity");
             tmpl.setLongitude(l.getLongitude());
