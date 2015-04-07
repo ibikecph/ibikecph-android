@@ -7,6 +7,8 @@ import android.util.Log;
 import com.google.android.gms.location.DetectedActivity;
 import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.map.SMHttpRequest;
+import com.spoiledmilk.ibikecph.map.SMHttpRequestListener;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import io.realm.Realm;
@@ -19,7 +21,7 @@ import java.util.List;
 /**
  * Created by jens on 2/25/15.
  */
-public class TrackingManager implements LocationListener {
+public class TrackingManager implements LocationListener, SMHttpRequestListener {
     private static final boolean DEBUG = false;
     private static final int MAX_INACCURACY = 25;
 
@@ -101,6 +103,12 @@ public class TrackingManager implements LocationListener {
         } else {
             track = realm.createObject(Track.class);
         }
+
+        // If the track is too short, just disregard it.
+        if (curLocationList.size() < 3) {
+            realm.cancelTransaction();
+        }
+
         RealmList<TrackLocation> trackLocations = track.getLocations();
 
         // We have a list of Location objects that represent our route. Convert these to TrackLocation objects
@@ -138,6 +146,10 @@ public class TrackingManager implements LocationListener {
 
         // Set the distance
         track.setLength(dist);
+
+        // Get a geolocation for the start and end points.
+        new SMHttpRequest().findPlacesForLocation(curLocationList.get(0), this);
+        new SMHttpRequest().findPlacesForLocation(curLocationList.get(curLocationList.size()-1), this);
 
         realm.commitTransaction();
     }
@@ -195,5 +207,58 @@ public class TrackingManager implements LocationListener {
             stopTracking();
         }
 
+    }
+
+    @Override
+    public void onResponseReceived(int requestType, Object response) {
+
+        // We got an answer from the geocoder, put it on the most recent route
+        if (requestType == SMHttpRequest.REQUEST_FIND_PLACES_FOR_LOC) {
+            SMHttpRequest.Address address = (SMHttpRequest.Address) response;
+
+            /**
+             * OK, we don't know if this answer relates to the start or the end of the route, so we have to cross-check.
+             * We take the lat/lon from the Address object and check whether it's closest to the start or the end. This
+             * creates some problems for tracks that begins and ends on the same spot, so we make an additional check to
+             * see if the route is circular first. If it is, we set the start and end geotag at the same time.
+             */
+
+            // Get the most recent track
+            realm = Realm.getInstance(IbikeApplication.getContext());
+            Track mostRecentTrack = realm.allObjects(Track.class).last();
+
+            TrackLocation start = mostRecentTrack.getLocations().first();
+            TrackLocation end = mostRecentTrack.getLocations().last();
+
+            // First convert tne starts and ends to Location objects
+            Location startLocation = new Location("TrackingManager");
+            startLocation.setLatitude(start.getLatitude());
+            startLocation.setLongitude(start.getLongitude());
+
+            Location endLocation = new Location("TrackingManager");
+            endLocation.setLatitude(end.getLatitude());
+            endLocation.setLongitude(end.getLongitude());
+
+            boolean routeIsCircular = startLocation.distanceTo(endLocation) < 20;
+
+            Location geocodedLocation = new Location("TrackingManager");
+            geocodedLocation.setLatitude(address.lat);
+            geocodedLocation.setLongitude(address.lon);
+
+            // Figure out whether the geocoded position is closest to start or end, and set the appropriate field on
+            // the Track object.
+            double distanceToStart = startLocation.distanceTo(geocodedLocation);
+            double distanceToEnd = endLocation.distanceTo(geocodedLocation);
+
+            realm.beginTransaction();
+            if (routeIsCircular || distanceToStart < distanceToEnd) {
+                mostRecentTrack.setStart(address.street);
+            }
+
+            if (routeIsCircular || distanceToEnd < distanceToStart) {
+                mostRecentTrack.setEnd(address.street);
+            }
+            realm.commitTransaction();
+        }
     }
 }

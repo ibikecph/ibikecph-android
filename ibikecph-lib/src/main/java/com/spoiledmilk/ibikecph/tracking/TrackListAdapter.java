@@ -11,12 +11,16 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.persist.Track;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by jens on 3/22/15.
  */
 public class TrackListAdapter extends ArrayAdapter<Track> {
+
+    SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
 
     public TrackListAdapter(Context context, int textViewResourceId, List<Track> tracks) {
         super(context, textViewResourceId, tracks);
@@ -63,6 +67,20 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
             speed = (int) Math.round((track.getLength() / track.getDuration()) * 3.6);
         trackSpeedView.setText(String.valueOf(speed));
 
+        // SET THE GEOLOCATION LABELS
+        TextView geoFromLabel = (TextView) rowView.findViewById(R.id.trackGeoFromView);
+        TextView geoToLabel = (TextView) rowView.findViewById(R.id.trackGeoToView);
+
+        geoFromLabel.setText(track.getStart());
+        geoToLabel.setText(track.getEnd());
+
+        // SET THE TIME LABELS
+        TextView trackTimeSpanView = (TextView) rowView.findViewById(R.id.trackTimeSpanView);
+        Date start = track.getLocations().first().getTimestamp();
+        Date end = track.getLocations().last().getTimestamp();
+
+        trackTimeSpanView.setText(dt.format(start) + " – " + dt.format(end));
+
         // Open the TrackMapView when clicking on a track
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,5 +93,6 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
 
         return rowView;
     }
+
 
 }
