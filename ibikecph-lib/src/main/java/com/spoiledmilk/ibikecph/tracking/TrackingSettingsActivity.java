@@ -1,7 +1,6 @@
 package com.spoiledmilk.ibikecph.tracking;
 
 import android.app.Activity;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -19,7 +18,7 @@ public class TrackingSettingsActivity extends Activity {
     private Switch trackingEnableSwitch;
 
     private TextView notifyMilestoneText;
-    private CheckBox notifyMilestoneCheckbox;
+    private Switch notifyMilestoneCheckbox;
     private TextView notifyWeeklyText;
     private CheckBox notifyWeeklyCheckbox;
 
@@ -40,7 +39,8 @@ public class TrackingSettingsActivity extends Activity {
         this.trackingEnableText      = (TextView) findViewById(R.id.tracking_enable_text);
         this.trackingEnableSwitch    = (Switch)   findViewById(R.id.tracking_enable_switch);
         this.notifyMilestoneText     = (TextView) findViewById(R.id.notify_milestone_text);
-        this.notifyMilestoneCheckbox = (CheckBox) findViewById(R.id.notify_milestone_checkbox);
+        this.notifyMilestoneCheckbox = (Switch) findViewById(R.id.notify_milestone_checkbox);
+        /*
         this.notifyWeeklyText        = (TextView) findViewById(R.id.notify_weekly_text);
         this.notifyWeeklyCheckbox    = (CheckBox) findViewById(R.id.notify_weekly_checkbox);
         this.shareDataText           = (TextView) findViewById(R.id.share_data_text);
@@ -48,7 +48,7 @@ public class TrackingSettingsActivity extends Activity {
         this.shareDataInfoText       = (TextView) findViewById(R.id.share_data_info_text);
         this.shareDataUsageText      = (TextView) findViewById(R.id.share_data_usage_text);
         this.shareDataTermsText      = (TextView) findViewById(R.id.share_data_terms_text);
-
+        */
         initStrings();
     }
 
@@ -81,6 +81,8 @@ public class TrackingSettingsActivity extends Activity {
         this.trackingEnableSwitch.setChecked(settings.getTrackingEnabled());
         this.notifyMilestoneText.setText(IbikeApplication.getString("tracking_milestone_notifications"));
         this.notifyMilestoneCheckbox.setChecked(settings.getNotifyMilestone());
+
+        /*
         this.notifyWeeklyText.setText(IbikeApplication.getString("tracking_weekly_status_notifications"));
         this.notifyWeeklyCheckbox.setChecked(settings.getNotifyWeekly());
         this.shareDataText.setText(IbikeApplication.getString("tracking_share_data"));
@@ -90,6 +92,6 @@ public class TrackingSettingsActivity extends Activity {
         this.shareDataUsageText.setPaintFlags(this.shareDataUsageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         this.shareDataTermsText.setText(IbikeApplication.getString("tracking_terms_link"));
         this.shareDataTermsText.setPaintFlags(this.shareDataTermsText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
+        */
     }
 }
