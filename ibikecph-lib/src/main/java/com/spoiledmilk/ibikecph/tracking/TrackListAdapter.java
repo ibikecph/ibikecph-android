@@ -51,6 +51,9 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         // SET THE DISTANCE LABEL
         TextView lengthView = (TextView) rowView.findViewById(R.id.trackLengthView);
         TextView trackLengthUnitTextView = (TextView) rowView.findViewById(R.id.trackLengthUnitTextView);
+        TextView distLabel = (TextView) rowView.findViewById(R.id.distLabel);
+
+        distLabel.setText(IbikeApplication.getString("Dist"));
         try {
             double distance = track.getLength();
 
@@ -60,8 +63,10 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         }
 
         // SET THE SPEED LABEL
+        TextView speedLabel = (TextView) rowView.findViewById(R.id.speedLabel);
         TextView trackSpeedView = (TextView) rowView.findViewById(R.id.trackSpeedView);
 
+        speedLabel.setText(IbikeApplication.getString("Speed"));
         int speed = -1;
         if (track.getDuration() != 0)
             speed = (int) Math.round((track.getLength() / track.getDuration()) * 3.6);
@@ -75,10 +80,12 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         geoToLabel.setText(track.getEnd());
 
         // SET THE TIME LABELS
+        TextView timeLabel = (TextView) rowView.findViewById(R.id.timeLabel);
         TextView trackTimeSpanView = (TextView) rowView.findViewById(R.id.trackTimeSpanView);
         Date start = track.getLocations().first().getTimestamp();
         Date end = track.getLocations().last().getTimestamp();
 
+        timeLabel.setText(IbikeApplication.getString("Time"));
         trackTimeSpanView.setText(dt.format(start) + " – " + dt.format(end));
 
         // Open the TrackMapView when clicking on a track

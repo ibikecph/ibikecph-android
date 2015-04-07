@@ -609,3 +609,6 @@
 "milestone_distance_5_description" = "Yes, %d km cycled!";
 "milestone_distance_6_description" = "%d km on the bike, you're on your way to the stars!";
 "milestone_distance_7_description" = "Give yourself a big cheer, you have cycled %d km! Congratulations!";
+
+"Speed" = "Speed";
+"Dist" = "Dist";
