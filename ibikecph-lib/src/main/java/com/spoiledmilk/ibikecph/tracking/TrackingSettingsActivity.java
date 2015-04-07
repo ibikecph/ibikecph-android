@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Switch;
 import android.widget.TextView;
-
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.Config;
@@ -38,7 +37,6 @@ public class TrackingSettingsActivity extends Activity {
         setContentView(R.layout.activity_tracking_settings);
 
         this.settings = IbikeApplication.getSettings();
-
         this.trackingEnableText      = (TextView) findViewById(R.id.tracking_enable_text);
         this.trackingEnableSwitch    = (Switch)   findViewById(R.id.tracking_enable_switch);
         this.notifyMilestoneText     = (TextView) findViewById(R.id.notify_milestone_text);
@@ -92,5 +90,6 @@ public class TrackingSettingsActivity extends Activity {
         this.shareDataUsageText.setPaintFlags(this.shareDataUsageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         this.shareDataTermsText.setText(IbikeApplication.getString("tracking_terms_link"));
         this.shareDataTermsText.setPaintFlags(this.shareDataTermsText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
     }
 }

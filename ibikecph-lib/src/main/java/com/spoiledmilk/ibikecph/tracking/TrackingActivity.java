@@ -171,7 +171,7 @@ public class TrackingActivity extends Activity {
         }
 
         if (totalSeconds > 0 ) {
-            // The speedAggregate is i meters/sec, we multiply with 3.6 to get km/h
+            // The speedAggregate is in meters/sec, we multiply with 3.6 to get km/h
             speedTextView.setText(String.format("%.1f", (totalDistance / totalSeconds) * 3.6));
             Log.d("JC", "Total distance: "+totalDistance+", total seconds:" +totalSeconds);
         } else {
