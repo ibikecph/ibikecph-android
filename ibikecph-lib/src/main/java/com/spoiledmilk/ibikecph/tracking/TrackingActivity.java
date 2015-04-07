@@ -158,20 +158,9 @@ public class TrackingActivity extends Activity {
         double speedAggregate = 0;
 
         for (Track t : results) {
-            double curDist = TrackManager.getDistanceOfTrack(t);
-
-            // Do the summary statistics
-            if (t.getLocations() != null && t.getLocations().size() > 0) {
-                int elapsedSeconds = (int)Math.round(t.getDuration());
-                totalSeconds += t.getDuration();
-
-                if (elapsedSeconds > 0 ) {
-                    double speed = curDist / elapsedSeconds; // Unit: m/s
-                    speedAggregate += speed;
-                }
-            }
-
-            totalDistance += curDist;
+            totalDistance += t.getLength();
+            speedAggregate += t.getLength() / t.getDuration();
+            totalSeconds += t.getDuration();
         }
 
         distanceTextView.setText(String.format("%.1f", totalDistance/1000));
