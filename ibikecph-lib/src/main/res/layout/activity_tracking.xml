@@ -12,6 +12,14 @@
         >
 
 
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop tracking"
+            android:id="@+id/btnStopTracking"
+            android:onClick="btnStopTrackingOnClick" android:layout_alignTop="@+id/btnStartTracking"
+            android:layout_alignParentRight="true" android:layout_alignParentEnd="true" android:visibility="visible"
+            android:layout_row="5" android:layout_column="0"/>
     <TextView
         android:id="@+id/tracking_activity_text"
         android:layout_width="match_parent"
@@ -135,13 +143,5 @@
             android:id="@+id/btnStartTracking" android:layout_centerVertical="true" android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" android:onClick="btnStartTrackingOnClick"
             android:visibility="gone" android:layout_row="3" android:layout_column="1"/>
-    <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stop tracking"
-            android:id="@+id/btnStopTracking"
-            android:onClick="btnStopTrackingOnClick" android:layout_alignTop="@+id/btnStartTracking"
-            android:layout_alignParentRight="true" android:layout_alignParentEnd="true" android:visibility="gone"
-            android:layout_row="5" android:layout_column="0"/>
 
 </LinearLayout>

@@ -3,12 +3,15 @@ package com.spoiledmilk.ibikecph.tracking;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.util.Log;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.persist.Track;
+import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -42,6 +45,11 @@ public class MilestoneManager {
         } else if (totalLength > 10*1000) {
             makeNotification(LengthNotification.KM_10);
         }
+
+
+        // Streak
+        int curStreak = daysInARow();
+        Log.d("JC", "Current streak: " + curStreak);
 
     }
 
@@ -88,40 +96,62 @@ public class MilestoneManager {
         double totalDist = 0;
 
         for (Track t : results) {
-            double curDist = TrackManager.getDistanceOfTrack(t);
-            totalDist += curDist;
+            totalDist += t.getLength();
         }
 
         return (int) totalDist;
     }
 
-    // TODO: Finish this
-    public int daysInARow() {
-
+    public static int daysInARow() {
         // Go though all TrackLocation objects
         Realm realm = Realm.getInstance(IbikeApplication.getContext());
-        RealmResults<Track> results = realm.allObjects(Track.class);
 
-        Date firstDate = null;
-        Date lastDate = null;
+        int curStreak = 0;
+        boolean stop = false;
 
-        // Get the longest span
-        for (Track t : results) {
-            // Get date from track
-            if (t.getLocations().size() > 0) {
-                Date curDate = t.getLocations().first().getTimestamp();
+        // Get the length of the current streak
+        for (int i = 0; !stop; i++) {
+            Date start = getDateStart(daysAgo(i));
+            Date end = getDateEnd(daysAgo(i));
 
-                if (firstDate == null) {
-                    firstDate = curDate;
-                }
+            long numTrackLocationsForParticularDay = realm.where(TrackLocation.class).between("timestamp", start, end).count();
 
-
+            if (numTrackLocationsForParticularDay > 0 ) {
+                curStreak++;
+            } else {
+                stop = true;
             }
         }
 
         // Calculate number of days from span
+        return curStreak;
+    }
 
-        return -1;
+    public static Date daysAgo(int i) {
+        Date d = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+
+        // Subtract the desired number of days
+        c.add(Calendar.DAY_OF_MONTH, i * -1);
+
+        return c.getTime();
+    }
+
+    public static Date getDateAtTime(Date d, int hours, int minutes) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+        cal.set(Calendar.HOUR_OF_DAY, hours);
+        cal.set(Calendar.MINUTE, minutes);
+        return cal.getTime();
+    }
+
+    public static Date getDateStart(Date d) {
+        return getDateAtTime(d, 0, 0);
+    }
+
+    public static Date getDateEnd(Date d) {
+        return getDateAtTime(d, 23, 59);
     }
 
 }
