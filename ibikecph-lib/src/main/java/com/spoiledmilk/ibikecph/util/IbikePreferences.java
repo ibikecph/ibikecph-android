@@ -32,6 +32,7 @@ public class IbikePreferences {
     public static final String PREFS_NOTIFY_WEEKLY    = "notifyWeekly";
     public static final String PREFS_SHARE_DATA       = "notifyWeekly";
     public static final String LENGTH_NOTIFICATION    = "lengthNotification";
+    public static final String STREAK_NOTIFICATION    = "streakNotification";
 
     public static final int ROUTE_COLOR = Color.rgb(0, 174, 239);
     public static final float ROUTE_STROKE_WIDTH = 10.0f;
@@ -146,6 +147,16 @@ public class IbikePreferences {
     public void setLengthNotificationOrdinal(int ordinal) {
         getPrefs().edit().putInt(LENGTH_NOTIFICATION, ordinal);
     }
+
+
+    public int getMaxStreakLength() {
+        return getPrefs().getInt(STREAK_NOTIFICATION, 0);
+    }
+
+    public void setMaxStreakLength(int streakLength) {
+        getPrefs().edit().putInt(STREAK_NOTIFICATION, streakLength);
+    }
+
 
     public SharedPreferences getPrefs() {
         return PreferenceManager.getDefaultSharedPreferences(this.context);

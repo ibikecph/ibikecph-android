@@ -26,6 +26,8 @@ public class MilestoneManager {
         KM_500,
         KM_750
     }
+
+
     public static void checkForMilestones() {
         Realm realm = Realm.getInstance(IbikeApplication.getContext());
 
@@ -51,7 +53,7 @@ public class MilestoneManager {
         }
 
         if (notificationToCreate != null) {
-            makeNotification(notificationToCreate);
+            makeLengthNotification(notificationToCreate);
 
             // Update the settings so we get persistence
             IbikeApplication.getSettings().setLengthNotificationOrdinal(notificationToCreate.ordinal());
@@ -59,11 +61,77 @@ public class MilestoneManager {
 
         // Streak
         int curStreak = daysInARow();
+        int maxStreak = IbikeApplication.getSettings().getMaxStreakLength();
+
+        if (curStreak > maxStreak) {
+            switch(curStreak) {
+                case 3:
+                case 5:
+                case 10:
+                case 15:
+                case 20:
+                case 25:
+                case 30:
+                    makeStreakNotification(curStreak);
+                    break;
+
+                default:
+                    break;
+            }
+
+            IbikeApplication.getSettings().setMaxStreakLength(curStreak);
+        }
+
         Log.d("JC", "Current streak: " + curStreak);
 
     }
 
-    public static void makeNotification(LengthNotification length) {
+    // TODO: DRY
+    private static void makeStreakNotification(int streakLength) {
+        Context context = IbikeApplication.getContext();
+
+        Notification.Builder notificationBuilder = new Notification.Builder(context);
+        notificationBuilder.setContentTitle(IbikeApplication.getString("app_name"));
+
+        String message = "";
+
+        switch(streakLength) {
+            case 3:
+                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_1_description"), streakLength));
+                break;
+            case 5:
+                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_2_description"), streakLength));
+                break;
+            case 10:
+                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_3_description"), streakLength));
+                break;
+            case 15:
+                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_4_description"), streakLength));
+                break;
+            case 20:
+                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_5_description"), streakLength));
+                break;
+            case 25:
+                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_6_description"), streakLength));
+                break;
+            case 30:
+                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_7_description"), streakLength));
+                break;
+            default:
+                break;
+        }
+
+
+        notificationBuilder.setSmallIcon(R.drawable.logo);
+
+        Notification n = notificationBuilder.build();
+        NotificationManager mNotificationManager =
+                (NotificationManager) IbikeApplication.getContext().getSystemService(context.NOTIFICATION_SERVICE);
+
+        mNotificationManager.notify(1, n);
+    }
+
+    public static void makeLengthNotification(LengthNotification length) {
         Context context = IbikeApplication.getContext();
 
         Notification.Builder notificationBuilder = new Notification.Builder(context);
@@ -98,6 +166,7 @@ public class MilestoneManager {
 
         mNotificationManager.notify(0, n);
     }
+
 
     public static int getTotalLength() {
         Realm realm = Realm.getInstance(IbikeApplication.getContext());

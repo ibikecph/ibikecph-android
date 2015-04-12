@@ -330,5 +330,13 @@
 "milestone_distance_6_description" = "%d km på cyklen, du er på vej mod stjernerne!";
 "milestone_distance_7_description" = "Klap dig selv på lårerne, du har cyklet %d km! Tillykke!";
 
+"milestone_daystreak_1_description" = "Du har cyklet %d dage i træk, du er inde i en stime!";
+"milestone_daystreak_2_description" = "%d dage i træk på cyklen, det er sejt.";
+"milestone_daystreak_3_description" = "Strike! %d dage i træk, sådan!";
+"milestone_daystreak_4_description" = "Du fortsætter derude af, %d dages cykling i træk!";
+"milestone_daystreak_5_description" = "Fuld pedal, du har cyklet %d dages i træk!";
+"milestone_daystreak_6_description" = "Du har cyklet %d dage i træk, det er imponerende!";
+"milestone_daystreak_7_description" = "Wow, på cyklen hver dag i en måned, du er en stjerne!";
+
 "Speed" = "Fart";
 "Dist" = "Dist";
