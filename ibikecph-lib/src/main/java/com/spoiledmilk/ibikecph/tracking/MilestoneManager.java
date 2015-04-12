@@ -18,7 +18,7 @@ import java.util.Date;
  * Created by jens on 3/13/15.
  */
 public class MilestoneManager {
-    enum LengthNotification {
+    public enum LengthNotification {
         KM_10,
         KM_50,
         KM_100,
@@ -31,21 +31,31 @@ public class MilestoneManager {
 
         // Total length
         int totalLength = getTotalLength();
+        int lengthMilestoneOrdinal = IbikeApplication.getSettings().getLengthNotificationOrdinal();
+        LengthNotification notificationToCreate  = null;
 
-        if (totalLength > 750*1000) {
-            makeNotification(LengthNotification.KM_750);
-        } else if (totalLength > 500*1000) {
-            makeNotification(LengthNotification.KM_500);
-        } else if (totalLength > 250*1000) {
-            makeNotification(LengthNotification.KM_250);
-        } else if (totalLength > 100*1000) {
-            makeNotification(LengthNotification.KM_100);
-        } else if (totalLength > 50*1000) {
-            makeNotification(LengthNotification.KM_50);
-        } else if (totalLength > 10*1000) {
-            makeNotification(LengthNotification.KM_10);
+        // We compare the lengthMilestoneOrdinal to the ordinal of the potential milestones. If we don't have a milestone
+        // yet the call will return -1, which is lower than 0, the ordinal of LengthNotification.KM_10.
+        if (totalLength > 750*1000 && lengthMilestoneOrdinal < LengthNotification.KM_750.ordinal()) {
+            notificationToCreate = LengthNotification.KM_750;
+        } else if (totalLength > 500*1000 && lengthMilestoneOrdinal < LengthNotification.KM_500.ordinal()) {
+            notificationToCreate = LengthNotification.KM_500;
+        } else if (totalLength > 250*1000 && lengthMilestoneOrdinal < LengthNotification.KM_250.ordinal()) {
+            notificationToCreate = LengthNotification.KM_250;
+        } else if (totalLength > 100*1000 && lengthMilestoneOrdinal < LengthNotification.KM_100.ordinal()) {
+            notificationToCreate = LengthNotification.KM_100;
+        } else if (totalLength > 50*1000 && lengthMilestoneOrdinal < LengthNotification.KM_50.ordinal()) {
+            notificationToCreate = LengthNotification.KM_50;
+        } else if (totalLength > 10*1000 && lengthMilestoneOrdinal < LengthNotification.KM_10.ordinal()) {
+            notificationToCreate = LengthNotification.KM_10;
         }
 
+        if (notificationToCreate != null) {
+            makeNotification(notificationToCreate);
+
+            // Update the settings so we get persistence
+            IbikeApplication.getSettings().setLengthNotificationOrdinal(notificationToCreate.ordinal());
+        }
 
         // Streak
         int curStreak = daysInARow();
