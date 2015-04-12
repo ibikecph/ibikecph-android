@@ -80,8 +80,10 @@ public class TrackingManager implements LocationListener, SMHttpRequestListener 
             // we came from an overridden state or not.
             this.manualOverride = false;
 
-            // Check if we should notify the user of milestones reached
-            MilestoneManager.checkForMilestones();
+            if (IbikeApplication.getSettings().getNotifyMilestone()) {
+                // Check if we should notify the user of milestones reached
+                MilestoneManager.checkForMilestones();
+            }
         }
     }
 
