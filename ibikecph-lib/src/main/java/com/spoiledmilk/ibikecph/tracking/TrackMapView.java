@@ -62,6 +62,11 @@ public class TrackMapView extends Activity {
          * Center and zoom the map according to the bounding box of the route.
          */
         mapView.zoomToBoundingBox(bbox, true, false, true, false);
+
+        // If the route is really short, it doesn't look good to fit that into the window. Zoom out a bit.
+        if (mapView.getZoomLevel() > 18.0f) {
+            mapView.setZoom(18.0f);
+        }
     }
 
     public void btnZoomCenterClick(View v) {
