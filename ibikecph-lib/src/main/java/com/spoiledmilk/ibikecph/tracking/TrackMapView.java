@@ -19,6 +19,8 @@ import io.realm.RealmResults;
 
 public class TrackMapView extends Activity {
     MapView mapView ;
+    BoundingBox bbox ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,11 +75,19 @@ public class TrackMapView extends Activity {
         Log.d("JC", "Bounding box: [" + minLat + ", " + maxLat+"], ["+minLong + ", "+maxLong+"]");
 
         // TODO: This doesn't work. Why?
-        final BoundingBox bbox = new BoundingBox(minLat, maxLong, maxLat, minLong);
-        mapView.zoomToBoundingBox(bbox, true, true);
+        this.bbox = new BoundingBox(minLat, maxLong, maxLat, minLong);
 
+        this.zoomToBoundingBox();
     }
 
+    public void onResume(Bundle savedInstanceState) {
+        zoomToBoundingBox();
+    }
+
+    public void zoomToBoundingBox() {
+        mapView.setZoom(19.0f);
+        mapView.zoomToBoundingBox(this.bbox, true, false, true, false);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

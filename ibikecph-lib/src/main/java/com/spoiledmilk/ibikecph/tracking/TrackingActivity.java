@@ -183,8 +183,6 @@ public class TrackingActivity extends Activity {
         Log.d("JC", "Current max streak: " + IbikeApplication.getSettings().getMaxStreakLength());
         Log.d("JC", "Current max length ordinal: " + IbikeApplication.getSettings().getLengthNotificationOrdinal());
 
-        IbikeApplication.getSettings().setLengthNotificationOrdinal(1);
-
     }
 
 }
