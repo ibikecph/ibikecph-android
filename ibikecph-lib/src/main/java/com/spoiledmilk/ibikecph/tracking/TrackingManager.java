@@ -80,8 +80,10 @@ public class TrackingManager implements LocationListener, SMHttpRequestListener 
             // we came from an overridden state or not.
             this.manualOverride = false;
 
-            // Check if we should notify the user of milestones reached
-            MilestoneManager.checkForMilestones();
+            if (IbikeApplication.getSettings().getNotifyMilestone()) {
+                // Check if we should notify the user of milestones reached
+                MilestoneManager.checkForMilestones();
+            }
         }
     }
 
@@ -104,9 +106,10 @@ public class TrackingManager implements LocationListener, SMHttpRequestListener 
             track = realm.createObject(Track.class);
         }
 
-        // If the track is too short, just disregard it.
+        // If the track is too short, just disregard it. We have nothing more to do, so just return.
         if (curLocationList.size() < 3) {
             realm.cancelTransaction();
+            return;
         }
 
         RealmList<TrackLocation> trackLocations = track.getLocations();

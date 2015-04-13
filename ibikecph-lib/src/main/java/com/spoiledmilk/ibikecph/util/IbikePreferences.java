@@ -5,17 +5,14 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.util;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
-
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.map.OverlayType;
+
+import java.util.Locale;
 
 public class IbikePreferences {
     public static final boolean DEBUGMODE = true;
@@ -34,6 +31,8 @@ public class IbikePreferences {
     public static final String PREFS_NOTIFY_MILESTONE = "notifyMilestone";
     public static final String PREFS_NOTIFY_WEEKLY    = "notifyWeekly";
     public static final String PREFS_SHARE_DATA       = "notifyWeekly";
+    public static final String LENGTH_NOTIFICATION    = "lengthNotification";
+    public static final String STREAK_NOTIFICATION    = "streakNotification";
 
     public static final int ROUTE_COLOR = Color.rgb(0, 174, 239);
     public static final float ROUTE_STROKE_WIDTH = 10.0f;
@@ -141,6 +140,23 @@ public class IbikePreferences {
     public String getPrefOverlayKey(OverlayType type) {
         return String.format("%s_%s", PREFS_OVERLAYS, type.toString().toLowerCase());
     }
+    public int getLengthNotificationOrdinal() {
+        return getPrefs().getInt(LENGTH_NOTIFICATION, -1);
+    }
+
+    public void setLengthNotificationOrdinal(int ordinal) {
+        getPrefs().edit().putInt(LENGTH_NOTIFICATION, ordinal);
+    }
+
+
+    public int getMaxStreakLength() {
+        return getPrefs().getInt(STREAK_NOTIFICATION, 0);
+    }
+
+    public void setMaxStreakLength(int streakLength) {
+        getPrefs().edit().putInt(STREAK_NOTIFICATION, streakLength);
+    }
+
 
     public SharedPreferences getPrefs() {
         return PreferenceManager.getDefaultSharedPreferences(this.context);
