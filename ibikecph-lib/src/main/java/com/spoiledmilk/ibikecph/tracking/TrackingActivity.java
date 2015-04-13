@@ -62,9 +62,10 @@ public class TrackingActivity extends Activity {
 
         trackingManager = TrackingManager.getInstance();
 
-        printTracks();
+        updateSummaryStatistics();
         updateStrings();
         updateListOfTracks();
+        printDebugInfo();
     }
 
     private void updateListOfTracks() {
@@ -79,7 +80,7 @@ public class TrackingActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        printTracks();
+        updateSummaryStatistics();
         updateStrings();
         updateListOfTracks();
     }
@@ -111,7 +112,7 @@ public class TrackingActivity extends Activity {
 
         Log.d("JC", "Stopped tracking");
 
-        printTracks();
+        updateSummaryStatistics();
         this.updateStrings();
     }
 
@@ -145,11 +146,9 @@ public class TrackingActivity extends Activity {
 
 
     /**
-     * Prints all tracks.
+     * Updates the overview of the bicycling activities.
      */
-    public void printTracks() {
-        Log.d("JC", "Printing tracks:");
-
+    public void updateSummaryStatistics() {
         Realm realm = Realm.getInstance(this);
         RealmResults<Track> results  = realm.allObjects(Track.class);
 
@@ -173,12 +172,19 @@ public class TrackingActivity extends Activity {
         if (totalSeconds > 0 ) {
             // The speedAggregate is in meters/sec, we multiply with 3.6 to get km/h
             speedTextView.setText(String.format("%.1f", (totalDistance / totalSeconds) * 3.6));
-            Log.d("JC", "Total distance: "+totalDistance+", total seconds:" +totalSeconds);
         } else {
             speedTextView.setText("0.0");
         }
 
         timeTextView.setText(String.format("%.1f", totalSeconds / 3600));
+    }
+
+    public void printDebugInfo() {
+        Log.d("JC", "Current max streak: " + IbikeApplication.getSettings().getMaxStreakLength());
+        Log.d("JC", "Current max length ordinal: " + IbikeApplication.getSettings().getLengthNotificationOrdinal());
+
+        IbikeApplication.getSettings().setLengthNotificationOrdinal(1);
+
     }
 
 }

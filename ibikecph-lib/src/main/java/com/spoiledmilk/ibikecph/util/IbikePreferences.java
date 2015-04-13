@@ -145,7 +145,7 @@ public class IbikePreferences {
     }
 
     public void setLengthNotificationOrdinal(int ordinal) {
-        getPrefs().edit().putInt(LENGTH_NOTIFICATION, ordinal);
+        getPrefs().edit().putInt(LENGTH_NOTIFICATION, ordinal).commit();
     }
 
 
@@ -154,7 +154,7 @@ public class IbikePreferences {
     }
 
     public void setMaxStreakLength(int streakLength) {
-        getPrefs().edit().putInt(STREAK_NOTIFICATION, streakLength);
+        getPrefs().edit().putInt(STREAK_NOTIFICATION, streakLength).commit();
     }
 
 
