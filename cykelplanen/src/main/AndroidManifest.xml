@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
@@ -175,6 +176,11 @@
                 android:name="com.spoiledmilk.ibikecph.tracking.TrackingSettingsActivity"
                 android:label="@string/title_activity_tracking_settings"
                 android:theme="@android:style/Theme.Holo.Light" />
+        <activity
+                android:name="com.spoiledmilk.ibikecph.tracking.TrackMapView"
+                android:label="@string/title_activity_track_map_view"
+                android:theme="@android:style/Theme.Holo.Light">
+        </activity>
     </application>
 
 </manifest>
