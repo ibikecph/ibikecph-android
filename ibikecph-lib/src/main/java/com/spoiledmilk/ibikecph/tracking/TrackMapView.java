@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
@@ -15,6 +16,8 @@ import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import io.realm.Realm;
 import io.realm.RealmResults;
+
+import java.util.ArrayList;
 
 
 public class TrackMapView extends Activity {
@@ -34,59 +37,41 @@ public class TrackMapView extends Activity {
         Realm realm = Realm.getInstance(this);
         RealmResults<Track> tracks = realm.allObjects(Track.class);
         Track track = tracks.get(track_position);
-
         PathOverlay path = new PathOverlay(Color.RED, 5);
+
         LatLng center = null;
 
-        // Loop through all of the points, adding them to the path overlay. Create a BoundingBox in the meantime
-        double minLat = Double.MAX_VALUE, maxLat = Double.MIN_VALUE, minLong = Double.MAX_VALUE, maxLong = Double.MIN_VALUE;
+        /**
+         * Convert the list of points to a list of LatLng objects. This is used for drawing the path and creating the
+         * bounding box.
+         */
+        ArrayList<LatLng> route = new ArrayList<LatLng>();
         for (TrackLocation loc : track.getLocations()) {
-            if (center == null) {
-                center = new LatLng(loc.getLatitude(), loc.getLongitude());
-                minLat = loc.getLatitude();
-                maxLat = loc.getLatitude();
-                minLong = loc.getLongitude();
-                maxLong = loc.getLongitude();
-            }
-
-            path.addPoint(loc.getLatitude(), loc.getLongitude());
-            Log.d("JC", Double.toString(loc.getHorizontalAccuracy()));
-
-            if (loc.getLatitude() < minLat)
-                minLat = loc.getLatitude();
-
-            if (loc.getLatitude() > maxLat)
-                maxLat = loc.getLatitude();
-
-            if (loc.getLongitude() < minLong)
-                minLong = loc.getLongitude();
-
-            if (loc.getLongitude() > maxLong)
-                maxLong = loc.getLongitude();
-
+            LatLng ll = new LatLng(loc.getLatitude(), loc.getLongitude());
+            route.add(ll);
         }
 
+        // Add the points to a route
+        path.addPoints(route);
         mapView.getOverlays().add(path);
 
-        if (center != null) {
-            mapView.setCenter(center);
-        }
+        final BoundingBox bbox = BoundingBox.fromLatLngs(route);
+        this.bbox = bbox;
 
-        Log.d("JC", "Bounding box: [" + minLat + ", " + maxLat+"], ["+minLong + ", "+maxLong+"]");
+        /**
+         * Center and zoom the map according to the bounding box of the route.
+         */
+        mapView.zoomToBoundingBox(bbox, true, false, true, false);
+    }
 
-        // TODO: This doesn't work. Why?
-        this.bbox = new BoundingBox(minLat, maxLong, maxLat, minLong);
+    public void btnZoomCenterClick(View v) {
+        Log.d("JC", "Bounding box center: " + this.bbox.getCenter().toString());
+        Log.d("JC", "Mapbox bounding box:"  + this.mapView.getBoundingBox().toString());
+        mapView.zoomToBoundingBox(this.bbox);
 
-        this.zoomToBoundingBox();
     }
 
     public void onResume(Bundle savedInstanceState) {
-        zoomToBoundingBox();
-    }
-
-    public void zoomToBoundingBox() {
-        mapView.setZoom(19.0f);
-        mapView.zoomToBoundingBox(this.bbox, true, false, true, false);
     }
 
     @Override
