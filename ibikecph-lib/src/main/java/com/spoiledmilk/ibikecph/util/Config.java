@@ -41,7 +41,7 @@ public class Config {
 
 	public static boolean LOG_ENABLED = true;
 
-	public static final String HOCKEY_APP_ID = "f145bf4833683cfaa1744bf799eee64b";
+	public static final String HOCKEY_APP_ID = "d10e63f39cdbe7e8e3af275207388b2a";
 	public static final boolean HOCKEY_UPDATES_ENABLED = true;
 	public static final boolean ANALYTICS_ENABLED = false;
     public static final String GOOGLE_API_KEY = "AIzaSyAZwBZgYS-61R-gIvp4GtnekJGGrIKh0Dk";

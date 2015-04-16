@@ -49,7 +49,7 @@
         android:screenOrientation="portrait"
         android:theme="@style/iBikeCPHTheme" >
 
-        <!-- <activity android:name="net.hockeyapp.android.UpdateActivity" /> -->
+        <activity android:name="net.hockeyapp.android.UpdateActivity" />
 
         <activity
             android:name=".SplashActivity"
