@@ -185,7 +185,7 @@ public class IbikeApplication extends Application {
         AlarmManager alarmMgr =  (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(ctx, MilestoneManager.class);
         intent.putExtra("weekly", true);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(ctx, 0, intent, 0);
+        PendingIntent alarmIntent = PendingIntent.getService(ctx, 0, intent, 0);
 
         Calendar nextSunday = Calendar.getInstance();
 
@@ -204,7 +204,16 @@ public class IbikeApplication extends Application {
 
         // Great, nextSunday now reflects the time 18:00 on the coming Sunday, or today if called on a Sunday.
 
+        /*
+        // DEBUG CODE. Will schedule the notification ten seconds after starting, repeating every 20 secs.
+        nextSunday = Calendar.getInstance();
+        nextSunday.add(Calendar.SECOND, 10);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 20, alarmIntent);
+        */
+
+        // Run the notification next Sunday, repeating every Sunday.
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
+
     }
 
 }
