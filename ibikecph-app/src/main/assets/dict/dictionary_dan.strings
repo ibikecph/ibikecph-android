@@ -340,3 +340,5 @@
 
 "Speed" = "Fart";
 "Dist" = "Dist";
+
+"weekly_notification" = "Denne uge har du har cyklet %d km på %s timer.";

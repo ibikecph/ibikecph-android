@@ -6,7 +6,9 @@
 
 package com.spoiledmilk.ibikecph;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -15,12 +17,15 @@ import android.text.Spanned;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
+import com.spoiledmilk.ibikecph.tracking.MilestoneManager;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.SMDictionary;
+
+import java.util.Calendar;
 
 public class IbikeApplication extends Application {
 
@@ -49,6 +54,7 @@ public class IbikeApplication extends Application {
 
         trackingManager = TrackingManager.getInstance();
 
+        registerWeeklyNotification();
     }
 
 
@@ -169,4 +175,45 @@ public class IbikeApplication extends Application {
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
     }
+
+    /**
+     * Registers an intent to be delivered every Sunday at 8pm. We want to tell the user how much
+     * she's been cycling the past week.
+     */
+    public void registerWeeklyNotification() {
+        Context ctx = IbikeApplication.getContext();
+        AlarmManager alarmMgr =  (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(ctx, MilestoneManager.class);
+        intent.putExtra("weekly", true);
+        PendingIntent alarmIntent = PendingIntent.getService(ctx, 0, intent, 0);
+
+        Calendar nextSunday = Calendar.getInstance();
+
+        // Without resorting to third party libraries, there's no real elegant way of doing this...
+        // Add a day
+        while ( !(nextSunday.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && nextSunday.get(Calendar.HOUR_OF_DAY) < 18) ) {
+            nextSunday.add(Calendar.DAY_OF_WEEK, 1);
+
+            // If today is Sunday but it's after 8, make sure to at least trigger on the *next* Sunday! :)
+            nextSunday.set(Calendar.HOUR_OF_DAY, 12);
+        }
+
+        nextSunday.set(Calendar.HOUR_OF_DAY, 18);
+        nextSunday.set(Calendar.MINUTE, 0);
+        nextSunday.set(Calendar.SECOND, 0);
+
+        // Great, nextSunday now reflects the time 18:00 on the coming Sunday, or today if called on a Sunday.
+
+        /*
+        // DEBUG CODE. Will schedule the notification ten seconds after starting, repeating every 20 secs.
+        nextSunday = Calendar.getInstance();
+        nextSunday.add(Calendar.SECOND, 10);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 20, alarmIntent);
+        */
+
+        // Run the notification next Sunday, repeating every Sunday.
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
+
+    }
+
 }

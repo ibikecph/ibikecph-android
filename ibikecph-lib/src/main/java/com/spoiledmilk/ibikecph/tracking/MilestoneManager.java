@@ -1,14 +1,18 @@
 package com.spoiledmilk.ibikecph.tracking;
 
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.util.Pair;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 import java.util.Calendar;
@@ -17,7 +21,15 @@ import java.util.Date;
 /**
  * Created by jens on 3/13/15.
  */
-public class MilestoneManager {
+public class MilestoneManager extends IntentService {
+
+    /**
+     * Creates an IntentService.  Invoked by your subclass's constructor.
+     */
+    public MilestoneManager() {
+        super("MilestoneManager");
+    }
+
     public enum LengthNotification {
         KM_10,
         KM_50,
@@ -26,7 +38,6 @@ public class MilestoneManager {
         KM_500,
         KM_750
     }
-
 
     public static void checkForMilestones() {
         Realm realm = Realm.getInstance(IbikeApplication.getContext());
@@ -84,6 +95,65 @@ public class MilestoneManager {
 
         Log.d("JC", "Current streak: " + curStreak);
 
+    }
+
+    /**
+     * Pop up a notification on Sunday evening with a summary of the bicycling activity.
+     */
+    public Pair<Integer, String> getSundaySummary() {
+        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+
+        // We want to find all TrackLocation objects during this week, then figure out what Track objects they belong
+        // to, and then sum the distances and times of those.
+
+        // Get a timestamp for last Monday
+        long lastMonday = getLastMonday();
+        long nextMonday = lastMonday + 1000*60*60*24*7; // + one week
+
+        // Get all tracks in that timespan
+        RealmQuery<Track> query = realm.where(Track.class);
+        query.between("timestamp", new Date(lastMonday), new Date(nextMonday));
+
+        RealmResults<Track> result = query.findAll();
+
+        long totalTime = 0;
+        long totalDistance = 0;
+
+        // Add it all up
+        for (Track t : result) {
+            totalTime += t.getDuration();
+            totalDistance += t.getLength();
+        }
+
+        int totalKilometers = (Math.round((float)totalDistance/1000));
+
+        Log.d("JC", "Total kilometers: " + totalKilometers);
+        Log.d("JC", "Total time: " + secondsToFormattedHours(totalTime));
+
+        return new Pair<Integer, String>(totalKilometers, secondsToFormattedHours(totalTime));
+
+    }
+
+    public static String secondsToFormattedHours(long seconds) {
+        int hours = (int) (seconds/60/60);
+        int minutes = (int) ((seconds - hours*60*60) / 60);
+
+        return String.format("%02d:%02d", hours, minutes);
+    }
+
+    public static long getLastMonday() {
+        Calendar cal = Calendar.getInstance();
+
+        while (cal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+            cal.add(Calendar.DAY_OF_WEEK, -1);
+        }
+
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return cal.getTimeInMillis();
     }
 
     // TODO: DRY
@@ -231,6 +301,33 @@ public class MilestoneManager {
 
     public static Date getDateEnd(Date d) {
         return getDateAtTime(d, 23, 59);
+    }
+
+    /**
+     * Handle the intent that comes on Sundays, asking for a notification.
+     * @param intent
+     */
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        Log.d("JC", "MilestoneManager got intent");
+
+        if (intent.hasExtra("weekly") || true) {
+            Context context = IbikeApplication.getContext();
+
+            Notification.Builder notificationBuilder = new Notification.Builder(context);
+            notificationBuilder.setContentTitle(IbikeApplication.getString("app_name"));
+            notificationBuilder.setSmallIcon(R.drawable.logo);
+
+            Pair<Integer, String> sundaySummary = getSundaySummary();
+
+            notificationBuilder.setContentText(String.format(IbikeApplication.getString("weekly_notification"), sundaySummary.first, sundaySummary.second));
+
+            Notification n = notificationBuilder.build();
+            NotificationManager mNotificationManager =
+                    (NotificationManager) IbikeApplication.getContext().getSystemService(context.NOTIFICATION_SERVICE);
+
+            mNotificationManager.notify(2, n);
+        }
     }
 
 }

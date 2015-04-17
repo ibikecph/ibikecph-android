@@ -113,6 +113,9 @@ public class TrackingManager implements LocationListener, SMHttpRequestListener 
             return;
         }
 
+        // Set a timestamp for the Track.
+        track.setTimestamp(new Date());
+
         RealmList<TrackLocation> trackLocations = track.getLocations();
 
         // We have a list of Location objects that represent our route. Convert these to TrackLocation objects
