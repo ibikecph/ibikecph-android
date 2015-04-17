@@ -26,8 +26,6 @@ public class BikeActivityService extends WakefulIntentService {
      */
     @Override
     protected void doWakefulWork(Intent intent) {
-        Log.d("JC", "BikeActivityService got intent");
-
         if (ActivityRecognitionResult.hasResult(intent)) {
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
             DetectedActivity mostProbableActivity = result.getMostProbableActivity();

@@ -620,3 +620,5 @@
 
 "Speed" = "Speed";
 "Dist" = "Dist";
+
+"weekly_notification" = "This week you have ridden %d km in %s hours.";

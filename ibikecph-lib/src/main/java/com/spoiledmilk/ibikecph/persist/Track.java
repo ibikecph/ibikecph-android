@@ -3,6 +3,8 @@ package com.spoiledmilk.ibikecph.persist;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
+import java.util.Date;
+
 public class Track extends RealmObject {
 
     private RealmList<TrackLocation> locations;
@@ -10,6 +12,16 @@ public class Track extends RealmObject {
     private String end;
     private double length;
     private double duration;
+    private Date timestamp;
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
+
 
     public RealmList<TrackLocation> getLocations() {
         return locations;

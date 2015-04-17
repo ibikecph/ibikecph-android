@@ -138,6 +138,8 @@
         </service>
         <service android:name=".BikeActivityService" >
         </service>
+        <service android:name=".tracking.MilestoneManager" >
+        </service>
 
         <activity
             android:name=".tracking.TrackingActivity"
