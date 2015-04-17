@@ -311,7 +311,8 @@ public class MilestoneManager extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d("JC", "MilestoneManager got intent");
 
-        if (intent.hasExtra("weekly") || true) {
+        // If we get the right type of intent and we've enabled the weekly notifications
+        if (intent.hasExtra("weekly") && IbikeApplication.getSettings().getNotifyWeekly()) {
             Context context = IbikeApplication.getContext();
 
             Notification.Builder notificationBuilder = new Notification.Builder(context);

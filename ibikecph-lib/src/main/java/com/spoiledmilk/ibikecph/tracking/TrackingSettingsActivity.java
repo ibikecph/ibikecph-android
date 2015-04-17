@@ -3,7 +3,6 @@ package com.spoiledmilk.ibikecph.tracking;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.Switch;
 import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -20,7 +19,7 @@ public class TrackingSettingsActivity extends Activity {
     private TextView notifyMilestoneText;
     private Switch notifyMilestoneCheckbox;
     private TextView notifyWeeklyText;
-    private CheckBox notifyWeeklyCheckbox;
+    private Switch notifyWeeklyCheckbox;
 
     private TextView shareDataText;
     private Switch   shareDataSwitch;
@@ -40,9 +39,10 @@ public class TrackingSettingsActivity extends Activity {
         this.trackingEnableSwitch    = (Switch)   findViewById(R.id.tracking_enable_switch);
         this.notifyMilestoneText     = (TextView) findViewById(R.id.notify_milestone_text);
         this.notifyMilestoneCheckbox = (Switch) findViewById(R.id.notify_milestone_checkbox);
-        /*
+
         this.notifyWeeklyText        = (TextView) findViewById(R.id.notify_weekly_text);
-        this.notifyWeeklyCheckbox    = (CheckBox) findViewById(R.id.notify_weekly_checkbox);
+        this.notifyWeeklyCheckbox    = (Switch) findViewById(R.id.notify_weekly_checkbox);
+        /*
         this.shareDataText           = (TextView) findViewById(R.id.share_data_text);
         this.shareDataSwitch         = (Switch)   findViewById(R.id.share_data_switch);
         this.shareDataInfoText       = (TextView) findViewById(R.id.share_data_info_text);
@@ -82,9 +82,11 @@ public class TrackingSettingsActivity extends Activity {
         this.notifyMilestoneText.setText(IbikeApplication.getString("tracking_milestone_notifications"));
         this.notifyMilestoneCheckbox.setChecked(settings.getNotifyMilestone());
 
-        /*
+
         this.notifyWeeklyText.setText(IbikeApplication.getString("tracking_weekly_status_notifications"));
         this.notifyWeeklyCheckbox.setChecked(settings.getNotifyWeekly());
+
+        /*
         this.shareDataText.setText(IbikeApplication.getString("tracking_share_data"));
         this.shareDataSwitch.setChecked(settings.getShareData());
         this.shareDataInfoText.setText(IbikeApplication.getString("tracking_share_data_info"));
