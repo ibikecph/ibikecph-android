@@ -42,42 +42,46 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        tools:replace="android:theme"
-        android:theme="@style/iBikeCPHTheme"
         android:screenOrientation="portrait">
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity
             android:name="com.spoiledmilk.ibikecph.SplashActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/iBikeCPHTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.LoginSplashActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/iBikeCPHTheme"/>
         <activity
             android:name="com.spoiledmilk.ibikecph.map.MapActivity"
             android:alwaysRetainTaskState="true"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/iBikeCPHTheme"/>
         <activity
             android:name="com.spoiledmilk.ibikecph.navigation.SMRouteNavigationActivity"
             android:alwaysRetainTaskState="true"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/iBikeCPHTheme"/>
         <activity
             android:name="com.spoiledmilk.ibikecph.AboutActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/iBikeCPHTheme"/>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo" />
+            android:theme="@style/iBikeCPHTheme.ActionBar"/>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo" />
+            android:theme="@style/iBikeCPHTheme.ActionBar"/>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -91,8 +95,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.search.SearchActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo" />
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity"
             android:screenOrientation="portrait" />
@@ -105,22 +108,24 @@
         <activity
             android:name="com.spoiledmilk.ibikecph.login.FacebookProfileActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo" />
+            android:theme="@style/iBikeCPHTheme"/>
         <activity
             android:name="com.spoiledmilk.ibikecph.TTSSettingsActivity"
             android:label="@string/title_activity_ttssettings"
-            android:theme="@android:style/Theme.Holo.Light.DarkActionBar" />
+            android:theme="@style/iBikeCPHTheme.ActionBar" />
         <activity
             android:name="com.spoiledmilk.ibikecph.favorites.FavoritesListActivity"
             android:screenOrientation="portrait"
             tools:replace="android:theme"
-            android:theme="@android:style/Theme.Holo.Light" />
+            android:theme="@style/iBikeCPHTheme.ActionBar" />
         <activity
             android:name="com.spoiledmilk.ibikecph.favorites.AddFavoriteActivity"
-            android:label="@string/title_activity_add_favorite" />
+            android:label="@string/title_activity_add_favorite"
+            android:theme="@style/iBikeCPHTheme.ActionBar" />
         <activity
             android:name="com.spoiledmilk.ibikecph.favorites.EditFavoriteActivity"
-            android:label="@string/title_activity_edit_favorite" />
+            android:label="@string/title_activity_edit_favorite"
+            android:theme="@style/iBikeCPHTheme.ActionBar"/>
         
         <service android:name="com.spoiledmilk.ibikecph.BikeLocationService"></service>
         <service android:name="com.spoiledmilk.ibikecph.BikeActivityService" >
@@ -130,19 +135,19 @@
                 android:name="com.spoiledmilk.ibikecph.tracking.TrackingActivity"
                 android:label="@string/title_activity_tracking"
                 android:parentActivityName="com.spoiledmilk.ibikecph.map.MapActivity"
-                android:theme="@android:style/Theme.Holo.Light" />
+                android:theme="@style/iBikeCPHTheme.ActionBar"/>
         <activity
                 android:name="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity"
                 android:label="@string/title_activity_tracking"
-                android:theme="@android:style/Theme.Holo.Light" />
+                android:theme="@style/iBikeCPHTheme.ActionBar"/>
         <activity
                 android:name="com.spoiledmilk.ibikecph.tracking.TrackingSettingsActivity"
                 android:label="@string/title_activity_tracking_settings"
-                android:theme="@android:style/Theme.Holo.Light" />
+                android:theme="@style/iBikeCPHTheme.ActionBar"/>
         <activity
                 android:name="com.spoiledmilk.ibikecph.tracking.TrackMapView"
                 android:label="@string/title_activity_track_map_view"
-                android:theme="@android:style/Theme.Holo.Light">
+                android:theme="@style/iBikeCPHTheme.ActionBar">
         </activity>
     </application>
 

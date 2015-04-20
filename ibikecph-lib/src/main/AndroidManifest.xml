@@ -17,6 +17,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission
+            android:name="android.permission.READ_EXTERNAL_STORAGE"
+            android:maxSdkVersion="18" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -34,11 +38,6 @@
         android:name="android.hardware.wifi"
         android:required="false" />
 
-    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <android:uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
-
     <application
         android:name=".IbikeApplication"
         android:allowBackup="true"
@@ -46,8 +45,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:screenOrientation="portrait"
-        android:theme="@style/iBikeCPHTheme" >
+        android:screenOrientation="portrait" >
 
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
 
@@ -99,7 +97,7 @@
         <activity
             android:name=".search.SearchActivity"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo" />
+            android:theme="@style/iBikeCPHTheme" />
         <activity
             android:name=".search.SearchAutocompleteActivity"
             android:screenOrientation="portrait" />
@@ -118,12 +116,12 @@
         <activity
             android:name=".TTSSettingsActivity"
             android:label="@string/title_activity_ttssettings"
-            android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
+            android:theme="@style/iBikeCPHTheme.ActionBar" >
         </activity>
         <activity
             android:name=".favorites.FavoritesListActivity"
             android:label="@string/title_activity_favorites_list"
-            android:theme="@android:style/Theme.Holo" >
+            android:theme="@style/iBikeCPHTheme.ActionBar" >
         </activity>
         <activity
             android:name=".favorites.AddFavoriteActivity"
@@ -132,7 +130,7 @@
         <activity
             android:name=".favorites.EditFavoriteActivity"
             android:label="@string/title_activity_edit_favorite"
-            android:theme="@android:style/Theme.Holo.Light.DarkActionBar" />
+            android:theme="@style/iBikeCPHTheme.ActionBar"  />
 
         <service android:name=".BikeLocationService" >
         </service>
@@ -144,20 +142,19 @@
         <activity
             android:name=".tracking.TrackingActivity"
             android:label="@string/title_activity_tracking"
-            android:parentActivityName=".map.MapActivity"
-            android:theme="@android:style/Theme.Holo.Light" />
+            android:parentActivityName=".map.MapActivity" />
         <activity
             android:name=".tracking.TrackingWelcomeActivity"
             android:label="@string/title_activity_tracking"
-            android:theme="@android:style/Theme.Holo.Light" />
+            android:theme="@style/iBikeCPHTheme.ActionBar" />
         <activity
             android:name=".tracking.TrackingSettingsActivity"
             android:label="@string/title_activity_tracking_settings"
-            android:theme="@android:style/Theme.Holo.Light" />
+            android:theme="@style/iBikeCPHTheme.ActionBar"  />
         <activity
             android:name=".tracking.TrackMapView"
             android:label="@string/title_activity_track_map_view"
-            android:theme="@android:style/Theme.Holo.Light">
+            android:theme="@style/iBikeCPHTheme.ActionBar" >
         </activity>
     </application>
 

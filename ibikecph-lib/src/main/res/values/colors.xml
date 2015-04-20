@@ -24,5 +24,6 @@
     <color name="OrangeSelected">#E2A500</color>
     <color name="BlackOverlay">#323232</color>
     <color name="SplashBtnPressed">#FF07568B</color>
+    <color name="IBCActionBar">#D0021B</color>
 
 </resources>
