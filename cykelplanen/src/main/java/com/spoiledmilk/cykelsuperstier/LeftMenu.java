@@ -44,7 +44,16 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		final View ret = super.onCreateView(inflater, container, savedInstanceState);
 
-        this.menuItems.add(new LeftMenuItem("overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
+
+        // Find the ID of the "tts_settings" menu item. Append the overlays after that.
+        for (int i = 0; i<this.menuItems.size(); i++) {
+            if (this.menuItems.get(i).getLabelID().equals("tts_settings")) {
+                this.menuItems.add(i+1, new LeftMenuItem("overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
+                break;
+            }
+        }
+
+
 		/*
 		ret.findViewById(R.id.remindersBackground).setOnTouchListener(
 				new OnTouchListener() {

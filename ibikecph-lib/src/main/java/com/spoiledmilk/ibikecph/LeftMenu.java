@@ -5,9 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -18,22 +15,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
-import com.spoiledmilk.ibikecph.favorites.EditFavoriteFragment;
-import com.spoiledmilk.ibikecph.favorites.FavoritesAdapter;
-import com.spoiledmilk.ibikecph.favorites.FavoritesData;
-import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
+import com.spoiledmilk.ibikecph.favorites.*;
 import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
@@ -45,6 +29,9 @@ import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 import io.realm.Realm;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 /**
  * A menu that can be spawned in the MapActivity. It allows the user to access
@@ -163,16 +150,20 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     	this.menuItems = new ArrayList<LeftMenuItem>();
         
         menuItems.add(new LeftMenuItem("favorites", R.drawable.ic_menu_favorite, "spawnFavoritesListActivity"));
-        
+        menuItems.add(new LeftMenuItem("tts_settings", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
+        // Kortlag
+        // Rutetype
+        // Fartguide
+        menuItems.add(new LeftMenuItem("tracking", R.drawable.ic_menu_tracking, "spawnTrackingActivity"));
+        // Påmindelser
+
         if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
-        	menuItems.add(new LeftMenuItem("account", R.drawable.ic_menu_profile, "spawnLoginActivity"));
+            menuItems.add(new LeftMenuItem("account", R.drawable.ic_menu_profile, "spawnLoginActivity"));
         } else {
-        	menuItems.add(new LeftMenuItem("login", R.drawable.ic_menu_profile, "spawnLoginActivity"));
+            menuItems.add(new LeftMenuItem("login", R.drawable.ic_menu_profile, "spawnLoginActivity"));
         }
 
-        menuItems.add(new LeftMenuItem("tracking", R.drawable.ic_menu_tracking, "spawnTrackingActivity"));
         menuItems.add(new LeftMenuItem("about_app", R.drawable.ic_menu_info, "spawnAboutActivity"));
-        menuItems.add(new LeftMenuItem("tts_settings", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
 
         this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), menuItems));
     }
