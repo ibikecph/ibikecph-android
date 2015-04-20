@@ -17,11 +17,18 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
-    <style name="CykelsuperstierTheme" parent="android:Theme">
-        <item name="android:background">@null</item>
-        <item name="android:windowBackground">@null</item>
+    <style name="CykelsuperstierTheme" parent="@android:style/Theme.Holo.Light.NoActionBar">
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="CykelsuperstierTheme.ActionBar" parent="@android:style/Theme.Holo.Light">
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:actionBarStyle">@style/CPActionBar</item>
+    </style>
+
+    <style name="CPActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/CPActionBar</item>
     </style>
 
 </resources>
