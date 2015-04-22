@@ -76,7 +76,7 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
         Log.d("JC", "Connected to Google API");
         ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
                 mGoogleApiClient,
-                0,
+                10000,
                 getActivityDetectionPendingIntent()
         ).setResultCallback(this);
     }
