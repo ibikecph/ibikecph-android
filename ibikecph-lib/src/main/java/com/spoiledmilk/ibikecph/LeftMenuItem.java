@@ -47,4 +47,5 @@ public class LeftMenuItem {
     public void setLabelID(String labelID) {
         this.labelID = labelID;
     }
+
 }
