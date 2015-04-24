@@ -1,22 +1,13 @@
 package com.spoiledmilk.ibikecph.favorites;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
-
+import android.view.*;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.controls.TexturedButton;
 
 public class AddFavoriteActivity extends Activity {
 
@@ -32,8 +23,13 @@ public class AddFavoriteActivity extends Activity {
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction().add(R.id.container, addFavoriteFragment).commit();
 		}
-		
 
+        // Set the ActionBar
+        try {
+            this.getActionBar().setTitle(IbikeApplication.getString("favorites"));
+        } catch(NullPointerException e) {
+            // There was no ActionBar. Oh well...
+        }
 	}
 
 	@Override

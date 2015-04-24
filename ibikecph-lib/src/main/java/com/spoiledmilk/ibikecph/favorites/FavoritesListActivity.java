@@ -1,7 +1,5 @@
 package com.spoiledmilk.ibikecph.favorites;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -15,8 +13,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
-
-import com.spoiledmilk.ibikecph.AboutActivity;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
@@ -25,6 +21,8 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+
+import java.util.ArrayList;
 
 public class FavoritesListActivity extends Activity {
 	public static final int ADD_FAVORITE = 510;
@@ -42,6 +40,12 @@ public class FavoritesListActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_favorites_list);
+
+        try {
+            this.getActionBar().setTitle(IbikeApplication.getString("favorites"));
+        } catch(NullPointerException e) {
+            // If we have no action bar, then whatever.
+        }
 
 		favoritesList = (SortableListView) findViewById(R.id.favoritesList);		
 		listAdapter = getAdapter();

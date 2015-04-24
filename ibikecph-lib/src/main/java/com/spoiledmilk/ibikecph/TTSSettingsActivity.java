@@ -20,8 +20,10 @@ public class TTSSettingsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ttssettings);
-		
-		this.getActionBar().setTitle(IbikeApplication.getString("voice_option"));
+
+
+
+		this.getActionBar().setTitle(IbikeApplication.getString("voice"));
 		this.enableSwitch = (Switch) findViewById(R.id.ttsEnabledSwitch);
 		
 		this.enableSwitch.setText(IbikeApplication.getString("voice_option"));

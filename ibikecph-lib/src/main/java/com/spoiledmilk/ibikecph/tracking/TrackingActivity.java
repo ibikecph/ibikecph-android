@@ -38,6 +38,7 @@ public class TrackingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
 
+
         this.activityText = (TextView) findViewById(R.id.tracking_activity_text);
         this.sinceText    = (TextView) findViewById(R.id.tracking_activity_since);
 

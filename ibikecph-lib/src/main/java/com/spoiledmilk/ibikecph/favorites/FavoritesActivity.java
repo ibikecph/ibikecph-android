@@ -103,6 +103,13 @@ public class FavoritesActivity extends Activity implements SMLocationListener {
 			}
 
 		});
+
+        // Set the ActionBar
+        try {
+            this.getActionBar().setTitle(IbikeApplication.getString("favorites"));
+        } catch(NullPointerException e) {
+            // There was no ActionBar. Oh well...
+        }
 	}
 
 	protected void chooseLayout() {

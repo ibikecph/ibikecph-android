@@ -11,6 +11,7 @@ import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
@@ -66,6 +67,13 @@ public class TrackMapView extends Activity {
         // If the route is really short, it doesn't look good to fit that into the window. Zoom out a bit.
         if (mapView.getZoomLevel() > 18.0f) {
             mapView.setZoom(18.0f);
+        }
+
+        // Set the ActionBar
+        try {
+            this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
+        } catch(NullPointerException e) {
+            // There was no ActionBar. Oh well...
         }
     }
 
