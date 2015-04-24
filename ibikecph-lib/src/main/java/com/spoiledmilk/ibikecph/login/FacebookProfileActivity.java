@@ -34,6 +34,7 @@ import java.net.URL;
 
 public class FacebookProfileActivity extends Activity {
 
+    private Button btnLogout;
     private ActionBar actionBar;
     private TextView textLogedIn;
     private TextView textName;
@@ -60,11 +61,8 @@ public class FacebookProfileActivity extends Activity {
         btnDelete = (Button) findViewById(R.id.btnDelete);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        /*
         btnLogout = (Button) findViewById(R.id.btnLogout);
-
-        btnLogout.setVisibility(View.VISIBLE);
-        btnLogout.setOnClickListener(new OnClickListener() {
+        btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 logout();
@@ -75,7 +73,7 @@ public class FacebookProfileActivity extends Activity {
             }
 
         });
-*/
+
         if (handler == null) {
             handler = new Handler(new Handler.Callback() {
 
@@ -156,8 +154,8 @@ public class FacebookProfileActivity extends Activity {
 
     private void initStrings() {
         actionBar.setTitle(IbikeApplication.getString("account"));
-        //btnLogout.setText(IbikeApplication.getString("logout"));
-        //btnLogout.setTypeface(IbikeApplication.getNormalFont());
+        btnLogout.setText(IbikeApplication.getString("logout"));
+        btnLogout.setTypeface(IbikeApplication.getNormalFont());
         textLogedIn.setText(IbikeApplication.getString("you_are_logged_in_as"));
         textLogedIn.setTypeface(IbikeApplication.getItalicFont());
         textLinked.setText(IbikeApplication.getString("account_is_linked_to_facebook"));
