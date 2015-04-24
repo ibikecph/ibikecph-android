@@ -5,9 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.login;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,27 +20,20 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.facebook.LoggingBehavior;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
+import com.facebook.*;
 import com.facebook.Session.NewPermissionsRequest;
-import com.facebook.SessionState;
-import com.facebook.Settings;
 import com.facebook.model.GraphUser;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.favorites.FavoritesActivity;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.map.MapActivity;
-import com.spoiledmilk.ibikecph.util.AsyncImageFetcher;
-import com.spoiledmilk.ibikecph.util.DB;
-import com.spoiledmilk.ibikecph.util.ImageData;
-import com.spoiledmilk.ibikecph.util.ImagerPrefetcherListener;
-import com.spoiledmilk.ibikecph.util.LOG;
+import com.spoiledmilk.ibikecph.util.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class LoginSplashActivity extends FragmentActivity implements iLanguageListener, FBLoginListener, ImagerPrefetcherListener {
 
@@ -211,13 +201,13 @@ public class LoginSplashActivity extends FragmentActivity implements iLanguageLi
     }
 
     private void initStrings() {
-        textSkip.setText(IbikeApplication.getString("btn_skip"));
+        textSkip.setText(IbikeApplication.getString("skip"));
         textSkip.setTypeface(IbikeApplication.getBoldFont());
         textRegister.setText(IbikeApplication.getString("register_with_mail"));
         textRegister.setTypeface(IbikeApplication.getBoldFont());
         btnFacebookLogin.setText(IbikeApplication.getString("login_with_fb"));
         btnFacebookLogin.setTypeface(IbikeApplication.getBoldFont());
-        btnLogin.setText(IbikeApplication.getString("login"));
+        btnLogin.setText(IbikeApplication.getString("log_in"));
         btnLogin.setTypeface(IbikeApplication.getNormalFont());
         textCreateAccount.setText(IbikeApplication.getString("create_account"));
         textCreateAccount.setTypeface(IbikeApplication.getBoldFont());

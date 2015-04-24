@@ -5,27 +5,21 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.util.Log;
-
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
 
+import java.io.*;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class SMDictionary {
-	private static final String dict_dir = "dict";
+	private static final String dict_dir = "strings";
 
 	Context ctx;
 	private HashMap<String, Spanned> map;
@@ -46,9 +40,9 @@ public class SMDictionary {
 
 	public static String getDictFile(Language language) {
 		if (language == Language.DAN)
-			return "dictionary_dan.strings";
+			return "da.strings";
 		else
-			return "dictionary_en.strings";
+			return "en.strings";
 	}
 
 	private void clearMap() {

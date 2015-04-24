@@ -1,0 +1,6 @@
+[submodule "ibikecph-app/src/main/assets/strings"]
+	path = ibikecph-app/src/main/assets/strings
+	url = https://github.com/ibikecph/strings
+[submodule "cykelplanen/src/main/assets/strings"]
+	path = cykelplanen/src/main/assets/strings
+	url = https://github.com/ibikecph/strings

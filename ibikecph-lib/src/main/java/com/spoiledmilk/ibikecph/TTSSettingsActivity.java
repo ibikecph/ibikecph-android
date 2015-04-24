@@ -1,14 +1,12 @@
 package com.spoiledmilk.ibikecph;
 
-import com.spoiledmilk.ibikecph.util.Config;
-
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
+import com.spoiledmilk.ibikecph.util.Config;
 
 /**
  * The activity that lets the user set up the text-to-speech settings of the app.
@@ -23,10 +21,10 @@ public class TTSSettingsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ttssettings);
 		
-		this.getActionBar().setTitle(IbikeApplication.getString("tts_settings"));
+		this.getActionBar().setTitle(IbikeApplication.getString("voice_option"));
 		this.enableSwitch = (Switch) findViewById(R.id.ttsEnabledSwitch);
 		
-		this.enableSwitch.setText(IbikeApplication.getString("tts_enable"));
+		this.enableSwitch.setText(IbikeApplication.getString("voice_option"));
 		
 		this.enableSwitch.setChecked(Config.TTS_ENABLED);
 	}

@@ -1,7 +1,5 @@
 package com.spoiledmilk.ibikecph;
 
-import android.view.View;
-
 /**
  * A menu item for the navigation drawer in the I BIKE CPH apps.
  * @author jens
@@ -9,7 +7,8 @@ import android.view.View;
  */
 public class LeftMenuItem {
 
-	private String labelID;
+
+    private String labelID;
 	private int iconResource;
 	private String handler;
 	
@@ -44,4 +43,9 @@ public class LeftMenuItem {
 	public String getHandler() {
 		return handler;
 	}
+
+    public void setLabelID(String labelID) {
+        this.labelID = labelID;
+    }
+
 }

@@ -12,10 +12,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -189,14 +187,14 @@ public class OverlaysActivity extends Activity {
     private void initStrings() {
         actionBar.setTitle(CykelsuperstierApplication.getString("overlays"));
         textPath.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textPath.setText(CykelsuperstierApplication.getString("marker_type_1"));
+        textPath.setText(CykelsuperstierApplication.getString("cycle_super_highways"));
         textService.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textService.setText(CykelsuperstierApplication.getString("marker_type_2"));
+        textService.setText(CykelsuperstierApplication.getString("service_stations"));
         textStrain.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textStrain.setText(CykelsuperstierApplication.getString("marker_type_3"));
+        textStrain.setText(CykelsuperstierApplication.getString("s_train_stations"));
         textMetro.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textMetro.setText(CykelsuperstierApplication.getString("marker_type_4"));
+        textMetro.setText(CykelsuperstierApplication.getString("metro_stations"));
         textLocalTrain.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textLocalTrain.setText(CykelsuperstierApplication.getString("marker_type_5"));
+        textLocalTrain.setText(CykelsuperstierApplication.getString("local_trains_stations"));
     }
 }

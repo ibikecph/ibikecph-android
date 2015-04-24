@@ -5,41 +5,28 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.search;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageButton;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.ScrollView;
-import android.widget.TextView;
-
 import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.Log;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.ObservableScrollView;
 import com.spoiledmilk.ibikecph.controls.ScrollViewListener;
-import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
 
 public class SearchActivity extends Activity implements ScrollViewListener {
 
@@ -362,7 +349,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     private void initStrings() {
         textCurrentLoc.setText(IbikeApplication.getString("current_position"));
         textCurrentLoc.setTypeface(IbikeApplication.getNormalFont());
-        textB.setHint(IbikeApplication.getString("B_hint"));
+        textB.setHint(IbikeApplication.getString("search_to_placeholder"));
         textB.setHintTextColor(getResources().getColor(R.color.HintColor));
         textB.setTypeface(IbikeApplication.getNormalFont());
         textFavorites.setText(IbikeApplication.getString("favorites"));

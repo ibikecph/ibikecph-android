@@ -5,9 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.login;
 
-import java.io.InputStream;
-import java.net.URL;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,14 +16,11 @@ import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -35,10 +29,13 @@ import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
+import java.io.InputStream;
+import java.net.URL;
+
 public class FacebookProfileActivity extends Activity {
 
-    private ActionBar actionBar;
     private Button btnLogout;
+    private ActionBar actionBar;
     private TextView textLogedIn;
     private TextView textName;
     private TextView textLinked;
@@ -63,9 +60,9 @@ public class FacebookProfileActivity extends Activity {
         textLinked = (TextView) findViewById(R.id.textLinked);
         btnDelete = (Button) findViewById(R.id.btnDelete);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
         btnLogout = (Button) findViewById(R.id.btnLogout);
-        btnLogout.setVisibility(View.VISIBLE);
-        btnLogout.setOnClickListener(new OnClickListener() {
+        btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 logout();
