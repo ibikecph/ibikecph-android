@@ -17,14 +17,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -35,7 +28,6 @@ import com.spoiledmilk.ibikecph.util.ImagerPrefetcherListener;
 
 public class RegisterActivity extends Activity implements ImagerPrefetcherListener {
     TextView textTitle;
-    ImageButton btnBack;
     Button btnLogout;
     EditText textName;
     EditText textEmail;
@@ -67,16 +59,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         textTitle = (TextView) findViewById(R.id.textTitle);
         textTitle.setVisibility(View.VISIBLE);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        btnBack = (ImageButton) findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                setResult(RESULT_NO_ACTION);
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            }
 
-        });
 
         textName = (EditText) findViewById(R.id.textName);
         textEmail = (EditText) findViewById(R.id.textEmail);
