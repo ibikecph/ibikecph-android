@@ -150,7 +150,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     	this.menuItems = new ArrayList<LeftMenuItem>();
         
         menuItems.add(new LeftMenuItem("favorites", R.drawable.ic_menu_favorite, "spawnFavoritesListActivity"));
-        menuItems.add(new LeftMenuItem("tts_settings", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
+        menuItems.add(new LeftMenuItem("voice", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
         // Kortlag
         // Rutetype
         // Fartguide
@@ -160,10 +160,11 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
             menuItems.add(new LeftMenuItem("account", R.drawable.ic_menu_profile, "spawnLoginActivity"));
         } else {
-            menuItems.add(new LeftMenuItem("login", R.drawable.ic_menu_profile, "spawnLoginActivity"));
+            menuItems.add(new LeftMenuItem("log_in", R.drawable.ic_menu_profile, "spawnLoginActivity"));
         }
 
-        menuItems.add(new LeftMenuItem("about_app", R.drawable.ic_menu_info, "spawnAboutActivity"));
+
+        menuItems.add(new LeftMenuItem("about_app_ibc", R.drawable.ic_menu_info, "spawnAboutActivity"));
 
         this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), menuItems));
     }

@@ -5,8 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.login;
 
-import java.util.Arrays;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,23 +21,18 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.facebook.LoggingBehavior;
-import com.facebook.Request;
-import com.facebook.Response;
-import com.facebook.Session;
+import com.facebook.*;
 import com.facebook.Session.NewPermissionsRequest;
-import com.facebook.SessionState;
-import com.facebook.Settings;
 import com.facebook.model.GraphUser;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.util.LOG;
+
+import java.util.Arrays;
 
 public class LoginActivity extends Activity implements FBLoginListener {
 
@@ -215,7 +208,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
     }
 
     private void initStrings() {
-        actionBar.setTitle(IbikeApplication.getString("login"));
+        actionBar.setTitle(IbikeApplication.getString("log_in"));
         textLoginTitle.setText(IbikeApplication.getString("please_login"));
         textLoginTitle.setTypeface(IbikeApplication.getItalicFont());
         textOr.setText(IbikeApplication.getString("or"));
@@ -226,7 +219,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
         textPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
         textPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
         textPassword.setTypeface(IbikeApplication.getNormalFont());
-        btnLogin.setText(IbikeApplication.getString("login"));
+        btnLogin.setText(IbikeApplication.getString("log_in"));
         btnLogin.setTypeface(IbikeApplication.getBoldFont());
         btnFacebookLogin.setText(IbikeApplication.getString("login_with_fb"));
         btnFacebookLogin.setTypeface(IbikeApplication.getBoldFont());

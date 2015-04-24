@@ -24,7 +24,10 @@ public class AboutActivity extends com.spoiledmilk.ibikecph.AboutActivity {
 		super.onResume();
 		if (Util.getDensity() >= 2.0)
 			((TextView) findViewById(R.id.textAboutTitle)).setPadding(0, Util.dp2px(14), 0, 0);
-		((TextView) findViewById(R.id.textAboutTitle)).setText(IbikeApplication.getString("about_cykelsuperstier_title"));
+
+        ((TextView) findViewById(R.id.textAboutTitle)).setText(IbikeApplication.getString("about_app_cp"));
+        ((TextView) findViewById(R.id.textAboutText)).setText(IbikeApplication.getString("about_text_cp"));
+
 	}
 
 	@Override

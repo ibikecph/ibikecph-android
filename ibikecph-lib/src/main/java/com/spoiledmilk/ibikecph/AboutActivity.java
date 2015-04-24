@@ -6,20 +6,17 @@
 
 package com.spoiledmilk.ibikecph;
 
-import java.text.SimpleDateFormat;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import com.google.analytics.tracking.android.EasyTracker;
+
+import java.text.SimpleDateFormat;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * The about view of the application.
@@ -53,9 +50,9 @@ public class AboutActivity extends Activity {
 	}
 
 	private void initStrings() {
-		textAboutTitle.setText(IbikeApplication.getString("about_ibikecph_title"));
+		textAboutTitle.setText(IbikeApplication.getString("about_app_ibc"));
 		textAboutTitle.setTypeface(IbikeApplication.getBoldFont());
-		String text = IbikeApplication.getString("about_text");
+		String text = IbikeApplication.getString("about_text_ibc");
 		textAboutText.setText(text);
 		// textAboutText.setTypeface(IbikeApplication.getNormalFont());
 	}
