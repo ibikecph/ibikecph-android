@@ -1,0 +1,3 @@
+[submodule "ibikecph-app/src/main/assets/strings"]
+	path = ibikecph-app/src/main/assets/strings
+	url = https://github.com/ibikecph/strings
