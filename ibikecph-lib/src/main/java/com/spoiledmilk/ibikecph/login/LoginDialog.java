@@ -81,7 +81,7 @@ public class LoginDialog {
         btnLogin.setBackgroundResource(R.drawable.btn_blue_selector);
         btnLogin.setTextureResource(R.drawable.btn_pattern_repeteable);
         btnLogin.setTextColor(Color.WHITE);
-        btnLogin.setText(IbikeApplication.getString("login"));
+        btnLogin.setText(IbikeApplication.getString("log_in"));
         btnLogin.setTypeface(IbikeApplication.getBoldFont());
         btnLogin.setOnClickListener(new OnClickListener() {
             @Override
