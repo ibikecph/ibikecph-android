@@ -33,6 +33,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     EditText textNewPassword;
     EditText textPasswordConfirm;
     TexturedButton btnRegister;
+    CheckBox checkboxAcceptance;
 
     Handler handler;
 
@@ -61,10 +62,19 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         textEmail = (EditText) findViewById(R.id.textEmail);
         textNewPassword = (EditText) findViewById(R.id.textNewPassword);
         textPasswordConfirm = (EditText) findViewById(R.id.textPasswordConfirm);
+
+        checkboxAcceptance = (CheckBox) findViewById(R.id.termsAcceptanceCheckbox);
+
         btnRegister = (TexturedButton) findViewById(R.id.btnRegister);
         btnRegister.setTextureResource(R.drawable.btn_pattern_repeteable);
-        btnRegister.setBackgroundResource(R.drawable.btn_blue_selector);
+
+        btnRegister.setEnabled(false);
+        btnRegister.setBackgroundResource(R.drawable.btn_grey_selector);
+
+
         btnRegister.setTextColor(Color.WHITE);
+
+
         btnRegister.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,6 +171,9 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
 
     private void initStrings() {
         this.getActionBar().setTitle(IbikeApplication.getString("create_account"));
+
+        this.checkboxAcceptance.setText(IbikeApplication.getString("accept_user_terms"));
+
         textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
         textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
         textNewPassword.setTypeface(IbikeApplication.getNormalFont());
@@ -198,19 +211,19 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     private boolean validateInput() {
         boolean ret = true;
         if (textName.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("name_blank");
+            validationMessage = IbikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textEmail.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("email_blank");
+            validationMessage = IbikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textNewPassword.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("password_blank");
+            validationMessage = IbikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textPasswordConfirm.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("password_confirm_blank");
+            validationMessage = IbikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textPasswordConfirm.getText().toString().length() < 3) {
-            validationMessage = IbikeApplication.getString("password_short");
+            validationMessage = IbikeApplication.getString("register_error_passwords_short");
             ret = false;
         } else if (!textNewPassword.getText().toString().equals(textPasswordConfirm.getText().toString())) {
             validationMessage = IbikeApplication.getString("register_error_passwords");
@@ -264,6 +277,12 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             Toast.makeText(this, "Error fetching the image", Toast.LENGTH_SHORT).show();
         }
         progressBar.setVisibility(View.GONE);
+    }
+
+    public void onTermsAcceptanceCheckboxClick(View v) {
+        boolean isChecked = this.checkboxAcceptance.isChecked();
+        btnRegister.setEnabled(isChecked);
+        btnRegister.setBackgroundResource(isChecked?R.drawable.btn_blue_selector:R.drawable.btn_grey_selector);
     }
 
 }

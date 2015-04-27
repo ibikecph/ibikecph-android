@@ -137,19 +137,20 @@
                 android:paddingRight="25dp"
                 android:textSize="14sp" />
 
-        <EditText
-                android:id="@+id/textPasswordConfirm"
+        <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/textName"
                 android:layout_alignRight="@+id/textName"
-                android:layout_below="@+id/textNewPassword"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/input_on_black_selector"
-                android:inputType="textPassword"
+                android:layout_below="@+id/textPasswordConfirm"
                 android:paddingLeft="10dp"
                 android:paddingRight="25dp"
-                android:textSize="14sp" />
+                android:layout_marginTop="10dp"
+                android:text="I accept the terms"
+                android:id="@+id/termsAcceptanceCheckbox"
+                android:textColor="@color/white"
+                android:onClick="onTermsAcceptanceCheckboxClick"
+                />
 
         <com.spoiledmilk.ibikecph.controls.TexturedButton
             android:id="@+id/btnRegister"
@@ -157,13 +158,14 @@
             android:layout_height="45dp"
             android:layout_alignLeft="@+id/textName"
             android:layout_alignRight="@+id/textName"
-            android:layout_below="@+id/textPasswordConfirm"
+            android:layout_below="@+id/termsAcceptanceCheckbox"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
             android:layout_marginTop="10dp"
             android:background="@null"
             android:textColor="@color/White"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            />
 
         <ProgressBar
             android:id="@+id/progressBar"
