@@ -15,16 +15,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -34,14 +29,15 @@ import com.spoiledmilk.ibikecph.util.ImageData;
 import com.spoiledmilk.ibikecph.util.ImagerPrefetcherListener;
 
 public class RegisterActivity extends Activity implements ImagerPrefetcherListener {
-    TextView textTitle;
-    ImageButton btnBack;
     Button btnLogout;
     EditText textName;
     EditText textEmail;
     EditText textNewPassword;
     EditText textPasswordConfirm;
     TexturedButton btnRegister;
+    CheckBox termsAcceptanceCheckbox;
+    TextView termsAcceptanceLabel;
+    TextView termsAcceptanceLink;
 
     Handler handler;
 
@@ -64,28 +60,28 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.register_activity);
-        textTitle = (TextView) findViewById(R.id.textTitle);
-        textTitle.setVisibility(View.VISIBLE);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        btnBack = (ImageButton) findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                setResult(RESULT_NO_ACTION);
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            }
-
-        });
 
         textName = (EditText) findViewById(R.id.textName);
         textEmail = (EditText) findViewById(R.id.textEmail);
         textNewPassword = (EditText) findViewById(R.id.textNewPassword);
         textPasswordConfirm = (EditText) findViewById(R.id.textPasswordConfirm);
+
+        termsAcceptanceCheckbox = (CheckBox) findViewById(R.id.termsAcceptanceCheckbox);
+        termsAcceptanceLabel = (TextView) findViewById(R.id.termsAcceptanceLabel);
+        termsAcceptanceLink = (TextView) findViewById(R.id.termsAcceptanceLink);
+
+
         btnRegister = (TexturedButton) findViewById(R.id.btnRegister);
         btnRegister.setTextureResource(R.drawable.btn_pattern_repeteable);
-        btnRegister.setBackgroundResource(R.drawable.btn_blue_selector);
+
+        btnRegister.setEnabled(false);
+        btnRegister.setBackgroundResource(R.drawable.btn_grey_selector);
+
+
         btnRegister.setTextColor(Color.WHITE);
+
+
         btnRegister.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -181,9 +177,15 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     }
 
     private void initStrings() {
-        textTitle.setText(IbikeApplication.getString("create_account"));
-        textTitle.setTypeface(IbikeApplication.getNormalFont());
-        textTitle.setVisibility(View.VISIBLE);
+        this.getActionBar().setTitle(IbikeApplication.getString("create_account"));
+
+        // Pick out the "Terms of Service" part of the "Accept the ..." string
+        this.termsAcceptanceLabel.setText(IbikeApplication.getString("accept_user_terms").replace(IbikeApplication.getString("accept_user_terms_link_highlight"), ""));
+
+        // Construct a link in HTML and make it clickable
+        this.termsAcceptanceLink.setText(Html.fromHtml("<a href='" + IbikeApplication.getString("accept_user_terms_link") + "'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>") );
+        this.termsAcceptanceLink.setMovementMethod(LinkMovementMethod.getInstance());
+
         textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
         textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
         textNewPassword.setTypeface(IbikeApplication.getNormalFont());
@@ -221,19 +223,19 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     private boolean validateInput() {
         boolean ret = true;
         if (textName.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("name_blank");
+            validationMessage = IbikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textEmail.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("email_blank");
+            validationMessage = IbikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textNewPassword.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("password_blank");
+            validationMessage = IbikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textPasswordConfirm.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("password_confirm_blank");
+            validationMessage = IbikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textPasswordConfirm.getText().toString().length() < 3) {
-            validationMessage = IbikeApplication.getString("password_short");
+            validationMessage = IbikeApplication.getString("register_error_passwords_short");
             ret = false;
         } else if (!textNewPassword.getText().toString().equals(textPasswordConfirm.getText().toString())) {
             validationMessage = IbikeApplication.getString("register_error_passwords");
@@ -287,6 +289,12 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             Toast.makeText(this, "Error fetching the image", Toast.LENGTH_SHORT).show();
         }
         progressBar.setVisibility(View.GONE);
+    }
+
+    public void onTermsAcceptanceCheckboxClick(View v) {
+        boolean isChecked = this.termsAcceptanceCheckbox.isChecked();
+        btnRegister.setEnabled(isChecked);
+        btnRegister.setBackgroundResource(isChecked?R.drawable.btn_blue_selector:R.drawable.btn_grey_selector);
     }
 
 }

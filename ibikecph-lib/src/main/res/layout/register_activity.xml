@@ -9,17 +9,10 @@
         android:layout_height="wrap_content"
         android:background="@null" >
 
-        <include
-            android:id="@+id/navBar"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            layout="@layout/nav_bar" />
-
         <ImageView
             android:id="@+id/pictureContainer"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_below="@+id/navBar"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:background="@drawable/profile_default_image"
@@ -131,18 +124,49 @@
             android:src="@drawable/icon_pass" />
 
         <EditText
-            android:id="@+id/textPasswordConfirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textName"
-            android:layout_alignRight="@+id/textName"
-            android:layout_below="@+id/textNewPassword"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/input_on_black_selector"
-            android:inputType="textPassword"
-            android:paddingLeft="10dp"
-            android:paddingRight="25dp"
-            android:textSize="14sp" />
+                android:id="@+id/textPasswordConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textName"
+                android:layout_alignRight="@+id/textName"
+                android:layout_below="@+id/textNewPassword"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input_on_black_selector"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp"
+                android:paddingRight="25dp"
+                android:textSize="14sp" />
+
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textName"
+                android:layout_below="@+id/textPasswordConfirm"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/termsAcceptanceCheckbox"
+                android:onClick="onTermsAcceptanceCheckboxClick"
+                />
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/textPasswordConfirm"
+                  android:layout_toRightOf="@+id/termsAcceptanceCheckbox"
+                  android:layout_alignBaseline="@+id/termsAcceptanceCheckbox"
+                  android:textColor="@color/white"
+                  android:text="accept_user_terms"
+                  android:id="@+id/termsAcceptanceLabel"
+                />
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/textPasswordConfirm"
+                  android:layout_toRightOf="@+id/termsAcceptanceLabel"
+                  android:layout_alignBaseline="@+id/termsAcceptanceLabel"
+                  android:textColor="@color/white"
+                  android:text="link"
+                  android:id="@+id/termsAcceptanceLink"
+                  android:onClick="onTermsAcceptanceCheckboxClick"
+                />
+
 
         <com.spoiledmilk.ibikecph.controls.TexturedButton
             android:id="@+id/btnRegister"
@@ -150,13 +174,14 @@
             android:layout_height="45dp"
             android:layout_alignLeft="@+id/textName"
             android:layout_alignRight="@+id/textName"
-            android:layout_below="@+id/textPasswordConfirm"
+            android:layout_below="@+id/termsAcceptanceCheckbox"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
             android:layout_marginTop="10dp"
             android:background="@null"
             android:textColor="@color/White"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            />
 
         <ProgressBar
             android:id="@+id/progressBar"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="380dp"
+    android:layout_height="400dp"
     android:layout_marginTop="0dp"
     android:background="@null" >
 
@@ -138,6 +138,34 @@
             android:inputType="textPassword"
             android:padding="5dp"
             android:textSize="14sp" />
+
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textName"
+                android:layout_below="@+id/textPasswordConfirm"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/termsAcceptanceCheckbox"
+                />
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/textPasswordConfirm"
+                  android:layout_toRightOf="@+id/termsAcceptanceCheckbox"
+                  android:layout_alignBaseline="@+id/termsAcceptanceCheckbox"
+                  android:textColor="@color/black"
+                  android:text="accept_user_terms"
+                  android:id="@+id/termsAcceptanceLabel"
+                />
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/textPasswordConfirm"
+                  android:layout_toRightOf="@+id/termsAcceptanceLabel"
+                  android:layout_alignBaseline="@+id/termsAcceptanceLabel"
+                  android:textColor="@color/black"
+                  android:text="link"
+                  android:id="@+id/termsAcceptanceLink"
+                />
 
         <RelativeLayout
             android:layout_width="match_parent"
