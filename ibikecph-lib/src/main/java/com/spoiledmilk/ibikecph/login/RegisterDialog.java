@@ -19,16 +19,14 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.*;
 import android.widget.ImageView.ScaleType;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -43,6 +41,10 @@ public class RegisterDialog {
     EditText textPasswordConfirm;
     ImageButton imgCamera;
     String validationMessage;
+    CheckBox termsAcceptanceCheckbox;
+    TextView termsAcceptanceLabel;
+    TextView termsAcceptanceLink;
+    TexturedButton btnRegister;
 
     Context context;
     Handler handler;
@@ -76,8 +78,15 @@ public class RegisterDialog {
 
         });
 
-        TexturedButton btnRegister = (TexturedButton) dialog.findViewById(R.id.btnRegister);
-        btnRegister.setBackgroundResource(R.drawable.btn_blue_selector);
+
+        termsAcceptanceCheckbox = (CheckBox) dialog.findViewById(R.id.termsAcceptanceCheckbox);
+        termsAcceptanceLabel = (TextView) dialog.findViewById(R.id.termsAcceptanceLabel);
+        termsAcceptanceLink = (TextView) dialog.findViewById(R.id.termsAcceptanceLink);
+
+
+        btnRegister = (TexturedButton) dialog.findViewById(R.id.btnRegister);
+        btnRegister.setBackgroundResource(R.drawable.btn_grey_selector);
+        btnRegister.setEnabled(false);
         btnRegister.setTextColor(Color.WHITE);
         btnRegister.setTextureResource(R.drawable.btn_pattern_repeteable);
         btnRegister.setOnClickListener(new OnClickListener() {
@@ -163,6 +172,25 @@ public class RegisterDialog {
         btnRegister.setText(IbikeApplication.getString("register_save"));
         btnRegister.setTypeface(IbikeApplication.getBoldFont());
         final Activity activity = (Activity) context;
+
+        // Pick out the "Terms of Service" part of the "Accept the ..." string
+        this.termsAcceptanceLabel.setText(IbikeApplication.getString("accept_user_terms").replace(IbikeApplication.getString("accept_user_terms_link_highlight"), ""));
+
+        // Construct a link in HTML and make it clickable
+        this.termsAcceptanceLink.setText(Html.fromHtml("<a href='" + IbikeApplication.getString("accept_user_terms_link") + "'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>") );
+        this.termsAcceptanceLink.setMovementMethod(LinkMovementMethod.getInstance());
+
+        this.termsAcceptanceCheckbox.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                boolean isChecked = termsAcceptanceCheckbox.isChecked();
+                btnRegister.setEnabled(isChecked);
+                btnRegister.setBackgroundResource(isChecked?R.drawable.btn_blue_selector:R.drawable.btn_grey_selector);
+
+            }
+        });
+
 
         imgCamera = (ImageButton) dialog.findViewById(R.id.imgCamera);
         imgCamera.setOnClickListener(new OnClickListener() {

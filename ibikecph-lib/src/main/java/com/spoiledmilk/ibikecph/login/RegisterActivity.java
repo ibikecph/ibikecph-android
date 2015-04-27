@@ -35,7 +35,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     EditText textNewPassword;
     EditText textPasswordConfirm;
     TexturedButton btnRegister;
-    CheckBox checkboxAcceptance;
+    CheckBox termsAcceptanceCheckbox;
     TextView termsAcceptanceLabel;
     TextView termsAcceptanceLink;
 
@@ -67,7 +67,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         textNewPassword = (EditText) findViewById(R.id.textNewPassword);
         textPasswordConfirm = (EditText) findViewById(R.id.textPasswordConfirm);
 
-        checkboxAcceptance = (CheckBox) findViewById(R.id.termsAcceptanceCheckbox);
+        termsAcceptanceCheckbox = (CheckBox) findViewById(R.id.termsAcceptanceCheckbox);
         termsAcceptanceLabel = (TextView) findViewById(R.id.termsAcceptanceLabel);
         termsAcceptanceLink = (TextView) findViewById(R.id.termsAcceptanceLink);
 
@@ -183,7 +183,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         this.termsAcceptanceLabel.setText(IbikeApplication.getString("accept_user_terms").replace(IbikeApplication.getString("accept_user_terms_link_highlight"), ""));
 
         // Construct a link in HTML and make it clickable
-        this.termsAcceptanceLink.setText(Html.fromHtml("<a href='"+IbikeApplication.getString("accept_user_terms_link")+"'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>") );
+        this.termsAcceptanceLink.setText(Html.fromHtml("<a href='" + IbikeApplication.getString("accept_user_terms_link") + "'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>") );
         this.termsAcceptanceLink.setMovementMethod(LinkMovementMethod.getInstance());
 
         textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
@@ -292,7 +292,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     }
 
     public void onTermsAcceptanceCheckboxClick(View v) {
-        boolean isChecked = this.checkboxAcceptance.isChecked();
+        boolean isChecked = this.termsAcceptanceCheckbox.isChecked();
         btnRegister.setEnabled(isChecked);
         btnRegister.setBackgroundResource(isChecked?R.drawable.btn_blue_selector:R.drawable.btn_grey_selector);
     }

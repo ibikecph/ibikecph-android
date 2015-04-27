@@ -164,6 +164,7 @@
                   android:textColor="@color/white"
                   android:text="link"
                   android:id="@+id/termsAcceptanceLink"
+                  android:onClick="onTermsAcceptanceCheckboxClick"
                 />
 
 
