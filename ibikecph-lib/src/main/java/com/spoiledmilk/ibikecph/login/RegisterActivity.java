@@ -181,6 +181,8 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
 
         // Pick out the "Terms of Service" part of the "Accept the ..." string
         this.termsAcceptanceLabel.setText(IbikeApplication.getString("accept_user_terms").replace(IbikeApplication.getString("accept_user_terms_link_highlight"), ""));
+
+        // Construct a link in HTML and make it clickable
         this.termsAcceptanceLink.setText(Html.fromHtml("<a href='"+IbikeApplication.getString("accept_user_terms_link")+"'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>") );
         this.termsAcceptanceLink.setMovementMethod(LinkMovementMethod.getInstance());
 
