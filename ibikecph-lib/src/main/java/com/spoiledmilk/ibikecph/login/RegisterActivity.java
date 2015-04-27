@@ -27,7 +27,6 @@ import com.spoiledmilk.ibikecph.util.ImageData;
 import com.spoiledmilk.ibikecph.util.ImagerPrefetcherListener;
 
 public class RegisterActivity extends Activity implements ImagerPrefetcherListener {
-    TextView textTitle;
     Button btnLogout;
     EditText textName;
     EditText textEmail;
@@ -56,10 +55,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.register_activity);
-        textTitle = (TextView) findViewById(R.id.textTitle);
-        textTitle.setVisibility(View.VISIBLE);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
 
         textName = (EditText) findViewById(R.id.textName);
         textEmail = (EditText) findViewById(R.id.textEmail);
@@ -164,9 +160,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     }
 
     private void initStrings() {
-        textTitle.setText(IbikeApplication.getString("create_account"));
-        textTitle.setTypeface(IbikeApplication.getNormalFont());
-        textTitle.setVisibility(View.VISIBLE);
+        this.getActionBar().setTitle(IbikeApplication.getString("create_account"));
         textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
         textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
         textNewPassword.setTypeface(IbikeApplication.getNormalFont());

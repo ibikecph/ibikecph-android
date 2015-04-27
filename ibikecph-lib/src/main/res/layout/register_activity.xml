@@ -124,18 +124,32 @@
             android:src="@drawable/icon_pass" />
 
         <EditText
-            android:id="@+id/textPasswordConfirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textName"
-            android:layout_alignRight="@+id/textName"
-            android:layout_below="@+id/textNewPassword"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/input_on_black_selector"
-            android:inputType="textPassword"
-            android:paddingLeft="10dp"
-            android:paddingRight="25dp"
-            android:textSize="14sp" />
+                android:id="@+id/textPasswordConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textName"
+                android:layout_alignRight="@+id/textName"
+                android:layout_below="@+id/textNewPassword"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input_on_black_selector"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp"
+                android:paddingRight="25dp"
+                android:textSize="14sp" />
+
+        <EditText
+                android:id="@+id/textPasswordConfirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textName"
+                android:layout_alignRight="@+id/textName"
+                android:layout_below="@+id/textNewPassword"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input_on_black_selector"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp"
+                android:paddingRight="25dp"
+                android:textSize="14sp" />
 
         <com.spoiledmilk.ibikecph.controls.TexturedButton
             android:id="@+id/btnRegister"
