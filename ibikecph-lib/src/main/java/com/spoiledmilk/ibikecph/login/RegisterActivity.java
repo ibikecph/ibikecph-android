@@ -15,6 +15,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.*;
@@ -34,6 +36,8 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     EditText textPasswordConfirm;
     TexturedButton btnRegister;
     CheckBox checkboxAcceptance;
+    TextView termsAcceptanceLabel;
+    TextView termsAcceptanceLink;
 
     Handler handler;
 
@@ -64,6 +68,9 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         textPasswordConfirm = (EditText) findViewById(R.id.textPasswordConfirm);
 
         checkboxAcceptance = (CheckBox) findViewById(R.id.termsAcceptanceCheckbox);
+        termsAcceptanceLabel = (TextView) findViewById(R.id.termsAcceptanceLabel);
+        termsAcceptanceLink = (TextView) findViewById(R.id.termsAcceptanceLink);
+
 
         btnRegister = (TexturedButton) findViewById(R.id.btnRegister);
         btnRegister.setTextureResource(R.drawable.btn_pattern_repeteable);
@@ -172,7 +179,10 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     private void initStrings() {
         this.getActionBar().setTitle(IbikeApplication.getString("create_account"));
 
-        this.checkboxAcceptance.setText(IbikeApplication.getString("accept_user_terms"));
+        // Pick out the "Terms of Service" part of the "Accept the ..." string
+        this.termsAcceptanceLabel.setText(IbikeApplication.getString("accept_user_terms").replace(IbikeApplication.getString("accept_user_terms_link_highlight"), ""));
+        this.termsAcceptanceLink.setText(Html.fromHtml("<a href='"+IbikeApplication.getString("accept_user_terms_link")+"'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>") );
+        this.termsAcceptanceLink.setMovementMethod(LinkMovementMethod.getInstance());
 
         textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
         textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));

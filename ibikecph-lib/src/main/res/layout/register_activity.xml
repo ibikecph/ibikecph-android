@@ -141,16 +141,31 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/textName"
-                android:layout_alignRight="@+id/textName"
                 android:layout_below="@+id/textPasswordConfirm"
                 android:paddingLeft="10dp"
-                android:paddingRight="25dp"
                 android:layout_marginTop="10dp"
-                android:text="I accept the terms"
                 android:id="@+id/termsAcceptanceCheckbox"
-                android:textColor="@color/white"
                 android:onClick="onTermsAcceptanceCheckboxClick"
                 />
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/textPasswordConfirm"
+                  android:layout_toRightOf="@+id/termsAcceptanceCheckbox"
+                  android:layout_alignBaseline="@+id/termsAcceptanceCheckbox"
+                  android:textColor="@color/white"
+                  android:text="accept_user_terms"
+                  android:id="@+id/termsAcceptanceLabel"
+                />
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_below="@+id/textPasswordConfirm"
+                  android:layout_toRightOf="@+id/termsAcceptanceLabel"
+                  android:layout_alignBaseline="@+id/termsAcceptanceLabel"
+                  android:textColor="@color/white"
+                  android:text="link"
+                  android:id="@+id/termsAcceptanceLink"
+                />
+
 
         <com.spoiledmilk.ibikecph.controls.TexturedButton
             android:id="@+id/btnRegister"
