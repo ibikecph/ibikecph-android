@@ -18,6 +18,7 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
 
     private GoogleApiClient mGoogleApiClient;
     private PendingIntent mActivityDetectionPendingIntent;
+    private boolean tracking = false;
 
     public ActivityRecognitionClient() {
         Log.d("JC", "ActivityRecognitionClient instantiated");
@@ -74,11 +75,25 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("JC", "Connected to Google API");
-        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
-                mGoogleApiClient,
-                10000,
-                getActivityDetectionPendingIntent()
-        ).setResultCallback(this);
+        requestActivityUpdates();
+    }
+
+    public void requestActivityUpdates() {
+        if (!tracking) {
+            ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
+                    mGoogleApiClient,
+                    10000,
+                    getActivityDetectionPendingIntent()
+            ).setResultCallback(this);
+        }
+        this.tracking = true;
+    }
+
+    public void releaseActivityUpdates() {
+        if (tracking) {
+            ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(mGoogleApiClient, getActivityDetectionPendingIntent());
+        }
+        this.tracking = false;
     }
 
     public void onConnectionSuspended(int i) {
