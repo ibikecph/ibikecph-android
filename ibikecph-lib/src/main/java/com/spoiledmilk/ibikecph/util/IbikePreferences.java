@@ -99,6 +99,13 @@ public class IbikePreferences {
 
     public void setTrackingEnabled(boolean trackingEnabled) {
         getPrefs().edit().putBoolean(PREFS_TRACKING_ENABLED, trackingEnabled).commit();
+
+        // Make sure the users choice is immediately respected.
+        if (trackingEnabled) {
+            IbikeApplication.getService().getActivityRecognitionClient().requestActivityUpdates();
+        } else {
+            IbikeApplication.getService().getActivityRecognitionClient().releaseActivityUpdates();
+        }
     }
 
     public boolean getTrackingEnabled() {

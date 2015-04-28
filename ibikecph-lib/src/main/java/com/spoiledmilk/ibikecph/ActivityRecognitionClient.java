@@ -39,7 +39,7 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
         mGoogleApiClient.connect();
     }
 
-    public void enableTracking() {
+    public void connect() {
         // ensure the google api client is running
         if (mGoogleApiClient == null)
             buildGoogleApiClient();
@@ -75,10 +75,14 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
     @Override
     public void onConnected(Bundle bundle) {
         Log.d("JC", "Connected to Google API");
-        requestActivityUpdates();
+
+        if (IbikeApplication.getSettings().getTrackingEnabled()) {
+            requestActivityUpdates();
+        }
     }
 
     public void requestActivityUpdates() {
+        Log.d("JC", "Requesting activity updates");
         if (!tracking) {
             ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
                     mGoogleApiClient,
@@ -90,6 +94,7 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
     }
 
     public void releaseActivityUpdates() {
+        Log.d("JC", "Releasing activity updates");
         if (tracking) {
             ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(mGoogleApiClient, getActivityDetectionPendingIntent());
         }
