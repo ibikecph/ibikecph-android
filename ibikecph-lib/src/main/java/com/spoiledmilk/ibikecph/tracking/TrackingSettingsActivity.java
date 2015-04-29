@@ -49,6 +49,11 @@ public class TrackingSettingsActivity extends Activity {
         this.shareDataUsageText      = (TextView) findViewById(R.id.share_data_usage_text);
         this.shareDataTermsText      = (TextView) findViewById(R.id.share_data_terms_text);
         */
+
+        this.trackingEnableSwitch.setEnabled(IbikeApplication.isUserLogedIn()||IbikeApplication.isFacebookLogin());
+        this.notifyMilestoneCheckbox.setEnabled(IbikeApplication.isUserLogedIn()||IbikeApplication.isFacebookLogin());
+        this.notifyWeeklyCheckbox.setEnabled(IbikeApplication.isUserLogedIn()||IbikeApplication.isFacebookLogin());
+
         initStrings();
     }
 
