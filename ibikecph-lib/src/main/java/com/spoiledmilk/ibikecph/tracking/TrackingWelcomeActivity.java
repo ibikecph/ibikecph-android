@@ -40,6 +40,8 @@ public class TrackingWelcomeActivity extends Activity {
             // There was no ActionBar. Oh well...
         }
 
+        this.enableButton.setEnabled(IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin());
+
         initStrings();
     }
 

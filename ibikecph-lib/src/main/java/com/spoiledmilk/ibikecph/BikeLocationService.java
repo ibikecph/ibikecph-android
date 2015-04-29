@@ -33,6 +33,11 @@ public class BikeLocationService extends Service implements LocationListener {
     ArrayList<LocationListener> gpsListeners = new ArrayList<LocationListener>();
     boolean isListeningForGPS = false;
     private static BikeLocationService instance;
+
+    public ActivityRecognitionClient getActivityRecognitionClient() {
+        return activityRecognitionClient;
+    }
+
     private ActivityRecognitionClient activityRecognitionClient;
 
     /**
@@ -62,7 +67,7 @@ public class BikeLocationService extends Service implements LocationListener {
             Log.d("JC", "Spawning new ActivityRecognitionClient");
 
             activityRecognitionClient = new ActivityRecognitionClient();
-            activityRecognitionClient.enableTracking();
+            activityRecognitionClient.connect();
         }
 
         Log.d("JC", "BikeLocationService started");
