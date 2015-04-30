@@ -81,9 +81,14 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
         }
     }
 
+    public void setTracking(boolean tracking) {
+        this.tracking = tracking;
+    }
+
     public void requestActivityUpdates() {
         Log.d("JC", "Requesting activity updates");
         if (!tracking) {
+            this.buildGoogleApiClient();
             ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
                     mGoogleApiClient,
                     10000,

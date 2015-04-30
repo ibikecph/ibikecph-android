@@ -102,7 +102,7 @@ public class IbikePreferences {
 
         // Make sure the users choice is immediately respected.
         if (trackingEnabled) {
-            IbikeApplication.getService().getActivityRecognitionClient().requestActivityUpdates();
+            IbikeApplication.getService().getActivityRecognitionClient().setTracking(true);
         } else {
             IbikeApplication.getService().getActivityRecognitionClient().releaseActivityUpdates();
         }
