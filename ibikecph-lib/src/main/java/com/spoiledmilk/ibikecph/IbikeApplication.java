@@ -54,7 +54,10 @@ public class IbikeApplication extends Application {
 
         trackingManager = TrackingManager.getInstance();
 
-        registerWeeklyNotification();
+        // Register a weekly notification
+        if (settings.getNotifyWeekly()) {
+            registerWeeklyNotification();
+        }
     }
 
 
@@ -183,7 +186,7 @@ public class IbikeApplication extends Application {
      * Registers an intent to be delivered every Sunday at 8pm. We want to tell the user how much
      * she's been cycling the past week.
      */
-    public void registerWeeklyNotification() {
+    public static void registerWeeklyNotification() {
         Context ctx = IbikeApplication.getContext();
         AlarmManager alarmMgr =  (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(ctx, MilestoneManager.class);
@@ -216,10 +219,18 @@ public class IbikeApplication extends Application {
 
         // Run the notification next Sunday, repeating every Sunday.
         // TODO: Reflect this when the user changes setting
-        if (settings.getNotifyWeekly()) {
+        if (IbikeApplication.getSettings().getNotifyWeekly()) {
             alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
         }
 
+    }
+
+    public static void cancelWeeklyNotification() {
+        Context ctx = IbikeApplication.getContext();
+        Intent intent = new Intent(ctx, MilestoneManager.class);
+        PendingIntent alarmIntent = PendingIntent.getService(ctx, 0, intent, 0);
+        AlarmManager alarmMgr =  (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        alarmMgr.cancel(alarmIntent);
     }
 
 }

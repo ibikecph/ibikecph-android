@@ -122,6 +122,12 @@ public class IbikePreferences {
 
     public void setNotifyWeekly(boolean notifyWeekly) {
         getPrefs().edit().putBoolean(PREFS_NOTIFY_WEEKLY, notifyWeekly).commit();
+
+        if (notifyWeekly) {
+            IbikeApplication.registerWeeklyNotification();
+        } else {
+            IbikeApplication.cancelWeeklyNotification();
+        }
     }
 
     public boolean getNotifyWeekly() {
