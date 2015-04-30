@@ -174,6 +174,9 @@ public class IbikeApplication extends Application {
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("password").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
+
+        // TODO: Move this somewhere more natural
+        BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
     }
 
     /**
@@ -212,7 +215,10 @@ public class IbikeApplication extends Application {
         */
 
         // Run the notification next Sunday, repeating every Sunday.
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
+        // TODO: Reflect this when the user changes setting
+        if (settings.getNotifyWeekly()) {
+            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
+        }
 
     }
 
