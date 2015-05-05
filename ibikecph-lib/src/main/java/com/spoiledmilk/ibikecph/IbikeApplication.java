@@ -233,4 +233,8 @@ public class IbikeApplication extends Application {
         alarmMgr.cancel(alarmIntent);
     }
 
+    public static String getAppName() {
+        return APP_NAME;
+    }
+
 }
