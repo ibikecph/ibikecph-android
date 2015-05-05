@@ -160,9 +160,7 @@
 
         <activity
                 android:name="com.spoiledmilk.ibikecph.tracking.TrackingActivity"
-                android:label="@string/title_activity_tracking"
-                android:parentActivityName="com.spoiledmilk.ibikecph.map.MapActivity"
-                android:theme="@style/CykelsuperstierTheme"/>
+                android:label="@string/title_activity_tracking"/>
         <activity
                 android:name="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity"
                 android:label="@string/title_activity_tracking"/>

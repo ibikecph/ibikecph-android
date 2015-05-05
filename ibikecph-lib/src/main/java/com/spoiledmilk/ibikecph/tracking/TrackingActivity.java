@@ -38,7 +38,6 @@ public class TrackingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
 
-
         this.activityText = (TextView) findViewById(R.id.tracking_activity_text);
         this.sinceText    = (TextView) findViewById(R.id.tracking_activity_since);
 
@@ -57,6 +56,7 @@ public class TrackingActivity extends Activity {
 
         try {
             this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
+            this.getActionBar().setDisplayHomeAsUpEnabled(false);
         } catch(NullPointerException e) {
             // There was no ActionBar. Oh well...
         }
