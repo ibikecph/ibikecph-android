@@ -30,6 +30,7 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
      * location updates (including activity recognition updates).
      */
     protected synchronized void buildGoogleApiClient() {
+        Log.d("JC", "Building Google API Client");
         mGoogleApiClient = new GoogleApiClient.Builder(IbikeApplication.getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -40,11 +41,14 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
     }
 
     public void connect() {
+        //Log.d("JC", "Attempting to connect to the Activity Recognition Service");
+
         // ensure the google api client is running
         if (mGoogleApiClient == null)
             buildGoogleApiClient();
 
         if (mGoogleApiClient != null && !mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
+            Log.d("JC", "Connecting to the Activity Recognition Service");
             mGoogleApiClient.connect();
         }
     }
@@ -113,8 +117,8 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
     }
 
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d("JC", "Failed to connect to the Google API");
-
+        // http://developer.android.com/reference/com/google/android/gms/common/ConnectionResult.html
+        Log.d("JC", "Failed to connect to the Google API: "+connectionResult.toString());
     }
 
     /**
