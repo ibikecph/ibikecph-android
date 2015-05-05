@@ -100,7 +100,7 @@ public class MilestoneManager extends IntentService {
     /**
      * Pop up a notification on Sunday evening with a summary of the bicycling activity.
      */
-    public Pair<Integer, String> getSundaySummary() {
+    public Pair<Double, Pair<Integer,Integer>> getSundaySummary() {
         Realm realm = Realm.getInstance(IbikeApplication.getContext());
 
         // We want to find all TrackLocation objects during this week, then figure out what Track objects they belong
@@ -125,20 +125,20 @@ public class MilestoneManager extends IntentService {
             totalDistance += t.getLength();
         }
 
-        int totalKilometers = (Math.round((float)totalDistance/1000));
+        double totalKilometers = ((double)totalDistance/1000);
 
         Log.d("JC", "Total kilometers: " + totalKilometers);
         Log.d("JC", "Total time: " + secondsToFormattedHours(totalTime));
 
-        return new Pair<Integer, String>(totalKilometers, secondsToFormattedHours(totalTime));
+        return new Pair<Double, Pair<Integer, Integer>>(totalKilometers, secondsToFormattedHours(totalTime));
 
     }
 
-    public static String secondsToFormattedHours(long seconds) {
+    public static Pair<Integer,Integer> secondsToFormattedHours(long seconds) {
         int hours = (int) (seconds/60/60);
         int minutes = (int) ((seconds - hours*60*60) / 60);
 
-        return String.format("%02d:%02d", hours, minutes);
+        return new Pair<Integer, Integer>(hours, minutes);
     }
 
     public static long getLastMonday() {
@@ -316,12 +316,13 @@ public class MilestoneManager extends IntentService {
             Context context = IbikeApplication.getContext();
 
             Notification.Builder notificationBuilder = new Notification.Builder(context);
-            notificationBuilder.setContentTitle(IbikeApplication.getString("app_name"));
+            notificationBuilder.setContentTitle(IbikeApplication.getAppName());
             notificationBuilder.setSmallIcon(R.drawable.logo);
 
-            Pair<Integer, String> sundaySummary = getSundaySummary();
+            Pair<Double, Pair<Integer,Integer>> sundaySummary = getSundaySummary();
 
-            notificationBuilder.setContentText(String.format(IbikeApplication.getString("weekly_notification"), sundaySummary.first, sundaySummary.second));
+            notificationBuilder.setContentText(String.format(IbikeApplication.getString("weekly_status_description"),
+                    sundaySummary.first, sundaySummary.second.first, sundaySummary.second.second));
 
             Notification n = notificationBuilder.build();
             NotificationManager mNotificationManager =
