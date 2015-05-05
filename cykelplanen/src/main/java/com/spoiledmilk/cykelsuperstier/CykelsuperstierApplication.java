@@ -17,6 +17,8 @@ public class CykelsuperstierApplication extends IbikeApplication {
 		super.onCreate();
 		Config.GREEN_ROUTES_ENABLED = false; 
 		Config.EXTENDED_PULL_TOUCH = false;
+
+        IbikeApplication.APP_NAME = "Cykelplanen";
 	}
 
 }

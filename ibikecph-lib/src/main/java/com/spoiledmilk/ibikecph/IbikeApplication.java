@@ -28,7 +28,7 @@ import com.spoiledmilk.ibikecph.util.SMDictionary;
 import java.util.Calendar;
 
 public class IbikeApplication extends Application {
-
+    protected static String APP_NAME = "I Bike CPH";
     private static IbikeApplication instance = null;
     public IbikePreferences settings;
     public SMDictionary dictionary;
