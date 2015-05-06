@@ -1,11 +1,14 @@
 package com.spoiledmilk.ibikecph.tracking;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
@@ -52,26 +55,70 @@ public class TrackingSettingsActivity extends Activity {
         */
 
         loggedIn = IbikeApplication.isUserLogedIn()||IbikeApplication.isFacebookLogin();
-        this.trackingEnableSwitch.setEnabled(loggedIn);
-        this.notifyMilestoneCheckbox.setEnabled(loggedIn);
-        this.notifyWeeklyCheckbox.setEnabled(loggedIn);
 
-
+        this.trackingEnableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (loggedIn) {
+                    onEnableTrackingClick(isChecked);
+                } else {
+                    spawnLoginBox();
+                }
+            }
+        });
+        this.notifyMilestoneCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (loggedIn) {
+                    onNotifyMilestone(isChecked);
+                } else {
+                    spawnLoginBox();
+                }
+            }
+        });
+        this.notifyWeeklyCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (loggedIn) {
+                    onNotifyWeekly(isChecked);
+                } else {
+                    spawnLoginBox();
+                }
+            }
+        });
 
         initStrings();
     }
 
-    public void onEnableTrackingClick(View v) {
-        this.settings.setTrackingEnabled(this.trackingEnableSwitch.isChecked());
+    public void onEnableTrackingClick(boolean isChecked) {
+        if (!loggedIn) {
+            trackingEnableSwitch.setChecked(false);
+            TrackingWelcomeActivity.MustLogInDialogFragment mustLogInDialogFragment = new TrackingWelcomeActivity.MustLogInDialogFragment();
+            mustLogInDialogFragment.show(getFragmentManager(), "MustLoginDialog");
+
+        } else {
+            this.settings.setTrackingEnabled(this.trackingEnableSwitch.isChecked());
+        }
     }
 
-    public void onNotifyMilestone(View v) {
-        this.settings.setNotifyMilestone(this.notifyMilestoneCheckbox.isChecked());
+    public void onNotifyMilestone(boolean isChecked) {
+        this.settings.setNotifyMilestone(isChecked);
     }
 
-    public void onNotifyWeekly(View v) {
-        this.settings.setNotifyWeekly(this.notifyWeeklyCheckbox.isChecked());
+    public void onNotifyWeekly(boolean isChecked) {
+        this.settings.setNotifyWeekly(isChecked);
     }
+
+    public void spawnLoginBox() {
+        // TODO: This should be enumerated somehow
+        trackingEnableSwitch.setChecked(false);
+        notifyMilestoneCheckbox.setChecked(false);
+        notifyWeeklyCheckbox.setChecked(false);
+
+        TrackingWelcomeActivity.MustLogInDialogFragment mustLogInDialogFragment = new TrackingWelcomeActivity.MustLogInDialogFragment();
+        mustLogInDialogFragment.show(getFragmentManager(), "MustLoginDialog");
+    }
+
 
     public void onShareData(View v) {
         this.settings.setShareData(this.shareDataSwitch.isChecked());
@@ -91,7 +138,6 @@ public class TrackingSettingsActivity extends Activity {
         this.notifyMilestoneText.setText(IbikeApplication.getString("tracking_milestone_notifications"));
         this.notifyMilestoneCheckbox.setChecked(loggedIn && settings.getNotifyMilestone());
 
-
         this.notifyWeeklyText.setText(IbikeApplication.getString("tracking_weekly_status_notifications"));
         this.notifyWeeklyCheckbox.setChecked(loggedIn && settings.getNotifyWeekly());
 
@@ -104,5 +150,12 @@ public class TrackingSettingsActivity extends Activity {
         this.shareDataTermsText.setText(IbikeApplication.getString("tracking_terms_link"));
         this.shareDataTermsText.setPaintFlags(this.shareDataTermsText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         */
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // If we got back from a login box AND the used successfully logged in, go on.
+        if (requestCode == LeftMenu.LAUNCH_LOGIN && resultCode == RESULT_OK) {
+            this.loggedIn = IbikeApplication.isUserLogedIn()||IbikeApplication.isFacebookLogin();
+        }
     }
 }

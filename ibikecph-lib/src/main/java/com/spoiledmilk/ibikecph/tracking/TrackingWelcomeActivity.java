@@ -1,6 +1,10 @@
 package com.spoiledmilk.ibikecph.tracking;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -8,7 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
@@ -40,15 +46,23 @@ public class TrackingWelcomeActivity extends Activity {
             // There was no ActionBar. Oh well...
         }
 
-        this.enableButton.setEnabled(IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin());
+        //this.enableButton.setEnabled();
 
         initStrings();
     }
 
     public void onTrackingEnableClick(View v) {
-        IbikePreferences settings = IbikeApplication.getSettings();
-        settings.setTrackingEnabled(true);
-        startActivity(new Intent(this, TrackingActivity.class));
+        // IF the user is not logged in, spawn a dialog saying so.
+        if (!IbikeApplication.isUserLogedIn() && !IbikeApplication.isFacebookLogin()) {
+            MustLogInDialogFragment loginDialog = new MustLogInDialogFragment();
+            loginDialog.show(getFragmentManager(), "MustLoginDialog");
+
+
+        } else {
+            IbikePreferences settings = IbikeApplication.getSettings();
+            settings.setTrackingEnabled(true);
+            startActivity(new Intent(this, TrackingActivity.class));
+        }
     }
 
     public void onTermsClick(View v) {
@@ -70,4 +84,39 @@ public class TrackingWelcomeActivity extends Activity {
         this.kmPrTripText.setText(IbikeApplication.getString("unit_km_pr_trip").toUpperCase());
         this.hoursText.setText(IbikeApplication.getString("unit_h_long").toUpperCase());
     }
+
+
+
+    public static class MustLogInDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(IbikeApplication.getString("log_in_to_track_prompt"))
+                    .setPositiveButton(IbikeApplication.getString("OK"), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent i = new Intent(getActivity(), LoginActivity.class);
+                            getActivity().startActivityForResult(i, LeftMenu.LAUNCH_LOGIN);
+                        }
+                    })
+                    .setNegativeButton(IbikeApplication.getString("account_cancel"), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // If we got back from a login box AND the used successfully logged in, go on.
+        if (requestCode == LeftMenu.LAUNCH_LOGIN && resultCode == RESULT_OK) {
+            // (actually, just mimic a button click)
+            onTrackingEnableClick(null);
+        }
+
+    }
 }
+

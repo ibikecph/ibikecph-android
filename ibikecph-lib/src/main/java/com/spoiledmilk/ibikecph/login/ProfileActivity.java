@@ -5,9 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.login;
 
-import java.io.InputStream;
-import java.net.URL;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,22 +21,15 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
-import com.spoiledmilk.ibikecph.util.AsyncImageFetcher;
-import com.spoiledmilk.ibikecph.util.DB;
-import com.spoiledmilk.ibikecph.util.ImageData;
-import com.spoiledmilk.ibikecph.util.ImagerPrefetcherListener;
-import com.spoiledmilk.ibikecph.util.LOG;
-import com.spoiledmilk.ibikecph.util.Util;
+import com.spoiledmilk.ibikecph.util.*;
+
+import java.io.InputStream;
+import java.net.URL;
 
 public class ProfileActivity extends Activity implements ImagerPrefetcherListener {
 
@@ -79,7 +69,12 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                 IbikeApplication.logout();
                 (new DB(ProfileActivity.this)).deleteFavorites();
                 IbikeApplication.setIsFacebookLogin(false);
-                
+
+                // Disable tracking
+                IbikeApplication.getSettings().setTrackingEnabled(false);
+                IbikeApplication.getSettings().setNotifyMilestone(false);
+                IbikeApplication.getSettings().setNotifyWeekly(false);
+
                 // Set the result so the MapActivity causes the LeftMenu to reload 
                 setResult(RESULT_OK);
                 finish();
