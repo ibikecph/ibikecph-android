@@ -55,9 +55,7 @@ public class IbikeApplication extends Application {
         trackingManager = TrackingManager.getInstance();
 
         // Register a weekly notification
-        if (settings.getNotifyWeekly()) {
-            registerWeeklyNotification();
-        }
+        registerWeeklyNotification();
     }
 
 
@@ -218,10 +216,7 @@ public class IbikeApplication extends Application {
         */
 
         // Run the notification next Sunday, repeating every Sunday.
-        // TODO: Reflect this when the user changes setting
-        if (IbikeApplication.getSettings().getNotifyWeekly()) {
-            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
-        }
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
 
     }
 
