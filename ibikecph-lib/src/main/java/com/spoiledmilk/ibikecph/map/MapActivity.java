@@ -284,6 +284,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         }
         checkForCrashes();
 
+        leftMenu.updateControls();
     }
 
     @Override

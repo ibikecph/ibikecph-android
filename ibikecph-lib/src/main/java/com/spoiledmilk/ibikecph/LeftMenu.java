@@ -6,18 +6,17 @@
 package com.spoiledmilk.ibikecph;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import com.spoiledmilk.ibikecph.favorites.*;
+import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
+import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
@@ -185,7 +184,8 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 			e.printStackTrace();
 		}
     }
-	
+
+    @SuppressWarnings("UnusedDeclaration")
     public void spawnLoginActivity() {
     	if (!Util.isNetworkConnected(getActivity())) {
             Util.launchNoConnectionDialog(getActivity());
@@ -206,6 +206,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public void spawnTrackingActivity() {
         Intent i;
         IbikePreferences settings = IbikeApplication.getSettings();
@@ -218,23 +219,22 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         getActivity().startActivity(i);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
-    
+
+    @SuppressWarnings("UnusedDeclaration")
     public void spawnAboutActivity() {
         Intent i = new Intent(getActivity(), AboutActivity.class);
         getActivity().startActivity(i);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
-    
+
+    @SuppressWarnings("UnusedDeclaration")
     public void spawnFavoritesListActivity() {
         Intent i = new Intent(getActivity(), FavoritesListActivity.class);
         getActivity().startActivityForResult(i, LAUNCH_FAVORITE);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
-	
-    public void spawnLanguageActivity() {
-        Util.showLanguageDialog(getActivity());
-	}
-    
+
+    @SuppressWarnings("UnusedDeclaration")
     public void spawnTTSSettingsActivity() {
         Intent i = new Intent(getActivity(), TTSSettingsActivity.class);
         getActivity().startActivity(i);
@@ -248,10 +248,6 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         initStrings();
         
         updateControls();
-    }
-
-    protected int getAddFavoriteTextColor() {
-        return Color.rgb(24, 138, 230);
     }
 
     // TODO: Get rid of this
@@ -275,202 +271,13 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     public void initStrings() {
     }
 
-    private void openNewFavoriteFragment() {
-        AddFavoriteFragment aff = getAddFavoriteFragment();
-        FragmentTransaction fragmentTransaction = ((FragmentActivity) getActivity()).getFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        fragmentTransaction.replace(R.id.leftContainerDrawer, aff);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-        ((FragmentActivity) getActivity()).getSupportFragmentManager().executePendingTransactions();
-    }
-
     protected AddFavoriteFragment getAddFavoriteFragment() {
         return new AddFavoriteFragment();
     }
 
-    protected EditFavoriteFragment getEditFavoriteFragment() {
-        return new EditFavoriteFragment();
-    }
-
     @SuppressWarnings("deprecation")
     public void updateControls() {
-    	/*
-        LOG.d("LeftMenu updateControls");
-        if (!IbikeApplication.isUserLogedIn()) {
-            favoritesContainer.setBackgroundDrawable(null);
-            textFavoriteHint.setTextColor(getHintDisabledTextColor());
-            textNewFavorite.setTextColor(Color.rgb(60, 60, 60));
-            imgAdd.setImageResource(R.drawable.fav_plus_none);
-            //favoritesList.setAdapter(null);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, Util.dp2px(150));
-            favoritesContainerHeight = Util.dp2px(150);
-            params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            params.addRule(RelativeLayout.BELOW, favoritesHeaderContainer.getId());
-            favoritesContainer.setLayoutParams(params);
-            addContainer.setPadding((int) (Util.getScreenWidth() / 7 + Util.dp2px(7)), (int) Util.dp2px(5), 0, (int) Util.dp2px(34));
-            // getView().findViewById(R.id.imgRightArrow).setVisibility(View.INVISIBLE);
-            textFavoriteHint.setVisibility(View.VISIBLE);
-            btnEditFavorites.setVisibility(View.INVISIBLE);
-            btnEditFavorites.setEnabled(false);
-            lastListDivider.setVisibility(View.GONE);
-            params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-            params.topMargin = Util.dp2px(3);
-            // imgAdd.setLayoutParams(params);
-            textNewFavorite.setPadding(Util.dp2px(0), 0, 0, Util.dp2px(0));
-            params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            params.bottomMargin = Util.getDensity() >= 2 ? Util.dp2px(40) : Util.dp2px(20);
-            addContainer.setLayoutParams(params);
-            addContainer.setPadding(Util.getDensity() >= 2 ? Util.dp2px(60) : Util.dp2px(40), Util.dp2px(7), 0, Util.dp2px(7));
-            addContainer.setBackgroundColor(Color.TRANSPARENT);
-            addContainer.setClickable(false);
-        } else if (favorites == null || favorites.size() == 0) {
-            favoritesContainer.setBackgroundResource(R.drawable.add_fav_background_selector);
-            addContainer.setBackgroundColor(Color.TRANSPARENT);// addContainer.setBackgroundResource(R.drawable.add_fav_background_selector);
-            lastListDivider.setVisibility(View.GONE);
-            favoritesList.setVisibility(View.GONE);
-            textFavoriteHint.setVisibility(View.VISIBLE);
-            // getView().findViewById(R.id.imgRightArrow).setVisibility(View.VISIBLE);
-            favoritesContainer.setClickable(true);
-            imgAdd.setImageResource(R.drawable.fav_add);
-            textFavoriteHint.setTextColor(getHintEnabledTextColor());
-            textNewFavorite.setTextColor(getAddFavoriteTextColor());
-            btnEditFavorites.setVisibility(View.INVISIBLE);
-            btnEditFavorites.setEnabled(false);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, Util.dp2px(150));
-            favoritesContainerHeight = Util.dp2px(150);
-            params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            //params.addRule(RelativeLayout.BELOW, getView().findViewById(R.id.favoritesHeaderContainer).getId());
-            favoritesContainer.setLayoutParams(params);
-            addContainer.setPadding((int) (Util.getScreenWidth() / 7 + Util.dp2px(7)), (int) Util.dp2px(5), 0, (int) Util.dp2px(34));
-            params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-            params.topMargin = Util.dp2px(3);
-            // imgAdd.setLayoutParams(params);
-            textNewFavorite.setPadding(0, 0, 0, 0);
-            params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            params.bottomMargin = Util.getDensity() >= 2 ? Util.dp2px(40) : Util.dp2px(20);
-            addContainer.setLayoutParams(params);
-            addContainer.setPadding(Util.getDensity() >= 2 ? Util.dp2px(0) : Util.dp2px(10), Util.dp2px(7), 0, Util.dp2px(7));
-            addContainer.setClickable(false);
-        } else {
-            // Loged in, and there is a list of favorites
-            favoritesList.clearAnimations();
-            favoritesList.setVisibility(View.VISIBLE);
-            if (listAdapter != null) {
-                ((FavoritesAdapter) listAdapter).setIsEditMode(isEditMode);
-                btnEditFavorites.setVisibility(isEditMode ? View.INVISIBLE : View.VISIBLE);
-                btnEditFavorites.setEnabled(!isEditMode);
-                btnDone.setVisibility(isEditMode ? View.VISIBLE : View.INVISIBLE);
-                btnDone.setEnabled(isEditMode);
-            }
-            textFavoriteHint.setVisibility(View.GONE);
-            if (getView() != null) {
-                addContainer.setVisibility(isEditMode ? View.GONE : View.VISIBLE);
-                // getView().findViewById(R.id.imgRightArrow).setVisibility(View.GONE);
-                getView().findViewById(R.id.favoritesContainer).setClickable(false);
-                int count = favorites.size();
-                int listHeight = count * (menuItemHeight) + Util.dp2px(1) * count;
-                int viewHeight = (int) (Util.getScreenHeight() - Util.dp2px(26)); //
-                // screen height without the
-                // notifications bar
-                int avaliableHeight = viewHeight - (menuItemHeight * (getMenuItemsCount() + (isEditMode ? 0 : 1)))
-                        - (getMenuItemsCount() * dividerHeight);
-                LOG.d("available height = " + avaliableHeight);
-                LOG.d("list height = " + listHeight);
-                if (listHeight > avaliableHeight) {
-                    listHeight = avaliableHeight;
-                }
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-                        (isEditMode ? listHeight : (listHeight + menuItemHeight)));
-                favoritesContainerHeight = (isEditMode ? listHeight : (listHeight + menuItemHeight));
-                params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                //params.addRule(RelativeLayout.BELOW, getView().findViewById(R.id.horizontalDivider1).getId());
-                favoritesContainer.setLayoutParams(params);
-                params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, listHeight);
-                params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-                //getView().findViewById(R.id.favoritesListContainer).setLayoutParams(params);
-                imgAdd.setImageResource(R.drawable.fav_add);
-                textFavoriteHint.setTextColor(Color.WHITE);
-                textNewFavorite.setTextColor(getAddFavoriteTextColor());
-                lastListDivider.setVisibility((isEditMode || favorites.size() <= getFavoritesVisibleItemCount()) ? View.GONE : View.VISIBLE);
-                updateFavoritesContainer();
-                addContainer.setPadding((int) Util.dp2px(30), (int) Util.dp2px(0), 0, (int) Util.dp2px(0));
-                params = new RelativeLayout.LayoutParams(Util.dp2px(14), Util.dp2px(14));
-                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                params.addRule(RelativeLayout.CENTER_VERTICAL);
-                params.bottomMargin = Util.dp2px(0);
-                // imgAdd.setLayoutParams(params);
-                params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, menuItemHeight);
-                //params.addRule(RelativeLayout.BELOW, getView().findViewById(R.id.favoritesListContainer).getId());
-                if (!isEditMode) {
-                    addContainer.setLayoutParams(params);
-                }
-                addContainer.setBackgroundResource(R.drawable.add_fav_background_selector);
-                addContainer.setClickable(true);
-                textNewFavorite.setPadding(Util.dp2px(4), 0, 0, 0);
-                ((FavoritesAdapter) listAdapter).notifyDataSetChanged();
-            }
-        }
-	*/
-    }
-
-    protected int getMenuItemsCount() {
-        return 5;
-    }
-
-    protected int getHintEnabledTextColor() {
-        return Color.WHITE;
-    }
-
-    protected int getHintDisabledTextColor() {
-        return Color.GRAY;
-    }
-
-    public int getFavoritesVisibleItemCount() {
-        return Util.getDensity() >= 2 ? 9 : 8;
-    }
-
-    FavoritesAdapter adapter;
-
-    protected FavoritesAdapter getAdapter() {
-        if (adapter == null) {
-            adapter = new FavoritesAdapter(getActivity(), favorites, this);
-        }
-        return adapter;
-    }
-
-/*
-    public void onEditFavorite(FavoritesData fd) {
-        EditFavoriteFragment eff = getEditFavoriteFragment();
-        Bundle args = new Bundle();
-        args.putParcelable("favoritesData", fd);
-        eff.setArguments(args);
-        FragmentTransaction fragmentTransaction = ((FragmentActivity) getActivity()).getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right);
-        fragmentTransaction.replace(R.id.leftContainerDrawer, eff);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-        ((FragmentActivity) getActivity()).getSupportFragmentManager().executePendingTransactions();
-
-    }
-*/
-    
-    private void updateFavoritesContainer() {
-    /*
-    	if (isEditMode || (favoritesList.getAdapter() != null && favoritesList.getAdapter().getCount() <= getFavoritesVisibleItemCount()))
-            lastListDivider.setVisibility(View.GONE);
-        else
-            lastListDivider.setVisibility(View.VISIBLE);
-            */
+        this.populateMenu();
     }
 
 }
