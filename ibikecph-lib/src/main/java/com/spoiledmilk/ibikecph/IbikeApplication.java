@@ -215,17 +215,10 @@ public class IbikeApplication extends Application {
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 20, alarmIntent);
         */
 
-        // Run the notification next Sunday, repeating every Sunday.
+        // Run the notification next Sunday, repeating every Sunday. MilestoneManager will receive the Intent
+        // regardless of the user's preference, but will only actually *make* the notification if the user wants it.
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
 
-    }
-
-    public static void cancelWeeklyNotification() {
-        Context ctx = IbikeApplication.getContext();
-        Intent intent = new Intent(ctx, MilestoneManager.class);
-        PendingIntent alarmIntent = PendingIntent.getService(ctx, 0, intent, 0);
-        AlarmManager alarmMgr =  (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.cancel(alarmIntent);
     }
 
     public static String getAppName() {
