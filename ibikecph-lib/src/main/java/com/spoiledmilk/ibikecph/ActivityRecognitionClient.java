@@ -119,6 +119,8 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
     public void onConnectionFailed(ConnectionResult connectionResult) {
         // http://developer.android.com/reference/com/google/android/gms/common/ConnectionResult.html
         Log.d("JC", "Failed to connect to the Google API: "+connectionResult.toString());
+
+        // TODO: Disable tracking and let the user know.
     }
 
     /**
