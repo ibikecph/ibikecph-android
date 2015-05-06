@@ -61,6 +61,8 @@ public class TrackingWelcomeActivity extends Activity {
         } else {
             IbikePreferences settings = IbikeApplication.getSettings();
             settings.setTrackingEnabled(true);
+            settings.setNotifyMilestone(true);
+            settings.setNotifyWeekly(true);
             startActivity(new Intent(this, TrackingActivity.class));
         }
     }
