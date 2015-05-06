@@ -161,7 +161,7 @@ public class MilestoneManager extends IntentService {
         Context context = IbikeApplication.getContext();
 
         Notification.Builder notificationBuilder = new Notification.Builder(context);
-        notificationBuilder.setContentTitle(IbikeApplication.getString("app_name"));
+        notificationBuilder.setContentTitle(IbikeApplication.getAppName());
 
         String message = "";
 
@@ -205,7 +205,7 @@ public class MilestoneManager extends IntentService {
         Context context = IbikeApplication.getContext();
 
         Notification.Builder notificationBuilder = new Notification.Builder(context);
-        notificationBuilder.setContentTitle(IbikeApplication.getString("app_name"));
+        notificationBuilder.setContentTitle(IbikeApplication.getAppName());
 
         switch (length) {
             case KM_10:
@@ -321,8 +321,7 @@ public class MilestoneManager extends IntentService {
 
             Pair<Double, Pair<Integer,Integer>> sundaySummary = getSundaySummary();
 
-            notificationBuilder.setContentText(String.format(IbikeApplication.getString("weekly_status_description"),
-                    sundaySummary.first, sundaySummary.second.first, sundaySummary.second.second));
+            notificationBuilder.setContentText(String.format(IbikeApplication.getString("weekly_status_description"), sundaySummary.first, sundaySummary.second.first, sundaySummary.second.second));
 
             Notification n = notificationBuilder.build();
             NotificationManager mNotificationManager =
