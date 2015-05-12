@@ -39,9 +39,6 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         LayoutInflater inflater = (LayoutInflater) IbikeApplication.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.track_list_row_view, parent, false);
 
-        //TextView titleView = (TextView) rowView.findViewById(R.id.trackTextView);
-
-
         final Track track = this.getItem(position);
 
         // SET THE DURATION LABEL
@@ -51,9 +48,7 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         // SET THE DISTANCE LABEL
         TextView lengthView = (TextView) rowView.findViewById(R.id.trackLengthView);
         TextView trackLengthUnitTextView = (TextView) rowView.findViewById(R.id.trackLengthUnitTextView);
-        TextView distLabel = (TextView) rowView.findViewById(R.id.distLabel);
 
-        distLabel.setText(IbikeApplication.getString("Dist"));
         try {
             double distance = track.getLength();
 
@@ -63,29 +58,18 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         }
 
         // SET THE SPEED LABEL
-        TextView speedLabel = (TextView) rowView.findViewById(R.id.speedLabel);
         TextView trackSpeedView = (TextView) rowView.findViewById(R.id.trackSpeedView);
 
-        speedLabel.setText(IbikeApplication.getString("Speed"));
         int speed = -1;
         if (track.getDuration() != 0)
             speed = (int) Math.round((track.getLength() / track.getDuration()) * 3.6);
         trackSpeedView.setText(String.valueOf(speed));
 
-        // SET THE GEOLOCATION LABELS
-        TextView geoFromLabel = (TextView) rowView.findViewById(R.id.trackGeoFromView);
-        TextView geoToLabel = (TextView) rowView.findViewById(R.id.trackGeoToView);
-
-        geoFromLabel.setText(track.getStart());
-        geoToLabel.setText(track.getEnd());
-
         // SET THE TIME LABELS
-        TextView timeLabel = (TextView) rowView.findViewById(R.id.timeLabel);
         TextView trackTimeSpanView = (TextView) rowView.findViewById(R.id.trackTimeSpanView);
         Date start = track.getLocations().first().getTimestamp();
         Date end = track.getLocations().last().getTimestamp();
 
-        timeLabel.setText(IbikeApplication.getString("Time"));
         trackTimeSpanView.setText(dt.format(start) + " – " + dt.format(end));
 
         // Open the TrackMapView when clicking on a track
@@ -97,6 +81,13 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
                 getContext().startActivity(i);
             }
         });
+
+        // SET THE GEOLOCATION LABELS
+        TextView geoFromLabel = (TextView) rowView.findViewById(R.id.trackGeoFromView);
+        TextView geoToLabel = (TextView) rowView.findViewById(R.id.trackGeoToView);
+
+        geoFromLabel.setText(track.getStart());
+        geoToLabel.setText(track.getEnd());
 
         return rowView;
     }
