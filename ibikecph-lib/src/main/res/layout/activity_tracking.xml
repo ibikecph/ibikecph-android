@@ -100,7 +100,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="23.3"
                     android:id="@+id/speedTextView"
-                    android:textSize="32dp" android:layout_marginTop="20dp"
+                    android:textSize="32dp" android:layout_marginTop="10dp"
                     android:layout_marginBottom="0dp"/>
 
             <TextView
@@ -120,7 +120,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="12.4"
                     android:id="@+id/avgPerTrackDistanceTextView"
-                    android:textSize="32dp" android:layout_marginTop="20dp" android:gravity="right" />
+                    android:textSize="32dp" android:layout_marginTop="10dp" android:gravity="right" />
 
             <TextView
                     android:text="KM PR TUR"
