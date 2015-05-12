@@ -56,7 +56,7 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         } catch(NullPointerException e) {
             lengthView.setText("-1 m");
         }
-
+/*
         // SET THE SPEED LABEL
         TextView trackSpeedView = (TextView) rowView.findViewById(R.id.trackSpeedView);
 
@@ -64,7 +64,7 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         if (track.getDuration() != 0)
             speed = (int) Math.round((track.getLength() / track.getDuration()) * 3.6);
         trackSpeedView.setText(String.valueOf(speed));
-
+*/
         // SET THE TIME LABELS
         TextView trackTimeSpanView = (TextView) rowView.findViewById(R.id.trackTimeSpanView);
         Date start = track.getLocations().first().getTimestamp();
@@ -88,6 +88,10 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
 
         geoFromLabel.setText(track.getStart());
         geoToLabel.setText(track.getEnd());
+
+        // SET THE TEENYWEENY "TO" LABEL
+        TextView trackToTextView = (TextView) rowView.findViewById(R.id.trackToTextView);
+        trackToTextView.setText(" " + IbikeApplication.getString("to"));
 
         return rowView;
     }
