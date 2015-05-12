@@ -43,7 +43,7 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
 
         // SET THE DURATION LABEL
         TextView trackDurationView = (TextView) rowView.findViewById(R.id.trackDurationView);
-        trackDurationView.setText( String.valueOf( (int) (track.getDuration() / 60 )));
+        trackDurationView.setText( durationToFormattedTime(track.getDuration()) );
 
         // SET THE DISTANCE LABEL
         TextView lengthView = (TextView) rowView.findViewById(R.id.trackLengthView);
@@ -56,15 +56,7 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         } catch(NullPointerException e) {
             lengthView.setText("-1 m");
         }
-/*
-        // SET THE SPEED LABEL
-        TextView trackSpeedView = (TextView) rowView.findViewById(R.id.trackSpeedView);
 
-        int speed = -1;
-        if (track.getDuration() != 0)
-            speed = (int) Math.round((track.getLength() / track.getDuration()) * 3.6);
-        trackSpeedView.setText(String.valueOf(speed));
-*/
         // SET THE TIME LABELS
         TextView trackTimeSpanView = (TextView) rowView.findViewById(R.id.trackTimeSpanView);
         Date start = track.getLocations().first().getTimestamp();
@@ -97,4 +89,8 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
     }
 
 
+
+    public static String durationToFormattedTime(double minutes) {
+        return ((int)(minutes/60)) + "h " + ((int)(minutes % 60)) + "m";
+    }
 }
