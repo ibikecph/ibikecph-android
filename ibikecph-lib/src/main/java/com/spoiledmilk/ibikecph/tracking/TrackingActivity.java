@@ -120,15 +120,13 @@ public class TrackingActivity extends Activity {
     public void updateStrings() {
         this.trackingStatusTextView.setText("Tracking: "+trackingManager.isTracking());
 
-        this.kmText.setText(IbikeApplication.getString("unit_km").toUpperCase());
-        this.kmtText.setText(IbikeApplication.getString("unit_km_pr_h").toUpperCase());
-        this.kmPrTripText.setText(IbikeApplication.getString("unit_km_pr_trip").toUpperCase());
-        this.hoursText.setText(IbikeApplication.getString("unit_h_long").toUpperCase());
+        this.kmText.setText(IbikeApplication.getString("unit_km"));
+        this.kmtText.setText(IbikeApplication.getString("unit_km_pr_h"));
+        this.kmPrTripText.setText(IbikeApplication.getString("unit_km_pr_trip"));
+        this.hoursText.setText(IbikeApplication.getString("unit_h_long"));
 
-        this.activityText.setText(IbikeApplication.getString("tracking_activity").toUpperCase());
-        this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase());
+        this.activityText.setText(IbikeApplication.getString("stats_description"));
 
-        this.activityText.setText(IbikeApplication.getString("stats_description").toUpperCase());
         // Get the timestamp of the first recorded TrackLocation
         Realm realm = Realm.getInstance(this);
         RealmResults<TrackLocation> results  = realm.allObjects(TrackLocation.class);
@@ -136,7 +134,7 @@ public class TrackingActivity extends Activity {
         try {
             Date firstActivity = results.first().getTimestamp();
             String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(firstActivity);
-            this.sinceText.setText(IbikeApplication.getString("Since").toUpperCase() + " " + formattedDate.toUpperCase());
+            this.sinceText.setText(IbikeApplication.getString("Since") + " " + formattedDate);
         } catch(ArrayIndexOutOfBoundsException e) {
             this.sinceText.setText("");
         }

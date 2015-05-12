@@ -40,20 +40,13 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true" android:layout_row="0" android:layout_column="0"
         android:gravity="center|center_horizontal"/>
-    <TextView
-        android:id="@+id/tracking_activity_since"
-        android:layout_below="@id/tracking_activity_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" android:layout_row="0" android:layout_column="1"
-        android:gravity="center|center_horizontal"/>
-    <GridLayout  android:rowCount="6" android:columnCount="2" android:layout_width="wrap_content"
-                 android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginBottom="20dp">
+    <GridLayout  android:rowCount="4" android:columnCount="2" android:layout_width="wrap_content"
+                 android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginBottom="10dp">
 
         <LinearLayout
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_row="1"
+                android:layout_width="100dp"
+                android:layout_row="0"
                 android:layout_column="0" android:orientation="vertical">
             <TextView
                     android:layout_width="match_parent"
@@ -61,11 +54,10 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="55.3"
                     android:id="@+id/distanceTextView"
-                    android:textSize="60dp"
+                    android:textSize="42dp"
                     android:gravity="left"
                     android:layout_marginTop="20dp"
-                    android:layout_marginRight="20dp"
-                    android:textColor="#db2023"/>
+                    />
 
             <TextView
                     android:text="KM"
@@ -74,62 +66,21 @@
         </LinearLayout>
         <LinearLayout
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_row="1"
+                android:layout_width="100dp"
+                android:layout_row="0"
                 android:layout_column="1"
                 android:orientation="vertical">
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="23.3"
-                    android:id="@+id/speedTextView"
-                    android:textSize="60dp" android:layout_marginTop="20dp"
-                    android:gravity="right" android:layout_marginLeft="20dp" android:textColor="#db2023"
-                    android:layout_marginBottom="0dp"/>
-
-            <TextView
-                    android:text="KM/T"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:gravity="end" android:id="@+id/kmtText"/>
-        </LinearLayout>
-        <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_row="2"
-                android:layout_column="0"
-                android:orientation="vertical">
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="12.4"
-                    android:id="@+id/avgPerTrackDistanceTextView"
-                    android:textSize="60dp" android:layout_marginTop="20dp" android:gravity="left"
-                    android:layout_marginRight="20dp" android:textColor="#db2023"/>
-
-            <TextView
-                    android:text="KM PR TUR"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start" android:id="@+id/kmPrTripText"/>
-        </LinearLayout>
-        <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_row="2"
-                android:layout_column="1"
-                android:orientation="vertical">
-            <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="14.3"
+                    android:text="1"
                     android:id="@+id/timeTextView"
-                    android:textSize="60dp" android:gravity="right"
+                    android:textSize="42dp"
+                    android:gravity="right"
                     android:layout_marginTop="20dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="0dp" android:textColor="#db2023"/>
+                    android:layout_marginBottom="0dp"
+                    android:layout_gravity="right"/>
 
             <TextView
                     android:text="TIMER"
@@ -137,8 +88,57 @@
                     android:layout_height="wrap_content"
                     android:gravity="end" android:id="@+id/hoursText"/>
         </LinearLayout>
+        <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_row="1"
+                android:layout_column="0"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="23.3"
+                    android:id="@+id/speedTextView"
+                    android:textSize="32dp" android:layout_marginTop="10dp"
+                    android:layout_marginBottom="0dp"/>
+
+            <TextView
+                    android:text="KM/T"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/kmtText"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_row="1"
+                android:layout_column="1"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="12.4"
+                    android:id="@+id/avgPerTrackDistanceTextView"
+                    android:textSize="32dp" android:layout_marginTop="10dp" android:gravity="right" />
+
+            <TextView
+                    android:text="KM PR TUR"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"  android:id="@+id/kmPrTripText"/>
+        </LinearLayout>
+
 
     </GridLayout>
+    <TextView
+        android:id="@+id/tracking_activity_since"
+        android:layout_below="@id/tracking_activity_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" android:layout_row="0" android:layout_column="1"
+        android:gravity="center|center_horizontal"
+        android:layout_marginBottom="10dp"/>
     <ListView
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
