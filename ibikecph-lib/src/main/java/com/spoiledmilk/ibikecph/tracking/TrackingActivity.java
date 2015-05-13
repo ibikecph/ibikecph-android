@@ -38,6 +38,10 @@ public class TrackingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
 
+        this.tripListView = (ListView) findViewById(R.id.tripListView);
+        this.tripListView.addHeaderView(this.getLayoutInflater().inflate(R.layout.track_list_header, null, false));
+
+
         this.activityText = (TextView) findViewById(R.id.tracking_activity_text);
         this.sinceText    = (TextView) findViewById(R.id.tracking_activity_since);
 
@@ -52,7 +56,6 @@ public class TrackingActivity extends Activity {
         this.kmPrTripText = (TextView) findViewById(R.id.kmPrTripText);
         this.hoursText = (TextView) findViewById(R.id.hoursText);
 
-        this.tripListView = (ListView) findViewById(R.id.tripListView);
 
         try {
             this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
