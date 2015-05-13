@@ -1,80 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="64dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="64dp">
 
-    <LinearLayout android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_weight=".7"
-                  android:orientation="vertical"
-                  android:layout_gravity="center_vertical">
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackTimeSpanView"
+              android:text="17:30 – 17:55"/>
 
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/trackTimeSpanView"
-                  android:text="17:30 – 17:55"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackGeoFromView"
+              android:text="Valby Langgade"
+              android:textColor="@color/black"
+              android:layout_below="@+id/trackTimeSpanView"/>
 
-        <RelativeLayout android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-            <TextView android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/trackGeoFromView"
-                      android:text="Valby Langgade"
-                      android:textColor="@color/black"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" til"
-                    android:id="@+id/trackToTextView"
-                    android:layout_toRightOf="@id/trackGeoFromView"/>
-        </RelativeLayout>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=" til"
+              android:id="@+id/trackToTextView"
+              android:layout_toRightOf="@id/trackGeoFromView"
+              android:layout_alignBaseline="@id/trackGeoFromView"/>
 
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/trackGeoToView"
-                  android:text="Pile Allé"
-                  android:textColor="@color/black"/>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackGeoToView"
+              android:text="Pile Allé"
+              android:textColor="@color/black"
+              android:layout_below="@id/trackGeoFromView"/>
 
-    </LinearLayout>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackDurationView"
+              android:text="0t 25m"
+              android:textColor="@android:color/black"
+              android:layout_gravity="center_horizontal"
+              android:layout_alignParentRight="true"
+              android:layout_alignBaseline="@id/trackGeoFromView"/>
 
-    <LinearLayout android:orientation="vertical"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_weight=".1"
-                  android:layout_gravity="center_vertical">
 
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/trackDurationView"
-                  android:text="25"
-                  android:textColor="@android:color/black"
-                  android:textSize="22dp"
-                  android:layout_gravity="center_horizontal"/>
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="min"
-                  android:layout_gravity="center_horizontal"/>
-    </LinearLayout>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackLengthView"
+              android:text="25"
+              android:textColor="@android:color/black"
+              android:layout_gravity="center_horizontal"
+              android:layout_alignParentRight="true"
+              android:layout_alignBaseline="@id/trackGeoToView"/>
 
-    <LinearLayout android:orientation="vertical"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_weight=".1"
-                  android:layout_gravity="center_vertical">
-
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/trackLengthView"
-                  android:text="25"
-                  android:textColor="@android:color/black"
-                  android:textSize="22dp"
-                  android:layout_gravity="center_horizontal"/>
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:id="@+id/trackLengthUnitTextView"
-                  android:text="km"
-                  android:layout_gravity="center_horizontal"/>
-    </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

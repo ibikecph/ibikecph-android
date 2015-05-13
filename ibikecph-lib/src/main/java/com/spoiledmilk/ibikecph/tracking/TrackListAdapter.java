@@ -52,9 +52,9 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
         try {
             double distance = track.getLength();
 
-            lengthView.setText( String.valueOf(((int) Math.round(distance / 1000))));
+            lengthView.setText( String.valueOf(((int) Math.round(distance / 1000))) + " km" );
         } catch(NullPointerException e) {
-            lengthView.setText("-1 m");
+            lengthView.setText("-1");
         }
 
         // SET THE TIME LABELS
@@ -90,7 +90,7 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
 
 
 
-    public static String durationToFormattedTime(double minutes) {
-        return String.format(IbikeApplication.getString("hour_minute_format"), (int)(minutes/60), (int)(minutes % 60));
+    public static String durationToFormattedTime(double seconds) {
+        return String.format(IbikeApplication.getString("hour_minute_format"), (int)(seconds/60/60), (int)(seconds % 60));
     }
 }
