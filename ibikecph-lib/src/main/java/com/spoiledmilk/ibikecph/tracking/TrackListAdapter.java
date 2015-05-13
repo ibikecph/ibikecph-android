@@ -47,8 +47,6 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
 
         // SET THE DISTANCE LABEL
         TextView lengthView = (TextView) rowView.findViewById(R.id.trackLengthView);
-        TextView trackLengthUnitTextView = (TextView) rowView.findViewById(R.id.trackLengthUnitTextView);
-
         try {
             double distance = track.getLength();
 
@@ -87,8 +85,6 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
 
         return rowView;
     }
-
-
 
     public static String durationToFormattedTime(double seconds) {
         return String.format(IbikeApplication.getString("hour_minute_format"), (int)(seconds/60/60), (int)(seconds % 60));

@@ -73,6 +73,9 @@ public class TrackingActivity extends Activity {
         Realm realm = Realm.getInstance(this);
         RealmResults<Track> tracks = realm.allObjects(Track.class);
 
+        // We want to see the newest track first
+        tracks.sort("timestamp", false);
+
         TrackListAdapter trackListAdapter = new TrackListAdapter(this, R.layout.track_list_row_view, tracks);
         this.tripListView.setAdapter(trackListAdapter);
     }
