@@ -91,6 +91,6 @@ public class TrackListAdapter extends ArrayAdapter<Track> {
 
 
     public static String durationToFormattedTime(double minutes) {
-        return ((int)(minutes/60)) + "h " + ((int)(minutes % 60)) + "m";
+        return String.format(IbikeApplication.getString("hour_minute_format"), (int)(minutes/60), (int)(minutes % 60));
     }
 }
