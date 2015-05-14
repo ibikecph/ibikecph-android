@@ -127,18 +127,32 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
         TextView headerHeader = (TextView) headerView.findViewById(R.id.dayView);
 
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date(getDayFromTimestamp(this.getItem(i).getTimestamp())));
+        long timestamp = this.getHeaderId(i);
 
-        headerHeader.setText(headerFormat.format(cal.getTime()));
+        // Don't show a header if the route was from today
+        if (timestamp != -1) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(new Date(timestamp));
+            headerHeader.setText(headerFormat.format(cal.getTime()));
 
-        return headerView;
+            return headerView;
+        } else {
+            return new View(context);
+        }
     }
 
     @Override
     public long getHeaderId(int i) {
 
-        return getDayFromTimestamp(this.getItem(i).getTimestamp());
+        // Don't show a header if the trip is for today
+        long today = getDayFromTimestamp(new Date());
+        long routeTimestamp = getDayFromTimestamp(this.getItem(i).getTimestamp());
+
+        if (today == routeTimestamp) {
+            return -1;
+        }
+
+        return routeTimestamp;
     }
 
     public long getDayFromTimestamp(Date date) {
