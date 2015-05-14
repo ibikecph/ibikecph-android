@@ -130,28 +130,26 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
         long timestamp = this.getHeaderId(i);
 
         // Don't show a header if the route was from today
-        if (timestamp != -1) {
+        long today = getDayFromTimestamp(new Date());
+        long yesterday = today - 24*60*60*1000;
+
+        if (timestamp != today && timestamp != yesterday) {
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date(timestamp));
             headerHeader.setText(headerFormat.format(cal.getTime()));
 
-            return headerView;
-        } else {
-            return new View(context);
+        } else if (timestamp == today) {
+            headerHeader.setText(IbikeApplication.getString("today"));
+        } else if (timestamp == yesterday) {
+            headerHeader.setText(IbikeApplication.getString("yesterday"));
         }
+
+        return headerView;
     }
 
     @Override
     public long getHeaderId(int i) {
-
-        // Don't show a header if the trip is for today
-        long today = getDayFromTimestamp(new Date());
         long routeTimestamp = getDayFromTimestamp(this.getItem(i).getTimestamp());
-
-        if (today == routeTimestamp) {
-            return -1;
-        }
-
         return routeTimestamp;
     }
 
