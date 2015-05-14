@@ -1,56 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="horizontal"
-              android:layout_width="match_parent"
-              android:layout_height="64dp">
 
-    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:layout_weight=".7" android:orientation="vertical" android:layout_gravity="center_vertical">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/trackTimeSpanView" android:text="17:30 – 17:55"/>
-        <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/trackGeoFromView" android:text="Halfdansgade"
-                android:textColor="@color/black"/>
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="til"
-                    android:id="@+id/trackToTextView" android:layout_toRightOf="@id/trackGeoFromView" android:layout_marginLeft="7dp"/>
-        </RelativeLayout>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/trackGeoToView" android:text="Dronning Louises Bro"
-                  android:textColor="@color/black"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:gravity="center_vertical"
+        >
 
-    </LinearLayout>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackTimeSpanView"
+              android:text="17:30 – 17:55"/>
 
-    <LinearLayout android:orientation="vertical"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_weight=".1"
-                  android:layout_gravity="center_vertical">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="time" android:id="@+id/timeLabel"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/trackDurationView"
-                  android:text="25" android:textColor="@android:color/black" android:textSize="22dp" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="min"/>
-    </LinearLayout>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackGeoFromView"
+              android:text="Valby Langgade"
+              android:textColor="@color/black"
+              android:layout_below="@+id/trackTimeSpanView"/>
 
-    <LinearLayout android:orientation="vertical"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_weight=".1"
-                  android:layout_gravity="center_vertical">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="dist" android:id="@+id/distLabel"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/trackLengthView"
-                  android:text="25" android:textColor="@android:color/black" android:textSize="22dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/trackLengthUnitTextView" android:text="km"/>
-    </LinearLayout>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=" til"
+              android:id="@+id/trackToTextView"
+              android:layout_toRightOf="@id/trackGeoFromView"
+              android:layout_alignBaseline="@id/trackGeoFromView"/>
 
-    <LinearLayout android:orientation="vertical"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_weight=".1"
-                  android:layout_gravity="center_vertical">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="speed" android:id="@+id/speedLabel"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/trackSpeedView"
-                  android:text="25" android:textColor="@android:color/black" android:textSize="22dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="km/h"/>
-    </LinearLayout>
-</LinearLayout>
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackGeoToView"
+              android:text="Pile Allé"
+              android:textColor="@color/black"
+              android:layout_below="@id/trackGeoFromView"/>
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackDurationView"
+              android:text="0t 25m"
+              android:textColor="@android:color/black"
+              android:layout_gravity="center_horizontal"
+              android:layout_alignParentRight="true"
+              android:layout_alignBaseline="@id/trackGeoFromView"/>
+
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackLengthView"
+              android:text="25"
+              android:textColor="@android:color/black"
+              android:layout_gravity="center_horizontal"
+              android:layout_alignParentRight="true"
+              android:layout_alignBaseline="@id/trackGeoToView"/>
+
+</RelativeLayout>

@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -15,6 +14,7 @@ import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,7 +29,7 @@ public class TrackingActivity extends Activity {
     private TextView speedTextView;
     private TextView timeTextView;
     private TextView trackingStatusTextView;
-    private ListView tripListView;
+    private StickyListHeadersListView tripListView;
 
     private TextView kmText, kmtText, kmPrTripText, hoursText;
 
@@ -37,6 +37,11 @@ public class TrackingActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
+
+        this.tripListView = (StickyListHeadersListView) findViewById(R.id.tripListView);
+        this.tripListView.addHeaderView(this.getLayoutInflater().inflate(R.layout.track_list_header, null, false));
+
+
 
         this.activityText = (TextView) findViewById(R.id.tracking_activity_text);
         this.sinceText    = (TextView) findViewById(R.id.tracking_activity_since);
@@ -52,7 +57,6 @@ public class TrackingActivity extends Activity {
         this.kmPrTripText = (TextView) findViewById(R.id.kmPrTripText);
         this.hoursText = (TextView) findViewById(R.id.hoursText);
 
-        this.tripListView = (ListView) findViewById(R.id.tripListView);
 
         try {
             this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
@@ -70,10 +74,7 @@ public class TrackingActivity extends Activity {
     }
 
     private void updateListOfTracks() {
-        Realm realm = Realm.getInstance(this);
-        RealmResults<Track> tracks = realm.allObjects(Track.class);
-
-        TrackListAdapter trackListAdapter = new TrackListAdapter(this, R.layout.track_list_row_view, tracks);
+        TrackListAdapter trackListAdapter = new TrackListAdapter(this);
         this.tripListView.setAdapter(trackListAdapter);
     }
 
@@ -123,6 +124,7 @@ public class TrackingActivity extends Activity {
         this.kmText.setText(IbikeApplication.getString("unit_km"));
         this.kmtText.setText(IbikeApplication.getString("unit_km_pr_h"));
         this.kmPrTripText.setText(IbikeApplication.getString("unit_km_pr_trip"));
+
         this.hoursText.setText(IbikeApplication.getString("unit_h_long"));
 
         this.activityText.setText(IbikeApplication.getString("stats_description"));
@@ -159,29 +161,33 @@ public class TrackingActivity extends Activity {
             totalSeconds += t.getDuration();
         }
 
-        distanceTextView.setText(String.format("%.1f", totalDistance/1000));
+        distanceTextView.setText(String.format("%d", Math.round(totalDistance/1000)));
 
         if (results.size() > 0 ) {
-            avgPerTrackDistanceTextView.setText(String.format("%.1f", totalDistance / 1000 / results.size()));
+            avgPerTrackDistanceTextView.setText(String.format("%d", Math.round(totalDistance / 1000 / results.size())));
         }
         else { // Can't divide by 0
-            avgPerTrackDistanceTextView.setText("0.0");
+            avgPerTrackDistanceTextView.setText("0");
         }
 
         if (totalSeconds > 0 ) {
             // The speedAggregate is in meters/sec, we multiply with 3.6 to get km/h
-            speedTextView.setText(String.format("%.1f", (totalDistance / totalSeconds) * 3.6));
+            speedTextView.setText(String.format("%d", Math.round((totalDistance / totalSeconds) * 3.6)));
         } else {
-            speedTextView.setText("0.0");
+            speedTextView.setText("0");
         }
 
-        timeTextView.setText(String.format("%.1f", totalSeconds / 3600));
+        int totalHours = (int) Math.round(totalSeconds / 3600);
+        timeTextView.setText(String.format("%d", totalHours));
+
+        if (totalHours == 1) {
+            this.hoursText.setText(IbikeApplication.getString("unit_h_long_singular"));
+        }
     }
 
     public void printDebugInfo() {
         Log.d("JC", "Current max streak: " + IbikeApplication.getSettings().getMaxStreakLength());
         Log.d("JC", "Current max length ordinal: " + IbikeApplication.getSettings().getLengthNotificationOrdinal());
-
     }
 
 }

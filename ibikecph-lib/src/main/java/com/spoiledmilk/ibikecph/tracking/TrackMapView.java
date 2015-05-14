@@ -37,6 +37,10 @@ public class TrackMapView extends Activity {
         // Get the route
         Realm realm = Realm.getInstance(this);
         RealmResults<Track> tracks = realm.allObjects(Track.class);
+
+        // We want to see the newest track first
+        tracks.sort("timestamp", false);
+
         Track track = tracks.get(track_position);
         PathOverlay path = new PathOverlay(Color.RED, 5);
 
