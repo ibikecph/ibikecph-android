@@ -137,8 +137,7 @@
 
         <activity
             android:name=".tracking.TrackingActivity"
-            android:label="@string/title_activity_tracking"
-            android:parentActivityName=".map.MapActivity" />
+            android:label="@string/title_activity_tracking"/>
         <activity
             android:name=".tracking.TrackingWelcomeActivity"
             android:label="@string/title_activity_tracking"/>
@@ -149,6 +148,14 @@
             android:name=".tracking.TrackMapView"
             android:label="@string/title_activity_track_map_view" >
         </activity>
+        
+        <receiver android:name="BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.SCREEN_OFF" />
+                <action android:name="android.intent.action.SCREEN_ON" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

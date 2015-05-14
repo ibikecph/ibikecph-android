@@ -171,6 +171,14 @@
                 android:name="com.spoiledmilk.ibikecph.tracking.TrackMapView"
                 android:label="@string/title_activity_track_map_view">
         </activity>
+
+        <receiver android:name="com.spoiledmilk.ibikecph.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.SCREEN_OFF" />
+                <action android:name="android.intent.action.SCREEN_ON" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
