@@ -46,15 +46,6 @@ public class BikeLocationService extends Service implements LocationListener {
 	public BikeLocationService( ) {
         super();
 
-		Context context = IbikeApplication.getContext();
-		this.androidLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
-		/**
-		 * Instantiate a wake lock so we can keep tracking while the phone is off. We're not acquiring it until the
-		 * user starts navigation.
-		 */
-		PowerManager pm = (PowerManager) context.getSystemService(Service.POWER_SERVICE);
-		this.wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BikeLocationService");
 
 		Log.i("JC", "BikeLocationService instantiated.");
 	}
@@ -63,6 +54,17 @@ public class BikeLocationService extends Service implements LocationListener {
 	public int onStartCommand(Intent intent, int flags, int startId) {
         instance = this;
 
+        Context context = IbikeApplication.getContext();
+        this.androidLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        /**
+         * Instantiate a wake lock so we can keep tracking while the phone is off. We're not acquiring it until the
+         * user starts navigation.
+         */
+        PowerManager pm = (PowerManager) context.getSystemService(Service.POWER_SERVICE);
+        this.wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BikeLocationService");
+
+
         if (activityRecognitionClient == null) {
             Log.d("JC", "Spawning new ActivityRecognitionClient");
 
@@ -70,7 +72,7 @@ public class BikeLocationService extends Service implements LocationListener {
             activityRecognitionClient.connect();
         }
 
-        Log.d("JC", "BikeLocationService started");
+        Log.d("JC", "BikeLocationService started.");
 		return START_STICKY;
 	}
 
