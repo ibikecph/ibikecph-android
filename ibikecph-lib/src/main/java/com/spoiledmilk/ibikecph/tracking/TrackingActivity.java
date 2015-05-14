@@ -74,7 +74,7 @@ public class TrackingActivity extends Activity {
     }
 
     private void updateListOfTracks() {
-        TrackListAdapter trackListAdapter = new TrackListAdapter(IbikeApplication.getContext());
+        TrackListAdapter trackListAdapter = new TrackListAdapter(this);
         this.tripListView.setAdapter(trackListAdapter);
     }
 

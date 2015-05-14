@@ -26,6 +26,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
 
     SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
     SimpleDateFormat headerFormat = new SimpleDateFormat(IbikeApplication.getString("track_list_date_format"));
+    Context context;
 
     public TrackListAdapter(Context context) {
         // Get all tracks from the DB
@@ -35,6 +36,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
         // We want to see the newest track first
         this.tracks.sort("timestamp", false);
 
+        this.context = context;
 
     }
 
@@ -95,7 +97,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
             public void onClick(View v) {
                 Intent i = new Intent(IbikeApplication.getContext(), TrackMapView.class);
                 i.putExtra("track_position", position);
-                convertView.getContext().startActivity(i);
+                context.startActivity(i);
             }
         });
 
