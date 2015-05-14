@@ -139,9 +139,9 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
             headerHeader.setText(headerFormat.format(cal.getTime()));
 
         } else if (timestamp == today) {
-            headerHeader.setText(IbikeApplication.getString("today"));
+            headerHeader.setText(IbikeApplication.getString("Today"));
         } else if (timestamp == yesterday) {
-            headerHeader.setText(IbikeApplication.getString("yesterday"));
+            headerHeader.setText(IbikeApplication.getString("Yesterday"));
         }
 
         return headerView;
