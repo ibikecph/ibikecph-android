@@ -153,6 +153,12 @@
                 android:label="@string/title_activity_track_map_view"
                 android:theme="@style/iBikeCPHTheme.ActionBar">
         </activity>
+
+        <receiver android:name="com.spoiledmilk.ibikecph.BootReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
