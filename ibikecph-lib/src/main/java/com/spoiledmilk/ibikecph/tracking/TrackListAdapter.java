@@ -15,6 +15,7 @@ import io.realm.RealmResults;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -24,6 +25,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
     RealmResults<Track> tracks;
 
     SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
+    SimpleDateFormat headerFormat = new SimpleDateFormat(IbikeApplication.getString("track_list_date_format"));
 
     public TrackListAdapter(Context context) {
         // Get all tracks from the DB
@@ -120,11 +122,36 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
         LayoutInflater inflater = (LayoutInflater) IbikeApplication.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View headerView = inflater.inflate(R.layout.track_list_row_header_view, parent, false);
 
+        TextView headerHeader = (TextView) headerView.findViewById(R.id.dayView);
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date(getDayFromTimestamp(this.getItem(i).getTimestamp())));
+
+        headerHeader.setText(headerFormat.format(cal.getTime()));
+
         return headerView;
     }
 
     @Override
     public long getHeaderId(int i) {
-        return 0;
+
+        return getDayFromTimestamp(this.getItem(i).getTimestamp());
+    }
+
+    public long getDayFromTimestamp(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return cal.getTime().getTime();
     }
 }
