@@ -18,13 +18,13 @@
     </style>
 
     <style name="CykelsuperstierTheme" parent="@android:style/Theme.Holo.Light.NoActionBar">
-        <item name="android:background">@color/white</item>
+        <!--        <item name="android:background">@color/white</item>-->
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="CykelsuperstierTheme.ActionBar" parent="@android:style/Theme.Holo.Light">
-        <item name="android:background">@color/white</item>
+        <!--        <item name="android:background">@color/white</item>-->
         <item name="android:windowFullscreen">false</item>
         <item name="android:actionBarStyle">@style/CPActionBar</item>
     </style>

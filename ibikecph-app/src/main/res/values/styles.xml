@@ -14,13 +14,13 @@
 
     <!-- Application theme. -->
     <style name="iBikeCPHTheme" parent="@android:style/Theme.Holo.Light.NoActionBar">
-        <item name="android:background">@color/white</item>
+        <!--        <item name="android:background">@color/white</item>-->
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="iBikeCPHTheme.ActionBar" parent="@android:style/Theme.Holo.Light">
-        <item name="android:background">@color/white</item>
+<!--        <item name="android:background">@color/white</item>-->
         <item name="android:windowFullscreen">false</item>
         <item name="android:actionBarStyle">@style/IBCActionBar</item>
     </style>
