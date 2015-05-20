@@ -127,13 +127,12 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
         // Check if the connection failed because of Google Play Services being too old
         if (connectionResult.getErrorCode() == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
             showPlayServiceVersionDialog();
-
-            disableTracking();
         }
+
+        disableTracking();
     }
 
     public static void showPlayServiceVersionDialog() {
-
         //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gms"));
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gms&hl=en"));
         PendingIntent googlePlayStoreIntent = PendingIntent.getActivity(IbikeApplication.getContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
