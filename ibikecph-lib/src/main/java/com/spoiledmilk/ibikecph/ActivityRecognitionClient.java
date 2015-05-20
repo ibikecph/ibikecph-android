@@ -127,6 +127,8 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
         // Check if the connection failed because of Google Play Services being too old
         if (connectionResult.getErrorCode() == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
             showPlayServiceVersionDialog();
+
+            disableTracking();
         }
     }
 
@@ -143,6 +145,11 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
 
         NotificationManager notificationManager = (NotificationManager) IbikeApplication.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(3, builder.build());
+    }
+
+    public void disableTracking() {
+        this.releaseActivityUpdates();
+        IbikeApplication.getSettings().setTrackingEnabled(false);
     }
 
     /**
