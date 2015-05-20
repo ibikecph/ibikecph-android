@@ -1,7 +1,11 @@
 package com.spoiledmilk.ibikecph;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
@@ -120,7 +124,25 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
         // http://developer.android.com/reference/com/google/android/gms/common/ConnectionResult.html
         Log.d("JC", "Failed to connect to the Google API: "+connectionResult.toString());
 
-        // TODO: Disable tracking and let the user know.
+        // Check if the connection failed because of Google Play Services being too old
+        if (connectionResult.getErrorCode() == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
+            showPlayServiceVersionDialog();
+        }
+    }
+
+    public static void showPlayServiceVersionDialog() {
+
+        //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gms"));
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gms&hl=en"));
+        PendingIntent googlePlayStoreIntent = PendingIntent.getActivity(IbikeApplication.getContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification.Builder  builder = new Notification.Builder(IbikeApplication.getContext());
+        builder.setContentText(IbikeApplication.getString("play_services_version_error")).setContentTitle(IbikeApplication.getAppName());
+        builder.setContentIntent(googlePlayStoreIntent);
+        builder.setSmallIcon(R.drawable.logo);
+
+        NotificationManager notificationManager = (NotificationManager) IbikeApplication.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(3, builder.build());
     }
 
     /**
