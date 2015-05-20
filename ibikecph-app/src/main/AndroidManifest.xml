@@ -65,16 +65,16 @@
             android:alwaysRetainTaskState="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/iBikeCPHTheme"/>
+            android:theme="@style/iBikeCPHTheme.ActionBar"/>
         <activity
             android:name="com.spoiledmilk.ibikecph.navigation.SMRouteNavigationActivity"
             android:alwaysRetainTaskState="true"
             android:screenOrientation="portrait"
-            android:theme="@style/iBikeCPHTheme"/>
+            android:theme="@style/iBikeCPHTheme.ActionBar"/>
         <activity
             android:name="com.spoiledmilk.ibikecph.AboutActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/iBikeCPHTheme"/>
+            android:theme="@style/iBikeCPHTheme.ActionBar"/>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
             android:screenOrientation="portrait"
