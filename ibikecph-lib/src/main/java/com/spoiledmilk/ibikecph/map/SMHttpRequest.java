@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.Handler;
 import android.os.Message;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -221,25 +222,6 @@ public class SMHttpRequest {
         }
     }
 
-    /*
-    public void findNearestPoint(final IGeoPoint loc, final SMHttpRequestListener listener) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String url = String.format(Locale.US, "%s/nearest?loc=%.6f,%.6f", Config.OSRM_SERVER, loc.getLatitudeE6() / (float) 1E6,
-                        loc.getLongitudeE6() / (float) 1E6);
-                JsonNode response = HttpUtils.get(url);
-                Location loc = null;
-                if (response != null && response.path("mapped_coordinate").get(0) != null && response.path("mapped_coordinate").get(1) != null) {
-                    LOG.d("response: " + response.toString());
-                    loc = Util.locationFromCoordinates(response.path("mapped_coordinate").get(0).asDouble(), response.path("mapped_coordinate")
-                            .get(1).asDouble());
-                }
-                sendMsg(REQUEST_FIND_NEAREST_LOC, (Object) loc, listener);
-            }
-        }).start();
-    }
-*/
     public void findPlacesForLocation(final Location loc, final SMHttpRequestListener listener) {
         new Thread(new Runnable() {
             @Override
@@ -264,6 +246,13 @@ public class SMHttpRequest {
                 sendMsg(REQUEST_FIND_PLACES_FOR_LOC, a, listener);
             }
         }).start();
+    }
+
+    public void findPlacesForLocation(final TrackLocation loc, final SMHttpRequestListener listener) {
+        Location lloc = new Location("SMHttpRequest");
+        lloc.setLatitude(loc.getLatitude());
+        lloc.setLongitude(loc.getLongitude());
+        findPlacesForLocation(lloc, listener);
     }
 
     public void sendMsg(int what, Object response, SMHttpRequestListener listener) {
