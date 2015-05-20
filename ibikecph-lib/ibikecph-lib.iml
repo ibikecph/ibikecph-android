@@ -86,6 +86,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 17 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="material-menu-1.5.3" level="project" />
     <orderEntry type="library" exported="" name="play-services-location-6.5.87" level="project" />
     <orderEntry type="library" exported="" name="okio-1.2.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-maps-6.5.87" level="project" />

@@ -11,6 +11,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:6.5.87'
     compile 'io.realm:realm-android:0.78.0'
     compile 'se.emilsjolander:stickylistheaders:2.6.0'
+    compile 'com.balysv.materialmenu:material-menu:1.5.3'
     compile ('com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.2@aar') {
         transitive=true
     }

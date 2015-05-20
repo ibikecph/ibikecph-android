@@ -5,14 +5,13 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.map;
 
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.UpdateManager;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,24 +19,16 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
+import android.widget.*;
+import com.balysv.materialmenu.MaterialMenuDrawable;
+import com.balysv.materialmenu.MaterialMenuIcon;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.analytics.tracking.android.EasyTracker;
-import com.spoiledmilk.ibikecph.IbikeApplication;
-import com.spoiledmilk.ibikecph.LeftMenu;
-import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.SplashActivity;
-import com.spoiledmilk.ibikecph.iLanguageListener;
+import com.spoiledmilk.ibikecph.*;
 import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
 import com.spoiledmilk.ibikecph.favorites.EditFavoriteFragment;
 import com.spoiledmilk.ibikecph.favorites.FavoritesActivity;
@@ -54,6 +45,8 @@ import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
 
 /**
  * The main map view.
@@ -81,7 +74,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     ProgressBar progressBar;
     Button btnStart;
     ImageButton btnTrack;
-    ImageView imgSwiper;
     RelativeLayout rootLayout;
     protected View mapDisabledView;
     FrameLayout mapContainer;
@@ -96,6 +88,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     FavoritesData favoritesData = null;
     boolean addFavEnabled = true;
     private DrawerLayout drawerLayout;
+    private MaterialMenuIcon materialMenu;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -174,15 +167,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         FrameLayout.LayoutParams rootParams = new FrameLayout.LayoutParams((int) (9 * Util.getScreenWidth() / 5),
                 FrameLayout.LayoutParams.MATCH_PARENT);
         rootLayout.setLayoutParams(rootParams);
-        
-        // Make the I BIKE CPH logo open the Navigation Drawer.
-        imgSwiper = (ImageView) findViewById(R.id.imgSwiper);
-        imgSwiper.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				drawerLayout.openDrawer(Gravity.START);
-			}
-		});
 
         btnSearch = (ImageButton) findViewById(R.id.btnSearch);
         btnSearch.setOnClickListener(new OnClickListener() {
@@ -215,9 +199,55 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         fragmentTransaction.commit();
         findViewById(R.id.rootLayout).invalidate();
 
+
+        // Check for crashes with Hockey
         if (Config.HOCKEY_UPDATES_ENABLED) {
             UpdateManager.register(this, Config.HOCKEY_APP_ID);
         }
+
+        // Make sure the app icon is clickable
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayShowCustomEnabled(true);
+
+        materialMenu = new MaterialMenuIcon(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
+        materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
+
+        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {}
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+            }
+        });
+
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Toggle the drawer when tapping the app icon.
+        if (item.getItemId() == android.R.id.home) {
+            if (drawerLayout.isDrawerOpen(Gravity.START)) {
+                drawerLayout.closeDrawer(Gravity.START);
+                materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
+            } else {
+                drawerLayout.openDrawer(Gravity.START);
+                materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
+
+            }
+        }
+
+        return true;
     }
 
     protected Class<?> getSearchActivity() {
@@ -579,6 +609,18 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         }
         */
         super.onPause();
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        materialMenu.syncState(savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        materialMenu.onSaveInstanceState(outState);
     }
 
 }
