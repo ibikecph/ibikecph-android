@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class TrackingManager implements LocationListener  {
     private static final boolean DEBUG = false;
-    private static final int MAX_INACCURACY = 25;
+    private static final int MAX_INACCURACY = 20;
 
     private static TrackingManager instance = null;
     private boolean isTracking = false;
