@@ -19,6 +19,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -77,7 +78,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     RelativeLayout rootLayout;
     protected View mapDisabledView;
     FrameLayout mapContainer;
-    ImageButton btnSearch;
     ImageButton btnSaveFavorite;
     SMHttpRequest.Address address;
     Location currentLocation;
@@ -168,18 +168,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
                 FrameLayout.LayoutParams.MATCH_PARENT);
         rootLayout.setLayoutParams(rootParams);
 
-        btnSearch = (ImageButton) findViewById(R.id.btnSearch);
-        btnSearch.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                Intent i = new Intent(MapActivity.this, getSearchActivity());
-                startActivityForResult(i, 2);
-                overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
-            }
-
-        });
-        
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth(), RelativeLayout.LayoutParams.MATCH_PARENT);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
@@ -235,8 +223,15 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     }
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        int id = item.getItemId();
+
+        if (id == R.id.ab_search) {
+            Intent i = new Intent(MapActivity.this, getSearchActivity());
+            startActivityForResult(i, 2);
+            overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
+        }
         // Toggle the drawer when tapping the app icon.
-        if (item.getItemId() == android.R.id.home) {
+        else if (id == android.R.id.home) {
             if (drawerLayout.isDrawerOpen(Gravity.START)) {
                 drawerLayout.closeDrawer(Gravity.START);
                 materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
@@ -247,7 +242,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             }
         }
 
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     protected Class<?> getSearchActivity() {
@@ -623,4 +618,9 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         materialMenu.onSaveInstanceState(outState);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_map_activity, menu);
+        return true;
+    }
 }
