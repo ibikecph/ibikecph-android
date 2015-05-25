@@ -164,7 +164,7 @@ public class TrackingActivity extends Activity {
         distanceTextView.setText(String.format("%d", Math.round(totalDistance/1000)));
 
         if (results.size() > 0 ) {
-            avgPerTrackDistanceTextView.setText(String.format("%d", Math.round(totalDistance / 1000 / results.size())));
+            avgPerTrackDistanceTextView.setText(String.format("%.1f", (totalDistance / 1000 / results.size())));
         }
         else { // Can't divide by 0
             avgPerTrackDistanceTextView.setText("0");
@@ -172,7 +172,7 @@ public class TrackingActivity extends Activity {
 
         if (totalSeconds > 0 ) {
             // The speedAggregate is in meters/sec, we multiply with 3.6 to get km/h
-            speedTextView.setText(String.format("%d", Math.round((totalDistance / totalSeconds) * 3.6)));
+            speedTextView.setText(String.format("%.1f", (totalDistance / totalSeconds) * 3.6));
         } else {
             speedTextView.setText("0");
         }

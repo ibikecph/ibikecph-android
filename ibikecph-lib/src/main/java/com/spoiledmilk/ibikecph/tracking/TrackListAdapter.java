@@ -79,7 +79,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
         try {
             double distance = track.getLength();
 
-            lengthView.setText( String.valueOf(((int) Math.round(distance / 1000))) + " km" );
+            lengthView.setText( String.format("%.1f km", (distance / 1000)));
         } catch(NullPointerException e) {
             lengthView.setText("-1");
         }
