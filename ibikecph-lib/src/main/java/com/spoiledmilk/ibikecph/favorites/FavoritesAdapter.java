@@ -5,12 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.favorites;
 
-import java.util.ArrayList;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
@@ -27,6 +20,11 @@ import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.LOG;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
 
@@ -54,8 +52,7 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
 		if (name.length() > 19)
 			name = name.substring(0, 19) + "...";
 		tv.setText(name);
-		tv.setTypeface(IbikeApplication.getNormalFont());
-		tv.setTextColor(getTextColor());
+
 		ImageButton btnEdit = (ImageButton) view.findViewById(R.id.btnEdit);
 		final FavoritesData fd = getItem(position);
 		tv.setPadding(getPadding(fd), 0, 0, 0);
@@ -134,10 +131,6 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
 
 	protected int getListRowLayout() {
 		return R.layout.list_row_favorite;
-	}
-
-	protected int getTextColor() {
-		return getContext().getResources().getColor(R.color.TextLightGrey);
 	}
 
 	protected int getPadding(FavoritesData fd) {
