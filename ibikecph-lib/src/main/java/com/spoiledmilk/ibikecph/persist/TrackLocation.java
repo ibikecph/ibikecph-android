@@ -1,12 +1,9 @@
 package com.spoiledmilk.ibikecph.persist;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import android.location.Location;
-import io.realm.Realm;
 import io.realm.RealmObject;
+
+import java.util.Date;
 
 public class TrackLocation extends RealmObject {
 
@@ -16,6 +13,7 @@ public class TrackLocation extends RealmObject {
     private double altitude;
     private double horizontalAccuracy;
     private double verticalAccuracy;
+    private int activityOrdinal;
 
     public Date getTimestamp() {
         return timestamp;
@@ -63,6 +61,14 @@ public class TrackLocation extends RealmObject {
 
     public void setVerticalAccuracy(double verticalAccuracy) {
         this.verticalAccuracy = verticalAccuracy;
+    }
+
+    public int getActivityOrdinal() {
+        return activityOrdinal;
+    }
+
+    public void setActivityOrdinal(int activityOrdinal) {
+        this.activityOrdinal = activityOrdinal;
     }
 
     public double getDistanceTo(TrackLocation thereTrackLocation) {

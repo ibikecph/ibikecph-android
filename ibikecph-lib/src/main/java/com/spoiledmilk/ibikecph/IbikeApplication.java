@@ -18,6 +18,7 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
 import com.spoiledmilk.ibikecph.tracking.MilestoneManager;
+import com.spoiledmilk.ibikecph.tracking.TrackHelper;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
@@ -56,6 +57,9 @@ public class IbikeApplication extends Application {
 
         // Register a weekly notification
         registerWeeklyNotification();
+
+        // Ensure all tracks have been geocoded
+        TrackHelper.ensureAllTracksGeocoded();
     }
 
 

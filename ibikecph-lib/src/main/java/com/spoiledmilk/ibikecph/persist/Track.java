@@ -14,6 +14,8 @@ public class Track extends RealmObject {
     private double duration;
     private Date timestamp;
 
+    private boolean hasBeenGeocoded;
+
     public Date getTimestamp() {
         return timestamp;
     }
@@ -61,5 +63,13 @@ public class Track extends RealmObject {
 
     public void setDuration(double duration) {
         this.duration = duration;
+    }
+
+    public boolean getHasBeenGeocoded() {
+        return hasBeenGeocoded;
+    }
+
+    public void setHasBeenGeocoded(boolean hasBeenGeocoded) {
+        this.hasBeenGeocoded = hasBeenGeocoded;
     }
 }
