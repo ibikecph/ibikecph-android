@@ -149,7 +149,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     	this.menuItems = new ArrayList<LeftMenuItem>();
         
         menuItems.add(new LeftMenuItem("favorites", R.drawable.ic_menu_favorite, "spawnFavoritesListActivity"));
-        menuItems.add(new LeftMenuItem("voice", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
+        //menuItems.add(new LeftMenuItem("voice", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
         // Kortlag
         // Rutetype
         // Fartguide

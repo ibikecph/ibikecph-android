@@ -42,7 +42,8 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 
         // Find the ID of the "voice" menu item. Append the overlays after that.
         for (int i = 0; i<this.menuItems.size(); i++) {
-            if (this.menuItems.get(i).getLabelID().equals("voice")) {
+            //if (this.menuItems.get(i).getLabelID().equals("voice")) {
+            if (this.menuItems.get(i).getLabelID().equals("favorites")) {
                 this.menuItems.add(i+1, new LeftMenuItem("map_overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
             }
 
