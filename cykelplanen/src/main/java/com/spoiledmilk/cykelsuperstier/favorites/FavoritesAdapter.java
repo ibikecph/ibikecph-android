@@ -5,13 +5,12 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.cykelsuperstier.favorites;
 
-import java.util.ArrayList;
-
 import android.content.Context;
-
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+
+import java.util.ArrayList;
 
 public class FavoritesAdapter extends
 		com.spoiledmilk.ibikecph.favorites.FavoritesAdapter {
@@ -36,12 +35,6 @@ public class FavoritesAdapter extends
 	@Override
 	protected int getListRowLayout() {
 		return R.layout.list_row_favorite;
-	}
-
-	@Override
-	protected int getTextColor() {
-		return getContext().getResources().getColor(
-				R.color.TextFavoritesDarkGrey);
 	}
 
 	@Override
