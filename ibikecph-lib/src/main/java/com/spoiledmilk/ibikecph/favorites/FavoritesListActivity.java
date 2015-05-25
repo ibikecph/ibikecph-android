@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListAdapter;
+import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
@@ -32,6 +33,7 @@ public class FavoritesListActivity extends Activity {
 	private FavoritesAdapter adapter;
 	protected ArrayList<FavoritesData> favorites = new ArrayList<FavoritesData>();
 	private tFetchFavorites fetchFavorites;
+    private TextView textLogin;
 
 	public boolean favoritesEnabled = true;
 	private AlertDialog dialog;
@@ -40,6 +42,9 @@ public class FavoritesListActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_favorites_list);
+
+        TextView textLogin = (TextView) findViewById(R.id.textLogin);
+        textLogin.setText(IbikeApplication.getString("favorites_login"));
 
         try {
             this.getActionBar().setTitle(IbikeApplication.getString("favorites"));
@@ -64,6 +69,8 @@ public class FavoritesListActivity extends Activity {
 			
 
 		});
+
+
 		/*
 		favoritesList.setOnItemLongClickListener( new OnItemLongClickListener() {
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
@@ -75,9 +82,15 @@ public class FavoritesListActivity extends Activity {
 			}
 		});
 		*/
-		
-		registerForContextMenu(favoritesList);
-		reloadFavorites();
+
+        if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
+            registerForContextMenu(favoritesList);
+            reloadFavorites();
+
+            favoritesList.setVisibility(View.VISIBLE);
+        } else {
+            textLogin.setVisibility(View.VISIBLE);
+        }
 	}
 
 	public void onResume(View v) {
@@ -135,8 +148,11 @@ public class FavoritesListActivity extends Activity {
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.favorites_list, menu);
+        // Only show the Add button if the user is logged in
+        if (IbikeApplication.isFacebookLogin() || IbikeApplication.isUserLogedIn()) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.favorites_list, menu);
+        }
 		return true;
 	}
 

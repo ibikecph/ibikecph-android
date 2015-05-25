@@ -25,11 +25,17 @@
         <item name="android:windowFullscreen">false</item>
         <item name="android:actionBarStyle">@style/IBCActionBar</item>
         <item name="android:displayOptions">showTitle</item>
+        <item name="android:itemTextAppearance">@style/IBCTextAppearance</item>
     </style>
 
     <style name="IBCActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/IBCActionBar</item>
-        <item name="android:displayOptions">showTitle</item>ś
+        <item name="android:displayOptions">showTitle</item>
+        <item name="android:itemTextAppearance">@style/IBCTextAppearance</item>
+    </style>
+
+    <style name="IBCTextAppearance">
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
 </resources>

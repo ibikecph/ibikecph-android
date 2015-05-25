@@ -1,8 +1,25 @@
-<com.spoiledmilk.ibikecph.controls.SortableListView
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/favoritesList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
-</com.spoiledmilk.ibikecph.controls.SortableListView>
+        >
+    <com.spoiledmilk.ibikecph.controls.SortableListView
+            android:id="@+id/favoritesList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:visibility="gone"
+            >
+    </com.spoiledmilk.ibikecph.controls.SortableListView>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="text_favorites"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:visibility="gone"
+            android:id="@+id/textLogin"
+            />
+</RelativeLayout>
