@@ -343,7 +343,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             if (dialog == null) {
                 String message = IbikeApplication.getString("error_route_not_found");
                 if (!SMLocationManager.getInstance().hasValidLocation())
-                    message = IbikeApplication.getString("error_no_gps");
+                    message = IbikeApplication.getString("error_no_gps_location");
                 builder = new AlertDialog.Builder(this);
                 builder.setMessage(message).setPositiveButton(IbikeApplication.getString("OK"), new DialogInterface.OnClickListener() {
                     @Override

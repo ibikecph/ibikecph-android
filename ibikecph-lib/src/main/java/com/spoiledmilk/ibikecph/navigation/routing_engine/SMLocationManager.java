@@ -61,9 +61,11 @@ public class SMLocationManager implements LocationListener {
         locationServicesEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         Log.i("JC", "LocationServicesEnabled = " + locationServicesEnabled);
-        
+
+        IbikeApplication.getService().addGPSListener(this);
+
         if (locationServicesEnabled) {
-            //IbikeApplication.getService().addGPSListener(this);
+
 
             Intent subscriptionIntent = new Intent(getContext(), BikeLocationService.class);
             getContext().startService(subscriptionIntent);
