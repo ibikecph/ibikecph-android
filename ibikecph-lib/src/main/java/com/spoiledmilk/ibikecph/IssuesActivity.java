@@ -5,11 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph;
 
-import java.util.ArrayList;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,13 +16,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.LOG;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * The activity for reporting issues with a route.
@@ -106,11 +104,6 @@ public class IssuesActivity extends Activity {
 		textOption6.setTypeface(IbikeApplication.getNormalFont());
 		btnSend.setTypeface(IbikeApplication.getBoldFont());
 		btnSend.setText(IbikeApplication.getString("report_send"));
-	}
-
-	public void onBtnCloseClick(View v) {
-		finish();
-		overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 	}
 	
 	// TODO: Don't repeat yourself /jc 
