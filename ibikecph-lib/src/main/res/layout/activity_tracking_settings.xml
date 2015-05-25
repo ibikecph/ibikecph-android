@@ -11,6 +11,9 @@
             android:layout_width="fill_parent"
             android:layout_height="64dp" android:paddingStart="8dp" android:paddingEnd="8dp">
 
+        <ImageView android:layout_width="wrap_content" android:layout_height="fill_parent"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_menu_tracking"/>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -28,6 +31,9 @@
 
     <LinearLayout android:layout_width="fill_parent" android:layout_height="64dp" android:paddingEnd="8dp"
                   android:paddingStart="8dp">
+        <ImageView android:layout_width="wrap_content" android:layout_height="fill_parent"
+                   android:layout_gravity="center_vertical"
+                   android:src="@drawable/tracking_settings_milestones"/>
         <TextView
                 android:id="@+id/notify_milestone_text"
                 android:layout_width="wrap_content"
@@ -46,6 +52,9 @@
 
     <LinearLayout android:layout_width="fill_parent" android:layout_height="64dp" android:paddingEnd="8dp"
                   android:paddingStart="8dp">
+        <ImageView android:layout_width="wrap_content" android:layout_height="fill_parent"
+                   android:layout_gravity="center_vertical"
+                   android:src="@drawable/tracking_settings_weekly"/>
         <TextView
                 android:id="@+id/notify_weekly_text"
                 android:layout_width="wrap_content"
