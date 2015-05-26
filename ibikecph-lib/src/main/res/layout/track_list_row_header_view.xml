@@ -3,7 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="28dp"
-                android:background="#d8d8d8"
+                android:background="#f7f7f7"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
         >

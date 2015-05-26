@@ -1,38 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:gravity="center_vertical"
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:gravity="center_vertical"
         >
 
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:id="@+id/trackTimeSpanView"
-              android:text="17:30 – 17:55"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/trackTimeSpanView"
+            android:text="17:30 – 17:55"
+            android:layout_toRightOf="@+id/fromToArrow"/>
 
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:id="@+id/trackGeoFromView"
-              android:text="Valby Langgade"
-              android:textColor="@color/black"
-              android:layout_below="@+id/trackTimeSpanView"/>
-
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text=" til"
-              android:id="@+id/trackToTextView"
-              android:layout_toRightOf="@id/trackGeoFromView"
-              android:layout_alignBaseline="@id/trackGeoFromView"/>
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/tracking_from_to"
+            android:layout_below="@+id/trackTimeSpanView"
+            android:id="@+id/fromToArrow"
+            android:layout_marginTop="3dp"
+            />
 
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:id="@+id/trackGeoToView"
               android:text="Pile Allé"
               android:textColor="@color/black"
-              android:layout_below="@id/trackGeoFromView"/>
+              android:layout_toRightOf="@+id/fromToArrow"
+              android:layout_below="@+id/trackTimeSpanView"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/trackGeoFromView"
+            android:text="Valby Langgade"
+            android:textColor="@color/black"
+            android:layout_below="@id/trackGeoToView"
+            android:layout_toRightOf="@+id/fromToArrow"/>
+
+    <!--
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text=" til"
+              android:id="@+id/trackToTextView"
+              android:layout_toRightOf="@id/trackGeoFromView"
+              android:layout_alignBaseline="@id/trackGeoFromView"/>
+    -->
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackLengthView"
+              android:text="25"
+              android:textColor="@android:color/black"
+              android:layout_gravity="center_horizontal"
+              android:layout_alignParentRight="true"
+              android:layout_alignBaseline="@id/trackGeoFromView"/>
 
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
@@ -41,16 +66,5 @@
               android:textColor="@android:color/black"
               android:layout_gravity="center_horizontal"
               android:layout_alignParentRight="true"
-              android:layout_alignBaseline="@id/trackGeoFromView"/>
-
-
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:id="@+id/trackLengthView"
-              android:text="25"
-              android:textColor="@android:color/black"
-              android:layout_gravity="center_horizontal"
-              android:layout_alignParentRight="true"
               android:layout_alignBaseline="@id/trackGeoToView"/>
-
 </RelativeLayout>

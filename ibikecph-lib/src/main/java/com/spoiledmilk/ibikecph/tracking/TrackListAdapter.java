@@ -109,9 +109,10 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
         geoToLabel.setText(track.getEnd());
 
         // SET THE TEENYWEENY "TO" LABEL
+        /*
         TextView trackToTextView = (TextView) rowView.findViewById(R.id.trackToTextView);
         trackToTextView.setText(" " + IbikeApplication.getString("to"));
-
+        */
         return rowView;
     }
 
