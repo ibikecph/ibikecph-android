@@ -9,13 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <com.mapbox.mapboxsdk.views.MapView
+        <com.spoiledmilk.ibikecph.map.IBCMap
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:id="@+id/mapView"
-                mapbox:mapid="jchillerup.kmm460oi"
-                mapbox:accessToken="pk.eyJ1IjoiamNoaWxsZXJ1cCIsImEiOiJGdWJlbm5jIn0.TQ8sZjjUMnUCZVqZLPDPfA">
-        </com.mapbox.mapboxsdk.views.MapView>
+                android:id="@+id/mapView">
+        </com.spoiledmilk.ibikecph.map.IBCMap>
 
     </FrameLayout>
 
