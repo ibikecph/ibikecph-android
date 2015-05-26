@@ -5,12 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.search;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
@@ -23,15 +17,15 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
-import com.spoiledmilk.ibikecph.map.MapFragmentBase;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+
+import java.util.*;
 
 public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 
@@ -192,7 +186,7 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			return;
 		}
 		Location loc = SMLocationManager.getInstance().hasValidLocation() ? SMLocationManager.getInstance().getLastValidLocation()
-				: MapFragmentBase.locCopenhagen;
+				: Util.COPENHAGEN;
 		splitString(searchStr);
 		if (searchStr.length() != stringLength) {
 			clear();
@@ -229,7 +223,7 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			return;
 		}
 		Location loc = SMLocationManager.getInstance().hasValidLocation() ? SMLocationManager.getInstance().getLastValidLocation()
-				: MapFragmentBase.locCopenhagen;
+				: Util.COPENHAGEN;
 		boolean isForPreviousCleared = false, isKMSPreviousCleared = false;
 		splitString(searchStr);
 		if (searchStr.length() != stringLength) {

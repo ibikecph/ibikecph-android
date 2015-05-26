@@ -9,7 +9,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -19,19 +18,18 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.*;
-import android.view.View.OnClickListener;
-import android.view.animation.TranslateAnimation;
-import android.widget.*;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.analytics.tracking.android.EasyTracker;
-import com.spoiledmilk.ibikecph.*;
-import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
-import com.spoiledmilk.ibikecph.favorites.EditFavoriteFragment;
-import com.spoiledmilk.ibikecph.favorites.FavoritesActivity;
+import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.LeftMenu;
+import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest.RouteInfo;
@@ -40,7 +38,6 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.search.HistoryData;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
-import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -57,6 +54,7 @@ import net.hockeyapp.android.UpdateManager;
  */
 @SuppressLint("NewApi")
 public class MapActivity extends FragmentActivity implements SMHttpRequestListener, iLanguageListener {
+    public static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
     protected static final int SLIDE_THRESHOLD = 40;
     public static int RESULT_RETURN_FROM_NAVIGATION = 105;
@@ -100,7 +98,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         mapFragment = new SMMapFragment();
         FragmentManager fm = this.getFragmentManager();
         fm.beginTransaction().add(R.id.map_container, mapFragment).commit();
-
         mapContainer = (FrameLayout) findViewById(R.id.map_container);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         pinInfoLayout = (RelativeLayout) findViewById(R.id.pinInfoLayout);
@@ -143,40 +140,21 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
                             btnSaveFavorite.setImageResource(R.drawable.drop_pin_selector);
                         }
 
-                        isSaveFaveoriteEnabled = !isSaveFaveoriteEnabled;
-                    } else {
-                        launchLoginDialog();
-                    }
-                } catch (Exception e) {
+        // We want the hamburger in the ActionBar
+        materialMenu = new MaterialMenuIcon(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
 
-                }
-            }
+        // LeftMenu
+        initLeftMenu(savedInstanceState);
 
-        });
-        btnTrack = (ImageButton) findViewById(R.id.btnTrack);
-        btnTrack.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!mapFragment.getTrackingMode()) {
-                    startTrackingUser();
-                }
-            }
-        });
-        
-        rootLayout = (RelativeLayout) findViewById(R.id.rootLayout);
-        FrameLayout.LayoutParams rootParams = new FrameLayout.LayoutParams((int) (9 * Util.getScreenWidth() / 5),
-                FrameLayout.LayoutParams.MATCH_PARENT);
-        rootLayout.setLayoutParams(rootParams);
+    }
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth(), RelativeLayout.LayoutParams.MATCH_PARENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        findViewById(R.id.parent_container).setLayoutParams(params);
-        params = new RelativeLayout.LayoutParams((int) Util.getScreenWidth(), RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        findViewById(R.id.pinInfoLayout).setLayoutParams(params);
+    /**
+     * Initializes the LeftMenu
+     * @param savedInstanceState
+     */
+    private void initLeftMenu(final Bundle savedInstanceState) {
         leftMenu = getLeftMenu();
-        
+
         // Add the menu to the Navigation Drawer
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (savedInstanceState == null) {
@@ -185,7 +163,8 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             fragmentTransaction.replace(R.id.leftContainerDrawer, leftMenu);
         }
         fragmentTransaction.commit();
-        findViewById(R.id.rootLayout).invalidate();
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    }
 
 
         // Check for crashes with Hockey
@@ -220,13 +199,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             }
         });
 
-        // Init the infoPane
-        final LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout infoPaneLayout = (FrameLayout) findViewById(R.id.infoPaneContainer);
-        TrackingInfoPaneFragment trackingInfoPaneFragment = new TrackingInfoPaneFragment();
-        trackingInfoPaneFragment.onCreateView(inflater, infoPaneLayout, null);
-
-        mapFragment.infoLayoutHeight = pinInfoLayout.getMeasuredHeight();
     }
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -245,6 +217,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             } else {
                 drawerLayout.openDrawer(Gravity.START);
                 materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
+
             }
         }
 
@@ -294,7 +267,8 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         LOG.d("Map activity onResume");
         btnStart.setText(IbikeApplication.getString("start_route"));
         btnStart.setTypeface(IbikeApplication.getBoldFont());
-
+        pinInfoLayout.setClickable(true);
+        pinInfoLayout.measure(0, 0);
         mapFragment.infoLayoutHeight = pinInfoLayout.getMeasuredHeight();
         if (!IbikeApplication.isUserLogedIn()) {
             btnSaveFavorite.setImageResource(R.drawable.drop_pin_add_fav_btn_active);
@@ -313,13 +287,13 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             Util.launchNoConnectionDialog(this);
         }
         checkForCrashes();
-
         getLeftMenu().updateControls();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+
         leftMenu = getLeftMenu();
         leftMenu.updateControls();
     }
@@ -368,7 +342,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
                 RouteInfo ri = (RouteInfo) response;
                 JsonNode jsonRoot = null;
                 if (ri == null || (jsonRoot = ri.jsonRoot) == null || jsonRoot.path("status").asInt(-1) != 0 || ri.start == null || ri.end == null) {
-                    showRouteNotFoundDlg();
+                    //showRouteNotFoundDlg();
                 } else {
                     startRouting(ri.start, ri.end, ri.jsonRoot, "", "");
                 }
@@ -380,7 +354,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            mapFragment.setPinLocation(loc);
+                         //mapFragment.setPinLocation(loc);
 
                         }
                     }, 200);
@@ -388,31 +362,13 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
                 break;
             case SMHttpRequest.REQUEST_FIND_PLACES_FOR_LOC:
                 if (response != null) {
-                    address = (SMHttpRequest.Address) response;
-                    currentLocation = new Location("");
-                    currentLocation.setLatitude(address.lat);
-                    currentLocation.setLongitude(address.lon);
-                    Location curr = null;
-                    if (SMLocationManager.getInstance().hasValidLocation())
-                        curr = SMLocationManager.getInstance().getLastValidLocation();
-                    if (curr != null) {
-                        String st = "Start: (" + curr.getLatitude() + "," + curr.getLongitude() + ") End: (" + address.lat + "," + address.lon + ")";
-                        IbikeApplication.getTracker().sendEvent("Route", "Pin", st, (long) 0);
-                    }
-                    infoLine1 = address.street + " " + address.houseNumber;
-                    pinInfoLine1.setText(infoLine1.trim().equals("") ? String.format("%.6f", address.lat) + ",\n"
-                            + String.format("%.6f", address.lon) : infoLine1);
-                    destination = pinInfoLine1.getText().toString();
-                    if (!IbikeApplication.isUserLogedIn())
-                        btnSaveFavorite.setImageResource(R.drawable.drop_pin_add_fav_btn_active);
-                    else {
-                        btnSaveFavorite.setImageResource(R.drawable.drop_pin_selector);
-                        isSaveFaveoriteEnabled = true;
-                    }
+                    SMHttpRequest.Address address = (SMHttpRequest.Address) response;
+
                 }
                 break;
 
         }
+
         if (leftMenu != null) {
             leftMenu.favoritesEnabled = true;
         }
@@ -420,15 +376,18 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     }
 
     public void startRouting(Location start, Location end, JsonNode jsonRoot, String startName, String endName) {
-        Intent i = new Intent(this, getNavigationClass());
+        Intent i = new Intent(this, MapActivity.class); // FIXME: This needs to be the navigation class.
         i.putExtra("start_lat", start.getLatitude());
         i.putExtra("start_lng", start.getLongitude());
         i.putExtra("end_lat", end.getLatitude());
         i.putExtra("end_lng", end.getLongitude());
         if (jsonRoot != null)
             i.putExtra("json_root", jsonRoot.toString());
-        i.putExtra("source", source);
-        i.putExtra("destination", destination);
+
+        // TODO: These are strings
+        //i.putExtra("source", source);
+        //i.putExtra("destination", destination);
+
         if (jsonRoot != null && jsonRoot.has("route_summary")) {
             i.putExtra("start_name", jsonRoot.get("route_summary").get("start_point").asText());
             i.putExtra("end_name", jsonRoot.get("route_summary").get("end_point").asText());
@@ -437,8 +396,11 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             i.putExtra("end_name", endName);
         }
         i.putExtra("overlays", getOverlaysShown());
+
+        /*
         new DB(MapActivity.this).saveSearchHistory(new HistoryData(infoLine1, end.getLatitude(), end.getLongitude()), new HistoryData(
                 IbikeApplication.getString("current_position"), start.getLatitude(), start.getLongitude()), MapActivity.this);
+        */
         this.startActivityForResult(i, 1);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         LOG.d("route found");
@@ -471,56 +433,10 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         
-        if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(IbikeApplication.getString("account_deleted"));
-            builder.setPositiveButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
-            dialog = builder.create();
-            dialog.show();
-        } else if (resultCode == SearchActivity.RESULT_SEARCH_ROUTE) {
-            if (data != null) {
-                Bundle extras = data.getExtras();
-                Location start = Util.locationFromCoordinates(extras.getDouble("startLat"), extras.getDouble("startLng"));
-                Location endLocation = Util.locationFromCoordinates(extras.getDouble("endLat"), extras.getDouble("endLng"));
-                if (extras.containsKey("fromName"))
-                    source = extras.getString("fromName");
-                else
-                    source = IbikeApplication.getString("current_position");
-                if (extras.containsKey("toName"))
-                    destination = extras.getString("toName");
-                else
-                    destination = "";
-                new SMHttpRequest().getRoute(start, endLocation, null, MapActivity.this);
-            }
-        } else if (resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
-            try {
-                ((AddFavoriteFragment) getFragmentManager().findFragmentById(R.id.leftContainerDrawer)).onActivityResult(requestCode, resultCode,
-                        data);
-            } catch (Exception e) {
-                try {
-                    ((EditFavoriteFragment) getFragmentManager().findFragmentById(R.id.leftContainerDrawer)).onActivityResult(requestCode,
-                            resultCode, data);
-                } catch (Exception ex) {
-                }
-            }
-        } else if (resultCode == RESULT_RETURN_FROM_NAVIGATION) {
-            btnSaveFavorite.setImageResource(R.drawable.drop_pin_selector);
-            pinInfoLayout.setVisibility(View.GONE);
-            mapFragment.pinView.setVisibility(View.GONE);
-            if (mapFragment.pinB != null) {
-                mapFragment.mapView.getOverlayManager().remove(mapFragment.pinB);
-            }
-            if (data != null && data.getExtras() != null && data.getExtras().containsKey("overlaysShown")) {
-                refreshOverlays(data.getIntExtra("overlaysShown", 0));
-            }
-            
+
         // *** DANGER, WILL ROBINSON: I'm looking at the request code, not the return code from this point on. /jc ***
         // Take care of starting navigation once a favorite has been clicked in the FavoritesListActivity
-        } else if (requestCode == LeftMenu.LAUNCH_FAVORITE && resultCode == RESULT_OK){ 
+        if (requestCode == LeftMenu.LAUNCH_FAVORITE && resultCode == RESULT_OK){
         	FavoritesData fd = (FavoritesData) data.getExtras().getParcelable("ROUTE_TO");
 
         	Location start = SMLocationManager.getInstance().getLastValidLocation();
@@ -615,8 +531,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         materialMenu.syncState(savedInstanceState);
-
-        this.onResume();
     }
 
     @Override
