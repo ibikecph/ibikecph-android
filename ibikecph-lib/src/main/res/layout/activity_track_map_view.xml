@@ -12,8 +12,6 @@
             android:id="@+id/mapview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            mapbox:mapid="jchillerup.kmm460oi"
-            mapbox:accessToken="pk.eyJ1IjoiamNoaWxsZXJ1cCIsImEiOiJGdWJlbm5jIn0.TQ8sZjjUMnUCZVqZLPDPfA"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
 
