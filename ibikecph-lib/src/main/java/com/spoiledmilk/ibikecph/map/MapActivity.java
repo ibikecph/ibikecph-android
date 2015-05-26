@@ -50,14 +50,14 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
     protected LeftMenu leftMenu;
     private DrawerLayout drawerLayout;
     private MaterialMenuIcon materialMenu;
-    private IBCMap mapView;
+    private IBCMapView mapView;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.main_map_activity);
 
-        this.mapView = (IBCMap) findViewById(R.id.mapView);
+        this.mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.addGPSOverlay();
 
         // We want the hamburger in the ActionBar

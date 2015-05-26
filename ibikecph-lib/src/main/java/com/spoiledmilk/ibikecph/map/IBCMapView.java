@@ -16,25 +16,25 @@ import com.spoiledmilk.ibikecph.util.Util;
 /**
  * Created by jens on 5/26/15.
  */
-public class IBCMap extends MapView {
+public class IBCMapView extends MapView {
 
 
-    protected IBCMap(Context aContext, int tileSizePixels, MapTileLayerBase tileProvider, Handler tileRequestCompleteHandler, AttributeSet attrs) {
+    protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase tileProvider, Handler tileRequestCompleteHandler, AttributeSet attrs) {
         super(aContext, tileSizePixels, tileProvider, tileRequestCompleteHandler, attrs);
         init();
     }
 
-    public IBCMap(Context aContext) {
+    public IBCMapView(Context aContext) {
         super(aContext);
         init();
     }
 
-    public IBCMap(Context aContext, AttributeSet attrs) {
+    public IBCMapView(Context aContext, AttributeSet attrs) {
         super(aContext, attrs);
         init();
     }
 
-    protected IBCMap(Context aContext, int tileSizePixels, MapTileLayerBase aTileProvider) {
+    protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase aTileProvider) {
         super(aContext, tileSizePixels, aTileProvider);
         init();
     }
