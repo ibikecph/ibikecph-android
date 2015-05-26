@@ -11,30 +11,25 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.analytics.tracking.android.EasyTracker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
-import com.spoiledmilk.ibikecph.map.SMHttpRequest.RouteInfo;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -86,7 +81,17 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
         this.mapView.setTileSource(ws);
         this.mapView.setCenter(new LatLng(Util.COPENHAGEN));
-        this.mapView.setZoom(15);
+        this.mapView.setZoom(17);
+
+        // Make a location overlay
+        GpsLocationProvider pr = new GpsLocationProvider(this);
+        UserLocationOverlay myLocationOverlay = new UserLocationOverlay(pr, mapView);
+        myLocationOverlay.enableMyLocation();
+        myLocationOverlay.setDrawAccuracyEnabled(true);
+        myLocationOverlay.enableFollowLocation();
+        myLocationOverlay.setPersonBitmap( BitmapFactory.decodeResource(this.getResources(), R.drawable.tracking_dot));
+        mapView.getOverlays().add(myLocationOverlay);
+
     }
 
     /**
@@ -171,100 +176,9 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
     @Override
     public void onResponseReceived(int requestType, Object response) {
-        switch (requestType) {
-            case SMHttpRequest.REQUEST_GET_ROUTE:
-                RouteInfo ri = (RouteInfo) response;
-                JsonNode jsonRoot = null;
-                if (ri == null || (jsonRoot = ri.jsonRoot) == null || jsonRoot.path("status").asInt(-1) != 0 || ri.start == null || ri.end == null) {
-                    //showRouteNotFoundDlg();
-                } else {
-                    startRouting(ri.start, ri.end, ri.jsonRoot, "", "");
-                }
-                break;
-            case SMHttpRequest.REQUEST_FIND_NEAREST_LOC:
-                if (response != null) {
-                    final Location loc = (Location) response;
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                         //mapFragment.setPinLocation(loc);
-
-                        }
-                    }, 200);
-                }
-                break;
-            case SMHttpRequest.REQUEST_FIND_PLACES_FOR_LOC:
-                if (response != null) {
-                    SMHttpRequest.Address address = (SMHttpRequest.Address) response;
-
-                }
-                break;
-
-        }
 
         if (leftMenu != null) {
             leftMenu.favoritesEnabled = true;
-        }
-    }
-
-    public void startRouting(Location start, Location end, JsonNode jsonRoot, String startName, String endName) {
-        Intent i = new Intent(this, MapActivity.class); // FIXME: This needs to be the navigation class.
-        i.putExtra("start_lat", start.getLatitude());
-        i.putExtra("start_lng", start.getLongitude());
-        i.putExtra("end_lat", end.getLatitude());
-        i.putExtra("end_lng", end.getLongitude());
-        if (jsonRoot != null)
-            i.putExtra("json_root", jsonRoot.toString());
-
-        // TODO: These are strings
-        //i.putExtra("source", source);
-        //i.putExtra("destination", destination);
-
-        if (jsonRoot != null && jsonRoot.has("route_summary")) {
-            i.putExtra("start_name", jsonRoot.get("route_summary").get("start_point").asText());
-            i.putExtra("end_name", jsonRoot.get("route_summary").get("end_point").asText());
-        } else {
-            i.putExtra("start_name", startName);
-            i.putExtra("end_name", endName);
-        }
-        i.putExtra("overlays", getOverlaysShown());
-
-        /*
-        new DB(MapActivity.this).saveSearchHistory(new HistoryData(infoLine1, end.getLatitude(), end.getLongitude()), new HistoryData(
-                IbikeApplication.getString("current_position"), start.getLatitude(), start.getLongitude()), MapActivity.this);
-        */
-        this.startActivityForResult(i, 1);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        LOG.d("route found");
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        
-
-        // *** DANGER, WILL ROBINSON: I'm looking at the request code, not the return code from this point on. /jc ***
-        // Take care of starting navigation once a favorite has been clicked in the FavoritesListActivity
-        if (requestCode == LeftMenu.LAUNCH_FAVORITE && resultCode == RESULT_OK){
-        	FavoritesData fd = (FavoritesData) data.getExtras().getParcelable("ROUTE_TO");
-
-        	Location start = SMLocationManager.getInstance().getLastValidLocation();
-			IbikeApplication.getTracker().sendEvent("Route", "Menu", "Favorites", (long) 0);
-			new SMHttpRequest().getRoute(start, Util.locationFromCoordinates(fd.getLatitude(), fd.getLongitude()), null, this);
-			
-			Log.i("JC", "Fav coordinates: "+ fd.getLatitude() + ", " + fd.getLongitude());
-			
-        	Log.i("JC", "Launching favorite " + fd.getName());
-        	
-        } else if (requestCode == LeftMenu.LAUNCH_LOGIN && resultCode == RESULT_OK) {
-        	leftMenu.populateMenu();
-        	
-        } else if (resultCode == RESULT_CANCELED) {
-        	Log.i("JC", "Canceled sub activity");
-        } else {
-        	Log.e("JC", "MapActivity: Didn't have an activity handler for " + requestCode);
         }
     }
 
@@ -276,30 +190,20 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
     @Override
     public void onStart() {
         super.onStart();
-        EasyTracker.getInstance().activityStart(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        EasyTracker.getInstance().activityStop(this);
-    }
-
-    public void refreshOverlays(int overlaysShown) {
-
-    }
-
-    public int getOverlaysShown() {
-        return 0;
     }
 
     AlertDialog loginDlg;
-
     private void launchLoginDialog() {
         if (loginDlg == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(IbikeApplication.getString("login"));
             builder.setMessage(IbikeApplication.getString("error_not_logged_in"));
+
             builder.setPositiveButton(IbikeApplication.getString("login"), new DialogInterface.OnClickListener() {
 
                 @Override
@@ -322,11 +226,6 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
     @Override
     public void onPause() {
-    	/*
-    	if (loginDlg != null && loginDlg.isShowing()) {
-            loginDlg.dismiss();
-        }
-        */
         super.onPause();
     }
 
