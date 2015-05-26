@@ -14,6 +14,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/trackTimeSpanView"
             android:text="17:30 – 17:55"
+            android:textSize="10dp"
             android:layout_toRightOf="@+id/fromToArrow"/>
 
     <ImageView
@@ -50,14 +51,6 @@
               android:layout_toRightOf="@id/trackGeoFromView"
               android:layout_alignBaseline="@id/trackGeoFromView"/>
     -->
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:id="@+id/trackLengthView"
-              android:text="25"
-              android:textColor="@android:color/black"
-              android:layout_gravity="center_horizontal"
-              android:layout_alignParentRight="true"
-              android:layout_alignBaseline="@id/trackGeoFromView"/>
 
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
@@ -67,4 +60,13 @@
               android:layout_gravity="center_horizontal"
               android:layout_alignParentRight="true"
               android:layout_alignBaseline="@id/trackGeoToView"/>
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/trackLengthView"
+              android:text="25"
+              android:textColor="@android:color/black"
+              android:layout_gravity="center_horizontal"
+              android:layout_alignParentRight="true"
+              android:layout_alignBaseline="@id/trackGeoFromView"/>
 </RelativeLayout>
