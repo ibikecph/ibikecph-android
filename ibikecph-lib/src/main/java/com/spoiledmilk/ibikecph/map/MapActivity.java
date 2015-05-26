@@ -8,10 +8,10 @@ package com.spoiledmilk.ibikecph.map;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -26,6 +26,8 @@ import com.balysv.materialmenu.MaterialMenuIcon;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -34,15 +36,10 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
-import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest.RouteInfo;
-import com.spoiledmilk.ibikecph.navigation.SMRouteNavigationActivity;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
-import com.spoiledmilk.ibikecph.search.HistoryData;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
-import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 import net.hockeyapp.android.CrashManager;
@@ -59,34 +56,7 @@ import net.hockeyapp.android.UpdateManager;
 public class MapActivity extends Activity implements SMHttpRequestListener, iLanguageListener {
     public static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
-    protected static final int SLIDE_THRESHOLD = 40;
-    public static int RESULT_RETURN_FROM_NAVIGATION = 105;
-    TranslateAnimation animation;
-    float posX = 0;
-    float touchX = 0;
-    int maxSlide = 0;
-    protected boolean slidden = false;
-    int moveCount = 0;
-    String infoLine1 = "";
-    protected SMMapFragment mapFragment;
     protected LeftMenu leftMenu;
-    public RelativeLayout pinInfoLayout;
-    TextView pinInfoLine1;
-    ProgressBar progressBar;
-    Button btnStart;
-    ImageButton btnTrack;
-    RelativeLayout rootLayout;
-    protected View mapDisabledView;
-    FrameLayout mapContainer;
-    ImageButton btnSaveFavorite;
-    SMHttpRequest.Address address;
-    Location currentLocation;
-    AlertDialog.Builder builder;
-    AlertDialog dialog;
-    String source, destination;
-    boolean isSaveFaveoriteEnabled = true;
-    FavoritesData favoritesData = null;
-    boolean addFavEnabled = true;
     private DrawerLayout drawerLayout;
     private MaterialMenuIcon materialMenu;
     private MapView mapView;
@@ -94,55 +64,7 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.init(getWindowManager());
-        LOG.d("Map activity onCreate");
-        this.maxSlide = (int) (4 * Util.getScreenWidth() / 5);
         this.setContentView(R.layout.main_map_activity);
-        
-        mapFragment = new SMMapFragment();
-        FragmentManager fm = this.getFragmentManager();
-        fm.beginTransaction().add(R.id.map_container, mapFragment).commit();
-        mapContainer = (FrameLayout) findViewById(R.id.map_container);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        pinInfoLayout = (RelativeLayout) findViewById(R.id.pinInfoLayout);
-        pinInfoLine1 = (TextView) pinInfoLayout.findViewById(R.id.pinAddressLine1);
-        pinInfoLine1.setTypeface(IbikeApplication.getBoldFont());
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        btnStart = (Button) findViewById(R.id.btnStart);
-        btnStart.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pinInfoLayout.setClickable(false);
-                LOG.d("find route");
-                Location start = SMLocationManager.getInstance().getLastValidLocation();
-                if (start == null) {
-                    showRouteNotFoundDlg();
-                } else {
-                    progressBar.setVisibility(View.VISIBLE);
-                    new SMHttpRequest().getRoute(start, mapFragment.getPinLocation(), null, MapActivity.this);
-                }
-            }
-        });
-        btnSaveFavorite = (ImageButton) findViewById(R.id.btnSaveFavorite);
-        btnSaveFavorite.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                DB db = new DB(MapActivity.this);
-                try {
-                    if (IbikeApplication.isUserLogedIn()) {
-                        if (isSaveFaveoriteEnabled) {
-                            favoritesData = new FavoritesData(address.street + " " + address.houseNumber, address.street + " " + address.houseNumber,
-                                    "favorite", currentLocation.getLatitude(), currentLocation.getLongitude(), -1);
-                            db.saveFavorite(favoritesData, MapActivity.this, true);
-                            String st = favoritesData.getName() + " - (" + favoritesData.getLatitude() + "," + favoritesData.getLongitude() + ")";
-                            IbikeApplication.getTracker().sendEvent("Favorites", "Save", st, (long) 0);
-                            leftMenu.reloadFavorites();
-                            btnSaveFavorite.setImageResource(R.drawable.drop_pin_add_fav_btn_active);
-                        } else if (favoritesData != null) {
-                            db.deleteFavorite(favoritesData, MapActivity.this);
-                            leftMenu.reloadFavorites();
-                            btnSaveFavorite.setImageResource(R.drawable.drop_pin_selector);
-                        }
 
         this.mapView = (MapView) findViewById(R.id.mapView);
 
@@ -168,7 +90,17 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
         this.mapView.setTileSource(ws);
         this.mapView.setCenter(new LatLng(Util.COPENHAGEN));
-        this.mapView.setZoom(15);
+        this.mapView.setZoom(17);
+
+        // Make a location overlay
+        GpsLocationProvider pr = new GpsLocationProvider(this);
+        UserLocationOverlay myLocationOverlay = new UserLocationOverlay(pr, mapView);
+        myLocationOverlay.enableMyLocation();
+        myLocationOverlay.setDrawAccuracyEnabled(true);
+        myLocationOverlay.enableFollowLocation();
+        myLocationOverlay.setPersonBitmap( BitmapFactory.decodeResource(this.getResources(), R.drawable.tracking_dot));
+        mapView.getOverlays().add(myLocationOverlay);
+
     }
 
     /**
@@ -251,30 +183,6 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
         return SearchActivity.class;
     }
 
-    public void showWelcomeScreen() {
-        if (!IbikeApplication.isWelcomeScreenSeen()) {
-            IbikeApplication.setWelcomeScreenSeen(true);
-            Intent i = new Intent(this, FavoritesActivity.class);
-            startActivity(i);
-        }
-    }
-
-    @Override
-    public void onLowMemory() {
-        try {
-            if (mapFragment != null && mapFragment.mapView != null && mapFragment.mapView.getTileProvider() != null)
-                mapFragment.mapView.getTileProvider().clearTileCache();
-        } catch (Exception e) {
-
-        }
-    }
-
-    float newTouchX, delta;
-
-    protected Class<?> getSplashActivityClass() {
-        return SplashActivity.class;
-    }
-
     protected LeftMenu getLeftMenu() {
         if (leftMenu == null) {
             return leftMenu = new LeftMenu();
@@ -288,24 +196,7 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
     public void onResume() {
         super.onResume();
         LOG.d("Map activity onResume");
-        btnStart.setText(IbikeApplication.getString("start_route"));
-        btnStart.setTypeface(IbikeApplication.getBoldFont());
-        pinInfoLayout.setClickable(true);
-        pinInfoLayout.measure(0, 0);
-        mapFragment.infoLayoutHeight = pinInfoLayout.getMeasuredHeight();
-        if (!IbikeApplication.isUserLogedIn()) {
-            btnSaveFavorite.setImageResource(R.drawable.drop_pin_add_fav_btn_active);
-            btnSaveFavorite.setImageAlpha(100);
 
-        } else {
-            if (!isSaveFaveoriteEnabled) {
-                btnSaveFavorite.setImageResource(R.drawable.drop_pin_add_fav_btn_active);
-            } else {
-                btnSaveFavorite.setImageResource(R.drawable.drop_pin_selector);
-            }
-            btnSaveFavorite.setImageAlpha(255);
-        }
-        
         if (!Util.isNetworkConnected(this)) {
             Util.launchNoConnectionDialog(this);
         }
@@ -325,38 +216,6 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
         CrashManager.register(this, Config.HOCKEY_APP_ID);
     }
 
-    public void startTrackingUser() {
-        mapFragment.setTrackingMode(true);
-        btnTrack.setImageResource(R.drawable.icon_locate_me);
-    }
-
-    public void stopTrackingUser() {
-        mapFragment.setTrackingMode(false);
-        btnTrack.setImageResource(R.drawable.icon_locate_no_tracking);
-    }
-
-    public void showRouteNotFoundDlg() {
-        if (!MapActivity.this.isFinishing()) {
-            if (dialog == null) {
-                String message = IbikeApplication.getString("error_route_not_found");
-                if (!SMLocationManager.getInstance().hasValidLocation())
-                    message = IbikeApplication.getString("error_no_gps_location");
-                builder = new AlertDialog.Builder(this);
-                builder.setMessage(message).setPositiveButton(IbikeApplication.getString("OK"), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        pinInfoLayout.setClickable(true);
-                    }
-                });
-                dialog = builder.create();
-                dialog.setCancelable(false);
-            }
-            if (!dialog.isShowing()) {
-                dialog.show();
-            }
-        }
-    }
 
     @Override
     public void onResponseReceived(int requestType, Object response) {
@@ -395,7 +254,6 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
         if (leftMenu != null) {
             leftMenu.favoritesEnabled = true;
         }
-        progressBar.setVisibility(View.GONE);
     }
 
     public void startRouting(Location start, Location end, JsonNode jsonRoot, String startName, String endName) {
@@ -430,28 +288,6 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
     }
 
-    protected Class<?> getNavigationClass() {
-        return SMRouteNavigationActivity.class;
-    }
-
-    public void togglePinInfoLayoutVisibility() {
-        if (pinInfoLayout != null) {
-            pinInfoLayout.setVisibility(pinInfoLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-        }
-    }
-
-    public void showPinInfoLayout() {
-        if (pinInfoLayout != null) {
-            pinInfoLayout.setVisibility(View.VISIBLE);
-            mapFragment.onBottomViewShown();
-        }
-    }
-
-    public void updatePinInfo(String line1, String line2) {
-        pinInfoLine1.setText(line1);
-        destination = line1;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -480,12 +316,9 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
         }
     }
 
-    float newX;
-
     public void reloadStrings() {
         leftMenu.initStrings();
         leftMenu.reloadStrings();
-        source = IbikeApplication.getString("current_position");
     }
 
     @Override
@@ -496,7 +329,6 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
     @Override
     public void onStop() {
-        mapFragment.mapView.getTileProvider().clearTileCache();
         super.onStop();
         EasyTracker.getInstance().activityStop(this);
     }
@@ -507,10 +339,6 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
     public int getOverlaysShown() {
         return 0;
-    }
-
-    public void enableAddFavourite() {
-        isSaveFaveoriteEnabled = true;
     }
 
     AlertDialog loginDlg;
