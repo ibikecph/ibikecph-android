@@ -8,7 +8,7 @@
                 android:paddingBottom="0dp"
                 tools:context="com.spoiledmilk.ibikecph.tracking.TrackMapView">
 
-    <com.mapbox.mapboxsdk.views.MapView
+    <com.spoiledmilk.ibikecph.map.IBCMap
             android:id="@+id/mapview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

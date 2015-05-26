@@ -10,9 +10,9 @@ import android.view.View;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
-import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.IBCMap;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import io.realm.Realm;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 
 public class TrackMapView extends Activity {
-    MapView mapView ;
+    IBCMap mapView ;
     BoundingBox bbox ;
 
     @Override
@@ -32,7 +32,7 @@ public class TrackMapView extends Activity {
 
         int track_position = this.getIntent().getIntExtra("track_position", -1);
 
-        mapView = (MapView) findViewById(R.id.mapview);
+        mapView = (IBCMap) findViewById(R.id.mapview);
 
         // Get the route
         Realm realm = Realm.getInstance(this);
