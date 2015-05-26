@@ -6,6 +6,7 @@
 package com.spoiledmilk.ibikecph.map;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -15,7 +16,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,6 +25,9 @@ import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
+import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
@@ -53,7 +56,7 @@ import net.hockeyapp.android.UpdateManager;
  *
  */
 @SuppressLint("NewApi")
-public class MapActivity extends FragmentActivity implements SMHttpRequestListener, iLanguageListener {
+public class MapActivity extends Activity implements SMHttpRequestListener, iLanguageListener {
     public static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
     protected static final int SLIDE_THRESHOLD = 40;
@@ -86,6 +89,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     boolean addFavEnabled = true;
     private DrawerLayout drawerLayout;
     private MaterialMenuIcon materialMenu;
+    private MapView mapView;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -140,12 +144,31 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
                             btnSaveFavorite.setImageResource(R.drawable.drop_pin_selector);
                         }
 
+        this.mapView = (MapView) findViewById(R.id.mapView);
+
         // We want the hamburger in the ActionBar
         materialMenu = new MaterialMenuIcon(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
 
         // LeftMenu
         initLeftMenu(savedInstanceState);
 
+        initMapView();
+
+    }
+
+    /**
+     * Initializes the map, sets the tile source and centers around Copenhagen.
+     */
+    private void initMapView() {
+        WebSourceTileLayer ws = new WebSourceTileLayer("openstreetmap", "http://tiles.ibikecph.dk/tiles/{z}/{x}/{y}.png");
+        ws.setName("OpenStreetMap")
+                .setAttribution("© OpenStreetMap Contributors")
+                .setMinimumZoomLevel(1)
+                .setMaximumZoomLevel(17);
+
+        this.mapView.setTileSource(ws);
+        this.mapView.setCenter(new LatLng(Util.COPENHAGEN));
+        this.mapView.setZoom(15);
     }
 
     /**

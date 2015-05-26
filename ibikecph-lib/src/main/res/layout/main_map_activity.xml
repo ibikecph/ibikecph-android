@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                        xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
@@ -11,9 +12,11 @@
         <com.mapbox.mapboxsdk.views.MapView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:id="@+id/mapView">
+                android:id="@+id/mapView"
+                mapbox:mapid="jchillerup.kmm460oi"
+                mapbox:accessToken="pk.eyJ1IjoiamNoaWxsZXJ1cCIsImEiOiJGdWJlbm5jIn0.TQ8sZjjUMnUCZVqZLPDPfA">
+        </com.mapbox.mapboxsdk.views.MapView>
 
-                                            </com.mapbox.mapboxsdk.views.MapView>
     </FrameLayout>
 
     <!-- Side drawer -->
