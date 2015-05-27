@@ -12,7 +12,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -33,8 +32,9 @@ public class SMLocationManager implements LocationListener {
     Location lastValidLocation;
     boolean locationServicesEnabled;
     private Context context;
-    
-    
+    private boolean hasBeenInited = false;
+
+
     public Context getContext() {
 		return context;
 	}
@@ -46,16 +46,19 @@ public class SMLocationManager implements LocationListener {
     private SMLocationManager() {
         lastValidLocation = null;
         locationServicesEnabled = false;
+
     }
 
     public static SMLocationManager getInstance() {
         if (instance == null) {
-            instance = new SMLocationManager();        
+            instance = new SMLocationManager();
         }
         return instance;
     }
 
     public void init(Context context, SMLocationListener listener) {
+        if (hasBeenInited) return;
+
     	this.context = context;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         locationServicesEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -65,8 +68,6 @@ public class SMLocationManager implements LocationListener {
         IbikeApplication.getService().addGPSListener(this);
 
         if (locationServicesEnabled) {
-
-
             Intent subscriptionIntent = new Intent(getContext(), BikeLocationService.class);
             getContext().startService(subscriptionIntent);
 
@@ -78,6 +79,8 @@ public class SMLocationManager implements LocationListener {
                 LOG.e(e.getLocalizedMessage());
             }
         }
+
+        hasBeenInited = true;
     }
 
     public void removeUpdates() {
@@ -101,6 +104,7 @@ public class SMLocationManager implements LocationListener {
         Location locGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         Location locNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         Location ret = null;
+
         if (locGPS == null) {
             ret = locNetwork;
         } else if (locNetwork == null) {

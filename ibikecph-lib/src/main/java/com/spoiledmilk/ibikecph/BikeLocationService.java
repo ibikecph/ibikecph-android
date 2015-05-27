@@ -28,6 +28,8 @@ public class BikeLocationService extends Service implements LocationListener {
 	private final IBinder binder = new BikeLocationServiceBinder();
 	LocationManager androidLocationManager;
 	WakeLock wakeLock;
+    Location prevLastValidLocation;
+    Location lastValidLocation;
 
     boolean locationServicesEnabledOnPhone;
     ArrayList<LocationListener> gpsListeners = new ArrayList<LocationListener>();
@@ -37,7 +39,6 @@ public class BikeLocationService extends Service implements LocationListener {
     public ActivityRecognitionClient getActivityRecognitionClient() {
         return activityRecognitionClient;
     }
-
     private ActivityRecognitionClient activityRecognitionClient;
 
     /**
@@ -45,8 +46,7 @@ public class BikeLocationService extends Service implements LocationListener {
      */
 	public BikeLocationService( ) {
         super();
-
-
+        instance = this;
 		Log.i("JC", "BikeLocationService instantiated.");
 	}
 
@@ -145,6 +145,10 @@ public class BikeLocationService extends Service implements LocationListener {
 		for (LocationListener l : gpsListeners) {
 			l.onLocationChanged(location);
 		}
+
+        // Update the local cache
+        prevLastValidLocation = lastValidLocation;
+        lastValidLocation = location;
 	}
 
 	@Override
@@ -162,6 +166,31 @@ public class BikeLocationService extends Service implements LocationListener {
 		locationServicesEnabledOnPhone = androidLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || androidLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 	}
 
+    public Location getPrevLastValidLocation() {
+        return prevLastValidLocation;
+    }
+
+    public Location getLastValidLocation() {
+        return lastValidLocation;
+    }
+
+    public Location getLastKnownLocation() {
+        Location locGPS = this.androidLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location locNetwork = this.androidLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location ret;
+
+        if ((locGPS == null && locNetwork != null) || locGPS.getTime() < locNetwork.getTime()) {
+            ret = locNetwork;
+        } else {
+            ret = locGPS;
+        }
+
+        return ret;
+    }
+
+    public boolean hasValidLocation() {
+        return lastValidLocation != null;
+    }
 
     public class BikeLocationServiceBinder extends Binder {
 		BikeLocationService getService() {

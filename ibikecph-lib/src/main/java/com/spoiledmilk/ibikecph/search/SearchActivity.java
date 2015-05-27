@@ -20,7 +20,6 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.ObservableScrollView;
 import com.spoiledmilk.ibikecph.controls.ScrollViewListener;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
 
@@ -169,9 +168,9 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     	// Start routing
         Intent intent = new Intent();
         if (ALatitude == -1 || ALongitude == -1) {
-            Location start = SMLocationManager.getInstance().getLastValidLocation();
+            Location start = IbikeApplication.getService().getLastValidLocation();
             if (start == null) {
-                start = SMLocationManager.getInstance().getLastKnownLocation();
+                start = IbikeApplication.getService().getLastKnownLocation();
             }
             if (start != null) {
                 ALatitude = start.getLatitude();
@@ -227,10 +226,10 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         super.onResume();
         initStrings();
         if (textCurrentLoc.getVisibility() == View.VISIBLE
-                && (SMLocationManager.getInstance().getLastValidLocation() != null || SMLocationManager.getInstance().getLastKnownLocation() != null)) {
-            Location loc = SMLocationManager.getInstance().getLastValidLocation();
+                && (IbikeApplication.getService().getLastValidLocation() != null || IbikeApplication.getService().getLastKnownLocation() != null)) {
+            Location loc = IbikeApplication.getService().getLastValidLocation();
             if (loc == null) {
-                loc = SMLocationManager.getInstance().getLastKnownLocation();
+                loc = IbikeApplication.getService().getLastKnownLocation();
             }
             ALatitude = loc.getLatitude();
             ALongitude = loc.getLongitude();
@@ -268,7 +267,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Favorites", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
-                if (SMLocationManager.getInstance().hasValidLocation()) {
+                if (IbikeApplication.getService().hasValidLocation()) {
                     enableSwitchButton(true);
                 }
             }
@@ -296,7 +295,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 btnStart.setEnabled(true);
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Recent", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
-                if (SMLocationManager.getInstance().hasValidLocation()) {
+                if (IbikeApplication.getService().hasValidLocation()) {
                     enableSwitchButton(true);
                 }
             }
