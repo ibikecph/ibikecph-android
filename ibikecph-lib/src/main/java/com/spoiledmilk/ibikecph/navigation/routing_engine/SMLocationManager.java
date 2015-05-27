@@ -89,34 +89,27 @@ public class SMLocationManager implements LocationListener {
     }
 
     public boolean hasValidLocation() {
-        return lastValidLocation != null;
+        Log.e("JC", "FIXME: SMLocationManager.hasValidLocation()");
+
+        return IbikeApplication.getService().hasValidLocation();
     }
 
     public Location getLastValidLocation() {
-        return lastValidLocation;
+        Log.e("JC", "FIXME: SMLocationManager.getLastValidLocation()");
+
+        return IbikeApplication.getService().getLastValidLocation();
     }
     
     public Location getPrevLastValidLocation() {
-        return prevLastValidLocation;
+        Log.e("JC", "FIXME: SMLocationManager.getPrevLastValidLocation()");
+
+        return IbikeApplication.getService().getPrevLastValidLocation();
     }
 
     public Location getLastKnownLocation() {
-        Location locGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        Location locNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        Location ret = null;
+        Log.e("JC", "FIXME: SMLocationManager.getLastKnownLocation()");
 
-        if (locGPS == null) {
-            ret = locNetwork;
-        } else if (locNetwork == null) {
-            ret = locGPS;
-        } else {
-            if (locGPS.getTime() > locNetwork.getTime()) {
-                ret = locGPS;
-            } else {
-                ret = locNetwork;
-            }
-        }
-        return ret;
+        return IbikeApplication.getService().getLastKnownLocation();
     }
 
     @Override
