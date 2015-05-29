@@ -12,7 +12,8 @@ import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.listeners.OverviewMapListener;
+import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
+import com.spoiledmilk.ibikecph.map.handlers.TrackDisplayHandler;
 import com.spoiledmilk.ibikecph.util.Util;
 
 /**
@@ -75,7 +76,10 @@ public class IBCMapView extends MapView {
     private void updateListeners() {
         switch (state) {
             case DEFAULT:
-                this.setMapViewListener(new OverviewMapListener());
+                this.setMapViewListener(new OverviewMapHandler());
+                break;
+            case TRACK_DISPLAY:
+                this.setMapViewListener(new TrackDisplayHandler());
                 break;
         }
     }
