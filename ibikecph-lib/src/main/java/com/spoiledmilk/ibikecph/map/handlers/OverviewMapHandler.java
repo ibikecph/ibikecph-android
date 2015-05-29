@@ -1,4 +1,4 @@
-package com.spoiledmilk.ibikecph.map.listeners;
+package com.spoiledmilk.ibikecph.map.handlers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,7 +16,7 @@ import com.spoiledmilk.ibikecph.R;
 /**
  * Created by jens on 5/29/15.
  */
-public class OverviewMapListener implements MapViewListener {
+public class OverviewMapHandler implements MapViewListener {
     @Override
     public void onShowMarker(MapView mapView, Marker marker) {
 
