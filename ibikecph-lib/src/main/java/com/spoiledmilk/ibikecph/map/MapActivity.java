@@ -11,7 +11,6 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -20,11 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
-import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
-import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
-import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
@@ -65,33 +59,12 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
         // LeftMenu
         initLeftMenu(savedInstanceState);
-
-        initMapView();
-
     }
 
     /**
      * Initializes the map, sets the tile source and centers around Copenhagen.
      */
     private void initMapView() {
-        WebSourceTileLayer ws = new WebSourceTileLayer("openstreetmap", "http://tiles.ibikecph.dk/tiles/{z}/{x}/{y}.png");
-        ws.setName("OpenStreetMap")
-                .setAttribution("© OpenStreetMap Contributors")
-                .setMinimumZoomLevel(1)
-                .setMaximumZoomLevel(17);
-
-        this.mapView.setTileSource(ws);
-        this.mapView.setCenter(new LatLng(Util.COPENHAGEN));
-        this.mapView.setZoom(17);
-
-        // Make a location overlay
-        GpsLocationProvider pr = new GpsLocationProvider(this);
-        UserLocationOverlay myLocationOverlay = new UserLocationOverlay(pr, mapView);
-        myLocationOverlay.enableMyLocation();
-        myLocationOverlay.setDrawAccuracyEnabled(true);
-        myLocationOverlay.enableFollowLocation();
-        myLocationOverlay.setPersonBitmap( BitmapFactory.decodeResource(this.getResources(), R.drawable.tracking_dot));
-        mapView.getOverlays().add(myLocationOverlay);
 
     }
 
