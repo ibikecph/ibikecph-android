@@ -59,6 +59,7 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
         // LeftMenu
         initLeftMenu(savedInstanceState);
+
     }
 
     /**
