@@ -35,28 +35,24 @@ public class IBCMapView extends MapView {
 
     protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase tileProvider, Handler tileRequestCompleteHandler, AttributeSet attrs) {
         super(aContext, tileSizePixels, tileProvider, tileRequestCompleteHandler, attrs);
-        init();
     }
 
     public IBCMapView(Context aContext) {
         super(aContext);
-        init();
     }
 
     public IBCMapView(Context aContext, AttributeSet attrs) {
         super(aContext, attrs);
-        init();
     }
 
     protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase aTileProvider) {
         super(aContext, tileSizePixels, aTileProvider);
-        init();
     }
 
     /**
      * Do some initializations that are always needed
      */
-    public void init() {
+    public void init(MapState initialState) {
         WebSourceTileLayer ws = new WebSourceTileLayer("ibikecph", "http://tiles.ibikecph.dk/tiles/{z}/{x}/{y}.png");
         ws.setName("OpenStreetMap")
                 .setAttribution("© OpenStreetMap Contributors")
@@ -69,14 +65,12 @@ public class IBCMapView extends MapView {
 
         this.setMapRotationEnabled(true);
 
-
-        updateListeners();
-
-
+        changeState(initialState);
     }
 
     /**
      * Different map contexts have different listener behaviors. We assign the proper one based on the state variable.
+     * This function should be called on every state change.
      */
     private void updateListeners() {
         switch (state) {
@@ -84,6 +78,11 @@ public class IBCMapView extends MapView {
                 this.setMapViewListener(new OverviewMapListener());
                 break;
         }
+    }
+
+    private void changeState(MapState newState) {
+        state = newState;
+        updateListeners();
     }
 
     public void addGPSOverlay() {
