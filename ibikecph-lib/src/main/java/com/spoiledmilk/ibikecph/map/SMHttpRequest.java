@@ -9,6 +9,8 @@ import android.location.Location;
 import android.os.Handler;
 import android.os.Message;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mapbox.mapboxsdk.api.ILatLng;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
@@ -222,7 +224,7 @@ public class SMHttpRequest {
         }
     }
 
-    public void findPlacesForLocation(final Location loc, final SMHttpRequestListener listener) {
+    public static void findPlacesForLocation(final ILatLng loc, final SMHttpRequestListener listener) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -248,6 +250,11 @@ public class SMHttpRequest {
         }).start();
     }
 
+    public static void findPlacesForLocation(final Location loc, final SMHttpRequestListener listener) {
+        findPlacesForLocation(new LatLng(loc), listener);
+    }
+
+
     public void findPlacesForLocation(final TrackLocation loc, final SMHttpRequestListener listener) {
         Location lloc = new Location("SMHttpRequest");
         lloc.setLatitude(loc.getLatitude());
@@ -255,7 +262,7 @@ public class SMHttpRequest {
         findPlacesForLocation(lloc, listener);
     }
 
-    public void sendMsg(int what, Object response, SMHttpRequestListener listener) {
+    public static void sendMsg(int what, Object response, SMHttpRequestListener listener) {
         if (listener != null) {
             Message msg = new Message();
             msg.what = what;

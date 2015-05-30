@@ -30,6 +30,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -405,4 +406,11 @@ public class Util {
         return loc.getLatitude() + " , " + loc.getLongitude();
     }
 
+    public static Location latLngToLocation(ILatLng location) {
+        Location ret = new Location("I BIKE CPH");
+        ret.setLongitude(location.getLongitude());
+        ret.setLatitude(location.getLatitude());
+        ret.setAltitude(location.getAltitude());
+        return ret;
+    }
 }
