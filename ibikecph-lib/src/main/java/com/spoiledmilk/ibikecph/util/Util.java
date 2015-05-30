@@ -5,16 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Locale;
-
-import org.osmdroid.api.IGeoPoint;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,12 +25,12 @@ import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -190,8 +180,8 @@ public class Util {
         }).show();
     }
 
-    public static Location locationFromGeoPoint(IGeoPoint geoPoint) {
-        return locationFromCoordinates(geoPoint.getLatitudeE6() * (float) 1E-6, geoPoint.getLongitudeE6() * (float) 1E-6);
+    public static Location locationFromGeoPoint(LatLng geoPoint) {
+        return locationFromCoordinates(geoPoint.getLatitude() * (float) 1E-6, geoPoint.getLongitude() * (float) 1E-6);
     }
 
     public static Location locationFromCoordinates(double lat, double lng) {

@@ -12,11 +12,39 @@ import com.mapbox.mapboxsdk.views.MapView;
 import com.mapbox.mapboxsdk.views.MapViewListener;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.Geocoder;
 
 /**
  * Created by jens on 5/29/15.
  */
 public class OverviewMapHandler implements MapViewListener {
+    public static class Address {
+        public String street;
+        public String houseNumber;
+        public String zip;
+        public String city;
+        public double lat;
+        public double lon;
+
+        public Address(String street, String houseNumber, String zip, String city, double lat, double lon) {
+            this.street = street;
+            this.houseNumber = houseNumber;
+            this.zip = zip;
+            this.city = city;
+            this.lat = lat;
+            this.lon = lon;
+        }
+
+        public String getStreetAddress() {
+            return this.street + " " + this.houseNumber;
+        }
+
+        public String getPostCodeAndCity() {
+            return this.zip + " " + this.city;
+        }
+    }
+
+
     @Override
     public void onShowMarker(MapView mapView, Marker marker) {
 
@@ -43,24 +71,31 @@ public class OverviewMapHandler implements MapViewListener {
     }
 
     @Override
-    public void onLongPressMap(MapView _mapView, ILatLng location) {
-        MapView mapView = _mapView;
+    public void onLongPressMap(MapView _mapView, final ILatLng location) {
+        final MapView mapView = _mapView;
 
-        // Geocode the location
-        String title = "Title";
-        String address = "Address";
+        Geocoder.getAddressForLocation(location, new Geocoder.GeocoderCallback() {
+            @Override
+            public void onSuccess(Address address) {
+                Marker m = new Marker(address.getStreetAddress(), address.getPostCodeAndCity(), (LatLng) location);
 
-        // Set a marker
-        Marker m = new Marker(title, address, (LatLng) location);
-        Bitmap bitmap = BitmapFactory.decodeResource(IbikeApplication.getContext().getResources(), R.drawable.location);
-        Bitmap newImage = Bitmap.createBitmap(bitmap, 0, 0, 38, 38);
-        Drawable d = new BitmapDrawable(IbikeApplication.getContext().getResources(), newImage);
+                // Set a marker
+                Bitmap bitmap = BitmapFactory.decodeResource(IbikeApplication.getContext().getResources(), R.drawable.location);
+                Bitmap newImage = Bitmap.createBitmap(bitmap, 0, 0, 38, 38);
+                Drawable d = new BitmapDrawable(IbikeApplication.getContext().getResources(), newImage);
 
-        m.setImage(d);
-        mapView.addMarker(m);
+                m.setImage(d);
+                mapView.addMarker(m);
 
-        // Invalidate the view so the marker gets drawn.
-        mapView.invalidate();
+                // Invalidate the view so the marker gets drawn.
+                mapView.invalidate();
+            }
+
+            @Override
+            public void onFailure() {
+                
+            }
+        });
 
         Log.d("JC", "Long pressed the overview map");
     }
