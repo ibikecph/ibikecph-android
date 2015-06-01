@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+// TODO: This code comes from previous vendor. It's a mess. /jc
 public class SMRoute implements SMHttpRequestListener {
 
 	public static final int MAX_DISTANCE_FROM_PATH = 20;

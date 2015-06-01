@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -41,7 +42,7 @@ import net.hockeyapp.android.CrashManager;
  *
  */
 @SuppressLint("NewApi")
-public class MapActivity extends Activity implements SMHttpRequestListener, iLanguageListener {
+public class MapActivity extends Activity implements iLanguageListener {
     public final static int REQUEST_START_NAVIGATION = 2;
     public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
@@ -49,17 +50,16 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
     private DrawerLayout drawerLayout;
     private MaterialMenuIcon materialMenu;
     private IBCMapView mapView;
-    private InfoPaneFragment infoPane;
+    private FrameLayout infoPaneContainer;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.main_map_activity);
 
-        FragmentManager fm = getFragmentManager();
-        this.infoPane = (InfoPaneFragment) fm.findFragmentById(R.id.infoPane);
+        this.infoPaneContainer = (FrameLayout) findViewById(R.id.infoPaneContainer);
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
-        mapView.init(IBCMapView.MapState.DEFAULT, this.infoPane);
+        mapView.init(IBCMapView.MapState.DEFAULT, this);
 
         // We want the hamburger in the ActionBar
         materialMenu = new MaterialMenuIcon(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
@@ -184,12 +184,6 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
     }
 
 
-    @Override
-    public void onResponseReceived(int requestType, Object response) {
-        Log.d("JC", "onResponseReceived!");
-
-    }
-
     public void reloadStrings() {
         leftMenu.initStrings();
         leftMenu.reloadStrings();
@@ -267,10 +261,11 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
             });
             dialog = builder.create();
             dialog.show();
+
         } else if (requestCode == REQUEST_START_NAVIGATION && resultCode == RESULT_OK) {
             Log.d("JC", "Started navigation");
             if (data != null) {
-                Bundle extras = data.getExtras();
+                final Bundle extras = data.getExtras();
                 Location start = Util.locationFromCoordinates(extras.getDouble("startLat"), extras.getDouble("startLng"));
                 Location end = Util.locationFromCoordinates(extras.getDouble("endLat"), extras.getDouble("endLng"));
 
@@ -278,6 +273,8 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
                     @Override
                     public void onSuccess(SMRoute route) {
                         Log.d("JC", "Got SMRoute");
+                        route.startStationName = extras.getString("fromName");
+                        route.endStationName = extras.getString("toName");
                         mapView.startRouting(route);
                     }
 
@@ -286,8 +283,6 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
                         Log.e("JC", "Did not get SMRoute");
                     }
                 }, null);
-
-                //new SMHttpRequest().getRoute(start, endLocation, null, MapActivity.this);
             }
 
         }

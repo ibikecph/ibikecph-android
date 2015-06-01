@@ -9,12 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <fragment
+        <FrameLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/infoPane"
-                android:name="com.spoiledmilk.ibikecph.map.InfoPaneFragment">
-        </fragment>
+                android:id="@+id/infoPaneContainer">
+        </FrameLayout>
 
         <com.spoiledmilk.ibikecph.map.IBCMapView
                 android:layout_width="fill_parent"
