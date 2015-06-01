@@ -2,7 +2,6 @@ package com.spoiledmilk.ibikecph;
 
 import android.content.Intent;
 import android.os.Handler;
-import android.util.Log;
 import com.commonsware.cwac.wakeful.WakefulIntentService;
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
@@ -33,7 +32,7 @@ public class BikeActivityService extends WakefulIntentService {
             final int activityType = mostProbableActivity.getType();
             mostProbableActivity.getVersionCode();
 
-            Log.d("JC", "BikeActivityService: Activity: " + getNameFromType(activityType) + ", confidence: "+confidence);
+            //Log.d("JC", "BikeActivityService: Activity: " + getNameFromType(activityType) + ", confidence: "+confidence);
 
             // If we trust the reading, send it downstream.
             if (confidence > CONFIDENCE_THRESHOLD) {
