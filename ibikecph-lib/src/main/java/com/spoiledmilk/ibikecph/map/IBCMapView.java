@@ -2,9 +2,11 @@ package com.spoiledmilk.ibikecph.map;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -133,6 +135,8 @@ public class IBCMapView extends MapView {
      * @param route
      */
     public void startRouting(SMRoute route) {
+        boolean firstTrack = state != MapState.NAVIGATION_OVERVIEW;
+
         changeState(MapState.NAVIGATION_OVERVIEW);
 
         // TODO: Fix confusion between Location and LatLng objects
@@ -150,10 +154,23 @@ public class IBCMapView extends MapView {
         this.getOverlays().add(path);
         this.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
 
-
         // Add info to the infoPane
-        InfoPaneFragment ifp = new NavigationOverviewInfoPane(route);
+        InfoPaneFragment ifp = new NavigationOverviewInfoPane();
+        Bundle b = new Bundle();
+        b.putString("endStationName", route.endStationName);
+        ifp.setArguments(b);
+
         FragmentManager fm = parentActivity.getFragmentManager();
-        fm.beginTransaction().add(R.id.infoPaneContainer, ifp).addToBackStack(null).commit();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        ft.replace(R.id.infoPaneContainer, ifp);
+
+        // Only push the route to the back stack if it's the first one. Pushing back on subsequent ones should result in
+        // the state changing back to DEFAULT.
+        //if (firstTrack) {
+            ft.addToBackStack(null);
+        //}
+
+        ft.commit();
     }
 }
