@@ -7,18 +7,30 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Marker;
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
-import com.mapbox.mapboxsdk.views.MapViewListener;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.Geocoder;
+import com.spoiledmilk.ibikecph.map.IBCMapView;
 
 /**
  * Created by jens on 5/29/15.
  */
-public class OverviewMapHandler implements MapViewListener {
+public class OverviewMapHandler extends IBCMapHandler {
     private Marker curMarker;
+    private UserLocationOverlay locationOverlay;
+
+    @Override
+    public void destructor() {
+        // Remove the GPS overlay
+        if (locationOverlay != null) {
+            locationOverlay.disableFollowLocation();
+            this.mapView.getOverlays().remove(locationOverlay);
+        }
+    }
 
     public static class Address {
         public String street;
@@ -46,6 +58,22 @@ public class OverviewMapHandler implements MapViewListener {
         }
     }
 
+    public OverviewMapHandler(IBCMapView mapView) {
+        super(mapView);
+
+        addGPSOverlay();
+    }
+
+    public void addGPSOverlay() {
+        GpsLocationProvider pr = new GpsLocationProvider(this.mapView.getContext());
+        locationOverlay = new UserLocationOverlay(pr, this.mapView);
+
+        locationOverlay.enableMyLocation();
+        locationOverlay.setDrawAccuracyEnabled(true);
+        locationOverlay.enableFollowLocation();
+        locationOverlay.setPersonBitmap( BitmapFactory.decodeResource(this.mapView.getResources(), R.drawable.tracking_dot));
+        this.mapView.getOverlays().add(locationOverlay);
+    }
 
     @Override
     public void onShowMarker(MapView mapView, Marker marker) {

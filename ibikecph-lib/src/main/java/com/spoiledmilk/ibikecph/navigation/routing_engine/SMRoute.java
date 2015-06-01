@@ -248,7 +248,7 @@ public class SMRoute implements SMHttpRequestListener {
             }
             waypoints = decodePolyline(jsonRoot.path("route_geometry").textValue());
 
-            if (waypoints.size() < 2) {
+            if (waypoints == null || waypoints.size() < 2) {
                 return false;
             }
 
