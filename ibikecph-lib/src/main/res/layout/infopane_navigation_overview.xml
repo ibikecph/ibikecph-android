@@ -4,7 +4,16 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:padding="12dp">
-    <TextView android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:id="@+id/navigationOverviewAddress"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/navigationOverviewAddress"
+            android:text="destination"
+            android:layout_centerVertical="true"/>
+
+    <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="go"
+            android:id="@+id/navigationOverviewGoButton"
+            android:layout_alignParentRight="true"/>
 </RelativeLayout>
