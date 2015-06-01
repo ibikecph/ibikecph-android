@@ -192,7 +192,8 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         intent.putExtra("toName", toName);
         if (historyData != null)
             new DB(SearchActivity.this).saveSearchHistory(historyData, new HistoryData(fromName, ALatitude, ALongitude), SearchActivity.this);
-        setResult(RESULT_SEARCH_ROUTE, intent);
+
+        setResult(Activity.RESULT_OK, intent);
         finish();
         overridePendingTransition(R.anim.slide_out_down, R.anim.fixed);
     }

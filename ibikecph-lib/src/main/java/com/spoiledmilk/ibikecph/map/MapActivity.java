@@ -12,18 +12,23 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
+import com.spoiledmilk.ibikecph.login.ProfileActivity;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -32,14 +37,15 @@ import net.hockeyapp.android.CrashManager;
 
 /**
  * The main map view.
- * 
+ *
  * TODO: Look into ways of making this class shorter.
  * @author jens
  *
  */
 @SuppressLint("NewApi")
 public class MapActivity extends Activity implements SMHttpRequestListener, iLanguageListener {
-    public static int RESULT_RETURN_FROM_NAVIGATION = 105;
+    public final static int REQUEST_START_NAVIGATION = 2;
+    public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
     protected LeftMenu leftMenu;
     private DrawerLayout drawerLayout;
@@ -127,7 +133,7 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
         if (id == R.id.ab_search) {
             Intent i = new Intent(MapActivity.this, getSearchActivity());
-            startActivityForResult(i, 2);
+            startActivityForResult(i, REQUEST_START_NAVIGATION);
             overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
         }
         // Toggle the drawer when tapping the app icon.
@@ -185,10 +191,8 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
     @Override
     public void onResponseReceived(int requestType, Object response) {
+        Log.d("JC", "onResponseReceived!");
 
-        if (leftMenu != null) {
-            leftMenu.favoritesEnabled = true;
-        }
     }
 
     public void reloadStrings() {
@@ -254,5 +258,43 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_map_activity, menu);
         return true;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
+            AlertDialog dialog;
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(IbikeApplication.getString("account_deleted"));
+            builder.setPositiveButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            dialog = builder.create();
+            dialog.show();
+        } else if (requestCode == REQUEST_START_NAVIGATION && resultCode == RESULT_OK) {
+            Log.d("JC", "Started navigation");
+            if (data != null) {
+                Bundle extras = data.getExtras();
+                Location start = Util.locationFromCoordinates(extras.getDouble("startLat"), extras.getDouble("startLng"));
+                Location end = Util.locationFromCoordinates(extras.getDouble("endLat"), extras.getDouble("endLng"));
+
+                Geocoder.getRoute(new LatLng(start), new LatLng(end), new Geocoder.RouteCallback() {
+                    @Override
+                    public void onSuccess(SMRoute route) {
+                        Log.d("JC", "Got SMRoute");
+                        mapView.startRouting(route);
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        Log.e("JC", "Did not get SMRoute");
+                    }
+                }, null);
+
+                //new SMHttpRequest().getRoute(start, endLocation, null, MapActivity.this);
+            }
+
+        }
     }
 }

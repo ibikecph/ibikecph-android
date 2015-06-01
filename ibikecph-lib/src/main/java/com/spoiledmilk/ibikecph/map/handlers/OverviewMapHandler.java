@@ -18,6 +18,8 @@ import com.spoiledmilk.ibikecph.map.Geocoder;
  * Created by jens on 5/29/15.
  */
 public class OverviewMapHandler implements MapViewListener {
+    private Marker curMarker;
+
     public static class Address {
         public String street;
         public String houseNumber;
@@ -74,6 +76,11 @@ public class OverviewMapHandler implements MapViewListener {
     public void onLongPressMap(MapView _mapView, final ILatLng location) {
         final MapView mapView = _mapView;
 
+        if (curMarker != null) {
+            mapView.removeMarker(curMarker);
+            curMarker = null;
+        }
+
         Geocoder.getAddressForLocation(location, new Geocoder.GeocoderCallback() {
             @Override
             public void onSuccess(Address address) {
@@ -89,11 +96,13 @@ public class OverviewMapHandler implements MapViewListener {
 
                 // Invalidate the view so the marker gets drawn.
                 mapView.invalidate();
+
+                curMarker = m;
             }
 
             @Override
             public void onFailure() {
-                
+
             }
         });
 
