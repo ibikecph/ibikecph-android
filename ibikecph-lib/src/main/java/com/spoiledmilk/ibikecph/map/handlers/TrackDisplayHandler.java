@@ -3,12 +3,17 @@ package com.spoiledmilk.ibikecph.map.handlers;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.views.MapView;
-import com.mapbox.mapboxsdk.views.MapViewListener;
+import com.spoiledmilk.ibikecph.map.IBCMapView;
 
 /**
  * Created by jens on 5/29/15.
  */
-public class TrackDisplayHandler implements MapViewListener {
+public class TrackDisplayHandler extends IBCMapHandler {
+
+    public TrackDisplayHandler(IBCMapView mapView) {
+        super(mapView);
+    }
+
     @Override
     public void onShowMarker(MapView mapView, Marker marker) {
 
@@ -36,6 +41,11 @@ public class TrackDisplayHandler implements MapViewListener {
 
     @Override
     public void onLongPressMap(MapView mapView, ILatLng iLatLng) {
+
+    }
+
+    @Override
+    public void destructor() {
 
     }
 }

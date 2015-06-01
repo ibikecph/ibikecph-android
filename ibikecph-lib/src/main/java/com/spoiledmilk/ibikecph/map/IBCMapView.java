@@ -1,7 +1,6 @@
 package com.spoiledmilk.ibikecph.map;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Handler;
@@ -9,13 +8,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
-import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
-import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.TrackDisplayHandler;
@@ -42,6 +39,8 @@ public class IBCMapView extends MapView {
     }
 
     private MapState state = MapState.DEFAULT;
+    private IBCMapHandler curHandler;
+
 
     protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase tileProvider, Handler tileRequestCompleteHandler, AttributeSet attrs) {
         super(aContext, tileSizePixels, tileProvider, tileRequestCompleteHandler, attrs);
@@ -74,7 +73,6 @@ public class IBCMapView extends MapView {
         this.setZoom(17);
 
         //this.setMapRotationEnabled(true);
-
         changeState(initialState);
     }
 
@@ -83,17 +81,27 @@ public class IBCMapView extends MapView {
      * This function should be called on every state change.
      */
     private void updateListeners() {
+
+        // Ask the old handler to clean up
+        if (curHandler != null) {
+            curHandler.destructor();
+        }
+
+        // Figure out which one is going to be the new handler.
         switch (state) {
             case DEFAULT:
-                this.setMapViewListener(new OverviewMapHandler());
+                curHandler = new OverviewMapHandler(this);
                 break;
             case TRACK_DISPLAY:
-                this.setMapViewListener(new TrackDisplayHandler());
+                curHandler = new TrackDisplayHandler(this);
                 break;
             case NAVIGATION_OVERVIEW:
-                this.setMapViewListener(new NavigationMapHandler());
+                curHandler = new NavigationMapHandler(this);
                 break;
         }
+
+        // ... and apply it
+        this.setMapViewListener(curHandler);
     }
 
     private void changeState(MapState newState) {
@@ -101,16 +109,7 @@ public class IBCMapView extends MapView {
         updateListeners();
     }
 
-    public void addGPSOverlay() {
-        // Make a location overlay
-        GpsLocationProvider pr = new GpsLocationProvider(this.getContext());
-        UserLocationOverlay myLocationOverlay = new UserLocationOverlay(pr, this);
-        myLocationOverlay.enableMyLocation();
-        myLocationOverlay.setDrawAccuracyEnabled(true);
-        myLocationOverlay.enableFollowLocation();
-        myLocationOverlay.setPersonBitmap( BitmapFactory.decodeResource(this.getResources(), R.drawable.tracking_dot));
-        this.getOverlays().add(myLocationOverlay);
-    }
+
 
     /**
      * Handle long presses on the map.
@@ -126,7 +125,8 @@ public class IBCMapView extends MapView {
 
 
     /**
-     * Starts routing.
+     * Starts routing. This is a two-stage process, in which we first show the route to the user. Then they press "Go"
+     * and we zoom to the first instruction.
      * @param route
      */
     public void startRouting(SMRoute route) {
@@ -139,7 +139,6 @@ public class IBCMapView extends MapView {
             path.addPoint(loc.getLatitude(), loc.getLongitude());
             waypoints.add(new LatLng(loc));
         }
-
 
         // Get rid of old overlays
         this.getOverlays().clear();

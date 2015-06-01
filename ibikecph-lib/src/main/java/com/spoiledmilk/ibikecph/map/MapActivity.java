@@ -59,7 +59,6 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
 
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.init(IBCMapView.MapState.DEFAULT);
-        mapView.addGPSOverlay();
 
         // We want the hamburger in the ActionBar
         materialMenu = new MaterialMenuIcon(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);

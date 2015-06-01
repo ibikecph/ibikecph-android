@@ -3,13 +3,17 @@ package com.spoiledmilk.ibikecph.map.handlers;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.views.MapView;
-import com.mapbox.mapboxsdk.views.MapViewListener;
+import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 
 /**
  * Created by jens on 5/30/15.
  */
-public class NavigationMapHandler implements MapViewListener, SMRouteListener {
+public class NavigationMapHandler extends IBCMapHandler implements SMRouteListener {
+
+    public NavigationMapHandler(IBCMapView mapView) {
+        super(mapView);
+    }
 
     @Override
     public void onShowMarker(MapView mapView, Marker marker) {
@@ -40,7 +44,6 @@ public class NavigationMapHandler implements MapViewListener, SMRouteListener {
     public void onLongPressMap(MapView mapView, ILatLng iLatLng) {
 
     }
-
 
 
 
@@ -82,6 +85,11 @@ public class NavigationMapHandler implements MapViewListener, SMRouteListener {
 
     @Override
     public void serverError() {
+
+    }
+
+    @Override
+    public void destructor() {
 
     }
 }
