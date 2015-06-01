@@ -2,19 +2,27 @@ package com.spoiledmilk.ibikecph.map;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.location.Location;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
+import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
+import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.TrackDisplayHandler;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.util.Util;
+
+import java.util.ArrayList;
 
 /**
  * This is the main class for maps in the I Bike CPH apps. It extends MapView from Mapbox but uses the tiles from the
@@ -29,7 +37,8 @@ import com.spoiledmilk.ibikecph.util.Util;
 public class IBCMapView extends MapView {
     public enum MapState {
         DEFAULT,
-        TRACK_DISPLAY
+        TRACK_DISPLAY,
+        NAVIGATION_OVERVIEW
     }
 
     private MapState state = MapState.DEFAULT;
@@ -58,13 +67,13 @@ public class IBCMapView extends MapView {
         ws.setName("OpenStreetMap")
                 .setAttribution("© OpenStreetMap Contributors")
                 .setMinimumZoomLevel(1)
-                .setMaximumZoomLevel(17);
+                .setMaximumZoomLevel(19);
 
         this.setTileSource(ws);
         this.setCenter(new LatLng(Util.COPENHAGEN));
         this.setZoom(17);
 
-        this.setMapRotationEnabled(true);
+        //this.setMapRotationEnabled(true);
 
         changeState(initialState);
     }
@@ -80,6 +89,9 @@ public class IBCMapView extends MapView {
                 break;
             case TRACK_DISPLAY:
                 this.setMapViewListener(new TrackDisplayHandler());
+                break;
+            case NAVIGATION_OVERVIEW:
+                this.setMapViewListener(new NavigationMapHandler());
                 break;
         }
     }
@@ -110,6 +122,31 @@ public class IBCMapView extends MapView {
         // We only do long presses on
         if (state != MapState.DEFAULT) return;
 
+    }
+
+
+    /**
+     * Starts routing.
+     * @param route
+     */
+    public void startRouting(SMRoute route) {
+        changeState(MapState.NAVIGATION_OVERVIEW);
+
+        // TODO: Fix confusion between Location and LatLng objects
+        PathOverlay path = new PathOverlay(Color.RED, 10);
+        ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
+        for (Location loc : route.waypoints) {
+            path.addPoint(loc.getLatitude(), loc.getLongitude());
+            waypoints.add(new LatLng(loc));
+        }
+
+
+        // Get rid of old overlays
+        this.getOverlays().clear();
+
+        // Show the whole route, zooming to make it fit
+        this.getOverlays().add(path);
+        this.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
     }
 
 }
