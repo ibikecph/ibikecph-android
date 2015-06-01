@@ -1,6 +1,7 @@
 package com.spoiledmilk.ibikecph.map;
 
-import android.app.Fragment;
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
@@ -13,10 +14,12 @@ import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
+import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.TrackDisplayHandler;
+import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -41,7 +44,7 @@ public class IBCMapView extends MapView {
 
     private MapState state = MapState.DEFAULT;
     private IBCMapHandler curHandler;
-    private InfoPaneFragment infoPane = null;
+    private Activity parentActivity;
 
     protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase tileProvider, Handler tileRequestCompleteHandler, AttributeSet attrs) {
         super(aContext, tileSizePixels, tileProvider, tileRequestCompleteHandler, attrs);
@@ -59,7 +62,7 @@ public class IBCMapView extends MapView {
     /**
      * Do some initializations that are always needed
      */
-    public void init(MapState initialState, InfoPaneFragment infoPane) {
+    public void init(MapState initialState, Activity parent) {
         WebSourceTileLayer ws = new WebSourceTileLayer("ibikecph", "http://tiles.ibikecph.dk/tiles/{z}/{x}/{y}.png");
         ws.setName("OpenStreetMap")
                 .setAttribution("© OpenStreetMap Contributors")
@@ -73,7 +76,7 @@ public class IBCMapView extends MapView {
         //this.setMapRotationEnabled(true);
         changeState(initialState);
 
-        this.infoPane = infoPane;
+        this.parentActivity = parent;
     }
 
     /**
@@ -146,9 +149,11 @@ public class IBCMapView extends MapView {
         // Show the whole route, zooming to make it fit
         this.getOverlays().add(path);
         this.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
-    }
 
-    public Fragment getInfoPane() {
-        return infoPane;
+
+        // Add info to the infoPane
+        InfoPaneFragment ifp = new NavigationOverviewInfoPane(route);
+        FragmentManager fm = parentActivity.getFragmentManager();
+        fm.beginTransaction().add(R.id.infoPaneContainer, ifp).addToBackStack(null).commit();
     }
 }

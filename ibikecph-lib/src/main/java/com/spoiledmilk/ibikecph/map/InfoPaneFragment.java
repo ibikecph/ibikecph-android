@@ -13,7 +13,7 @@ import com.spoiledmilk.ibikecph.R;
 public class InfoPaneFragment extends Fragment {
 
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.infopane_empty, container);
+        View v = inflater.inflate(R.layout.infopane_empty, container, false);
 
         return v;
     }

@@ -3,6 +3,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:padding="22dp">
-    <TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="" android:textColor="@color/black"></TextView>
+        android:padding="12dp">
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:id="@+id/navigationOverviewAddress"/>
 </RelativeLayout>
