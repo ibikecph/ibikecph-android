@@ -184,7 +184,7 @@ public class TrackingManager implements LocationListener  {
         realm = Realm.getInstance(IbikeApplication.getContext());
 
         if (isTracking && givenLocation.getAccuracy() <= MAX_INACCURACY) {
-            Log.d("JC", "Got new GPS coord");
+            //Log.d("JC", "Got new GPS coord");
             curLocationList.add(givenLocation);
         }
     }
@@ -201,7 +201,7 @@ public class TrackingManager implements LocationListener  {
     }
 
     public void onActivityChanged(int activityType, int confidence) {
-        Log.d("JC", "TrackingManager new activity");
+        //Log.d("JC", "TrackingManager new activity");
         if (
                 IbikeApplication.getSettings().getTrackingEnabled() &&
                 (!this.isTracking && activityType == DetectedActivity.ON_BICYCLE || (DEBUG && activityType == DetectedActivity.TILTING))
