@@ -33,7 +33,7 @@ public class TrackMapView extends Activity {
         int track_position = this.getIntent().getIntExtra("track_position", -1);
 
         mapView = (IBCMapView) findViewById(R.id.mapview);
-        mapView.init(IBCMapView.MapState.TRACK_DISPLAY);
+        mapView.init(IBCMapView.MapState.TRACK_DISPLAY, null);
 
         // Get the route
         Realm realm = Realm.getInstance(this);

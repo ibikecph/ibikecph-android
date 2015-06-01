@@ -1,5 +1,6 @@
 package com.spoiledmilk.ibikecph.map;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
@@ -40,20 +41,17 @@ public class IBCMapView extends MapView {
 
     private MapState state = MapState.DEFAULT;
     private IBCMapHandler curHandler;
-
+    private InfoPaneFragment infoPane = null;
 
     protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase tileProvider, Handler tileRequestCompleteHandler, AttributeSet attrs) {
         super(aContext, tileSizePixels, tileProvider, tileRequestCompleteHandler, attrs);
     }
-
     public IBCMapView(Context aContext) {
         super(aContext);
     }
-
     public IBCMapView(Context aContext, AttributeSet attrs) {
         super(aContext, attrs);
     }
-
     protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase aTileProvider) {
         super(aContext, tileSizePixels, aTileProvider);
     }
@@ -61,7 +59,7 @@ public class IBCMapView extends MapView {
     /**
      * Do some initializations that are always needed
      */
-    public void init(MapState initialState) {
+    public void init(MapState initialState, InfoPaneFragment infoPane) {
         WebSourceTileLayer ws = new WebSourceTileLayer("ibikecph", "http://tiles.ibikecph.dk/tiles/{z}/{x}/{y}.png");
         ws.setName("OpenStreetMap")
                 .setAttribution("© OpenStreetMap Contributors")
@@ -74,6 +72,8 @@ public class IBCMapView extends MapView {
 
         //this.setMapRotationEnabled(true);
         changeState(initialState);
+
+        this.infoPane = infoPane;
     }
 
     /**
@@ -148,4 +148,7 @@ public class IBCMapView extends MapView {
         this.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
     }
 
+    public Fragment getInfoPane() {
+        return infoPane;
+    }
 }

@@ -6,9 +6,7 @@
 package com.spoiledmilk.ibikecph.map;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.FragmentTransaction;
+import android.app.*;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -51,26 +49,24 @@ public class MapActivity extends Activity implements SMHttpRequestListener, iLan
     private DrawerLayout drawerLayout;
     private MaterialMenuIcon materialMenu;
     private IBCMapView mapView;
+    private InfoPaneFragment infoPane;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.main_map_activity);
 
+        FragmentManager fm = getFragmentManager();
+        this.infoPane = (InfoPaneFragment) fm.findFragmentById(R.id.infoPane);
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
-        mapView.init(IBCMapView.MapState.DEFAULT);
+        mapView.init(IBCMapView.MapState.DEFAULT, this.infoPane);
 
         // We want the hamburger in the ActionBar
         materialMenu = new MaterialMenuIcon(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
 
         // LeftMenu
         initLeftMenu(savedInstanceState);
-    }
 
-    /**
-     * Initializes the map, sets the tile source and centers around Copenhagen.
-     */
-    private void initMapView() {
 
     }
 

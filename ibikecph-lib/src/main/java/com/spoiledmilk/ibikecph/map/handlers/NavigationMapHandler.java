@@ -18,6 +18,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     @Override
     public void onShowMarker(MapView mapView, Marker marker) {
 
+
     }
 
     @Override
