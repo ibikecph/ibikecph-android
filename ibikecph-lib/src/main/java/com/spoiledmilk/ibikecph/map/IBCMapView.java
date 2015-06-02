@@ -27,6 +27,7 @@ import com.spoiledmilk.ibikecph.util.Util;
  * every state change of the map.
  */
 public class IBCMapView extends MapView {
+
     public enum MapState {
         DEFAULT,
         TRACK_DISPLAY,
@@ -130,6 +131,11 @@ public class IBCMapView extends MapView {
 
         ((NavigationMapHandler) getMapHandler()).startRouting(route);
     }
+
+    public void stopRouting() {
+        changeState(MapState.DEFAULT);
+    }
+
 
     public IBCMapHandler getMapHandler() {
         return this.curHandler;

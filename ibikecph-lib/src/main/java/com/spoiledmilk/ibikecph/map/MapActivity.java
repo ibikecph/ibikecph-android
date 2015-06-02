@@ -34,6 +34,8 @@ import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 import net.hockeyapp.android.CrashManager;
 
+import java.util.ArrayList;
+
 /**
  * The main map view.
  *
@@ -51,6 +53,7 @@ public class MapActivity extends Activity implements iLanguageListener {
     private MaterialMenuIcon materialMenu;
     private IBCMapView mapView;
     private FrameLayout infoPaneContainer;
+    private ArrayList<InfoPaneFragment> fragments = new ArrayList<InfoPaneFragment>();
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -251,6 +254,24 @@ public class MapActivity extends Activity implements iLanguageListener {
                 }, null);
             }
 
+        }
+    }
+
+    public void registerFragment(InfoPaneFragment fragment) {
+        fragments.add(fragment);
+    }
+
+    public void unregisterFragment(InfoPaneFragment fragment) {
+        fragments.remove(fragment);
+    }
+
+    /**
+     * Checks with all registered fragments if they're OK with letting back be pressed. They should return false if they
+     * want to do something before letting the user continue back.
+     */
+    public void onBackPressed() {
+        if (mapView.getMapHandler().onBackPressed()) {
+            super.onBackPressed();
         }
     }
 }
