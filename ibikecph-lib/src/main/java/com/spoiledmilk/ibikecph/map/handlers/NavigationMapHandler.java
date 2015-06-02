@@ -26,6 +26,9 @@ import java.util.ArrayList;
 public class NavigationMapHandler extends IBCMapHandler implements SMRouteListener {
 
     private SMRoute route;
+    private PathOverlay path;
+    private InfoPaneFragment ifp;
+    private boolean cleanedUp = true;
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -107,7 +110,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     @Override
     public void destructor() {
-
+        cleanUp();
     }
 
     public void startRouting(SMRoute route) {
@@ -116,7 +119,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         route.setListener(this);
 
         // TODO: Fix confusion between Location and LatLng objects
-        PathOverlay path = new PathOverlay(Color.RED, 10);
+        path = new PathOverlay(Color.RED, 10);
         ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
         for (Location loc : route.waypoints) {
             path.addPoint(loc.getLatitude(), loc.getLongitude());
@@ -131,7 +134,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
 
         // Add info to the infoPane
-        InfoPaneFragment ifp = new NavigationOverviewInfoPane();
+        ifp = new NavigationOverviewInfoPane();
         Bundle b = new Bundle();
         b.putString("endStationName", route.endStationName);
         ifp.setArguments(b);
@@ -139,15 +142,35 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-
         ft.replace(R.id.infoPaneContainer, ifp);
-
-        // Only push the route to the back stack if it's the first one. Pushing back on subsequent ones should result in
-        // the state changing back to DEFAULT.
-        //if (firstTrack) {
-        ft.addToBackStack(null);
-        //}
-
         ft.commit();
+
+        cleanedUp = false;
+
+    }
+
+    /**
+     * Remove the path before returning.
+     * @return false because we need the user to
+     */
+    public boolean onBackPressed() {
+        if (!cleanedUp) {
+            this.mapView.stopRouting();
+            return false;
+        }
+
+        return true;
+    }
+
+    public void cleanUp() {
+        if (cleanedUp) return;
+
+        this.mapView.getOverlays().remove(path);
+        this.mapView.invalidate();
+
+        // And remove the fragment
+        mapView.getParentActivity().getFragmentManager().beginTransaction().remove(ifp).commit();
+
+        cleanedUp = true;
     }
 }

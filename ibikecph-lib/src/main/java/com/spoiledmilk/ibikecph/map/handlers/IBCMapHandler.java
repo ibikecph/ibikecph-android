@@ -16,4 +16,8 @@ public abstract class IBCMapHandler implements MapViewListener {
 
     public void destructor() {}
 
+    public boolean onBackPressed() {
+        return true;
+    }
+
 }
