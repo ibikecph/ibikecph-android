@@ -23,15 +23,6 @@ public class OverviewMapHandler extends IBCMapHandler {
     private Marker curMarker;
     private UserLocationOverlay locationOverlay;
 
-    @Override
-    public void destructor() {
-        // Remove the GPS overlay
-        if (locationOverlay != null) {
-            locationOverlay.disableFollowLocation();
-            this.mapView.getOverlays().remove(locationOverlay);
-        }
-    }
-
     public static class Address {
         public String street;
         public String houseNumber;
@@ -73,6 +64,21 @@ public class OverviewMapHandler extends IBCMapHandler {
         locationOverlay.enableFollowLocation();
         locationOverlay.setPersonBitmap( BitmapFactory.decodeResource(this.mapView.getResources(), R.drawable.tracking_dot));
         this.mapView.getOverlays().add(locationOverlay);
+
+        this.mapView.invalidate();
+    }
+
+    @Override
+    public void destructor() {
+        Log.d("JC", "Destructing OverviewMapHandler");
+
+        // Remove the GPS overlay
+        if (locationOverlay != null) {
+            locationOverlay.disableFollowLocation();
+            this.mapView.getOverlays().remove(locationOverlay);
+            this.mapView.invalidate();
+            locationOverlay=null;
+        }
     }
 
     @Override

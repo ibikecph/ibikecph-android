@@ -1,31 +1,20 @@
 package com.spoiledmilk.ibikecph.map;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.graphics.Color;
-import android.location.Location;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
-import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
-import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.TrackDisplayHandler;
-import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.util.Util;
-
-import java.util.ArrayList;
 
 /**
  * This is the main class for maps in the I Bike CPH apps. It extends MapView from Mapbox but uses the tiles from the
@@ -139,38 +128,15 @@ public class IBCMapView extends MapView {
 
         changeState(MapState.NAVIGATION_OVERVIEW);
 
-        // TODO: Fix confusion between Location and LatLng objects
-        PathOverlay path = new PathOverlay(Color.RED, 10);
-        ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
-        for (Location loc : route.waypoints) {
-            path.addPoint(loc.getLatitude(), loc.getLongitude());
-            waypoints.add(new LatLng(loc));
-        }
-
-        // Get rid of old overlays
-        this.getOverlays().clear();
-
-        // Show the whole route, zooming to make it fit
-        this.getOverlays().add(path);
-        this.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
-
-        // Add info to the infoPane
-        InfoPaneFragment ifp = new NavigationOverviewInfoPane();
-        Bundle b = new Bundle();
-        b.putString("endStationName", route.endStationName);
-        ifp.setArguments(b);
-
-        FragmentManager fm = parentActivity.getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        ft.replace(R.id.infoPaneContainer, ifp);
-
-        // Only push the route to the back stack if it's the first one. Pushing back on subsequent ones should result in
-        // the state changing back to DEFAULT.
-        //if (firstTrack) {
-            ft.addToBackStack(null);
-        //}
-
-        ft.commit();
+        ((NavigationMapHandler) getMapHandler()).startRouting(route);
     }
+
+    public IBCMapHandler getMapHandler() {
+        return this.curHandler;
+    }
+
+    public Activity getParentActivity() {
+        return parentActivity;
+    }
+
 }
