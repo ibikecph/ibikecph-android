@@ -65,6 +65,7 @@ public class IBCMapView extends MapView {
         this.setTileSource(ws);
         this.setCenter(new LatLng(Util.COPENHAGEN));
         this.setZoom(17);
+        this.setMaxZoomLevel(19);
 
         //this.setMapRotationEnabled(true);
         changeState(initialState);
