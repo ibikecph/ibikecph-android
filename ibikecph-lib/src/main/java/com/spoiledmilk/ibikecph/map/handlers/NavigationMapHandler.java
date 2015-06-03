@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -13,7 +14,6 @@ import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
-import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
@@ -27,11 +27,14 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     private SMRoute route;
     private PathOverlay path;
-    private InfoPaneFragment ifp;
+    private NavigationOverviewInfoPane ifp;
     private boolean cleanedUp = true;
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
+        Log.d("JC", "Instantiating NavigationMapHandler");
+
+        mapView.setMapViewListener(this);
     }
 
     @Override
@@ -57,15 +60,14 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     @Override
     public void onTapMap(MapView mapView, ILatLng iLatLng) {
+        Log.d("JC", "NavigationMapHandler.onTapMap");
 
     }
 
     @Override
-    public void onLongPressMap(MapView mapView, ILatLng iLatLng) {
-
+    public void onLongPressMap(MapView mapView, final ILatLng iLatLng) {
+        Log.d("JC", "NavigationMapHandler.onLongPressMap");
     }
-
-
 
     //// SMRouteListener methods
     @Override
@@ -110,10 +112,16 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     @Override
     public void destructor() {
+        Log.d("JC", "Destructing NavigationMapHandler");
         cleanUp();
     }
 
-    public void startRouting(SMRoute route) {
+    /**
+     * Brings up the whole route for the user, shows the address in the info pane. The idea is that the user should
+     * start the route from this view.
+     * @param route
+     */
+    public void commenceRouting(SMRoute route) {
         this.route = route;
 
         route.setListener(this);
@@ -126,27 +134,42 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             waypoints.add(new LatLng(loc));
         }
 
-        // Get rid of old overlays
-        this.mapView.getOverlays().clear();
-
         // Show the whole route, zooming to make it fit
         this.mapView.getOverlays().add(path);
         this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
 
+        // Set up the infoPane
+        initInfopane();
+
+        cleanedUp = false;
+    }
+
+    public void goButtonClicked() {
+        Log.d("JC", "Go button clicked");
+
+        // Zoom to the first waypoint
+        Location start = route.getWaypoints().get(0);
+        mapView.setCenter(new LatLng(start), true);
+        mapView.setZoom(mapView.getMaxZoomLevel());
+
+    }
+
+    /**
+     * Sets up a NavigationOverviewInfoPane that shows the destination of the route and allows the user to press "go"
+     */
+    public void initInfopane() {
         // Add info to the infoPane
         ifp = new NavigationOverviewInfoPane();
+        ifp.setParent(this);
+
         Bundle b = new Bundle();
         b.putString("endStationName", route.endStationName);
         ifp.setArguments(b);
-
 
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.infoPaneContainer, ifp);
         ft.commit();
-
-        cleanedUp = false;
-
     }
 
     /**

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
+import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
@@ -59,7 +60,7 @@ public class IBCMapView extends MapView {
         ws.setName("OpenStreetMap")
                 .setAttribution("© OpenStreetMap Contributors")
                 .setMinimumZoomLevel(1)
-                .setMaximumZoomLevel(19);
+                .setMaximumZoomLevel(17);
 
         this.setTileSource(ws);
         this.setCenter(new LatLng(Util.COPENHAGEN));
@@ -76,7 +77,6 @@ public class IBCMapView extends MapView {
      * This function should be called on every state change.
      */
     private void updateListeners() {
-
         // Ask the old handler to clean up
         if (curHandler != null) {
             curHandler.destructor();
@@ -84,14 +84,15 @@ public class IBCMapView extends MapView {
 
         // Figure out which one is going to be the new handler.
         switch (state) {
-            case DEFAULT:
-                curHandler = new OverviewMapHandler(this);
-                break;
             case TRACK_DISPLAY:
                 curHandler = new TrackDisplayHandler(this);
                 break;
             case NAVIGATION_OVERVIEW:
                 curHandler = new NavigationMapHandler(this);
+                break;
+            case DEFAULT:
+            default:
+                curHandler = new OverviewMapHandler(this);
                 break;
         }
 
@@ -104,18 +105,14 @@ public class IBCMapView extends MapView {
         updateListeners();
     }
 
-
-
     /**
      * Handle long presses on the map.
      * @param position
      */
-    public void onLongPress(LatLng position) {
+    @Override
+    public void onLongPress(ILatLng position) {
+        super.onLongPress(position);
         Log.d("JC", "Long pressed on map " + position.toString());
-
-        // We only do long presses on
-        if (state != MapState.DEFAULT) return;
-
     }
 
 
@@ -129,13 +126,12 @@ public class IBCMapView extends MapView {
 
         changeState(MapState.NAVIGATION_OVERVIEW);
 
-        ((NavigationMapHandler) getMapHandler()).startRouting(route);
+        ((NavigationMapHandler) getMapHandler()).commenceRouting(route);
     }
 
     public void stopRouting() {
         changeState(MapState.DEFAULT);
     }
-
 
     public IBCMapHandler getMapHandler() {
         return this.curHandler;

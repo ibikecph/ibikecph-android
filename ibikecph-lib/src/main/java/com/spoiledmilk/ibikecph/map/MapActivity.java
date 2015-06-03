@@ -14,9 +14,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.*;
 import android.widget.FrameLayout;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
@@ -69,8 +67,6 @@ public class MapActivity extends Activity implements iLanguageListener {
 
         // LeftMenu
         initLeftMenu(savedInstanceState);
-
-
     }
 
     /**

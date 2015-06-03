@@ -1,5 +1,7 @@
 package com.spoiledmilk.ibikecph.map.handlers;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -15,6 +17,7 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
+import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 
 /**
  * Created by jens on 5/29/15.
@@ -52,7 +55,18 @@ public class OverviewMapHandler extends IBCMapHandler {
     public OverviewMapHandler(IBCMapView mapView) {
         super(mapView);
 
+        Log.d("JC", "Instantiating OverviewMapHandler");
+
         addGPSOverlay();
+
+        //showStatisticsInfoPane();
+    }
+
+    private void showStatisticsInfoPane() {
+        FragmentManager fm = mapView.getParentActivity().getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
+        ft.commit();
     }
 
     public void addGPSOverlay() {
@@ -64,13 +78,18 @@ public class OverviewMapHandler extends IBCMapHandler {
         locationOverlay.enableFollowLocation();
         locationOverlay.setPersonBitmap( BitmapFactory.decodeResource(this.mapView.getResources(), R.drawable.tracking_dot));
         this.mapView.getOverlays().add(locationOverlay);
-
         this.mapView.invalidate();
     }
 
     @Override
     public void destructor() {
         Log.d("JC", "Destructing OverviewMapHandler");
+
+        // Remove the marker if it's there.
+        if (curMarker != null) {
+            mapView.removeMarker(curMarker);
+            curMarker = null;
+        }
 
         // Remove the GPS overlay
         if (locationOverlay != null) {
@@ -108,6 +127,7 @@ public class OverviewMapHandler extends IBCMapHandler {
 
     @Override
     public void onLongPressMap(MapView _mapView, final ILatLng location) {
+        Log.d("JC", "OverviewMapHandler.onLongPressMap");
         final MapView mapView = _mapView;
 
         if (curMarker != null) {
@@ -139,7 +159,5 @@ public class OverviewMapHandler extends IBCMapHandler {
 
             }
         });
-
-        Log.d("JC", "Long pressed the overview map");
     }
 }
