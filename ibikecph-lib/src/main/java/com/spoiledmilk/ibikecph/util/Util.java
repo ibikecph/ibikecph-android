@@ -10,8 +10,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import org.osmdroid.api.IGeoPoint;
 
@@ -407,6 +409,19 @@ public class Util {
 
     public static String locationString(Location loc) {
         return loc.getLatitude() + " , " + loc.getLongitude();
+    }
+
+    /**
+     * Get a diff between two dates
+     * author: Sebastien Lorber (http://stackoverflow.com/a/10650881/1851450)
+     * @param date1 the oldest date
+     * @param date2 the newest date
+     * @param timeUnit the unit in which you want the diff
+     * @return the diff value, in the provided unit
+     */
+    public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
     }
 
 }
