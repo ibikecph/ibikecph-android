@@ -9,9 +9,7 @@ import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
-import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.Util;
-
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -103,25 +101,31 @@ public class TrackingManager implements LocationListener  {
         Log.d("MF", "############## makeAndSaveTrack ##############");
         Log.d("MF", "threshold: " + TRACK_PAUSE_THRESHOLD);
 
+        Track track;
         // last track
-        Track lastTrack = realm.where(Track.class)
+        try {
+            Track lastTrack = realm.where(Track.class)
                     .findAllSorted("timestamp", RealmResults.SORT_ORDER_DESCENDING)
                     .first();
 
-        Log.d("MF", "last track time: " + lastTrack.getLocations().last().getTimestamp().getTime());
+            Log.d("MF", "last track time: " + lastTrack.getLocations().last().getTimestamp().getTime());
 
-        // use previous track if still fresh, or create new
-        long lastTrackDiff = Util.getDateDiff(lastTrack.getTimestamp(),
-                new Date(), TimeUnit.MILLISECONDS);
+            // use previous track if still fresh, or create new
+            long lastTrackDiff = Util.getDateDiff(lastTrack.getTimestamp(),
+                    new Date(), TimeUnit.MILLISECONDS);
 
-        Log.d("MF", "time diff: " + lastTrackDiff);
+            Log.d("MF", "time diff: " + lastTrackDiff);
 
-        Track track;
-        if (lastTrackDiff > TRACK_PAUSE_THRESHOLD) {
-            Log.d("MF", "using last!");
-            track = lastTrack;
-        } else {
-            Log.d("MF", "creating new");
+
+            if (lastTrackDiff > TRACK_PAUSE_THRESHOLD) {
+                Log.d("MF", "using last!");
+                track = lastTrack;
+            } else {
+                Log.d("MF", "creating new");
+                track = realm.createObject(Track.class);
+            }
+        } catch(ArrayIndexOutOfBoundsException e) {
+            // There was no tracks in the first place!
             track = realm.createObject(Track.class);
         }
 
