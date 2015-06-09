@@ -9,12 +9,15 @@ import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
+import com.spoiledmilk.ibikecph.util.Util;
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jens on 2/25/15.
@@ -22,6 +25,7 @@ import java.util.List;
 public class TrackingManager implements LocationListener  {
     private static final boolean DEBUG = false;
     private static final int MAX_INACCURACY = 20;
+    private static final int TRACK_PAUSE_THRESHOLD = 120000; // 2 minutes in milliseconds
 
     private static TrackingManager instance = null;
     private boolean isTracking = false;
@@ -94,25 +98,49 @@ public class TrackingManager implements LocationListener  {
         realm = Realm.getInstance(IbikeApplication.getContext());
         realm.beginTransaction();
 
-        // TODO: Determine if we'd rather add the locations to the former track.
+        Log.d("MF", "############## makeAndSaveTrack ##############");
+        Log.d("MF", "threshold: " + TRACK_PAUSE_THRESHOLD);
 
         Track track;
+        // last track
+        try {
+            Track lastTrack = realm.where(Track.class)
+                    .findAllSorted("timestamp", RealmResults.SORT_ORDER_DESCENDING)
+                    .first();
 
-        if (previousTrackTooNew()) {
-            // TODO
-            track = null;
-        } else {
+            Log.d("MF", "last track time: " + lastTrack.getLocations().last().getTimestamp().getTime());
+
+            // use previous track if still fresh, or create new
+            long lastTrackDiff = Util.getDateDiff(lastTrack.getTimestamp(),
+                    new Date(), TimeUnit.MILLISECONDS);
+
+            Log.d("MF", "time diff: " + lastTrackDiff);
+
+
+            if (lastTrackDiff > TRACK_PAUSE_THRESHOLD) {
+                Log.d("MF", "using last!");
+                track = lastTrack;
+            } else {
+                Log.d("MF", "creating new");
+                track = realm.createObject(Track.class);
+            }
+        } catch(ArrayIndexOutOfBoundsException e) {
+            // There was no tracks in the first place!
             track = realm.createObject(Track.class);
         }
 
         // If the track is too short, just disregard it. We have nothing more to do, so just return.
         if (curLocationList.size() < 3) {
+            Log.d("MF", "track too short");
+            Log.d("MF", "##############################################");
             realm.cancelTransaction();
             return;
         }
 
         // Set a timestamp for the Track.
-        track.setTimestamp(new Date());
+        Date stamp = new Date();
+        Log.d("MF", "new time: " + stamp.getTime());
+        track.setTimestamp(stamp);
 
         RealmList<TrackLocation> trackLocations = track.getLocations();
 
@@ -152,16 +180,17 @@ public class TrackingManager implements LocationListener  {
         // Set the distance
         track.setLength(dist);
 
+        Log.d("MF", "last time: " + trackLocations.last().getTimestamp().getTime());
+        Log.d("MF", "distance: " + dist);
+
+        Log.d("MF", "##############################################");
+
         // We're done so far.
         realm.commitTransaction();
 
         // Geocode the track. The TrackHelper will open a new Realm transaction.
         TrackHelper helper = new TrackHelper(track);
         helper.geocodeTrack();
-    }
-
-    private boolean previousTrackTooNew() {
-        return false;
     }
 
     public void stopTracking()   {
