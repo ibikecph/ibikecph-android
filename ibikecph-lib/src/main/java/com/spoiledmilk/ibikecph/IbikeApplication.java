@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.text.Spanned;
+import android.util.Log;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
@@ -25,6 +26,8 @@ import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.SMDictionary;
+import io.realm.Realm;
+import io.realm.exceptions.RealmMigrationNeededException;
 
 import java.util.Calendar;
 
@@ -58,8 +61,16 @@ public class IbikeApplication extends Application {
         // Register a weekly notification
         registerWeeklyNotification();
 
-        // Ensure all tracks have been geocoded
-        TrackHelper.ensureAllTracksGeocoded();
+        // Ensure all tracks have been geocoded.
+        try {
+            TrackHelper.ensureAllTracksGeocoded();
+        } catch(RealmMigrationNeededException e) {
+            // If we need to migrate Realm, just delete the file
+            /* FIXME: This should clearly not go into production. We should decide on a proper DB schema, and make proper
+               migrations if we need to change it. */
+            Log.d("JC", "Migration needed, deleting the Realm file!");
+            Realm.deleteRealmFile(this);
+        }
     }
 
 

@@ -123,7 +123,6 @@ public class TrackHelper implements SMHttpRequestListener {
 
     public static void ensureAllTracksGeocoded() {
         Realm realm = Realm.getInstance(IbikeApplication.getContext());
-        //realm.beginTransaction();
 
         for (Track t : Realm.getInstance(IbikeApplication.getContext()).allObjects(Track.class)) {
             if (!t.getHasBeenGeocoded()) {
