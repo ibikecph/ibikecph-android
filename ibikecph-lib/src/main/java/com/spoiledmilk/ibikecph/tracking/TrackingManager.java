@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class TrackingManager implements LocationListener  {
     private static final boolean DEBUG = false;
     private static final int MAX_INACCURACY = 20;
-    private static final int TRACK_PAUSE_THRESHOLD = 30000; // in milliseconds
+    private static final int TRACK_PAUSE_THRESHOLD = 120000; // 2 minutes in milliseconds
 
     private static TrackingManager instance = null;
     private boolean isTracking = false;
