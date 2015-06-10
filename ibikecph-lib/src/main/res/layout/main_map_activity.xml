@@ -26,27 +26,39 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-                <FrameLayout
-                    android:id="@+id/map_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignWithParentIfMissing="true"
-                    android:background="@null" >
-                </FrameLayout>
+                <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical"
+                        >
+                    <FrameLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/infoPaneContainer">
+                    </FrameLayout>
 
-                <View
-                    android:id="@+id/mapDisabledView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/map_container"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignRight="@+id/map_container"
-                    android:layout_alignTop="@+id/map_container"
-                    android:background="@null"
-                    android:visibility="gone" />
+                    <FrameLayout
+                            android:id="@+id/map_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignWithParentIfMissing="true"
+                            android:background="@null" >
+                    </FrameLayout>
+
+                    <View
+                            android:id="@+id/mapDisabledView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignLeft="@+id/map_container"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignRight="@+id/map_container"
+                            android:layout_alignTop="@+id/map_container"
+                            android:background="@null"
+                            android:visibility="gone" />
+                </LinearLayout>
 
                 <ImageButton
                     android:id="@+id/btnTrack"
