@@ -148,7 +148,8 @@ public class TrackingManager implements LocationListener  {
         // and add them to the track we're working on.
 
         Location lastLocation = null;
-        double dist = 0;
+        double dist = track.getLength();
+        
         for (Location l : curLocationList) {
             TrackLocation trackLocation = realm.createObject(TrackLocation.class);
 
