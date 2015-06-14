@@ -100,6 +100,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         mapFragment = new SMMapFragment();
         FragmentManager fm = this.getFragmentManager();
         fm.beginTransaction().add(R.id.map_container, mapFragment).commit();
+
         mapContainer = (FrameLayout) findViewById(R.id.map_container);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         pinInfoLayout = (RelativeLayout) findViewById(R.id.pinInfoLayout);
@@ -225,6 +226,8 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
 
         TrackingInfoPaneFragment trackingInfoPaneFragment = new TrackingInfoPaneFragment();
         trackingInfoPaneFragment.onCreateView(inflater, infoPaneLayout, null);
+
+        mapFragment.infoLayoutHeight = pinInfoLayout.getMeasuredHeight();
     }
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -292,8 +295,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         LOG.d("Map activity onResume");
         btnStart.setText(IbikeApplication.getString("start_route"));
         btnStart.setTypeface(IbikeApplication.getBoldFont());
-        pinInfoLayout.setClickable(true);
-        pinInfoLayout.measure(0, 0);
+
         mapFragment.infoLayoutHeight = pinInfoLayout.getMeasuredHeight();
         if (!IbikeApplication.isUserLogedIn()) {
             btnSaveFavorite.setImageResource(R.drawable.drop_pin_add_fav_btn_active);
@@ -313,7 +315,7 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         }
         checkForCrashes();
 
-        leftMenu.updateControls();
+        getLeftMenu().updateControls();
     }
 
     @Override
@@ -614,6 +616,8 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         materialMenu.syncState(savedInstanceState);
+
+        this.onResume();
     }
 
     @Override

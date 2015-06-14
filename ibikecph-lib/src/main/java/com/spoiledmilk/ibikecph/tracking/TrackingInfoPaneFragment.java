@@ -53,7 +53,7 @@ public class TrackingInfoPaneFragment extends InfoPaneFragment {
         totalDurationTextView.setText(TrackListAdapter.durationToFormattedTime(totalDuration) );
 
         TextView totalDistanceTextView = (TextView) v.findViewById(R.id.totalDistanceTextView);
-        totalDistanceTextView.setText(String.format("%d km", totalDistance/1000));
+        totalDistanceTextView.setText(String.format("%d km", Math.round(totalDistance/1000)));
 
         return v;
     }
