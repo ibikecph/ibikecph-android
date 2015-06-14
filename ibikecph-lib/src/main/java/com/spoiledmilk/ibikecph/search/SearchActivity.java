@@ -308,17 +308,13 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     private void updateLayout() {
         if (listHistory.getAdapter() == null || listHistory.getAdapter().getCount() == 0) {
             listHistory.setVisibility(View.GONE);
-            findViewById(R.id.borderTopHistory).setVisibility(View.GONE);
         } else {
             listHistory.setVisibility(View.VISIBLE);
-            findViewById(R.id.borderTopHistory).setVisibility(View.VISIBLE);
         }
         if (listFavorites.getAdapter() == null || listFavorites.getAdapter().getCount() == 0) {
-            findViewById(R.id.borderTopFavorites).setVisibility(View.GONE);
             listFavorites.setVisibility(View.GONE);
         } else {
             listFavorites.setVisibility(View.VISIBLE);
-            findViewById(R.id.borderTopFavorites).setVisibility(View.VISIBLE);
         }
     }
 

@@ -145,11 +145,36 @@
             android:layout_height="wrap_content" >
 
             <TextView
+                    android:id="@+id/textRecent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="14dp"
+                    android:text="Recent"
+                    android:textColor="@color/Grey"
+                    android:textSize="16sp" />
+
+            <ListView
+                    android:id="@+id/historyList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/textRecent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@null"
+                    android:divider="#D1D1D1"
+                    android:dividerHeight="1dp" >
+            </ListView>
+
+            <TextView
                 android:id="@+id/textFavorites"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:singleLine="true"
+                android:layout_below="@+id/historyList"
                 android:text="Favorites"
                 android:textColor="@color/Grey"
                 android:textSize="16sp" />
@@ -169,84 +194,6 @@
                 android:dividerHeight="1dp" >
             </ListView>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/favoritesList"
-                android:layout_alignLeft="@+id/favoritesList"
-                android:layout_alignTop="@+id/favoritesList"
-                android:background="#D1D1D1" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/favoritesList"
-                android:layout_alignRight="@+id/favoritesList"
-                android:layout_alignTop="@+id/favoritesList"
-                android:background="#D1D1D1" />
-
-            <View
-                android:id="@+id/borderTopFavorites"
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_alignLeft="@+id/favoritesList"
-                android:layout_alignRight="@+id/favoritesList"
-                android:layout_alignTop="@+id/favoritesList"
-                android:background="#D1D1D1"
-                android:visibility="gone" />
-
-
-            <TextView
-                android:id="@+id/textRecent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/favoritesList"
-                android:layout_marginTop="14dp"
-                android:text="Recent"
-                android:textColor="@color/Grey"
-                android:textSize="16sp" />
-
-
-            <ListView
-                android:id="@+id/historyList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/textRecent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@null"
-                android:divider="#D1D1D1"
-                android:dividerHeight="1dp" >
-            </ListView>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/historyList"
-                android:layout_alignLeft="@+id/historyList"
-                android:layout_alignTop="@+id/historyList"
-                android:background="#D1D1D1" />
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/historyList"
-                android:layout_alignRight="@+id/historyList"
-                android:layout_alignTop="@+id/historyList"
-                android:background="#D1D1D1" />
-
-            <View
-                android:id="@+id/borderTopHistory"
-                android:layout_width="wrap_content"
-                android:layout_height="1dp"
-                android:layout_alignLeft="@+id/historyList"
-                android:layout_alignRight="@+id/historyList"
-                android:layout_alignTop="@+id/historyList"
-                android:background="#D1D1D1"
-                android:visibility="gone" />
         </RelativeLayout>
     </com.spoiledmilk.ibikecph.controls.ObservableScrollView>
 
