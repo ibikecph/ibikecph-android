@@ -151,7 +151,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:singleLine="true"
-                android:text=""
+                android:text="Favorites"
                 android:textColor="@color/Grey"
                 android:textSize="16sp" />
 
@@ -258,13 +258,6 @@
                     android:layout_marginTop="38dp"
                     android:background="#D1D1D1" />
 
-                <!-- <View -->
-                <!-- android:layout_width="match_parent" -->
-                <!-- android:layout_height="1dp" -->
-                <!-- android:layout_alignParentLeft="true" -->
-                <!-- android:layout_alignParentTop="true" -->
-                <!-- android:background="#D1D1D1" /> -->
-
                 <ImageView
                     android:id="@+id/pullHandle"
                     android:layout_width="wrap_content"
@@ -292,7 +285,7 @@
                 android:layout_below="@+id/btnShowMore"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="14dp"
-                android:text=""
+                android:text="Recent"
                 android:textColor="@color/Grey"
                 android:textSize="16sp" />
 
