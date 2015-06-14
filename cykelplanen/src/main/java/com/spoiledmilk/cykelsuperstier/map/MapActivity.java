@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 import com.spoiledmilk.cykelsuperstier.LeftMenu;
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.cykelsuperstier.SplashActivity;
@@ -76,6 +75,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
             }
         };
         prefs.registerOnSharedPreferenceChangeListener(overlayListener);
+
 	}
 
 	private boolean isSlidden() {

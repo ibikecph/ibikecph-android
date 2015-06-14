@@ -223,7 +223,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
         // Init the infoPane
         final LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         FrameLayout infoPaneLayout = (FrameLayout) findViewById(R.id.infoPaneContainer);
-
         TrackingInfoPaneFragment trackingInfoPaneFragment = new TrackingInfoPaneFragment();
         trackingInfoPaneFragment.onCreateView(inflater, infoPaneLayout, null);
 
