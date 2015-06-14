@@ -5,19 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.map;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.events.MapListener;
-import org.osmdroid.events.ScrollEvent;
-import org.osmdroid.events.ZoomEvent;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
-import org.osmdroid.views.overlay.OverlayItem;
-
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
@@ -28,12 +15,23 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
-
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+import org.osmdroid.api.IGeoPoint;
+import org.osmdroid.events.MapListener;
+import org.osmdroid.events.ScrollEvent;
+import org.osmdroid.events.ZoomEvent;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedIconOverlay.OnItemGestureListener;
+import org.osmdroid.views.overlay.OverlayItem;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class SMMapFragment extends MapFragmentBase implements MapListener, OnMapLongPressListener {
 
@@ -75,7 +73,7 @@ public class SMMapFragment extends MapFragmentBase implements MapListener, OnMap
         } else {
             mapView.getController().animateTo(new GeoPoint(locCopenhagen));
         }
-
+        mapView.invalidate();
     }
 
     public boolean getTrackingMode() {
