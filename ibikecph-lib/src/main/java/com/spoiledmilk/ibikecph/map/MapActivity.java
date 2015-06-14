@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,10 +19,7 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
 import android.view.animation.TranslateAnimation;
 import android.widget.*;
@@ -42,6 +40,7 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.search.HistoryData;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
+import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -220,6 +219,12 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             }
         });
 
+        // Init the infoPane
+        final LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        FrameLayout infoPaneLayout = (FrameLayout) findViewById(R.id.infoPaneContainer);
+
+        TrackingInfoPaneFragment trackingInfoPaneFragment = new TrackingInfoPaneFragment();
+        trackingInfoPaneFragment.onCreateView(inflater, infoPaneLayout, null);
     }
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -238,7 +243,6 @@ public class MapActivity extends FragmentActivity implements SMHttpRequestListen
             } else {
                 drawerLayout.openDrawer(Gravity.START);
                 materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
-
             }
         }
 

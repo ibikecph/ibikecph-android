@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-    <TextView android:id="@+id/todayString" android:text="today"></TextView>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="22dp">
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="today"
+            android:textColor="@color/black"
+            android:id="@+id/todayTextView"></TextView>
 
-</LinearLayout>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="distance"
+            android:textColor="@color/black"
+            android:id="@+id/totalDistanceTextView"
+            android:layout_toRightOf="@+id/todayTextView"></TextView>
+
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="duration"
+            android:textColor="@color/black"
+            android:id="@+id/totalDurationTextView"
+            android:layout_toRightOf="@+id/totalDistanceTextView"></TextView>
+</RelativeLayout>
