@@ -35,11 +35,11 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
     protected MenuItem btnStart;
     private ImageButton btnSwitch;
-    private TextView textCurrentLoc, textB, textA, textFavorites, textRecent, textShowMore, textOverviewHeader;
+    private TextView textCurrentLoc, textB, textA, textFavorites, textRecent, textOverviewHeader;
     private ListView listHistory, listFavorites;
     private double BLatitude = -1, BLongitude = -1, ALatitude = -1, ALongitude = -1;
     private HistoryData historyData;
-    private boolean isAsearched = false, isExpanded = false;
+    private boolean isAsearched = false;
     private ArrayList<SearchListItem> favorites;
     private ObservableScrollView scrollView;
     private int listItemHeight = 0;
@@ -56,7 +56,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         setContentView(R.layout.search_activity);
         listHistory = (ListView) findViewById(R.id.historyList);
         listFavorites = (ListView) findViewById(R.id.favoritesList);
-        textShowMore = (TextView) findViewById(R.id.textShowMore);
         textOverviewHeader = (TextView) findViewById(R.id.textOverviewHeader);
         scrollView = (ObservableScrollView) findViewById(R.id.scrollView);
         scrollView.setScrollViewListener(this);
@@ -317,33 +316,10 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         if (listFavorites.getAdapter() == null || listFavorites.getAdapter().getCount() == 0) {
             findViewById(R.id.borderTopFavorites).setVisibility(View.GONE);
             listFavorites.setVisibility(View.GONE);
-            textShowMore.setVisibility(View.GONE);
-            findViewById(R.id.borderTopFavorites).setVisibility(View.GONE);
         } else {
             listFavorites.setVisibility(View.VISIBLE);
             findViewById(R.id.borderTopFavorites).setVisibility(View.VISIBLE);
         }
-
-        if (favorites == null || favorites.size() < 4) {
-            findViewById(R.id.showMoreContainer).setVisibility(View.GONE);
-            findViewById(R.id.btnShowMore).setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.showMoreContainer).setVisibility(View.VISIBLE);
-            findViewById(R.id.btnShowMore).setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void onShowMoreClick(View v) {
-        if (isExpanded) {
-            show3favorites();
-            textShowMore.setText(IbikeApplication.getString("show_more"));
-        } else {
-            textShowMore.setText(IbikeApplication.getString("show_less"));
-            HistoryAdapter adapter = new HistoryAdapter(SearchActivity.this, favorites);
-            listFavorites.setAdapter(adapter);
-        }
-        resizeLists();
-        isExpanded = !isExpanded;
     }
 
     private void initStrings() {
@@ -357,8 +333,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         textRecent.setText(IbikeApplication.getString("recent_results"));
         textRecent.setTypeface(IbikeApplication.getBoldFont());
         textA.setTypeface(IbikeApplication.getNormalFont());
-        textShowMore.setText(IbikeApplication.getString("show_more"));
-        textShowMore.setTypeface(IbikeApplication.getNormalFont());
         ((TextView) findViewById(R.id.textOverviewHeader)).setTypeface(IbikeApplication.getBoldFont());
     }
 
@@ -514,16 +488,9 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
     private void show3favorites() {
         if (favorites != null && favorites.size() != 0) {
-            ArrayList<SearchListItem> shortList = new ArrayList<SearchListItem>();
-            for (int i = 0; i < favorites.size(); i++) {
-                shortList.add(favorites.get(i));
-                if (i == 2)
-                    break;
-            }
-            final HistoryAdapter adapter = new HistoryAdapter(SearchActivity.this, shortList);
+            final HistoryAdapter adapter = new HistoryAdapter(SearchActivity.this, favorites);
             listFavorites.setAdapter(adapter);
             resizeLists();
-
         }
         updateLayout();
     }

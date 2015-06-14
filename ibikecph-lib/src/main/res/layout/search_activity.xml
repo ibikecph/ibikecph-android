@@ -149,31 +149,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
                 android:singleLine="true"
                 android:text="Favorites"
                 android:textColor="@color/Grey"
                 android:textSize="16sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/textFavorites"
-                android:layout_alignTop="@+id/textFavorites"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/textFavorites"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/fav_circles" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/textFavorites"
-                android:layout_alignTop="@+id/textFavorites"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/textFavorites"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/fav_circles" />
 
             <ListView
                 android:id="@+id/favoritesList"
@@ -216,98 +195,17 @@
                 android:background="#D1D1D1"
                 android:visibility="gone" />
 
-            <ImageButton
-                android:id="@+id/btnShowMore"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_alignLeft="@+id/favoritesList"
-                android:layout_alignRight="@+id/favoritesList"
-                android:layout_below="@+id/favoritesList"
-                android:background="#EDEDED"
-                android:contentDescription="@string/app_name"
-                android:onClick="onShowMoreClick" />
-
-            <RelativeLayout
-                android:id="@+id/showMoreContainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/btnShowMore"
-                android:layout_alignLeft="@+id/btnShowMore"
-                android:layout_alignRight="@+id/btnShowMore"
-                android:layout_alignTop="@+id/btnShowMore"
-                android:background="@null" >
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:background="#D1D1D1" />
-
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:background="#D1D1D1" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginTop="38dp"
-                    android:background="#D1D1D1" />
-
-                <ImageView
-                    android:id="@+id/pullHandle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="100dp"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/favhandle" />
-
-                <TextView
-                    android:id="@+id/textShowMore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toRightOf="@+id/pullHandle"
-                    android:text=""
-                    android:textColor="@color/Grey" />
-            </RelativeLayout>
 
             <TextView
                 android:id="@+id/textRecent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/btnShowMore"
-                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/favoritesList"
                 android:layout_marginTop="14dp"
                 android:text="Recent"
                 android:textColor="@color/Grey"
                 android:textSize="16sp" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/textRecent"
-                android:layout_alignTop="@+id/textRecent"
-                android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/textRecent"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/fav_circles" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/textRecent"
-                android:layout_alignTop="@+id/textRecent"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@+id/textRecent"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/fav_circles" />
 
             <ListView
                 android:id="@+id/historyList"
