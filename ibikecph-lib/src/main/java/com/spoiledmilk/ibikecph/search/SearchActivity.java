@@ -34,7 +34,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     private static final long HISTORY_FETCHING_TIMEOUT = 120 * 1000;
 
     protected MenuItem btnStart;
-    private ImageButton btnSwitch;
     private TextView textCurrentLoc, textB, textA, textFavorites, textRecent, textOverviewHeader;
     private ListView listHistory, listFavorites;
     private double BLatitude = -1, BLongitude = -1, ALatitude = -1, ALongitude = -1;
@@ -105,31 +104,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         textFavorites = (TextView) findViewById(R.id.textFavorites);
         textRecent = (TextView) findViewById(R.id.textRecent);
 
-        btnSwitch = (ImageButton) findViewById(R.id.btnSwitch);
-        btnSwitch.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                LOG.d("Before switch (" + ALatitude + "," + ALongitude + ") to (" + BLatitude + "," + BLongitude + ")");
-                double temp = ALatitude;
-                ALatitude = BLatitude;
-                BLatitude = temp;
-                temp = ALongitude;
-                ALongitude = BLongitude;
-                BLongitude = temp;
-                String tempStr = textA.getText().toString();
-                if (textCurrentLoc.getVisibility() == View.VISIBLE) {
-                    tempStr = textCurrentLoc.getText().toString();
-                    textCurrentLoc.setVisibility(View.GONE);
-                    textA.setVisibility(View.VISIBLE);
-                    findViewById(R.id.imgCurrentLoc).setVisibility(View.GONE);
-                }
-                textA.setText(textB.getText().toString());
-                textB.setText(tempStr);
-            }
-
-        });
-
         if (IbikeApplication.getTracker() != null) {
             IbikeApplication.getTracker().sendEvent("Route", "Search", "", (long) 0);
         }
@@ -195,25 +169,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         finish();
         overridePendingTransition(R.anim.slide_out_down, R.anim.fixed);
     }
-    
-    @SuppressWarnings("deprecation")
-    private void enableSwitchButton(boolean b) {
-        btnSwitch.setEnabled(b);
-        if (b) {
-            if (android.os.Build.VERSION.SDK_INT >= 16) {
-                btnSwitch.setImageAlpha(255);
-            } else {
-                btnSwitch.setAlpha(255);
-            }
-
-        } else {
-            if (android.os.Build.VERSION.SDK_INT >= 16) {
-                btnSwitch.setImageAlpha(40);
-            } else {
-                btnSwitch.setAlpha(40);
-            }
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -235,7 +190,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             ALongitude = loc.getLongitude();
         }
         boolean switchEnabled = ALatitude != -1 && ALongitude != -1 && BLatitude != -1 && BLongitude != -1;
-        enableSwitchButton(switchEnabled);
 
         boolean enableStart = BLongitude != -1 && BLatitude != -1;
         if (btnStart != null) {
@@ -267,9 +221,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Favorites", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
-                if (SMLocationManager.getInstance().hasValidLocation()) {
-                    enableSwitchButton(true);
-                }
+
             }
 
         });
@@ -295,9 +247,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 btnStart.setEnabled(true);
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Recent", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
-                if (SMLocationManager.getInstance().hasValidLocation()) {
-                    enableSwitchButton(true);
-                }
             }
 
         });

@@ -5,8 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.search;
 
-import com.spoiledmilk.ibikecph.R;
-
 public class HistoryData extends SearchListItem {
 
 	private int id;
@@ -118,7 +116,7 @@ public class HistoryData extends SearchListItem {
 
 	@Override
 	public int getIconResourceId() {
-		return R.drawable.fav_time_gray;
+		return -1;
 	}
 
 	@Override

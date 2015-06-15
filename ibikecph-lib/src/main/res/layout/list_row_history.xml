@@ -4,7 +4,6 @@
     android:layout_height="wrap_content"
     android:background="#ffffff"
     android:paddingBottom="5dp"
-    android:paddingLeft="5dp"
     android:paddingTop="5dp" >
 
     <ImageView
@@ -14,7 +13,8 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:contentDescription="@string/app_name"
-        android:padding="5dp" >
+        android:padding="5dp"
+        android:layout_marginLeft="12dp">
     </ImageView>
 
     <TextView
