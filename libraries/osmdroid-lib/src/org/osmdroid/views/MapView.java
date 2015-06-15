@@ -1257,12 +1257,6 @@ public class MapView extends ViewGroup implements IMapView, MapViewConstants, Mu
         c.restore();
 
         super.dispatchDraw(c);
-
-        if (DEBUGMODE) {
-            final long endMs = System.currentTimeMillis();
-            logger.debug("Rendering overall: " + (endMs - startMs) + "ms");
-        }
-
     }
 
     /**
