@@ -4,17 +4,19 @@
     android:layout_height="wrap_content"
     android:background="#ffffff"
     android:paddingBottom="5dp"
-    android:paddingLeft="5dp"
-    android:paddingTop="5dp" >
+    android:paddingTop="5dp"
+    android:paddingLeft="16dp">
 
     <ImageView
         android:id="@+id/imgIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:contentDescription="@string/app_name"
-        android:padding="5dp" >
+        android:padding="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="0dp">
     </ImageView>
 
     <TextView
@@ -22,11 +24,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/imgIcon"
-        android:padding="5dp"
         android:textColor="@color/Black"
-        android:textSize="16sp" >
+        android:textSize="16sp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="Title">
     </TextView>
 
 </RelativeLayout>

@@ -116,14 +116,7 @@ public class FavoritesData extends SearchListItem implements Parcelable {
 
 	@Override
 	public int getIconResourceId() {
-		int ret = R.drawable.fav_star_grey_small;
-		if (subSource.equals(favHome))
-			ret = R.drawable.fav_home_grey;
-		else if (subSource.equals(favWork))
-			ret = R.drawable.fav_work_grey;
-		else if (subSource.equals(favSchool))
-			ret = R.drawable.fav_school_grey;
-		return ret;
+		return R.drawable.ic_menu_favorite;
 	}
 
 	public int getPadding() {
