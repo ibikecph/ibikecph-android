@@ -28,6 +28,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 
+/**
+ * This is the activity used for searching for an address. It would be very nice to integrate the same UI element as on
+ * the TrackingActivity for the listviews.
+ */
 public class SearchActivity extends Activity implements ScrollViewListener {
 
     public static final int RESULT_SEARCH_ROUTE = 102;
@@ -221,7 +225,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Favorites", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
-
+                startButtonHandler();
             }
 
         });
@@ -247,6 +251,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 btnStart.setEnabled(true);
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Recent", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
+                startButtonHandler();
             }
 
         });
@@ -271,7 +276,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         textCurrentLoc.setText(IbikeApplication.getString("current_position"));
         textCurrentLoc.setTypeface(IbikeApplication.getNormalFont());
         textB.setHint(IbikeApplication.getString("search_to_placeholder"));
-        textB.setHintTextColor(getResources().getColor(R.color.HintColor));
         textB.setTypeface(IbikeApplication.getNormalFont());
         textFavorites.setText(IbikeApplication.getString("favorites"));
         textFavorites.setTypeface(IbikeApplication.getBoldFont());
@@ -317,6 +321,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                             if (toName.contains(",")) {
                                 toName = toName.substring(0, toName.indexOf(','));
                             }
+                            startButtonHandler();
                         }
                     } catch (Exception e) {
                         LOG.e(e.getLocalizedMessage());
