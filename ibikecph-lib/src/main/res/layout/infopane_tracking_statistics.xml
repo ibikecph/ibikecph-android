@@ -2,10 +2,10 @@
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="64dp"
+        android:layout_height="56dp"
         android:background="@color/white"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:paddingLeft="32dp"
         android:layout_centerHorizontal="true"
         >
@@ -24,7 +24,7 @@
 
     <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:text="distance"
             android:textColor="@color/black"
             android:id="@+id/totalDistanceTextView"
@@ -38,12 +38,12 @@
 
     <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:text="duration"
             android:textColor="@color/black"
             android:id="@+id/totalDurationTextView"
             android:layout_toRightOf="@+id/totalDistanceTextView"
-            android:drawableLeft="@drawable/infopane_bicycle"
+            android:drawableLeft="@drawable/infopane_duration"
             android:drawablePadding="12dp"
             android:gravity="center_vertical"
             android:textSize="16dp" />
