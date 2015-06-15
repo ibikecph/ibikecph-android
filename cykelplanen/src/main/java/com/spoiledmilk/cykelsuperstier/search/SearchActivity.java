@@ -6,15 +6,11 @@
 package com.spoiledmilk.cykelsuperstier.search;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-
 import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
 import com.spoiledmilk.cykelsuperstier.R;
-import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.util.Util;
 
 public class SearchActivity extends com.spoiledmilk.ibikecph.search.SearchActivity {
@@ -39,13 +35,6 @@ public class SearchActivity extends com.spoiledmilk.ibikecph.search.SearchActivi
 		} else {
 			findViewById(R.id.lineShowMoreTopSeparator).setVisibility(View.INVISIBLE);
 		}
-	}
-	
-	public boolean onCreateOptionsMenu(Menu menu) {
-		boolean ret = super.onCreateOptionsMenu(menu);
-		this.btnStart = menu.getItem(0);
-		return ret;
-        // Inflate the menu items for use in the action bar
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
