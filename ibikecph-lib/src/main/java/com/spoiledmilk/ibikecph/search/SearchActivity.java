@@ -36,6 +36,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
     public static final int RESULT_SEARCH_ROUTE = 102;
     private static final long HISTORY_FETCHING_TIMEOUT = 120 * 1000;
+    private static final int MAX_RECENT_ADDRESSES = 3;
 
     protected MenuItem btnStart;
     private TextView textCurrentLoc, textB, textA, textFavorites, textRecent, textOverviewHeader;
@@ -353,7 +354,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                             SearchActivity.this.searchHistory.clear();
                             Iterator<SearchListItem> it = searchHistory.iterator();
                             int count = 0;
-                            while (it.hasNext() && count < 10) {
+                            while (it.hasNext() && count < MAX_RECENT_ADDRESSES) {
                                 SearchListItem sli = it.next();
                                 if (sli.getName().contains(".")) {
                                     continue;
