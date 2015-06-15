@@ -47,7 +47,13 @@ public class HistoryAdapter extends ArrayAdapter<SearchListItem> {
 			text = item.getName().substring(0, 27) + "...";
 		}
 		holder.textLocation.setText(text);
-		holder.imgIcon.setImageResource(item.getIconResourceId());
+
+        // Don't show an icon if the resource ID is set to -1
+        if (item.getIconResourceId() != -1) {
+            holder.imgIcon.setImageResource(item.getIconResourceId());
+        } else {
+            holder.imgIcon.setVisibility(View.GONE);
+        }
 		return view;
 	}
 
