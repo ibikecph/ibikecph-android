@@ -38,7 +38,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     private static final long HISTORY_FETCHING_TIMEOUT = 120 * 1000;
     private static final int MAX_RECENT_ADDRESSES = 3;
 
-    protected MenuItem btnStart;
     private TextView textCurrentLoc, textB, textA, textFavorites, textRecent, textOverviewHeader;
     private ListView listHistory, listFavorites;
     private double BLatitude = -1, BLongitude = -1, ALatitude = -1, ALongitude = -1;
@@ -122,23 +121,10 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_activity_actions, menu);
-        
-        menu.getItem(0).setTitle(IbikeApplication.getString("marker_start"));
-        this.btnStart = menu.getItem(0);
+
         return super.onCreateOptionsMenu(menu);
     }
- 
-    @Override
-    /**
-     * Handler for the menu items in the ActionBar. 
-     */
-    public boolean onOptionsItemSelected(MenuItem item) {
-	    if(item.getItemId() == R.id.btnActionStart) {
-	    	startButtonHandler();
-    		return true;
-    	}
-    	return false;
-    }
+
 
     /**
      * Handler for the Start routing button.
@@ -194,13 +180,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             ALatitude = loc.getLatitude();
             ALongitude = loc.getLongitude();
         }
-        boolean switchEnabled = ALatitude != -1 && ALongitude != -1 && BLatitude != -1 && BLongitude != -1;
 
-        boolean enableStart = BLongitude != -1 && BLatitude != -1;
-        if (btnStart != null) {
-        	btnStart.setEnabled(enableStart);
-        }
-        
         if (System.currentTimeMillis() - timestampHistoryFetched > HISTORY_FETCHING_TIMEOUT) {
             searchHistory = new ArrayList<SearchListItem>();
             tFetchSearchHistory thread = new tFetchSearchHistory();
@@ -222,7 +202,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                     toName = toName.substring(0, toName.indexOf(','));
                 BLatitude = hd.getLatitude();
                 BLongitude = hd.getLongitude();
-                btnStart.setEnabled(true);
                 
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Favorites", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
@@ -249,7 +228,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 if (toName.contains(",")) {
                     toName = toName.substring(0, toName.indexOf(','));
                 }
-                btnStart.setEnabled(true);
+
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Recent", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
                 startButtonHandler();
