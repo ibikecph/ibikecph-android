@@ -9,7 +9,6 @@ import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
-import com.spoiledmilk.ibikecph.util.Util;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -17,7 +16,6 @@ import io.realm.RealmResults;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jens on 2/25/15.
@@ -111,13 +109,11 @@ public class TrackingManager implements LocationListener  {
             Log.d("MF", "last track time: " + lastTrack.getLocations().last().getTimestamp().getTime());
 
             // use previous track if still fresh, or create new
-            long lastTrackDiff = Util.getDateDiff(lastTrack.getTimestamp(),
-                    new Date(), TimeUnit.MILLISECONDS);
+            long lastTrackDiff = curLocationList.get(0).getTime() - lastTrack.getLocations().last().getTimestamp().getTime();
 
             Log.d("MF", "time diff: " + lastTrackDiff);
 
-
-            if (lastTrackDiff > TRACK_PAUSE_THRESHOLD) {
+            if (lastTrackDiff < TRACK_PAUSE_THRESHOLD) {
                 Log.d("MF", "using last!");
                 track = lastTrack;
             } else {
