@@ -55,7 +55,7 @@ public class MapActivity extends Activity implements iLanguageListener {
     protected LeftMenu leftMenu;
     private DrawerLayout drawerLayout;
     private MaterialMenuIcon materialMenu;
-    private IBCMapView mapView;
+    protected IBCMapView mapView;
     private ArrayList<InfoPaneFragment> fragments = new ArrayList<InfoPaneFragment>();
 
     @Override
