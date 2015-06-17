@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.util.Log;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -15,8 +16,10 @@ import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
+import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 
 /**
@@ -26,31 +29,6 @@ public class OverviewMapHandler extends IBCMapHandler {
     private Marker curMarker;
     private UserLocationOverlay locationOverlay;
 
-    public static class Address {
-        public String street;
-        public String houseNumber;
-        public String zip;
-        public String city;
-        public double lat;
-        public double lon;
-
-        public Address(String street, String houseNumber, String zip, String city, double lat, double lon) {
-            this.street = street;
-            this.houseNumber = houseNumber;
-            this.zip = zip;
-            this.city = city;
-            this.lat = lat;
-            this.lon = lon;
-        }
-
-        public String getStreetAddress() {
-            return this.street + " " + this.houseNumber;
-        }
-
-        public String getPostCodeAndCity() {
-            return this.zip + " " + this.city;
-        }
-    }
 
     public OverviewMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -65,6 +43,22 @@ public class OverviewMapHandler extends IBCMapHandler {
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
+        ft.commit();
+    }
+
+    private void showAddressInfoPane(Address a) {
+        FragmentManager fm = mapView.getParentActivity().getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        // Prepare the infopane with the address we just got.
+        AddressDisplayInfoPaneFragment adp = new AddressDisplayInfoPaneFragment();
+
+        // Supply the address
+        Bundle arguments = new Bundle();
+        arguments.putSerializable("address", a);
+        adp.setArguments(arguments);
+
+        ft.replace(R.id.infoPaneContainer, adp);
         ft.commit();
     }
 
@@ -111,7 +105,8 @@ public class OverviewMapHandler extends IBCMapHandler {
 
     @Override
     public void onTapMarker(MapView mapView, Marker marker) {
-
+        removeMarker();
+        showStatisticsInfoPane();
     }
 
     @Override
@@ -124,15 +119,21 @@ public class OverviewMapHandler extends IBCMapHandler {
 
     }
 
-    @Override
-    public void onLongPressMap(MapView _mapView, final ILatLng location) {
-        Log.d("JC", "OverviewMapHandler.onLongPressMap");
-        final MapView mapView = _mapView;
-
+    public void removeMarker() {
         if (curMarker != null) {
+            mapView.getOverlays().remove(curMarker);
             mapView.removeMarker(curMarker);
             curMarker = null;
         }
+        mapView.invalidate();
+    }
+
+    @Override
+    public void onLongPressMap(final MapView _mapView, final ILatLng location) {
+        Log.d("JC", "OverviewMapHandler.onLongPressMap");
+        final MapView mapView = _mapView;
+
+        removeMarker();
 
         Geocoder.getAddressForLocation(location, new Geocoder.GeocoderCallback() {
             @Override
@@ -140,7 +141,7 @@ public class OverviewMapHandler extends IBCMapHandler {
                 Marker m = new Marker(address.getStreetAddress(), address.getPostCodeAndCity(), (LatLng) location);
 
                 // Set a marker
-                Bitmap bitmap = BitmapFactory.decodeResource(IbikeApplication.getContext().getResources(), R.drawable.location);
+                Bitmap bitmap = BitmapFactory.decodeResource(IbikeApplication.getContext().getResources(), R.drawable.marker_finish);
                 Bitmap newImage = Bitmap.createBitmap(bitmap, 0, 0, 38, 38);
                 Drawable d = new BitmapDrawable(IbikeApplication.getContext().getResources(), newImage);
 
@@ -151,6 +152,11 @@ public class OverviewMapHandler extends IBCMapHandler {
                 mapView.invalidate();
 
                 curMarker = m;
+
+                // Center the map around the marker
+                mapView.setCenter(location, true);
+
+                showAddressInfoPane(address);
             }
 
             @Override

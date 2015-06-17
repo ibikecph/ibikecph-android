@@ -12,7 +12,6 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -29,7 +28,7 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -48,7 +47,7 @@ import java.util.ArrayList;
  */
 @SuppressLint("NewApi")
 public class MapActivity extends Activity implements iLanguageListener {
-    public final static int REQUEST_START_NAVIGATION = 2;
+    public final static int REQUEST_SEARCH_ADDRESS = 2;
     public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
     protected LeftMenu leftMenu;
@@ -127,8 +126,8 @@ public class MapActivity extends Activity implements iLanguageListener {
         int id = item.getItemId();
 
         if (id == R.id.ab_search) {
-            Intent i = new Intent(MapActivity.this, getSearchActivity());
-            startActivityForResult(i, REQUEST_START_NAVIGATION);
+            Intent i = new Intent(MapActivity.this, SearchActivity.class);
+            startActivityForResult(i, REQUEST_SEARCH_ADDRESS);
             overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
         }
         // Toggle the drawer when tapping the app icon.
@@ -144,10 +143,6 @@ public class MapActivity extends Activity implements iLanguageListener {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    protected Class<?> getSearchActivity() {
-        return SearchActivity.class;
     }
 
     protected LeftMenu getLeftMenu() {
@@ -262,13 +257,29 @@ public class MapActivity extends Activity implements iLanguageListener {
             dialog = builder.create();
             dialog.show();
 
-        } else if (requestCode == REQUEST_START_NAVIGATION && resultCode == RESULT_OK) {
-            Log.d("JC", "Started navigation");
+        } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_OK) {
+
+            // FIXME: We have some coordinates of a point that was just searched. Sadly we don't have an Address object
+            // although that would be nice.
+
+            Log.d("JC", "Got back from address search, spawning");
+            if (!(this.mapView.getMapHandler() instanceof OverviewMapHandler)) {
+                // TODO: Make sure we have an OverviewMapHandler
+            }
+
+            final Bundle extras = data.getExtras();
+            LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
+            OverviewMapHandler overviewMapHandler = (OverviewMapHandler) this.mapView.getMapHandler();
+            overviewMapHandler.onLongPressMap(this.mapView, destination);
+
+            /*
+            Log.d("JC", "Got coordinates to navigate to");
             if (data != null) {
                 final Bundle extras = data.getExtras();
                 Location start = Util.locationFromCoordinates(extras.getDouble("startLat"), extras.getDouble("startLng"));
                 Location end = Util.locationFromCoordinates(extras.getDouble("endLat"), extras.getDouble("endLng"));
 
+                // TODO: Throwing stuff around between Location and ILatLng like it ain't a thing. Drop it.
                 Geocoder.getRoute(new LatLng(start), new LatLng(end), new Geocoder.RouteCallback() {
                     @Override
                     public void onSuccess(SMRoute route) {
@@ -284,7 +295,7 @@ public class MapActivity extends Activity implements iLanguageListener {
                     }
                 }, null);
             }
-
+            */
         }
     }
 

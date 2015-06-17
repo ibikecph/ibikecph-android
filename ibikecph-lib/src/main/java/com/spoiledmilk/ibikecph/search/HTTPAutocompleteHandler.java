@@ -5,13 +5,12 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.search;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.location.Location;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.spoiledmilk.ibikecph.util.LOG;
+import com.spoiledmilk.ibikecph.util.Util;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -21,13 +20,12 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.location.Location;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.spoiledmilk.ibikecph.util.LOG;
-import com.spoiledmilk.ibikecph.util.Util;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class HTTPAutocompleteHandler {
 
@@ -180,7 +178,7 @@ public class HTTPAutocompleteHandler {
 
 			urlString = "http://kortforsyningen.kms.dk/?servicename=RestGeokeys_v2&method=";
 
-			if ((address.number == null || address.number.equals("")) && (address.zip == null || address.zip.equals(""))
+			if ((address.houseNumber == null || address.houseNumber.equals("")) && (address.zip == null || address.zip.equals(""))
 					&& (address.city == null || address.city.equals("") || address.city.equals(address.street))) {
 				urlString += "vej"; // street search
 			} else {
@@ -192,8 +190,8 @@ public class HTTPAutocompleteHandler {
 			// urlString = "http://kortforsyningen.kms.dk/?servicename=RestGeokeys_v2&method=adresse&vejnavn=*"
 			// + URLEncoder.encode(address.street, "UTF-8") + "*";
 
-			if (!(address.number == null || address.number.equals(""))) {
-				urlString += "&husnr=" + address.number;
+			if (!(address.houseNumber == null || address.houseNumber.equals(""))) {
+				urlString += "&husnr=" + address.houseNumber;
 			}
 
 			urlString += "&geop=" + Util.limitDecimalPlaces(currentLocation.getLongitude(), 6) + "" + ","

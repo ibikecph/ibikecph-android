@@ -10,11 +10,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.ObservableScrollView;
@@ -106,10 +108,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
         textFavorites = (TextView) findViewById(R.id.textFavorites);
         textRecent = (TextView) findViewById(R.id.textRecent);
-
-        if (IbikeApplication.getTracker() != null) {
-            IbikeApplication.getTracker().sendEvent("Route", "Search", "", (long) 0);
-        }
     }
 
     /**
@@ -140,21 +138,22 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 ALatitude = start.getLatitude();
                 ALongitude = start.getLongitude();
             }
-        } else {
-            IbikeApplication.getTracker().sendEvent("Route", "From", textA.getText().toString(), (long) 0);
         }
         String st = "Start: " + textA.getText().toString() + " (" + ALatitude + "," + ALongitude + ") End: " + textB.getText().toString()
                 + " (" + BLongitude + "," + BLatitude + ")";
 
-        IbikeApplication.getTracker().sendEvent("Route", "Finder", st, (long) 0);
         intent.putExtra("startLng", ALongitude);
         intent.putExtra("startLat", ALatitude);
         intent.putExtra("endLng", BLongitude);
         intent.putExtra("endLat", BLatitude);
         intent.putExtra("fromName", fromName);
         intent.putExtra("toName", toName);
+
         if (historyData != null)
             new DB(SearchActivity.this).saveSearchHistory(historyData, new HistoryData(fromName, ALatitude, ALongitude), SearchActivity.this);
+
+
+        // TODO: This sucks. It'd be nice to keep Address objects in the Recent buffer, rather than re-establishing here
 
         setResult(Activity.RESULT_OK, intent);
         finish();
@@ -203,7 +202,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 BLatitude = hd.getLatitude();
                 BLongitude = hd.getLongitude();
                 
-                IbikeApplication.getTracker().sendEvent("Route", "Search", "Favorites", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
                 startButtonHandler();
             }
@@ -229,7 +227,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                     toName = toName.substring(0, toName.indexOf(','));
                 }
 
-                IbikeApplication.getTracker().sendEvent("Route", "Search", "Recent", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
                 startButtonHandler();
             }
@@ -376,13 +373,11 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     @Override
     public void onStart() {
         super.onStart();
-        EasyTracker.getInstance().activityStart(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        EasyTracker.getInstance().activityStop(this);
     }
 
     private void resizeLists() {

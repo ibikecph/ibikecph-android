@@ -8,9 +8,9 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
-import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
+import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.Util;
 import org.apache.http.Header;
@@ -26,7 +26,7 @@ import java.util.Locale;
 public class Geocoder {
 
     public interface GeocoderCallback {
-        public void onSuccess(OverviewMapHandler.Address address);
+        public void onSuccess(Address address);
         public void onFailure();
     }
 
@@ -48,7 +48,7 @@ public class Geocoder {
                 Marker m;
 
                 try {
-                    OverviewMapHandler.Address address = new OverviewMapHandler.Address(
+                    Address address = new Address(
                             ((JSONObject) response.get("vejnavn")).getString("navn"),
                             response.getString("husnr"),
                             ((JSONObject) response.get("postnummer")).getString("nr"),

@@ -158,7 +158,7 @@ public class SearchAutocompleteActivity extends Activity {
 				KortforData kd = (KortforData) currentSelection;
 				if (kd.getNumber() != null && !kd.getNumber().equals("") && kd.hasCoordinates()) {
 					isAddressSearched = true;
-					addr.number = kd.getNumber();
+					addr.houseNumber = kd.getNumber();
 					isFinishing = true;
 					finishAndPutData();
 				}
@@ -192,14 +192,14 @@ public class SearchAutocompleteActivity extends Activity {
 				}
 			}
 			if (!isFromAdapter) {
-				if (addr.number == null || addr.number.equals("") && currentSelection != null && currentSelection.getNumber() != null) {
-					addr.number = currentSelection.getName();
+				if (addr.houseNumber == null || addr.houseNumber.equals("") && currentSelection != null && currentSelection.getNumber() != null) {
+					addr.houseNumber = currentSelection.getName();
 				}
 				finishEditing();
 			}
 
 			else if (currentSelection != null && currentSelection.getNumber() != null && !currentSelection.number.equals("")) {
-				addr.number = currentSelection.getNumber();
+				addr.houseNumber = currentSelection.getNumber();
 				finishEditing();
 			}
 		}
@@ -208,9 +208,9 @@ public class SearchAutocompleteActivity extends Activity {
 
 	private void finishEditing() {
 		progressBar.setVisibility(View.VISIBLE);
-		if (addr != null && (addr.number == null || addr.number.equals("")) && currentSelection != null
+		if (addr != null && (addr.houseNumber == null || addr.houseNumber.equals("")) && currentSelection != null
 				&& currentSelection instanceof KortforData && !((KortforData) currentSelection).isPlace()) {
-			addr.number = "1";
+			addr.houseNumber = "1";
 		}
 		performGeocode();
 	}
@@ -220,29 +220,29 @@ public class SearchAutocompleteActivity extends Activity {
 			@Override
 			public void run() {
 				isAddressSearched = true;
-				if (addr != null && addr.number != null && !addr.number.trim().equals("") && !isClose) {
+				if (addr != null && addr.houseNumber != null && !addr.houseNumber.trim().equals("") && !isClose) {
 					JsonNode node;
 					try {
 						if (currentSelection == null) {
 							currentSelection = new KortforData(AddressParser.addresWithoutNumber(textSrch.getText().toString()),
-									addr.number);
+									addr.houseNumber);
 						}
-						LOG.d("Street searchfor the number " + addr.number);
+						LOG.d("Street searchfor the number " + addr.houseNumber);
 						String urlString = "http://geo.oiorest.dk/adresser.json?q="
-								+ URLEncoder.encode(currentSelection.getStreet() + " " + addr.number, "UTF-8");
+								+ URLEncoder.encode(currentSelection.getStreet() + " " + addr.houseNumber, "UTF-8");
 						boolean coordinatesFound = false;
 						if (adapter != null && adapter.getCount() > 0 && adapter.getItem(0) instanceof KortforData) {
 							KortforData kd = (KortforData) adapter.getItem(0);
-							LOG.d("search first item number = " + kd.getNumber() + " parsed addres number = " + addr.number
+							LOG.d("search first item number = " + kd.getNumber() + " parsed addres number = " + addr.houseNumber
 									+ " first item lattitude = " + kd.getLatitude());
-							if (kd.getNumber() != null && kd.getNumber().equals(addr.number) && kd.hasCoordinates()) {
+							if (kd.getNumber() != null && kd.getNumber().equals(addr.houseNumber) && kd.hasCoordinates()) {
 								currentSelection.setLatitude(kd.getLatitude());
 								currentSelection.setLongitude(kd.getLongitude());
 								coordinatesFound = true;
 							}
 						}
 						if (!coordinatesFound) {
-							node = HTTPAutocompleteHandler.getOiorestGeocode(urlString, "" + addr.number);
+							node = HTTPAutocompleteHandler.getOiorestGeocode(urlString, "" + addr.houseNumber);
 							if (node != null) {
 								if (node.has("wgs84koordinat") && node.get("wgs84koordinat").has("bredde")) {
 									currentSelection.setLatitude(Double.parseDouble(node.get("wgs84koordinat").get("bredde").asText()));
@@ -511,13 +511,13 @@ public class SearchAutocompleteActivity extends Activity {
 				Intent intent = new Intent();
 				if (currentSelection != null) {
 					if (isAddressSearched && addr != null) {
-						intent.putExtra("number", addr.number);
+						intent.putExtra("number", addr.houseNumber);
 					}
 					if (currentSelection instanceof KortforData && !((KortforData) currentSelection).isPlace()) {
 						String name = currentSelection.getName();
-						if (addr != null && addr.number != null && !addr.number.equals("") && !addr.number.equals("1")
-								&& AddressParser.containsNumber(addr.number)) {
-							name += " " + addr.number;
+						if (addr != null && addr.houseNumber != null && !addr.houseNumber.equals("") && !addr.houseNumber.equals("1")
+								&& AddressParser.containsNumber(addr.houseNumber)) {
+							name += " " + addr.houseNumber;
 						}
 						if (currentSelection.getZip() != null && !currentSelection.getZip().equals("")) {
 							name += ", " + currentSelection.getZip();

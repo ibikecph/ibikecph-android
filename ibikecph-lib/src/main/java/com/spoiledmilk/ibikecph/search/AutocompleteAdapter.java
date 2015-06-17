@@ -199,7 +199,7 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			while (it.hasNext()) {
 				HistoryData sli = (HistoryData) it.next();
 				Address a = AddressParser.parseAddressRegex(sli.getName().replaceAll(",", ""));
-				sli.setName(a.street + " " + a.number);
+				sli.setName(a.street + " " + a.houseNumber);
 				sli.setAddress(((a.zip != null && !a.zip.equals("")) ? a.zip + " " : "") + a.city);
 				sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getLatitude(), sli.getLongitude())));
 				add(sli);
@@ -241,7 +241,7 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 				while (it.hasNext()) {
 					HistoryData sli = (HistoryData) it.next();
 					Address a = AddressParser.parseAddressRegex(sli.getName().replaceAll(",", ""));
-					sli.setName(a.street + " " + a.number);
+					sli.setName(a.street + " " + a.houseNumber);
 					sli.setAddress(((a.zip != null && !a.zip.equals("")) ? a.zip + " " : "") + a.city);
 					sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getLatitude(), sli.getLongitude())));
 					add(sli);
