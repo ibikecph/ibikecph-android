@@ -33,3 +33,6 @@ local.properties
 /gradle/
 /gradlew
 /gradlew.bat
+
+#git
+*.orig
