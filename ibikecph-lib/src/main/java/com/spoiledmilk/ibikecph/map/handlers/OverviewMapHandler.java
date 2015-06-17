@@ -154,7 +154,7 @@ public class OverviewMapHandler extends IBCMapHandler {
                 curMarker = m;
 
                 // Center the map around the marker
-                mapView.setCenter(location, true);
+                //mapView.setCenter(location, true);
 
                 showAddressInfoPane(address);
             }

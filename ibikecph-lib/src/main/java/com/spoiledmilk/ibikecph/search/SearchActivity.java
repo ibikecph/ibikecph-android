@@ -152,7 +152,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         if (historyData != null)
             new DB(SearchActivity.this).saveSearchHistory(historyData, new HistoryData(fromName, ALatitude, ALongitude), SearchActivity.this);
 
-
         // TODO: This sucks. It'd be nice to keep Address objects in the Recent buffer, rather than re-establishing here
 
         setResult(Activity.RESULT_OK, intent);
