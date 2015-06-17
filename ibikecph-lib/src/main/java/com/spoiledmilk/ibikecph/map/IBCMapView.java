@@ -61,6 +61,7 @@ public class IBCMapView extends MapView {
                 .setAttribution("© OpenStreetMap Contributors")
                 .setMinimumZoomLevel(1)
                 .setMaximumZoomLevel(17);
+        this.parentActivity = parent;
 
         this.setTileSource(ws);
         this.setCenter(new LatLng(Util.COPENHAGEN));
@@ -70,7 +71,6 @@ public class IBCMapView extends MapView {
         //this.setMapRotationEnabled(true);
         changeState(initialState);
 
-        this.parentActivity = parent;
     }
 
     /**

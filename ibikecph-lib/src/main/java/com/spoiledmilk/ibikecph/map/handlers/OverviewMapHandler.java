@@ -58,8 +58,7 @@ public class OverviewMapHandler extends IBCMapHandler {
         Log.d("JC", "Instantiating OverviewMapHandler");
 
         addGPSOverlay();
-
-        //showStatisticsInfoPane();
+        showStatisticsInfoPane();
     }
 
     private void showStatisticsInfoPane() {

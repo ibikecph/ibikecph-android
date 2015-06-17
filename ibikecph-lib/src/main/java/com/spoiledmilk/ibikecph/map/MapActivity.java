@@ -31,7 +31,6 @@ import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
-import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -103,12 +102,6 @@ public class MapActivity extends Activity implements iLanguageListener {
             public void onDrawerSlide(View drawerView, float slideOffset) {
             }
         });
-
-
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.add(R.id.infoPaneContainer, new TrackingInfoPaneFragment(), "InfoPane");
-        ft.commit();
-
     }
 
     /**
