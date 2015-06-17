@@ -28,7 +28,7 @@ import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 public class OverviewMapHandler extends IBCMapHandler {
     private Marker curMarker;
     private UserLocationOverlay locationOverlay;
-
+    boolean isWatchingAddress = false;
 
     public OverviewMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -44,6 +44,8 @@ public class OverviewMapHandler extends IBCMapHandler {
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
         ft.commit();
+
+        isWatchingAddress = false;
     }
 
     private void showAddressInfoPane(Address a) {
@@ -60,6 +62,8 @@ public class OverviewMapHandler extends IBCMapHandler {
 
         ft.replace(R.id.infoPaneContainer, adp);
         ft.commit();
+
+        isWatchingAddress = true;
     }
 
     public void addGPSOverlay() {
@@ -154,7 +158,7 @@ public class OverviewMapHandler extends IBCMapHandler {
                 curMarker = m;
 
                 // Center the map around the marker
-                //mapView.setCenter(location, true);
+                mapView.setCenter(location, true);
 
                 showAddressInfoPane(address);
             }
@@ -164,5 +168,22 @@ public class OverviewMapHandler extends IBCMapHandler {
 
             }
         });
+    }
+
+    /**
+     * If the user presses the back button we should clean up and return the map in the default state.
+     * @return
+     */
+    public boolean onBackPressed() {
+        if (isWatchingAddress) {
+            showStatisticsInfoPane();
+            removeMarker();
+
+            isWatchingAddress = false;
+
+            return false;
+        } else {
+            return true;
+        }
     }
 }

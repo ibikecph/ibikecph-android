@@ -44,4 +44,12 @@ public class AddressDisplayMapHandler extends IBCMapHandler {
     public void onLongPressMap(MapView mapView, ILatLng iLatLng) {
 
     }
+
+    /**
+     * If the user presses the back button we should clean up and return the map in the default state.
+     * @return
+     */
+    public boolean onBackPressed() {
+        return false;
+    }
 }
