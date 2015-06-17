@@ -94,7 +94,7 @@ public class Geocoder {
                     JsonNode node = mapper.readTree(response.toString());
 
                     SMRoute route = new SMRoute();
-                    route.init(Util.latLngToLocation(start), Util.latLngToLocation(end), routeListener, node);
+                    route.init(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), routeListener, node);
 
                     callback.onSuccess(route);
 

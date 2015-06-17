@@ -22,7 +22,7 @@ public class TrackingInfoPaneFragment extends InfoPaneFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.infopane_tracking_statistics, container);
+        View v = inflater.inflate(R.layout.infopane_tracking_statistics, container, false);
 
         // Get ridden distance and duration for tracks today: Start up by getting a Date object representing midnight
         Date midnight;

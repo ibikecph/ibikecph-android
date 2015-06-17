@@ -31,15 +31,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mapbox.mapboxsdk.api.ILatLng;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
 
 import java.io.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Util {
     public static final String TIME_FORMAT = "HH.mm";
@@ -180,8 +181,8 @@ public class Util {
         }).show();
     }
 
-    public static Location locationFromGeoPoint(LatLng geoPoint) {
-        return locationFromCoordinates(geoPoint.getLatitude() * (float) 1E-6, geoPoint.getLongitude() * (float) 1E-6);
+    public static Location locationFromGeoPoint(ILatLng geoPoint) {
+        return locationFromCoordinates(geoPoint.getLongitude() * (float) 1E-6, geoPoint.getLatitude() * (float) 1E-6);
     }
 
     public static Location locationFromCoordinates(double lat, double lng) {

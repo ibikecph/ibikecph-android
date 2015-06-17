@@ -5,11 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.search;
 
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,23 +15,17 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.analytics.tracking.android.EasyTracker;
-import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.MapFragmentBase;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.search.SearchListItem.nodeType;
 import com.spoiledmilk.ibikecph.util.DB;
@@ -53,8 +42,6 @@ public class SearchAutocompleteActivity extends Activity {
 	public static final int RESULT_AUTOTOCMPLETE_SET = 103;
 	public static final int RESULT_AUTOTOCMPLETE_NOT_SET = 104;
 
-	private Button btnClose;
-	private ImageButton btnClear;
 	private EditText textSrch;
 	private ListView listSearch;
 	private AutocompleteAdapter adapter;
@@ -75,15 +62,6 @@ public class SearchAutocompleteActivity extends Activity {
 		if (data != null) {
 			isA = data.getBoolean("isA", false);
 		}
-		btnClose = (Button) findViewById(R.id.btnClose);
-		btnClose.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				isClose = true;
-				finishEditing();
-			}
-		});
-		btnClear = (ImageButton) findViewById(R.id.btnClear);
 		textSrch = (EditText) findViewById(R.id.textLocation);
 		textSrch.addTextChangedListener(new MyTextWatcher());
 		textSrch.setImeActionLabel("Go", KeyEvent.KEYCODE_ENTER);
@@ -291,15 +269,9 @@ public class SearchAutocompleteActivity extends Activity {
 		}).start();
 	}
 
-	public void onClearTextClick(View v) {
-		textSrch.setText("");
-		btnClear.setVisibility(View.GONE);
-	}
-
 	@Override
 	public void onResume() {
 		super.onResume();
-		initStrings();
 		InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
 		imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 		progressBar.setVisibility(View.INVISIBLE);
@@ -309,11 +281,6 @@ public class SearchAutocompleteActivity extends Activity {
 	public void onPause() {
 		super.onPause();
 		hideKeyboard();
-	}
-
-	private void initStrings() {
-		btnClose.setText(IbikeApplication.getString("close"));
-		btnClose.setTypeface(IbikeApplication.getBoldFont());
 	}
 
 	public void updateListData(List<SearchListItem> list, String tag, Address addr) {
@@ -377,11 +344,6 @@ public class SearchAutocompleteActivity extends Activity {
 				}
 			}
 			addr = temp;
-			if (textSrch.getText().toString().length() != 0) {
-				btnClear.setVisibility(View.VISIBLE);
-			} else {
-				btnClear.setVisibility(View.GONE);
-			}
 		}
 
 		@Override

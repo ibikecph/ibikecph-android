@@ -20,7 +20,6 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.ObservableScrollView;
 import com.spoiledmilk.ibikecph.controls.ScrollViewListener;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
 
@@ -28,18 +27,21 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 
+/**
+ * This is the activity used for searching for an address. It would be very nice to integrate the same UI element as on
+ * the TrackingActivity for the listviews.
+ */
 public class SearchActivity extends Activity implements ScrollViewListener {
 
     public static final int RESULT_SEARCH_ROUTE = 102;
     private static final long HISTORY_FETCHING_TIMEOUT = 120 * 1000;
+    private static final int MAX_RECENT_ADDRESSES = 3;
 
-    protected MenuItem btnStart;
-    private ImageButton btnSwitch;
-    private TextView textCurrentLoc, textB, textA, textFavorites, textRecent, textShowMore, textOverviewHeader;
+    private TextView textCurrentLoc, textB, textA, textFavorites, textRecent, textOverviewHeader;
     private ListView listHistory, listFavorites;
     private double BLatitude = -1, BLongitude = -1, ALatitude = -1, ALongitude = -1;
     private HistoryData historyData;
-    private boolean isAsearched = false, isExpanded = false;
+    private boolean isAsearched = false;
     private ArrayList<SearchListItem> favorites;
     private ObservableScrollView scrollView;
     private int listItemHeight = 0;
@@ -56,7 +58,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         setContentView(R.layout.search_activity);
         listHistory = (ListView) findViewById(R.id.historyList);
         listFavorites = (ListView) findViewById(R.id.favoritesList);
-        textShowMore = (TextView) findViewById(R.id.textShowMore);
         textOverviewHeader = (TextView) findViewById(R.id.textOverviewHeader);
         scrollView = (ObservableScrollView) findViewById(R.id.scrollView);
         scrollView.setScrollViewListener(this);
@@ -106,31 +107,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         textFavorites = (TextView) findViewById(R.id.textFavorites);
         textRecent = (TextView) findViewById(R.id.textRecent);
 
-        btnSwitch = (ImageButton) findViewById(R.id.btnSwitch);
-        btnSwitch.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                LOG.d("Before switch (" + ALatitude + "," + ALongitude + ") to (" + BLatitude + "," + BLongitude + ")");
-                double temp = ALatitude;
-                ALatitude = BLatitude;
-                BLatitude = temp;
-                temp = ALongitude;
-                ALongitude = BLongitude;
-                BLongitude = temp;
-                String tempStr = textA.getText().toString();
-                if (textCurrentLoc.getVisibility() == View.VISIBLE) {
-                    tempStr = textCurrentLoc.getText().toString();
-                    textCurrentLoc.setVisibility(View.GONE);
-                    textA.setVisibility(View.VISIBLE);
-                    findViewById(R.id.imgCurrentLoc).setVisibility(View.GONE);
-                }
-                textA.setText(textB.getText().toString());
-                textB.setText(tempStr);
-            }
-
-        });
-
         if (IbikeApplication.getTracker() != null) {
             IbikeApplication.getTracker().sendEvent("Route", "Search", "", (long) 0);
         }
@@ -144,23 +120,10 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search_activity_actions, menu);
-        
-        menu.getItem(0).setTitle(IbikeApplication.getString("marker_start"));
-        this.btnStart = menu.getItem(0);
+
         return super.onCreateOptionsMenu(menu);
     }
- 
-    @Override
-    /**
-     * Handler for the menu items in the ActionBar. 
-     */
-    public boolean onOptionsItemSelected(MenuItem item) {
-	    if(item.getItemId() == R.id.btnActionStart) {
-	    	startButtonHandler();
-    		return true;
-    	}
-    	return false;
-    }
+
 
     /**
      * Handler for the Start routing button.
@@ -192,29 +155,9 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         intent.putExtra("toName", toName);
         if (historyData != null)
             new DB(SearchActivity.this).saveSearchHistory(historyData, new HistoryData(fromName, ALatitude, ALongitude), SearchActivity.this);
-
-        setResult(Activity.RESULT_OK, intent);
+        setResult(RESULT_SEARCH_ROUTE, intent);
         finish();
         overridePendingTransition(R.anim.slide_out_down, R.anim.fixed);
-    }
-    
-    @SuppressWarnings("deprecation")
-    private void enableSwitchButton(boolean b) {
-        btnSwitch.setEnabled(b);
-        if (b) {
-            if (android.os.Build.VERSION.SDK_INT >= 16) {
-                btnSwitch.setImageAlpha(255);
-            } else {
-                btnSwitch.setAlpha(255);
-            }
-
-        } else {
-            if (android.os.Build.VERSION.SDK_INT >= 16) {
-                btnSwitch.setImageAlpha(40);
-            } else {
-                btnSwitch.setAlpha(40);
-            }
-        }
     }
 
     @Override
@@ -236,14 +179,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             ALatitude = loc.getLatitude();
             ALongitude = loc.getLongitude();
         }
-        boolean switchEnabled = ALatitude != -1 && ALongitude != -1 && BLatitude != -1 && BLongitude != -1;
-        enableSwitchButton(switchEnabled);
 
-        boolean enableStart = BLongitude != -1 && BLatitude != -1;
-        if (btnStart != null) {
-        	btnStart.setEnabled(enableStart);
-        }
-        
         if (System.currentTimeMillis() - timestampHistoryFetched > HISTORY_FETCHING_TIMEOUT) {
             searchHistory = new ArrayList<SearchListItem>();
             tFetchSearchHistory thread = new tFetchSearchHistory();
@@ -265,13 +201,10 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                     toName = toName.substring(0, toName.indexOf(','));
                 BLatitude = hd.getLatitude();
                 BLongitude = hd.getLongitude();
-                btnStart.setEnabled(true);
                 
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Favorites", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
-                if (IbikeApplication.getService().hasValidLocation()) {
-                    enableSwitchButton(true);
-                }
+                startButtonHandler();
             }
 
         });
@@ -294,12 +227,10 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 if (toName.contains(",")) {
                     toName = toName.substring(0, toName.indexOf(','));
                 }
-                btnStart.setEnabled(true);
+
                 IbikeApplication.getTracker().sendEvent("Route", "Search", "Recent", (long) 0);
                 textB.setTypeface(IbikeApplication.getNormalFont());
-                if (IbikeApplication.getService().hasValidLocation()) {
-                    enableSwitchButton(true);
-                }
+                startButtonHandler();
             }
 
         });
@@ -310,56 +241,26 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     private void updateLayout() {
         if (listHistory.getAdapter() == null || listHistory.getAdapter().getCount() == 0) {
             listHistory.setVisibility(View.GONE);
-            findViewById(R.id.borderTopHistory).setVisibility(View.GONE);
         } else {
             listHistory.setVisibility(View.VISIBLE);
-            findViewById(R.id.borderTopHistory).setVisibility(View.VISIBLE);
         }
         if (listFavorites.getAdapter() == null || listFavorites.getAdapter().getCount() == 0) {
-            findViewById(R.id.borderTopFavorites).setVisibility(View.GONE);
             listFavorites.setVisibility(View.GONE);
-            textShowMore.setVisibility(View.GONE);
-            findViewById(R.id.borderTopFavorites).setVisibility(View.GONE);
         } else {
             listFavorites.setVisibility(View.VISIBLE);
-            findViewById(R.id.borderTopFavorites).setVisibility(View.VISIBLE);
         }
-
-        if (favorites == null || favorites.size() < 4) {
-            findViewById(R.id.showMoreContainer).setVisibility(View.GONE);
-            findViewById(R.id.btnShowMore).setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.showMoreContainer).setVisibility(View.VISIBLE);
-            findViewById(R.id.btnShowMore).setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void onShowMoreClick(View v) {
-        if (isExpanded) {
-            show3favorites();
-            textShowMore.setText(IbikeApplication.getString("show_more"));
-        } else {
-            textShowMore.setText(IbikeApplication.getString("show_less"));
-            HistoryAdapter adapter = new HistoryAdapter(SearchActivity.this, favorites);
-            listFavorites.setAdapter(adapter);
-        }
-        resizeLists();
-        isExpanded = !isExpanded;
     }
 
     private void initStrings() {
         textCurrentLoc.setText(IbikeApplication.getString("current_position"));
         textCurrentLoc.setTypeface(IbikeApplication.getNormalFont());
         textB.setHint(IbikeApplication.getString("search_to_placeholder"));
-        textB.setHintTextColor(getResources().getColor(R.color.HintColor));
         textB.setTypeface(IbikeApplication.getNormalFont());
         textFavorites.setText(IbikeApplication.getString("favorites"));
         textFavorites.setTypeface(IbikeApplication.getBoldFont());
         textRecent.setText(IbikeApplication.getString("recent_results"));
         textRecent.setTypeface(IbikeApplication.getBoldFont());
         textA.setTypeface(IbikeApplication.getNormalFont());
-        textShowMore.setText(IbikeApplication.getString("show_more"));
-        textShowMore.setTypeface(IbikeApplication.getNormalFont());
         ((TextView) findViewById(R.id.textOverviewHeader)).setTypeface(IbikeApplication.getBoldFont());
     }
 
@@ -399,6 +300,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                             if (toName.contains(",")) {
                                 toName = toName.substring(0, toName.indexOf(','));
                             }
+                            startButtonHandler();
                         }
                     } catch (Exception e) {
                         LOG.e(e.getLocalizedMessage());
@@ -430,7 +332,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                             SearchActivity.this.searchHistory.clear();
                             Iterator<SearchListItem> it = searchHistory.iterator();
                             int count = 0;
-                            while (it.hasNext() && count < 10) {
+                            while (it.hasNext() && count < MAX_RECENT_ADDRESSES) {
                                 SearchListItem sli = it.next();
                                 if (sli.getName().contains(".")) {
                                     continue;
@@ -515,16 +417,9 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
     private void show3favorites() {
         if (favorites != null && favorites.size() != 0) {
-            ArrayList<SearchListItem> shortList = new ArrayList<SearchListItem>();
-            for (int i = 0; i < favorites.size(); i++) {
-                shortList.add(favorites.get(i));
-                if (i == 2)
-                    break;
-            }
-            final HistoryAdapter adapter = new HistoryAdapter(SearchActivity.this, shortList);
+            final HistoryAdapter adapter = new HistoryAdapter(SearchActivity.this, favorites);
             listFavorites.setAdapter(adapter);
             resizeLists();
-
         }
         updateLayout();
     }

@@ -6,7 +6,9 @@
 package com.spoiledmilk.ibikecph.map;
 
 import android.annotation.SuppressLint;
-import android.app.*;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,8 +16,10 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.*;
-import android.widget.FrameLayout;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -27,10 +31,12 @@ import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
+import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
 
 import java.util.ArrayList;
 
@@ -50,7 +56,6 @@ public class MapActivity extends Activity implements iLanguageListener {
     private DrawerLayout drawerLayout;
     private MaterialMenuIcon materialMenu;
     private IBCMapView mapView;
-    private FrameLayout infoPaneContainer;
     private ArrayList<InfoPaneFragment> fragments = new ArrayList<InfoPaneFragment>();
 
     @Override
@@ -58,7 +63,6 @@ public class MapActivity extends Activity implements iLanguageListener {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.main_map_activity);
 
-        this.infoPaneContainer = (FrameLayout) findViewById(R.id.infoPaneContainer);
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.init(IBCMapView.MapState.DEFAULT, this);
 
@@ -67,26 +71,6 @@ public class MapActivity extends Activity implements iLanguageListener {
 
         // LeftMenu
         initLeftMenu(savedInstanceState);
-    }
-
-    /**
-     * Initializes the LeftMenu
-     * @param savedInstanceState
-     */
-    private void initLeftMenu(final Bundle savedInstanceState) {
-        leftMenu = getLeftMenu();
-
-        // Add the menu to the Navigation Drawer
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (savedInstanceState == null) {
-            fragmentTransaction.add(R.id.leftContainerDrawer, leftMenu);
-        } else {
-            fragmentTransaction.replace(R.id.leftContainerDrawer, leftMenu);
-        }
-        fragmentTransaction.commit();
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-    }
-
 
         // Check for crashes with Hockey
         if (Config.HOCKEY_UPDATES_ENABLED) {
@@ -120,7 +104,34 @@ public class MapActivity extends Activity implements iLanguageListener {
             }
         });
 
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.add(R.id.infoPaneContainer, new TrackingInfoPaneFragment(), "InfoPane");
+        ft.commit();
+
     }
+
+    /**
+     * Initializes the LeftMenu
+     * @param savedInstanceState
+     */
+    private void initLeftMenu(final Bundle savedInstanceState) {
+        leftMenu = getLeftMenu();
+
+        // Add the menu to the Navigation Drawer
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        if (savedInstanceState == null) {
+            fragmentTransaction.add(R.id.leftContainerDrawer, leftMenu);
+        } else {
+            fragmentTransaction.replace(R.id.leftContainerDrawer, leftMenu);
+        }
+        fragmentTransaction.commit();
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+    }
+
+
+
+
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
