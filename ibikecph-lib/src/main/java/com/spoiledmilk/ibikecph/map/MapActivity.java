@@ -129,9 +129,6 @@ public class MapActivity extends Activity implements iLanguageListener {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
     }
 
-
-
-
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
