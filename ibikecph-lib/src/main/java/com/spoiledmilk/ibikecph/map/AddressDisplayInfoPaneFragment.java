@@ -12,7 +12,7 @@ import com.spoiledmilk.ibikecph.search.Address;
  * This is the Fragment that appears when a user long-presses on the map. It shows the address that the user long-
  * pressed on, and allows her to 1) save a favorite on that address, and 2) navigate to it.
  */
-public class AddressDisplayInfoPaneFragment extends InfoPaneFragment {
+public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements View.OnClickListener {
 
     private TextView addressView;
 
@@ -26,10 +26,26 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment {
         Address a = (Address) getArguments().getSerializable("address");
 
         ((TextView) v.findViewById(R.id.addressLabel)).setText(a.getStreetAddress() + "\n" + a.getPostCodeAndCity());
+        v.findViewById(R.id.btnStartRoute).setOnClickListener(this);
 
         return v;
     }
 
+    public void btnStartRouteClicked(View v) {
+        Address a = (Address) getArguments().getSerializable("address");
 
 
+
+        ((MapActivity) this.getActivity()).mapView.showRoute(a);
+
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.btnStartRoute) {
+            btnStartRouteClicked(v);
+        }
+    }
 }

@@ -26,12 +26,12 @@ public class Address implements Serializable {
     public String city;
     public double lat;
     public double lon;
+    private ILatLng location;
 
     public ILatLng getLocation() {
         return location;
     }
 
-    private ILatLng location;
 
     public Address() {
 

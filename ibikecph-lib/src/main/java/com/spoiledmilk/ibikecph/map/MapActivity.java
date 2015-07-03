@@ -272,6 +272,9 @@ public class MapActivity extends Activity implements iLanguageListener {
             OverviewMapHandler overviewMapHandler = (OverviewMapHandler) this.mapView.getMapHandler();
             overviewMapHandler.onLongPressMap(this.mapView, destination);
 
+            // Center the map around the search result.
+            this.mapView.setCenter(destination, true);
+
             /*
             Log.d("JC", "Got coordinates to navigate to");
             if (data != null) {
@@ -286,7 +289,7 @@ public class MapActivity extends Activity implements iLanguageListener {
                         Log.d("JC", "Got SMRoute");
                         route.startStationName = extras.getString("fromName");
                         route.endStationName = extras.getString("toName");
-                        mapView.startRouting(route);
+                        mapView.showRoute(route);
                     }
 
                     @Override

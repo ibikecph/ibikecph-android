@@ -12,8 +12,6 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-        this.mapView.setZoom(10.0f);
 	}
 
     @Override

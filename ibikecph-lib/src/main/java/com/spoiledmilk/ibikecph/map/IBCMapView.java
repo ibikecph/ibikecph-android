@@ -2,6 +2,7 @@ package com.spoiledmilk.ibikecph.map;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Location;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -10,11 +11,13 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.TrackDisplayHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Util;
 
 /**
@@ -122,12 +125,33 @@ public class IBCMapView extends MapView {
      * and we zoom to the first instruction.
      * @param route
      */
-    public void startRouting(SMRoute route) {
-        boolean firstTrack = state != MapState.NAVIGATION_OVERVIEW;
-
+    public void showRoute(SMRoute route) {
         changeState(MapState.NAVIGATION_OVERVIEW);
 
         ((NavigationMapHandler) getMapHandler()).commenceRouting(route);
+    }
+
+    public void showRoute(Address a) {
+        // First we need an SMRoute. Let's create one from the address
+        Location curLoc = IbikeApplication.getService().getLastValidLocation();
+
+        // If we don't have a fresh GPS coordinate, go with the best that we have.
+        if (curLoc == null) {
+            curLoc = IbikeApplication.getService().getLastKnownLocation();
+        }
+
+        Geocoder.getRoute(new LatLng(curLoc), a.getLocation(), new Geocoder.RouteCallback() {
+            @Override
+            public void onSuccess(SMRoute route) {
+                showRoute(route);
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+
+        }, null);
     }
 
     public void stopRouting() {
