@@ -18,13 +18,13 @@ import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by jens on 5/30/15.
  */
-public class NavigationMapHandler extends IBCMapHandler implements SMRouteListener {
-
+public class NavigationMapHandler extends IBCMapHandler implements SMRouteListener, Serializable {
     private SMRoute route;
     private PathOverlay path;
     private NavigationOverviewInfoPane ifp;
@@ -121,10 +121,11 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
      * start the route from this view.
      * @param route
      */
-    public void commenceRouting(SMRoute route) {
+    public void showRouteOverview(SMRoute route) {
         this.route = route;
 
         route.setListener(this);
+
 
         // TODO: Fix confusion between Location and LatLng objects
         path = new PathOverlay(Color.RED, 10);
@@ -163,7 +164,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         ifp.setParent(this);
 
         Bundle b = new Bundle();
-        b.putString("endStationName", route.endStationName);
+        b.putSerializable("NavigationMapHandler", this);
         ifp.setArguments(b);
 
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
@@ -196,4 +197,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         cleanedUp = true;
     }
+
+    public SMRoute getRoute() {
+        return route;
+    }
+
 }

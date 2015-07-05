@@ -12,6 +12,8 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -46,7 +48,7 @@ import java.util.ArrayList;
  *
  */
 @SuppressLint("NewApi")
-public class MapActivity extends Activity implements iLanguageListener {
+public class MapActivity extends Activity implements iLanguageListener, LocationListener {
     public final static int REQUEST_SEARCH_ADDRESS = 2;
     public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
@@ -101,6 +103,10 @@ public class MapActivity extends Activity implements iLanguageListener {
             public void onDrawerSlide(View drawerView, float slideOffset) {
             }
         });
+
+
+        // Register the activity for getting GPS updates from the service
+        IbikeApplication.getService().addGPSListener(this);
     }
 
     /**
@@ -289,7 +295,7 @@ public class MapActivity extends Activity implements iLanguageListener {
                         Log.d("JC", "Got SMRoute");
                         route.startStationName = extras.getString("fromName");
                         route.endStationName = extras.getString("toName");
-                        mapView.showRoute(route);
+                        mapView.showRouteOverview(route);
                     }
 
                     @Override
@@ -318,5 +324,29 @@ public class MapActivity extends Activity implements iLanguageListener {
         if (mapView.getMapHandler().onBackPressed()) {
             super.onBackPressed();
         }
+    }
+
+
+    // This is called whenever the service has a new GPS coordinate
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    // TODO: Make another interface than LocationListener so that we don't have
+    // to implement these at this point
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 }

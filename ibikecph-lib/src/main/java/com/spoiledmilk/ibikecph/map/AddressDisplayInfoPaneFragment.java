@@ -34,10 +34,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
     public void btnStartRouteClicked(View v) {
         Address a = (Address) getArguments().getSerializable("address");
 
-
-
         ((MapActivity) this.getActivity()).mapView.showRoute(a);
-
     }
 
 

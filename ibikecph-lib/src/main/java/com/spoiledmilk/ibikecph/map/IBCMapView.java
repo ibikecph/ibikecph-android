@@ -6,6 +6,7 @@ import android.location.Location;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.widget.Toast;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
@@ -128,7 +129,7 @@ public class IBCMapView extends MapView {
     public void showRoute(SMRoute route) {
         changeState(MapState.NAVIGATION_OVERVIEW);
 
-        ((NavigationMapHandler) getMapHandler()).commenceRouting(route);
+        ((NavigationMapHandler) getMapHandler()).showRouteOverview(route);
     }
 
     public void showRoute(Address a) {
@@ -138,6 +139,12 @@ public class IBCMapView extends MapView {
         // If we don't have a fresh GPS coordinate, go with the best that we have.
         if (curLoc == null) {
             curLoc = IbikeApplication.getService().getLastKnownLocation();
+        }
+
+        // If we still don't have a fix, let the user know with a Toast
+        if (curLoc == null) {
+            Toast.makeText(IbikeApplication.getContext(), IbikeApplication.getString("error_no_gps_location"), Toast.LENGTH_LONG).show();
+            return;
         }
 
         Geocoder.getRoute(new LatLng(curLoc), a.getLocation(), new Geocoder.RouteCallback() {
@@ -152,6 +159,7 @@ public class IBCMapView extends MapView {
             }
 
         }, null);
+
     }
 
     public void stopRouting() {

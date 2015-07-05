@@ -1,20 +1,86 @@
-<RelativeLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="12dp">
-    <TextView
-            android:layout_width="wrap_content"
+        android:orientation="vertical"
+        >
+    <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/navigationOverviewAddress"
-            android:text="destination"
-            android:layout_centerVertical="true"/>
+            android:background="@color/white"
+            android:padding="12dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:id="@+id/navigationOverviewSource" android:text="source"
+                  android:paddingTop="2dp"
+                  android:paddingBottom="2dp" android:layout_alignTop="@+id/navigationOverviewGoButton"
+                  android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
+                  android:layout_toLeftOf="@+id/navigationOverviewGoButton"
+                  android:layout_toStartOf="@+id/navigationOverviewGoButton"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/navigationOverviewDestination"
+                android:text="destination"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:layout_below="@+id/navigationOverviewSource" android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"/>
 
-    <Button android:layout_width="wrap_content"
+        <ImageButton android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:text="go"
+                     android:id="@+id/navigationOverviewGoButton"
+                     android:layout_alignParentRight="true"
+                     android:src="@drawable/btn_route_go" android:background="@color/White"/>
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/navigationOverviewFastButton"
+                android:background="@color/White" android:src="@drawable/btn_route_fastest_enabled"
+                android:layout_below="@+id/navigationOverviewDestination" android:layout_toLeftOf="@+id/navigationOverviewCargoButton"
+                android:layout_toStartOf="@+id/navigationOverviewCargoButton" android:layout_marginRight="53dp"
+                android:layout_marginEnd="53dp"/>
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/navigationOverviewCargoButton"
+                android:src="@drawable/btn_route_cargo_disabled" android:background="@color/White"
+                android:layout_marginRight="67dp"
+                android:layout_marginEnd="67dp"
+                android:layout_below="@+id/navigationOverviewDestination" android:layout_toLeftOf="@+id/navigationOverviewGreenButton"
+                android:layout_toStartOf="@+id/navigationOverviewGreenButton"/>
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/navigationOverviewGreenButton"
+                android:background="@color/White" android:src="@drawable/btn_route_green_disabled"
+                android:layout_marginRight="53dp"
+                android:layout_marginEnd="53dp" android:layout_below="@+id/navigationOverviewDestination"
+                android:layout_alignRight="@+id/navigationOverviewSource"
+                android:layout_alignEnd="@+id/navigationOverviewSource"/>
+    </RelativeLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="go"
-            android:id="@+id/navigationOverviewGoButton"
-            android:layout_alignParentRight="true"
-            />
-</RelativeLayout>
+            android:layout_below="@+id/navigationOverviewCargoButton" android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" android:background="#f7f7f7" android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="length"
+                android:id="@+id/navigationOverviewRouteLength" android:layout_weight="3" android:gravity="center_horizontal"/>
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="duration"
+                android:id="@+id/navigationOverviewRouteDuration" android:layout_weight="3" android:gravity="center_horizontal"/>
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="eta"
+                android:id="@+id/navigationOverviewRouteETA" android:layout_weight="3" android:gravity="center_horizontal"/>
+    </LinearLayout>
+</LinearLayout>

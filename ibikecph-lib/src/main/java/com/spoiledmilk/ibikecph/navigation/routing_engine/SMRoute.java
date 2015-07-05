@@ -14,7 +14,6 @@ import com.spoiledmilk.ibikecph.map.SMHttpRequest;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest.RouteInfo;
 import com.spoiledmilk.ibikecph.map.SMHttpRequestListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction.TurnDirection;
-import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -849,5 +848,14 @@ public class SMRoute implements SMHttpRequestListener {
     // }
     // LOG.d("///////////////////////////////////////////");
     // }
+
+
+    public float getTripDistance() {
+        return tripDistance;
+    }
+
+    public int getEstimatedRouteDistance() {
+        return estimatedRouteDistance;
+    }
 
 }

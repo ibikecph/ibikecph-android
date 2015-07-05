@@ -31,7 +31,7 @@ public class BikeLocationService extends Service implements LocationListener {
     Location prevLastValidLocation;
     Location lastValidLocation;
 
-    boolean locationServicesEnabledOnPhone;
+    public  boolean locationServicesEnabledOnPhone;
     ArrayList<LocationListener> gpsListeners = new ArrayList<LocationListener>();
     boolean isListeningForGPS = false;
     private static BikeLocationService instance;
