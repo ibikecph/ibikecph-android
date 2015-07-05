@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
@@ -32,6 +33,9 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         SMRoute route = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).getRoute();
 
         View v = inflater.inflate(R.layout.infopane_navigation_overview, container, false);
+
+        TextView sourceView = (TextView) v.findViewById(R.id.navigationOverviewSource);
+        sourceView.setText(IbikeApplication.getString("current_position"));
 
         TextView addressView = (TextView) v.findViewById(R.id.navigationOverviewDestination);
         addressView.setText(route.endStationName);

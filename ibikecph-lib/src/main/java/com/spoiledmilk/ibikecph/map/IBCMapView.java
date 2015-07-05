@@ -132,7 +132,7 @@ public class IBCMapView extends MapView {
         ((NavigationMapHandler) getMapHandler()).showRouteOverview(route);
     }
 
-    public void showRoute(Address a) {
+    public void showRoute(final Address a) {
         // First we need an SMRoute. Let's create one from the address
         Location curLoc = IbikeApplication.getService().getLastValidLocation();
 
@@ -150,6 +150,7 @@ public class IBCMapView extends MapView {
         Geocoder.getRoute(new LatLng(curLoc), a.getLocation(), new Geocoder.RouteCallback() {
             @Override
             public void onSuccess(SMRoute route) {
+                route.endStationName = a.getStreetAddress();
                 showRoute(route);
             }
 

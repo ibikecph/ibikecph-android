@@ -166,7 +166,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         Bundle b = new Bundle();
         b.putSerializable("NavigationMapHandler", this);
         ifp.setArguments(b);
-
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.infoPaneContainer, ifp);
