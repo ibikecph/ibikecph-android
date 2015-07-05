@@ -6,6 +6,8 @@
 package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
 import android.location.Location;
+import android.location.LocationListener;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 // TODO: This code comes from previous vendor. It's a mess. /jc
-public class SMRoute implements SMHttpRequestListener {
+public class SMRoute implements SMHttpRequestListener, LocationListener {
 
 	public static final int MAX_DISTANCE_FROM_PATH = 20;
     public static final int MIN_DISTANCE_FOR_RECALCULATION = 20;
@@ -91,6 +93,8 @@ public class SMRoute implements SMHttpRequestListener {
         reachedDestination = false;
         waypointStation1 = -1;
         waypointStation2 = -1;
+
+        IbikeApplication.getService().addGPSListener(this);
     }
 
     public void init(Location start, Location end, SMRouteListener listener, JsonNode routeJSON) {
@@ -494,6 +498,8 @@ public class SMRoute implements SMHttpRequestListener {
                 if (listener != null) {
                     reachedDestination = true;
                     listener.reachedDestination();
+
+                    IbikeApplication.getService().removeGPSListener(this);
                 }
                 return;
             } else {
@@ -502,6 +508,8 @@ public class SMRoute implements SMHttpRequestListener {
                 if (listener != null) {
                     reachedDestination = true;
                     listener.reachedDestination();
+
+                    IbikeApplication.getService().removeGPSListener(this);
                 }
                 return;
             }
@@ -858,4 +866,23 @@ public class SMRoute implements SMHttpRequestListener {
         return estimatedRouteDistance;
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        this.visitLocation(location);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
 }

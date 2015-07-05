@@ -12,6 +12,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
@@ -72,41 +73,48 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     //// SMRouteListener methods
     @Override
     public void updateTurn(boolean firstElementRemoved) {
-
+        Log.d("JC", "NavigationMapHandler updateTurn");
     }
 
     @Override
     public void reachedDestination() {
+        Log.d("JC", "NavigationMapHandler reachedDestination");
 
     }
 
     @Override
     public void updateRoute() {
+        Log.d("JC", "NavigationMapHandler updateRoute");
 
     }
 
     @Override
     public void startRoute() {
+        Log.d("JC", "NavigationMapHandler startRoute");
 
     }
 
     @Override
     public void routeNotFound() {
+        Log.d("JC", "NavigationMapHandler routeNotFound");
 
     }
 
     @Override
     public void routeRecalculationStarted() {
+        Log.d("JC", "NavigationMapHandler routeRecalculationStarted");
 
     }
 
     @Override
     public void routeRecalculationDone() {
+        Log.d("JC", "NavigationMapHandler routeRecalculationDone");
 
     }
 
     @Override
     public void serverError() {
+        Log.d("JC", "NavigationMapHandler serverError");
 
     }
 
@@ -193,6 +201,11 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // And remove the fragment
         mapView.getParentActivity().getFragmentManager().beginTransaction().remove(ifp).commit();
+
+        if (this.route != null) {
+            IbikeApplication.getService().removeGPSListener(route);
+            route = null;
+        }
 
         cleanedUp = true;
     }

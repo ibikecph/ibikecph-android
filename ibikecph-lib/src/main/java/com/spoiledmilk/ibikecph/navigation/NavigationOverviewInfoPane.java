@@ -70,7 +70,6 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             lengthText.setText(String.format("%d m", (int) distance));
         }
 
-
         // Set the duration label
         float duration = route.getEstimatedArrivalTime();
         durationText.setText(TrackListAdapter.durationToFormattedTime(duration));
@@ -95,7 +94,6 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
      */
     @Override
     public void onClick(View v) {
-
         disableAllRouteButtons();
 
         if (v.getId() == R.id.navigationOverviewFastButton)  {
