@@ -185,8 +185,8 @@ public class HTTPAutocompleteHandler {
 				urlString += "adresse"; // address search
 			}
 
-			urlString += "&vejnavn=*" + URLEncoder.encode(address.street, "UTF-8") + "*";
-
+            // TODO: Removed a wildcard in the beginning of the search query.
+			urlString += "&vejnavn=" + URLEncoder.encode(address.street, "UTF-8") + "*";
 			// urlString = "http://kortforsyningen.kms.dk/?servicename=RestGeokeys_v2&method=adresse&vejnavn=*"
 			// + URLEncoder.encode(address.street, "UTF-8") + "*";
 
@@ -198,10 +198,10 @@ public class HTTPAutocompleteHandler {
 					+ Util.limitDecimalPlaces(currentLocation.getLatitude(), 6) + ""
 					+ "&georef=EPSG:4326&outgeoref=EPSG:4326&login=ibikecph&password=Spoiledmilk123&hits=10";
 
-			if (address.zip != null & !address.zip.equals("")) {
+			if (address.zip != null && !address.zip.equals("")) {
 				urlString = urlString + "&postnr=" + address.zip;
 			}
-			if (address.city != null & !address.city.equals("") && !address.city.equals(address.street)) {
+			if (address.city != null && !address.city.equals("") && !address.city.equals(address.street)) {
 				// urlString = urlString + "&by=" + URLEncoder.encode(address.city.trim(), "UTF-8") + "*";
 				urlString = urlString + "&postdist=*" + URLEncoder.encode(address.city.trim(), "UTF-8") + "*";
 			}
@@ -217,7 +217,7 @@ public class HTTPAutocompleteHandler {
 						list.add(features.get(i));
 				}
 			}
-		} catch (Exception e) {
+		} catch (UnsupportedEncodingException e) {
 			if (e != null && e.getLocalizedMessage() != null)
 				LOG.e(e.getLocalizedMessage());
 		}
@@ -232,7 +232,8 @@ public class HTTPAutocompleteHandler {
 		}
 		try {
 
-			urlString = "http://kortforsyningen.kms.dk/?servicename=RestGeokeys_v2&method=sted&stednavn=" + "*"
+            // TODO: Removed a wildcard
+			urlString = "http://kortforsyningen.kms.dk/?servicename=RestGeokeys_v2&method=sted&stednavn="
 					+ URLEncoder.encode(address.street, "UTF-8") + "*&geop=" + ""
 					+ Util.limitDecimalPlaces(currentLocation.getLongitude(), 6) + "," + ""
 					+ Util.limitDecimalPlaces(currentLocation.getLatitude(), 6)

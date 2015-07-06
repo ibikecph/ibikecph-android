@@ -179,9 +179,15 @@ public class BikeLocationService extends Service implements LocationListener {
         Location locNetwork = this.androidLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         Location ret;
 
-        if (locGPS == null && locNetwork == null) {
+        if (locGPS != null && locNetwork != null) {
+            if (locGPS.getTime() < locNetwork.getTime()) {
+                return locNetwork;
+            } else {
+                return locGPS;
+            }
+        } else if (locGPS == null && locNetwork == null) {
             return null;
-        } else if (locGPS == null || locGPS.getTime() < locNetwork.getTime()) {
+        } else if (locGPS == null && locNetwork != null) {
             return locNetwork;
         } else {
             return locGPS;

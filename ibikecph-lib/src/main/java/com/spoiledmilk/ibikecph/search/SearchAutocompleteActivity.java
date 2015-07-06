@@ -18,15 +18,15 @@ import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.search.SearchListItem.nodeType;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -314,10 +314,10 @@ public class SearchAutocompleteActivity extends Activity {
 				adapter.clear();
 				if (textSrch.getText().toString().length() >= 2) {
 					final Location loc1;
-					if (SMLocationManager.getInstance().hasValidLocation()) {
-						loc1 = SMLocationManager.getInstance().getLastValidLocation();
-					} else if (SMLocationManager.getInstance().getLastKnownLocation() != null) {
-						loc1 = SMLocationManager.getInstance().getLastKnownLocation();
+					if (IbikeApplication.getService().hasValidLocation()) {
+						loc1 = IbikeApplication.getService().getLastValidLocation();
+					} else if (IbikeApplication.getService().getLastKnownLocation() != null) {
+						loc1 = IbikeApplication.getService().getLastKnownLocation();
 					} else {
 						loc1 = Util.COPENHAGEN;
 					}

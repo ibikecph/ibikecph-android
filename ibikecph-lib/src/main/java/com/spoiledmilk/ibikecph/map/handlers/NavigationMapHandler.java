@@ -162,8 +162,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         mapView.setCenter(new LatLng(start), true);
         mapView.setZoom(18f);
 
-        mapView.getGPSOverlay().setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
         mapView.addGPSOverlay();
+        mapView.getGPSOverlay().setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
     }
 
     /**
