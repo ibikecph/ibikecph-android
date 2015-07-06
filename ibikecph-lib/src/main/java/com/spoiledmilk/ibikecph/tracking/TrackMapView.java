@@ -33,7 +33,8 @@ public class TrackMapView extends Activity {
         int track_position = this.getIntent().getIntExtra("track_position", -1);
 
         mapView = (IBCMapView) findViewById(R.id.mapview);
-        mapView.init(IBCMapView.MapState.TRACK_DISPLAY, null);
+        mapView.init(IBCMapView.MapState.TRACK_DISPLAY, this);
+        //mapView.setMaxZoomLevel(19f);
 
         // Get the route
         Realm realm = Realm.getInstance(this);
@@ -43,9 +44,7 @@ public class TrackMapView extends Activity {
         tracks.sort("timestamp", false);
 
         Track track = tracks.get(track_position);
-        PathOverlay path = new PathOverlay(Color.RED, 5);
-
-        LatLng center = null;
+        PathOverlay path = new PathOverlay(Color.RED, 10);
 
         /**
          * Convert the list of points to a list of LatLng objects. This is used for drawing the path and creating the

@@ -6,13 +6,17 @@
 package com.spoiledmilk.cykelsuperstier.map;
 
 import android.os.Bundle;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 
 public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
+        super.onCreate(savedInstanceState);
+
+        super.mapView.setCenter(new LatLng(55.74, 12.424));
+        super.mapView.setZoom(11.3f);
+    }
 
     @Override
     public void onStart() {

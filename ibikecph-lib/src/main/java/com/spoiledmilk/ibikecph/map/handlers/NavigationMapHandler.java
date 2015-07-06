@@ -138,13 +138,20 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // TODO: Fix confusion between Location and LatLng objects
         PathOverlay path = new PathOverlay(Color.RED, 10);
+        PathOverlay walkingPath = new PathOverlay(Color.GRAY, 10);
         ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
+
+        // Add a waypoint at the user's current position
+        walkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
+        walkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
+
         for (Location loc : route.waypoints) {
             path.addPoint(loc.getLatitude(), loc.getLongitude());
             waypoints.add(new LatLng(loc));
         }
 
         // Show the whole route, zooming to make it fit
+        this.mapView.getOverlays().add(walkingPath);
         this.mapView.getOverlays().add(path);
         this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
 
