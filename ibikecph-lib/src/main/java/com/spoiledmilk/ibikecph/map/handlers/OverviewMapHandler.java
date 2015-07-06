@@ -10,9 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Marker;
-import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -27,7 +25,6 @@ import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
  */
 public class OverviewMapHandler extends IBCMapHandler {
     private Marker curMarker;
-    private UserLocationOverlay locationOverlay;
     boolean isWatchingAddress = false;
 
     public OverviewMapHandler(IBCMapView mapView) {
@@ -35,7 +32,7 @@ public class OverviewMapHandler extends IBCMapHandler {
 
         Log.d("JC", "Instantiating OverviewMapHandler");
 
-        addGPSOverlay();
+        mapView.addGPSOverlay();
         showStatisticsInfoPane();
     }
 
@@ -66,18 +63,6 @@ public class OverviewMapHandler extends IBCMapHandler {
         isWatchingAddress = true;
     }
 
-    public void addGPSOverlay() {
-        GpsLocationProvider pr = new GpsLocationProvider(this.mapView.getContext());
-        locationOverlay = new UserLocationOverlay(pr, this.mapView);
-
-        locationOverlay.enableMyLocation();
-        locationOverlay.setDrawAccuracyEnabled(true);
-        locationOverlay.enableFollowLocation();
-        locationOverlay.setPersonBitmap( BitmapFactory.decodeResource(this.mapView.getResources(), R.drawable.tracking_dot));
-        this.mapView.getOverlays().add(locationOverlay);
-        this.mapView.invalidate();
-    }
-
     @Override
     public void destructor() {
         Log.d("JC", "Destructing OverviewMapHandler");
@@ -88,13 +73,7 @@ public class OverviewMapHandler extends IBCMapHandler {
             curMarker = null;
         }
 
-        // Remove the GPS overlay
-        if (locationOverlay != null) {
-            locationOverlay.disableFollowLocation();
-            this.mapView.getOverlays().remove(locationOverlay);
-            this.mapView.invalidate();
-            locationOverlay=null;
-        }
+        mapView.removeGPSOverlay();
     }
 
     @Override

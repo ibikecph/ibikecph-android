@@ -10,7 +10,9 @@ import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
+import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -26,9 +28,8 @@ import java.util.ArrayList;
  * Created by jens on 5/30/15.
  */
 public class NavigationMapHandler extends IBCMapHandler implements SMRouteListener, Serializable {
-    private SMRoute route;
-    private PathOverlay path;
-    private NavigationOverviewInfoPane ifp;
+    private UserLocationOverlay userLocationOverlay;
+    private static SMRoute route; // TODO: Static is bad, but we'll never have two NavigationMapHandlers anyway.
     private boolean cleanedUp = true;
 
     public NavigationMapHandler(IBCMapView mapView) {
@@ -136,7 +137,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
 
         // TODO: Fix confusion between Location and LatLng objects
-        path = new PathOverlay(Color.RED, 10);
+        PathOverlay path = new PathOverlay(Color.RED, 10);
         ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
         for (Location loc : route.waypoints) {
             path.addPoint(loc.getLatitude(), loc.getLongitude());
@@ -159,24 +160,30 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         // Zoom to the first waypoint
         Location start = route.getWaypoints().get(0);
         mapView.setCenter(new LatLng(start), true);
-        mapView.setZoom(mapView.getMaxZoomLevel());
+        mapView.setZoom(18f);
 
+        mapView.getGPSOverlay().setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
+        mapView.addGPSOverlay();
     }
 
     /**
      * Sets up a NavigationOverviewInfoPane that shows the destination of the route and allows the user to press "go"
      */
     public void initInfopane() {
+        NavigationOverviewInfoPane ifp;
+
         // Add info to the infoPane
         ifp = new NavigationOverviewInfoPane();
+
         ifp.setParent(this);
 
         Bundle b = new Bundle();
         b.putSerializable("NavigationMapHandler", this);
         ifp.setArguments(b);
+
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.infoPaneContainer, ifp);
+        ft.replace(R.id.infoPaneContainer, ifp, "NavigationOverviewInfoPane");
         ft.commit();
     }
 
@@ -196,11 +203,16 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void cleanUp() {
         if (cleanedUp) return;
 
-        this.mapView.getOverlays().remove(path);
+        // remove any path overlays
+        for (Overlay overlay: this.mapView.getOverlays()) {
+            if (overlay instanceof PathOverlay) {
+                this.mapView.getOverlays().remove(overlay);
+            }
+        }
         this.mapView.invalidate();
 
         // And remove the fragment
-        mapView.getParentActivity().getFragmentManager().beginTransaction().remove(ifp).commit();
+        mapView.getParentActivity().getFragmentManager().beginTransaction().remove(getInfoPane()).commit();
 
         if (this.route != null) {
             IbikeApplication.getService().removeGPSListener(route);
@@ -210,8 +222,15 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         cleanedUp = true;
     }
 
+    public NavigationOverviewInfoPane getInfoPane() {
+        return (NavigationOverviewInfoPane) mapView.getParentActivity().getFragmentManager().findFragmentByTag("NavigationOverviewInfoPane");
+    }
+
     public SMRoute getRoute() {
         return route;
     }
+
+
+
 
 }

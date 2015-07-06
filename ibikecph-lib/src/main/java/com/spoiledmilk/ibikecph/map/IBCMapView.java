@@ -2,6 +2,7 @@ package com.spoiledmilk.ibikecph.map;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -9,10 +10,13 @@ import android.util.Log;
 import android.widget.Toast;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
@@ -32,6 +36,8 @@ import com.spoiledmilk.ibikecph.util.Util;
  * every state change of the map.
  */
 public class IBCMapView extends MapView {
+
+    private UserLocationOverlay userLocationOverlay;
 
     public enum MapState {
         DEFAULT,
@@ -173,6 +179,41 @@ public class IBCMapView extends MapView {
 
     public Activity getParentActivity() {
         return parentActivity;
+    }
+
+    /**
+     * Adds a GPS location dot.
+     */
+    public UserLocationOverlay addGPSOverlay() {
+        GpsLocationProvider pr = new GpsLocationProvider(this.getContext());
+        userLocationOverlay = new UserLocationOverlay(pr, this);
+
+        userLocationOverlay.enableMyLocation();
+        userLocationOverlay.setDrawAccuracyEnabled(true);
+        userLocationOverlay.enableFollowLocation();
+        userLocationOverlay.setPersonBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.tracking_dot));
+
+        this.getOverlays().add(userLocationOverlay);
+        this.invalidate();
+
+        return userLocationOverlay;
+    }
+
+    /**
+     * Removed the stored GPS overlay from the map view.
+     */
+    public void removeGPSOverlay() {
+        if (userLocationOverlay != null) {
+            userLocationOverlay.disableFollowLocation();
+            this.getOverlays().remove(userLocationOverlay);
+            this.invalidate();
+        }
+
+        userLocationOverlay = null;
+    }
+
+    public UserLocationOverlay getGPSOverlay() {
+        return userLocationOverlay;
     }
 
 }
