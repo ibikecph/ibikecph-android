@@ -135,7 +135,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         route.setListener(this);
 
-
         // TODO: Fix confusion between Location and LatLng objects
         PathOverlay path = new PathOverlay(Color.RED, 10);
         PathOverlay walkingPath = new PathOverlay(Color.GRAY, 10);

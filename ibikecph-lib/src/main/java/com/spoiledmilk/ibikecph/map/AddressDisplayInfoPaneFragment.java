@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.search.Address;
 
@@ -32,9 +34,12 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
     }
 
     public void btnStartRouteClicked(View v) {
-        Address a = (Address) getArguments().getSerializable("address");
-
-        ((MapActivity) this.getActivity()).mapView.showRoute(a);
+        if (IbikeApplication.getService().hasValidLocation()) {
+            Address a = (Address) getArguments().getSerializable("address");
+            ((MapActivity) this.getActivity()).mapView.showRoute(a);
+        } else {
+            Toast.makeText(IbikeApplication.getContext(), IbikeApplication.getString("error_no_gps_location"), Toast.LENGTH_LONG).show();
+        }
     }
 
 

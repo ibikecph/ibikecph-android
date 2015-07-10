@@ -2,17 +2,13 @@ package com.spoiledmilk.ibikecph.map.handlers;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.views.MapView;
-import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.Geocoder;
@@ -124,20 +120,13 @@ public class OverviewMapHandler extends IBCMapHandler {
                 Marker m = new Marker(address.getStreetAddress(), address.getPostCodeAndCity(), (LatLng) location);
 
                 // Set a marker
-                Bitmap bitmap = BitmapFactory.decodeResource(IbikeApplication.getContext().getResources(), R.drawable.marker_finish);
-                Bitmap newImage = Bitmap.createBitmap(bitmap, 0, 0, 38, 38);
-                Drawable d = new BitmapDrawable(IbikeApplication.getContext().getResources(), newImage);
-
-                m.setImage(d);
+                m.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_finish)));
                 mapView.addMarker(m);
 
                 // Invalidate the view so the marker gets drawn.
                 mapView.invalidate();
 
                 curMarker = m;
-
-                // Center the map around the marker
-                //mapView.setCenter(location, true);
 
                 showAddressInfoPane(address);
             }
