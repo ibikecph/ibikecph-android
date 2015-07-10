@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
@@ -30,6 +31,11 @@ public class OverviewMapHandler extends IBCMapHandler {
 
         mapView.addGPSOverlay();
         showStatisticsInfoPane();
+
+        View userTrackingButton = mapView.getParentActivity().findViewById(R.id.userTrackingButton);
+        if (userTrackingButton != null) {
+            userTrackingButton.setVisibility(View.VISIBLE);
+        }
     }
 
     private void showStatisticsInfoPane() {
@@ -68,6 +74,12 @@ public class OverviewMapHandler extends IBCMapHandler {
             mapView.removeMarker(curMarker);
             curMarker = null;
         }
+
+        View userTrackingButton = mapView.getParentActivity().findViewById(R.id.userTrackingButton);
+        if (userTrackingButton != null) {
+            userTrackingButton.setVisibility(View.GONE);
+        }
+
 
         mapView.removeGPSOverlay();
     }

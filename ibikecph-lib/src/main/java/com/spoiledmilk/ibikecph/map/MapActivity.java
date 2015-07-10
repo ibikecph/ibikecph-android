@@ -392,7 +392,6 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener, Lo
      * Called when the user scrolls the map. Updates the compass.
      */
     public void updateUserTrackingState() {
-        Log.d("JC", "updateUserTrackingState");
         UserLocationOverlay.TrackingMode curMode = this.mapView.getUserLocationTrackingMode();
         ImageButton userTrackingButton = (ImageButton) this.findViewById(R.id.userTrackingButton);
 
