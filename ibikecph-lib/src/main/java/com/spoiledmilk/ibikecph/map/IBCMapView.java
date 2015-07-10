@@ -47,7 +47,7 @@ public class IBCMapView extends MapView {
 
     private MapState state = MapState.DEFAULT;
     private IBCMapHandler curHandler;
-    private Activity parentActivity;
+    private IBCMapActivity parentActivity;
 
     protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase tileProvider, Handler tileRequestCompleteHandler, AttributeSet attrs) {
         super(aContext, tileSizePixels, tileProvider, tileRequestCompleteHandler, attrs);
@@ -65,7 +65,7 @@ public class IBCMapView extends MapView {
     /**
      * Do some initializations that are always needed
      */
-    public void init(MapState initialState, Activity parent) {
+    public void init(MapState initialState, IBCMapActivity parent) {
         WebSourceTileLayer ws = new WebSourceTileLayer("ibikecph", "http://tiles.ibikecph.dk/tiles/{z}/{x}/{y}.png");
         ws.setName("OpenStreetMap")
                 .setAttribution("© OpenStreetMap Contributors")
@@ -186,7 +186,7 @@ public class IBCMapView extends MapView {
      */
     public UserLocationOverlay addGPSOverlay() {
         GpsLocationProvider pr = new GpsLocationProvider(this.getContext());
-        userLocationOverlay = new UserLocationOverlay(pr, this);
+        userLocationOverlay = new IBCUserLocationOverlay(pr, this);
 
         this.setUserLocationEnabled(true);
 
@@ -194,6 +194,8 @@ public class IBCMapView extends MapView {
         userLocationOverlay.setDrawAccuracyEnabled(true);
         userLocationOverlay.enableFollowLocation();
         userLocationOverlay.setPersonBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.tracking_dot));
+
+
 
         this.getOverlays().add(userLocationOverlay);
         this.invalidate();
@@ -212,6 +214,7 @@ public class IBCMapView extends MapView {
         }
 
         userLocationOverlay = null;
+
     }
 
     public UserLocationOverlay getGPSOverlay() {

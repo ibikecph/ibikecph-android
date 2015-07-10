@@ -1,6 +1,5 @@
 package com.spoiledmilk.ibikecph.tracking;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +11,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.IBCMapActivity;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
@@ -21,7 +21,7 @@ import io.realm.RealmResults;
 import java.util.ArrayList;
 
 
-public class TrackMapView extends Activity {
+public class TrackMapView extends IBCMapActivity {
     IBCMapView mapView ;
     BoundingBox bbox ;
 

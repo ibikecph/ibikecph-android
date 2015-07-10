@@ -6,7 +6,6 @@
 package com.spoiledmilk.ibikecph.map;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
@@ -21,8 +20,13 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
+import com.mapbox.mapboxsdk.events.MapListener;
+import com.mapbox.mapboxsdk.events.RotateEvent;
+import com.mapbox.mapboxsdk.events.ScrollEvent;
+import com.mapbox.mapboxsdk.events.ZoomEvent;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -49,7 +53,7 @@ import java.util.ArrayList;
  *
  */
 @SuppressLint("NewApi")
-public class MapActivity extends Activity implements iLanguageListener, LocationListener {
+public class MapActivity extends IBCMapActivity implements iLanguageListener, LocationListener {
     public final static int REQUEST_SEARCH_ADDRESS = 2;
     public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
@@ -108,6 +112,24 @@ public class MapActivity extends Activity implements iLanguageListener, Location
 
         // Register the activity for getting GPS updates from the service
         IbikeApplication.getService().addGPSListener(this);
+
+        // When scrolling the map, make sure that the compass icon is updated.
+        this.mapView.addListener(new MapListener() {
+            @Override
+            public void onScroll(ScrollEvent scrollEvent) {
+                updateUserTrackingState();
+            }
+
+            @Override
+            public void onZoom(ZoomEvent zoomEvent) {
+                updateUserTrackingState();
+            }
+
+            @Override
+            public void onRotate(RotateEvent rotateEvent) {
+                updateUserTrackingState();
+            }
+        });
     }
 
     /**
@@ -327,21 +349,6 @@ public class MapActivity extends Activity implements iLanguageListener, Location
         }
     }
 
-    public void userTrackingButtonOnClick(View v) {
-        UserLocationOverlay.TrackingMode curMode = this.mapView.getUserLocationTrackingMode();
-
-        if (curMode == UserLocationOverlay.TrackingMode.NONE) {
-            // this.mapView.setUserLocationEnabled(true);
-
-            this.mapView.setUserLocationEnabled(true);
-            this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
-        } else {
-            this.mapView.setUserLocationEnabled(false);
-            this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.NONE);
-        }
-    }
-
-
     // This is called whenever the service has a new GPS coordinate
     @Override
     public void onLocationChanged(Location location) {
@@ -364,4 +371,37 @@ public class MapActivity extends Activity implements iLanguageListener, Location
     public void onProviderDisabled(String provider) {
 
     }
+
+    public void userTrackingButtonOnClick(View v) {
+        UserLocationOverlay.TrackingMode curMode = this.mapView.getUserLocationTrackingMode();
+
+        if (curMode == UserLocationOverlay.TrackingMode.NONE) {
+            //this.mapView.setUserLocationEnabled(true);
+            this.mapView.getUserLocationOverlay().enableFollowLocation();
+            this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
+        } else {
+            //this.mapView.setUserLocationEnabled(false);
+            this.mapView.getUserLocationOverlay().disableFollowLocation();
+            this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.NONE);
+        }
+
+        updateUserTrackingState();
+    }
+
+    /**
+     * Called when the user scrolls the map. Updates the compass.
+     */
+    public void updateUserTrackingState() {
+        Log.d("JC", "updateUserTrackingState");
+        UserLocationOverlay.TrackingMode curMode = this.mapView.getUserLocationTrackingMode();
+        ImageButton userTrackingButton = (ImageButton) this.findViewById(R.id.userTrackingButton);
+
+        if (curMode == UserLocationOverlay.TrackingMode.NONE) {
+            userTrackingButton.setImageDrawable(getResources().getDrawable(R.drawable.compass_not_tracking));
+        } else  {
+            userTrackingButton.setImageDrawable(getResources().getDrawable(R.drawable.compass_tracking));
+        }
+    }
+
+
 }

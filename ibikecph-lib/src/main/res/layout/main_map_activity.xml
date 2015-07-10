@@ -27,8 +27,8 @@
 
         </LinearLayout>
         <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="12dp"
@@ -37,6 +37,8 @@
                 android:src="@drawable/compass_tracking"
                 android:id="@+id/userTrackingButton"
                 android:onClick="userTrackingButtonOnClick"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
                 />
     </RelativeLayout>
 
