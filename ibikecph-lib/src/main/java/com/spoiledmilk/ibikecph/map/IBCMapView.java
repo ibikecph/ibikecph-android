@@ -188,6 +188,8 @@ public class IBCMapView extends MapView {
         GpsLocationProvider pr = new GpsLocationProvider(this.getContext());
         userLocationOverlay = new UserLocationOverlay(pr, this);
 
+        this.setUserLocationEnabled(true);
+
         userLocationOverlay.enableMyLocation();
         userLocationOverlay.setDrawAccuracyEnabled(true);
         userLocationOverlay.enableFollowLocation();

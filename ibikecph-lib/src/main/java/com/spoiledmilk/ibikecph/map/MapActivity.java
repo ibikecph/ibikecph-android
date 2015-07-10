@@ -24,6 +24,7 @@ import android.view.View;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
@@ -323,6 +324,20 @@ public class MapActivity extends Activity implements iLanguageListener, Location
     public void onBackPressed() {
         if (mapView.getMapHandler().onBackPressed()) {
             super.onBackPressed();
+        }
+    }
+
+    public void userTrackingButtonOnClick(View v) {
+        UserLocationOverlay.TrackingMode curMode = this.mapView.getUserLocationTrackingMode();
+
+        if (curMode == UserLocationOverlay.TrackingMode.NONE) {
+            // this.mapView.setUserLocationEnabled(true);
+
+            this.mapView.setUserLocationEnabled(true);
+            this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
+        } else {
+            this.mapView.setUserLocationEnabled(false);
+            this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.NONE);
         }
     }
 

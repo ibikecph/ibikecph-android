@@ -5,23 +5,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <FrameLayout
-                android:layout_width="fill_parent"
+    <!-- We use the RelativeLayout to be able to put the compass button on top of what else might be in the LinearLayout
+         (i.e. the info pane and maybe route HUD). -->
+    <RelativeLayout android:layout_width="fill_parent" android:layout_height="fill_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/infoPaneContainer">
+            </FrameLayout>
+
+            <com.spoiledmilk.ibikecph.map.IBCMapView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/mapView">
+                <Button android:layout_width="45dp" android:layout_height="45dp" android:text="bkasdf" />
+            </com.spoiledmilk.ibikecph.map.IBCMapView>
+
+        </LinearLayout>
+        <ImageButton
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/infoPaneContainer">
-        </FrameLayout>
-
-        <com.spoiledmilk.ibikecph.map.IBCMapView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:id="@+id/mapView">
-        </com.spoiledmilk.ibikecph.map.IBCMapView>
-
-    </LinearLayout>
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="12dp"
+                android:background="@color/Transparent"
+                android:src="@drawable/compass_tracking"
+                android:id="@+id/userTrackingButton"
+                android:onClick="userTrackingButtonOnClick"
+                />
+    </RelativeLayout>
 
     <!-- Side drawer -->
 
