@@ -40,6 +40,8 @@ public class TurnByTurnInstructionFragment extends Fragment {
         this.textDistance = (TextView) v.findViewById(R.id.textDistance);
         this.textWayname = (TextView) v.findViewById(R.id.textWayname);
 
+        render();
+
         return v;
     }
 

@@ -89,7 +89,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     @Override
     public void updateRoute() {
         Log.d("JC", "NavigationMapHandler updateRoute");
-        this.turnByTurnFragment.render();
+        if (this.turnByTurnFragment != null) {
+            this.turnByTurnFragment.render();
+        }
     }
 
     @Override
@@ -245,6 +247,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         if (this.route != null) {
             IbikeApplication.getService().removeGPSListener(route);
+            route.cleanUp();
             route = null;
         }
 

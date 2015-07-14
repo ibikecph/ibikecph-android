@@ -885,4 +885,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public void onProviderDisabled(String provider) {
 
     }
+
+    /**
+     * Severs any connections with this SMRoute object, since we're not gonna need it anymore.
+     */
+    public void cleanUp() {
+        IbikeApplication.getService().removeGPSListener(this);
+        this.setListener(null);
+    }
 }
