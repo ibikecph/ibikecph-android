@@ -17,6 +17,7 @@ import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
+import com.spoiledmilk.ibikecph.map.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
@@ -31,6 +32,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private UserLocationOverlay userLocationOverlay;
     private static SMRoute route; // TODO: Static is bad, but we'll never have two NavigationMapHandlers anyway.
     private boolean cleanedUp = true;
+    private TurnByTurnInstructionFragment turnByTurnFragment;
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -74,6 +76,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     //// SMRouteListener methods
     @Override
     public void updateTurn(boolean firstElementRemoved) {
+        this.turnByTurnFragment.updateTurn(firstElementRemoved);
         Log.d("JC", "NavigationMapHandler updateTurn");
     }
 
@@ -86,7 +89,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     @Override
     public void updateRoute() {
         Log.d("JC", "NavigationMapHandler updateRoute");
-
+        this.turnByTurnFragment.render();
     }
 
     @Override
@@ -166,10 +169,12 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         // Zoom to the first waypoint
         Location start = route.getWaypoints().get(0);
         mapView.setCenter(new LatLng(start), true);
-        mapView.setZoom(18f);
+        mapView.setZoom(17f);
 
         mapView.addGPSOverlay();
         mapView.getGPSOverlay().setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
+
+        initInstructions();
     }
 
     /**
@@ -190,6 +195,20 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.replace(R.id.infoPaneContainer, ifp, "NavigationOverviewInfoPane");
+        ft.commit();
+    }
+
+    public void initInstructions() {
+        Log.d("JC", "initInstructions");
+        TurnByTurnInstructionFragment tbtf = new TurnByTurnInstructionFragment();
+
+        Bundle b = new Bundle();
+        b.putSerializable("NavigationMapHandler", this);
+        tbtf.setArguments(b);
+
+        FragmentManager fm = mapView.getParentActivity().getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.add(R.id.turnByTurnContainer, tbtf, "TurnByTurnPane");
         ft.commit();
     }
 
@@ -217,8 +236,12 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         }
         this.mapView.invalidate();
 
-        // And remove the fragment
-        mapView.getParentActivity().getFragmentManager().beginTransaction().remove(getInfoPane()).commit();
+        // And remove the fragment(s)
+        FragmentTransaction transaction = mapView.getParentActivity().getFragmentManager().beginTransaction().remove(getInfoPane());
+        if (getTurnByTurnFragment() != null) {
+            transaction.remove(getTurnByTurnFragment());
+        }
+        transaction.commit();
 
         if (this.route != null) {
             IbikeApplication.getService().removeGPSListener(route);
@@ -237,6 +260,11 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     }
 
 
+    public void setTurnByTurnFragment(TurnByTurnInstructionFragment turnByTurnFragment) {
+        this.turnByTurnFragment = turnByTurnFragment;
+    }
 
-
+    public TurnByTurnInstructionFragment getTurnByTurnFragment() {
+        return turnByTurnFragment;
+    }
 }

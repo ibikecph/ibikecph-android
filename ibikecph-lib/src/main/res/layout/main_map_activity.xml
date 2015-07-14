@@ -20,12 +20,19 @@
 
             <com.spoiledmilk.ibikecph.map.IBCMapView
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:id="@+id/mapView">
-                <Button android:layout_width="45dp" android:layout_height="45dp" android:text="bkasdf" />
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:id="@+id/mapView"
+                    >
             </com.spoiledmilk.ibikecph.map.IBCMapView>
 
+            <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/turnByTurnContainer">
+            </FrameLayout>
         </LinearLayout>
+
         <ImageButton
                 android:layout_width="42dp"
                 android:layout_height="42dp"
