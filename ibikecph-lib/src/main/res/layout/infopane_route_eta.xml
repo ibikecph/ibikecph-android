@@ -1,0 +1,25 @@
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/navigationOverviewCargoButton" android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" android:background="#f7f7f7" android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="length"
+                android:id="@+id/navigationOverviewRouteLength" android:layout_weight="3" android:gravity="center_horizontal"/>
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="duration"
+                android:id="@+id/navigationOverviewRouteDuration" android:layout_weight="3" android:gravity="center_horizontal"/>
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="eta"
+                android:id="@+id/navigationOverviewRouteETA" android:layout_weight="3" android:gravity="center_horizontal"/>
+    </LinearLayout>

@@ -893,4 +893,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         IbikeApplication.getService().removeGPSListener(this);
         this.setListener(null);
     }
+
+
+
+    public float getDistanceLeft() {
+        return distanceLeft;
+    }
 }

@@ -19,6 +19,7 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.map.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
+import com.spoiledmilk.ibikecph.navigation.RouteETAFragment;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 
@@ -33,6 +34,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private static SMRoute route; // TODO: Static is bad, but we'll never have two NavigationMapHandlers anyway.
     private boolean cleanedUp = true;
     private TurnByTurnInstructionFragment turnByTurnFragment;
+    private RouteETAFragment routeETAFragment;
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -91,6 +93,10 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         Log.d("JC", "NavigationMapHandler updateRoute");
         if (this.turnByTurnFragment != null) {
             this.turnByTurnFragment.render();
+        }
+
+        if (this.routeETAFragment != null) {
+            this.routeETAFragment.render();
         }
     }
 
@@ -203,14 +209,17 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void initInstructions() {
         Log.d("JC", "initInstructions");
         TurnByTurnInstructionFragment tbtf = new TurnByTurnInstructionFragment();
+        RouteETAFragment ref = new RouteETAFragment();
 
         Bundle b = new Bundle();
         b.putSerializable("NavigationMapHandler", this);
         tbtf.setArguments(b);
+        ref.setArguments(b);
 
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.turnByTurnContainer, tbtf, "TurnByTurnPane");
+        ft.replace(R.id.infoPaneContainer, ref, "RouteETAFragment");
         ft.commit();
     }
 
@@ -269,5 +278,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     public TurnByTurnInstructionFragment getTurnByTurnFragment() {
         return turnByTurnFragment;
+    }
+
+    public RouteETAFragment getRouteETAFragment() {
+        return routeETAFragment;
+    }
+
+    public void setRouteETAFragment(RouteETAFragment routeETAFragment) {
+        this.routeETAFragment = routeETAFragment;
     }
 }
