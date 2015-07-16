@@ -51,13 +51,13 @@ public class TurnByTurnInstructionFragment extends Fragment {
 
     public void render() {
         // If the size=0, we've actually already arrived, but render() is called before NavigationMapHandler gets its
-        // reachedDestination() callback from the SMROute. Blame somebody else...
+        // reachedDestination() callback from the SMRoute. Blame somebody else...
         if (this.parent.getRoute().getTurnInstructions().size() == 0)  return;
 
         SMTurnInstruction turn = this.parent.getRoute().getTurnInstructions().get(0);
         this.textWayname.setText(turn.wayName);
         this.textDistance.setText(turn.lengthInMeters + " m");
-        this.imgDirectionIcon.setImageResource(turn.getDirectionImageResource());
+        this.imgDirectionIcon.setImageResource(turn.getBlackDirectionImageResource());
 
     }
 }

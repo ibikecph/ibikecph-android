@@ -75,7 +75,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
                 saveThread.join();
                 ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite_filled);
                 ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setOnClickListener(null);
-                
+
             } catch (Exception e) {
                 e.getLocalizedMessage();
             }
