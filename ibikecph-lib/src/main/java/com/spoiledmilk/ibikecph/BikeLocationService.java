@@ -13,7 +13,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -32,7 +32,7 @@ public class BikeLocationService extends Service implements LocationListener {
     Location lastValidLocation;
 
     public  boolean locationServicesEnabledOnPhone;
-    ArrayList<LocationListener> gpsListeners = new ArrayList<LocationListener>();
+    CopyOnWriteArrayList<LocationListener> gpsListeners = new CopyOnWriteArrayList<LocationListener>();
     boolean isListeningForGPS = false;
     private static BikeLocationService instance;
 
@@ -142,9 +142,9 @@ public class BikeLocationService extends Service implements LocationListener {
         Log.d("JC", "BikeLocationService new GPS coord");
 
 		// Tell all listeners about the new location.
-		for (LocationListener l : gpsListeners) {
-			l.onLocationChanged(location);
-		}
+        for (LocationListener l : gpsListeners) {
+            l.onLocationChanged(location);
+        }
 
         // Update the local cache
         prevLastValidLocation = lastValidLocation;

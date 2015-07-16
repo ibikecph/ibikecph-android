@@ -224,7 +224,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     }
 
     /**
-     * Remove the path before returning.
+     * Tells the MapView to stop routing, i.e. instantiate an OverviewMapHandler, calling the destructor of this one.
      * @return false because we need the user to
      */
     public boolean onBackPressed() {
@@ -239,23 +239,31 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void cleanUp() {
         if (cleanedUp) return;
 
-        // remove any path overlays
-        for (Overlay overlay: this.mapView.getOverlays()) {
-            if (overlay instanceof PathOverlay) {
-                this.mapView.getOverlays().remove(overlay);
+        // remove any path overlays. Mapbox bug: Why do we need this spin lock?
+        boolean foundPathOverlay = true;
+        while(!foundPathOverlay) {
+            foundPathOverlay = false;
+            for (Overlay overlay: this.mapView.getOverlays()) {
+                if (overlay instanceof com.mapbox.mapboxsdk.overlay.PathOverlay) {
+                    this.mapView.removeOverlay(overlay);
+                    foundPathOverlay = true;
+                }
             }
         }
+
         this.mapView.invalidate();
 
         // And remove the fragment(s)
-        FragmentTransaction transaction = mapView.getParentActivity().getFragmentManager().beginTransaction().remove(getInfoPane());
+        FragmentTransaction transaction = mapView.getParentActivity().getFragmentManager().beginTransaction();
+        if (getInfoPane() != null) {
+            transaction.remove(getInfoPane());
+        }
         if (getTurnByTurnFragment() != null) {
             transaction.remove(getTurnByTurnFragment());
         }
         transaction.commit();
 
         if (this.route != null) {
-            IbikeApplication.getService().removeGPSListener(route);
             route.cleanUp();
             route = null;
         }
