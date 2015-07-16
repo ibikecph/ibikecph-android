@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
@@ -62,6 +63,8 @@ public class TurnByTurnInstructionFragment extends Fragment {
     }
 
     public void reachedDestination() {
-
+        this.textWayname.setText(IbikeApplication.getString("direction_15"));
+        this.textDistance.setText("");
+        this.imgDirectionIcon.setImageResource(R.drawable.flag);
     }
 }
