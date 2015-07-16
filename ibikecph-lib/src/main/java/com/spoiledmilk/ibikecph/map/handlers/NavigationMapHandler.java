@@ -9,10 +9,7 @@ import android.util.Log;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.Marker;
-import com.mapbox.mapboxsdk.overlay.Overlay;
-import com.mapbox.mapboxsdk.overlay.PathOverlay;
-import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
+import com.mapbox.mapboxsdk.overlay.*;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -35,6 +32,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private boolean cleanedUp = true;
     private TurnByTurnInstructionFragment turnByTurnFragment;
     private RouteETAFragment routeETAFragment;
+    private Marker beginMarker;
+    private Marker endMarker;
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -165,6 +164,16 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.mapView.getOverlays().add(path);
         this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
 
+        // Put markers at the beginning and end of the route.
+        beginMarker = new Marker("", "", new LatLng(IbikeApplication.getService().getLastValidLocation()));
+        endMarker = new Marker("", "", new LatLng(route.waypoints.get(route.waypoints.size()-1)));
+
+        beginMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_start)));
+        endMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_finish)));
+
+        this.mapView.addMarker(beginMarker);
+        this.mapView.addMarker(endMarker);
+
         // Set up the infoPane
         initInfopane();
 
@@ -250,6 +259,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 }
             }
         }
+
+        this.mapView.removeMarker(beginMarker);
+        this.mapView.removeMarker(endMarker);
 
         this.mapView.invalidate();
 
