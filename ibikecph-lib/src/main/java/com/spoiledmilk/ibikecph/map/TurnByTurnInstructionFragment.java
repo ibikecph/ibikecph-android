@@ -60,4 +60,8 @@ public class TurnByTurnInstructionFragment extends Fragment {
         this.imgDirectionIcon.setImageResource(turn.getBlackDirectionImageResource());
 
     }
+
+    public void reachedDestination() {
+
+    }
 }

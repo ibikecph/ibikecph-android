@@ -9,6 +9,7 @@ import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
+import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
@@ -35,6 +36,10 @@ public class OverviewMapHandler extends IBCMapHandler {
         View userTrackingButton = mapView.getParentActivity().findViewById(R.id.userTrackingButton);
         if (userTrackingButton != null) {
             userTrackingButton.setVisibility(View.VISIBLE);
+        }
+
+        for (Overlay o : mapView.getOverlays()) {
+            Log.d("JC", "Overlay of type: " + o.getClass().getName());
         }
     }
 

@@ -85,7 +85,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     @Override
     public void reachedDestination() {
         Log.d("JC", "NavigationMapHandler reachedDestination");
-
+        this.turnByTurnFragment.reachedDestination();
     }
 
     @Override
@@ -241,7 +241,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // remove any path overlays. Mapbox bug: Why do we need this spin lock?
         boolean foundPathOverlay = true;
-        while(!foundPathOverlay) {
+        while(foundPathOverlay) {
             foundPathOverlay = false;
             for (Overlay overlay: this.mapView.getOverlays()) {
                 if (overlay instanceof com.mapbox.mapboxsdk.overlay.PathOverlay) {
