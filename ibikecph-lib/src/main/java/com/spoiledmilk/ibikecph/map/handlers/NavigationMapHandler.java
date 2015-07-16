@@ -132,6 +132,12 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     @Override
     public void destructor() {
         Log.d("JC", "Destructing NavigationMapHandler");
+
+        if (this.route != null) {
+            route.cleanUp();
+            route = null;
+        }
+
         cleanUp();
     }
 
@@ -274,11 +280,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             transaction.remove(getTurnByTurnFragment());
         }
         transaction.commit();
-
-        if (this.route != null) {
-            route.cleanUp();
-            route = null;
-        }
 
         cleanedUp = true;
     }

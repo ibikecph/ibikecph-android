@@ -75,6 +75,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public int startStatIndex = 0, endStatIndex = 0;
     public boolean reachedDestination = false;
     public int waypointStation1 = -1, waypointStation2 = -1;
+    private boolean cleanedUp = false;
 
     public SMRoute() {
         init();
@@ -868,6 +869,11 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+        if (this.cleanedUp) {
+            IbikeApplication.getService().removeGPSListener(this);
+            return;
+        }
+
         this.visitLocation(location);
     }
 
@@ -892,6 +898,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public void cleanUp() {
         IbikeApplication.getService().removeGPSListener(this);
         this.setListener(null);
+        this.cleanedUp = true;
     }
 
 

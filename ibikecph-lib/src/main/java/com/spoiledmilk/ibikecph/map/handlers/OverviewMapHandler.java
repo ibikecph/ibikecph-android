@@ -80,10 +80,12 @@ public class OverviewMapHandler extends IBCMapHandler {
             curMarker = null;
         }
 
+        /*
         View userTrackingButton = mapView.getParentActivity().findViewById(R.id.userTrackingButton);
         if (userTrackingButton != null) {
             userTrackingButton.setVisibility(View.GONE);
         }
+        */
 
 
         mapView.removeGPSOverlay();
