@@ -11,10 +11,11 @@ import android.os.Parcelable;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.search.SearchListItem;
 import com.spoiledmilk.ibikecph.util.Util;
+import com.spoiledmilk.ibikecph.search.Address;
 
 /**
  * A model class keeping information of a favorite.
- * @author jens
+ * @author spoiled milk
  *
  */
 public class FavoritesData extends SearchListItem implements Parcelable {
@@ -53,6 +54,17 @@ public class FavoritesData extends SearchListItem implements Parcelable {
 		this.longitude = longitude;
 		this.apiId = apiId;
 	}
+
+    public static FavoritesData fromAddress(Address a) {
+        FavoritesData fd = new FavoritesData(
+                a.getStreetAddress(),
+                a.getStreetAddress(),
+                "Address",
+                a.getLocation().getLatitude(),
+                a.getLocation().getLongitude(),
+                -1);
+        return fd;
+    }
 
 	@Override
 	public String getName() {

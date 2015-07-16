@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
@@ -20,6 +21,9 @@ import java.util.Date;
 public class RouteETAFragment extends InfoPaneFragment {
     private NavigationMapHandler parent;
     private TextView durationText, lengthText, etaText;
+    private ImageView imgRouteType;
+    private TextView textAddress;
+    private TextView textProblem;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +34,11 @@ public class RouteETAFragment extends InfoPaneFragment {
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.parent.setRouteETAFragment(this);
         super.onCreateView(inflater, container, savedInstanceState);
-        View v = inflater.inflate(R.layout.infopane_route_eta, container, false);
+        View v = inflater.inflate(R.layout.infopane_navigation, container, false);
+
+        imgRouteType = (ImageView) v.findViewById(R.id.imgRouteType);
+        textAddress = (TextView) v.findViewById(R.id.textAddress);
+        textProblem = (TextView) v.findViewById(R.id.textProblem);
 
         lengthText = (TextView) v.findViewById(R.id.navigationOverviewRouteLength);
         durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
@@ -40,9 +48,16 @@ public class RouteETAFragment extends InfoPaneFragment {
     }
 
     public void render() {
+        // If the size=0, we've actually already arrived, but render() is called before NavigationMapHandler gets its
+        // reachedDestination() callback from the SMROute. Blame somebody else...
+        if (this.parent.getRoute().getTurnInstructions().size() == 0)  return;
+
         int secondsToFinish = (int) this.parent.getRoute().getEstimatedArrivalTime();
 
         this.lengthText.setText(getFormattedDistance((int) this.parent.getRoute().getDistanceLeft()));
+
+        // Set the address text
+        textAddress.setText(this.parent.getRoute().endStationName);
 
         // Set the duration label
         durationText.setText(TrackListAdapter.durationToFormattedTime(secondsToFinish));

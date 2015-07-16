@@ -4,12 +4,20 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:padding="22dp">
+    <ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:id="@+id/btnAddFavorite"
+            android:background="@color/Transparent"
+            android:src="@drawable/btn_add_favorite"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            />
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text=""
+            android:text="addressLabel\naddressLabel"
             android:textColor="@color/black"
             android:id="@+id/addressLabel"
+            android:layout_toRightOf="@+id/btnAddFavorite"
             />
 
     <ImageView
