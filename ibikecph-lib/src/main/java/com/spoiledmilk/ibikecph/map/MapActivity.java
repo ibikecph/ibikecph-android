@@ -33,7 +33,6 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
-import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.util.Config;
@@ -109,8 +108,10 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
         });
 
 
-        // Register the activity for getting GPS updates from the service
-        //IbikeApplication.getService().addGPSListener(this);
+        // We need a LocationListener to have the service be able to provide GPS coords.
+        // TODO: This is kind of a hack :( The service only requests GPS upstream if it has listeners. Should be able
+        // to give a one-off coordinate.
+        IbikeApplication.getService().addGPSListener(new DummyLocationListener());
 
         // When scrolling the map, make sure that the compass icon is updated.
         this.mapView.addListener(new MapListener() {
@@ -154,6 +155,9 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
         int id = item.getItemId();
 
         if (id == R.id.ab_search) {
+            // to avoid too many not parcelable things, just set the map back to default state
+            this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+
             Intent i = new Intent(MapActivity.this, SearchActivity.class);
             startActivityForResult(i, REQUEST_SEARCH_ADDRESS);
             overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
@@ -306,15 +310,8 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
                 }
             });
 
-
-            OverviewMapHandler overviewMapHandler = (OverviewMapHandler) this.mapView.getMapHandler();
-            overviewMapHandler.onLongPressMap(this.mapView, destination);
-
             // Center the map around the search result.
             this.mapView.setCenter(destination, true);
-
-
-
         }
     }
 

@@ -117,7 +117,7 @@ public class IBCMapView extends MapView {
         this.setMapViewListener(curHandler);
     }
 
-    private void changeState(MapState newState) {
+    public void changeState(MapState newState) {
         state = newState;
         updateListeners();
     }
