@@ -1,9 +1,12 @@
 package com.spoiledmilk.ibikecph.map;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -11,6 +14,8 @@ import android.widget.Toast;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
+import com.mapbox.mapboxsdk.overlay.Icon;
+import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
@@ -38,6 +43,7 @@ import com.spoiledmilk.ibikecph.util.Util;
 public class IBCMapView extends MapView {
 
     private UserLocationOverlay userLocationOverlay;
+    private Marker curAddressMarker;
 
     public enum MapState {
         DEFAULT,
@@ -220,5 +226,50 @@ public class IBCMapView extends MapView {
     public UserLocationOverlay getGPSOverlay() {
         return userLocationOverlay;
     }
+
+    public void showAddressInfoPane(Address a) {
+        // Show the infopane
+        FragmentManager fm = this.getParentActivity().getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        // Prepare the infopane with the address we just got.
+        AddressDisplayInfoPaneFragment adp = new AddressDisplayInfoPaneFragment();
+
+        // Supply the address
+        Bundle arguments = new Bundle();
+        arguments.putSerializable("address", a);
+        adp.setArguments(arguments);
+
+        ft.replace(R.id.infoPaneContainer, adp);
+        ft.commit();
+    }
+
+    public void showAddress(Address a) {
+        showAddressInfoPane(a);
+
+        removeAddressMarker();
+
+        // Put a marker on the map
+        Marker m = new Marker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation());
+        m.setIcon(new Icon(this.getResources().getDrawable(R.drawable.marker_finish)));
+        this.addMarker(m);
+
+        this.curAddressMarker = m;
+
+        // Invalidate the view so the marker gets drawn.
+        this.invalidate();
+    }
+
+
+    public void removeAddressMarker() {
+        if (curAddressMarker != null) {
+            this.getOverlays().remove(curAddressMarker);
+            this.removeMarker(curAddressMarker);
+            curAddressMarker = null;
+        }
+        this.invalidate();
+    }
+
+
 
 }

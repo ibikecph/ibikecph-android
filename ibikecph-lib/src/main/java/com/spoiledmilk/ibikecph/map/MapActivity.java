@@ -11,8 +11,6 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -36,6 +34,7 @@ import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
+import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -53,7 +52,7 @@ import java.util.ArrayList;
  *
  */
 @SuppressLint("NewApi")
-public class MapActivity extends IBCMapActivity implements iLanguageListener, LocationListener {
+public class MapActivity extends IBCMapActivity implements iLanguageListener {
     public final static int REQUEST_SEARCH_ADDRESS = 2;
     public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
@@ -111,7 +110,7 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener, Lo
 
 
         // Register the activity for getting GPS updates from the service
-        IbikeApplication.getService().addGPSListener(this);
+        //IbikeApplication.getService().addGPSListener(this);
 
         // When scrolling the map, make sure that the compass icon is updated.
         this.mapView.addListener(new MapListener() {
@@ -292,42 +291,30 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener, Lo
             // although that would be nice.
 
             Log.d("JC", "Got back from address search, spawning");
-            if (!(this.mapView.getMapHandler() instanceof OverviewMapHandler)) {
-                // TODO: Make sure we have an OverviewMapHandler
-            }
-
             final Bundle extras = data.getExtras();
             LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
+
+            Geocoder.getAddressForLocation(destination, new Geocoder.GeocoderCallback() {
+                @Override
+                public void onSuccess(Address address) {
+                    mapView.showAddress(address);
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            });
+
+
             OverviewMapHandler overviewMapHandler = (OverviewMapHandler) this.mapView.getMapHandler();
             overviewMapHandler.onLongPressMap(this.mapView, destination);
 
             // Center the map around the search result.
             this.mapView.setCenter(destination, true);
 
-            /*
-            Log.d("JC", "Got coordinates to navigate to");
-            if (data != null) {
-                final Bundle extras = data.getExtras();
-                Location start = Util.locationFromCoordinates(extras.getDouble("startLat"), extras.getDouble("startLng"));
-                Location end = Util.locationFromCoordinates(extras.getDouble("endLat"), extras.getDouble("endLng"));
 
-                // TODO: Throwing stuff around between Location and ILatLng like it ain't a thing. Drop it.
-                Geocoder.getRoute(new LatLng(start), new LatLng(end), new Geocoder.RouteCallback() {
-                    @Override
-                    public void onSuccess(SMRoute route) {
-                        Log.d("JC", "Got SMRoute");
-                        route.startStationName = extras.getString("fromName");
-                        route.endStationName = extras.getString("toName");
-                        mapView.showRouteOverview(route);
-                    }
 
-                    @Override
-                    public void onFailure() {
-                        Log.e("JC", "Did not get SMRoute");
-                    }
-                }, null);
-            }
-            */
         }
     }
 
@@ -347,29 +334,6 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener, Lo
         if (mapView.getMapHandler().onBackPressed()) {
             super.onBackPressed();
         }
-    }
-
-    // This is called whenever the service has a new GPS coordinate
-    @Override
-    public void onLocationChanged(Location location) {
-
-    }
-
-    // TODO: Make another interface than LocationListener so that we don't have
-    // to implement these at this point
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
     }
 
     public void userTrackingButtonOnClick(View v) {
@@ -404,3 +368,30 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener, Lo
 
 
 }
+
+
+
+            /*
+            Log.d("JC", "Got coordinates to navigate to");
+            if (data != null) {
+                final Bundle extras = data.getExtras();
+                Location start = Util.locationFromCoordinates(extras.getDouble("startLat"), extras.getDouble("startLng"));
+                Location end = Util.locationFromCoordinates(extras.getDouble("endLat"), extras.getDouble("endLng"));
+
+                // TODO: Throwing stuff around between Location and ILatLng like it ain't a thing. Drop it.
+                Geocoder.getRoute(new LatLng(start), new LatLng(end), new Geocoder.RouteCallback() {
+                    @Override
+                    public void onSuccess(SMRoute route) {
+                        Log.d("JC", "Got SMRoute");
+                        route.startStationName = extras.getString("fromName");
+                        route.endStationName = extras.getString("toName");
+                        mapView.showRouteOverview(route);
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        Log.e("JC", "Did not get SMRoute");
+                    }
+                }, null);
+            }
+            */

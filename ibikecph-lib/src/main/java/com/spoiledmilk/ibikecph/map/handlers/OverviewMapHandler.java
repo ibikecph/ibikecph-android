@@ -2,17 +2,13 @@ package com.spoiledmilk.ibikecph.map.handlers;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import com.mapbox.mapboxsdk.api.ILatLng;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.search.Address;
@@ -24,9 +20,11 @@ import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 public class OverviewMapHandler extends IBCMapHandler {
     private Marker curMarker;
     boolean isWatchingAddress = false;
+    private IBCMapView mapView;
 
     public OverviewMapHandler(IBCMapView mapView) {
         super(mapView);
+        this.mapView = mapView;
 
         Log.d("JC", "Instantiating OverviewMapHandler");
 
@@ -50,24 +48,6 @@ public class OverviewMapHandler extends IBCMapHandler {
         ft.commit();
 
         isWatchingAddress = false;
-    }
-
-    private void showAddressInfoPane(Address a) {
-        FragmentManager fm = mapView.getParentActivity().getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        // Prepare the infopane with the address we just got.
-        AddressDisplayInfoPaneFragment adp = new AddressDisplayInfoPaneFragment();
-
-        // Supply the address
-        Bundle arguments = new Bundle();
-        arguments.putSerializable("address", a);
-        adp.setArguments(arguments);
-
-        ft.replace(R.id.infoPaneContainer, adp);
-        ft.commit();
-
-        isWatchingAddress = true;
     }
 
     @Override
@@ -103,7 +83,7 @@ public class OverviewMapHandler extends IBCMapHandler {
 
     @Override
     public void onTapMarker(MapView mapView, Marker marker) {
-        removeMarker();
+        this.mapView.removeAddressMarker();
         showStatisticsInfoPane();
     }
 
@@ -117,37 +97,16 @@ public class OverviewMapHandler extends IBCMapHandler {
 
     }
 
-    public void removeMarker() {
-        if (curMarker != null) {
-            mapView.getOverlays().remove(curMarker);
-            mapView.removeMarker(curMarker);
-            curMarker = null;
-        }
-        mapView.invalidate();
-    }
-
     @Override
     public void onLongPressMap(final MapView _mapView, final ILatLng location) {
         Log.d("JC", "OverviewMapHandler.onLongPressMap");
-        final MapView mapView = _mapView;
-
-        removeMarker();
-
         Geocoder.getAddressForLocation(location, new Geocoder.GeocoderCallback() {
             @Override
             public void onSuccess(Address address) {
-                Marker m = new Marker(address.getStreetAddress(), address.getPostCodeAndCity(), (LatLng) location);
-
-                // Set a marker
-                m.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_finish)));
-                mapView.addMarker(m);
-
-                // Invalidate the view so the marker gets drawn.
-                mapView.invalidate();
-
-                curMarker = m;
-
-                showAddressInfoPane(address);
+                // This refers to the FIELD, not the argument to the method (which I renamed to _mapView). This is
+                // because we want it to be an IBCMapView.
+                mapView.showAddress(address);
+                isWatchingAddress = true;
             }
 
             @Override
@@ -155,6 +114,8 @@ public class OverviewMapHandler extends IBCMapHandler {
 
             }
         });
+
+
     }
 
     /**
@@ -164,7 +125,7 @@ public class OverviewMapHandler extends IBCMapHandler {
     public boolean onBackPressed() {
         if (isWatchingAddress) {
             showStatisticsInfoPane();
-            removeMarker();
+            this.mapView.removeAddressMarker();
 
             isWatchingAddress = false;
 

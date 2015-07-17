@@ -32,8 +32,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private boolean cleanedUp = true;
     private TurnByTurnInstructionFragment turnByTurnFragment;
     private RouteETAFragment routeETAFragment;
-    private Marker beginMarker;
-    private Marker endMarker;
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -151,6 +149,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         route.setListener(this);
 
+        removeAnyPathOverlays();
+
         // TODO: Fix confusion between Location and LatLng objects
         PathOverlay path = new PathOverlay(Color.RED, 10);
         PathOverlay walkingPath = new PathOverlay(Color.GRAY, 10);
@@ -171,8 +171,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
 
         // Put markers at the beginning and end of the route.
-        beginMarker = new Marker("", "", new LatLng(IbikeApplication.getService().getLastValidLocation()));
-        endMarker = new Marker("", "", new LatLng(route.waypoints.get(route.waypoints.size()-1)));
+        Marker beginMarker = new Marker("", "", new LatLng(IbikeApplication.getService().getLastValidLocation()));
+        Marker endMarker = new Marker("", "", new LatLng(route.waypoints.get(route.waypoints.size() - 1)));
 
         beginMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_start)));
         endMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_finish)));
@@ -251,9 +251,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         return true;
     }
 
-    public void cleanUp() {
-        if (cleanedUp) return;
-
+    private void removeAnyPathOverlays() {
         // remove any path overlays. Mapbox bug: Why do we need this spin lock?
         boolean foundPathOverlay = true;
         while(foundPathOverlay) {
@@ -265,9 +263,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 }
             }
         }
+        // TODO: Also remove markers.
+    }
 
-        this.mapView.removeMarker(beginMarker);
-        this.mapView.removeMarker(endMarker);
+    public void cleanUp() {
+        if (cleanedUp) return;
+
+        removeAnyPathOverlays();
 
         this.mapView.invalidate();
 
