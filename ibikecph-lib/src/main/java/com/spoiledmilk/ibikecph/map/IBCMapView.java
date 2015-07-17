@@ -30,6 +30,8 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Util;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * This is the main class for maps in the I Bike CPH apps. It extends MapView from Mapbox but uses the tiles from the
  * City of Copenhagen tileservers. It serves some different purposes, including
@@ -44,6 +46,7 @@ public class IBCMapView extends MapView {
 
     private UserLocationOverlay userLocationOverlay;
     private Marker curAddressMarker;
+    private CopyOnWriteArrayList<Marker> markers = new CopyOnWriteArrayList<Marker>();
 
     public enum MapState {
         DEFAULT,
@@ -84,7 +87,7 @@ public class IBCMapView extends MapView {
         this.setZoom(17);
         this.setMaxZoomLevel(19);
 
-        //this.setMapRotationEnabled(true);
+        this.setMapRotationEnabled(true);
         changeState(initialState);
 
     }
@@ -159,6 +162,12 @@ public class IBCMapView extends MapView {
             return;
         }
 
+        // Remove the address marker, because the route draws its own end marker.
+        if (this.curAddressMarker != null) {
+            this.removeMarker(this.curAddressMarker);
+            this.curAddressMarker = null;
+        }
+
         Geocoder.getRoute(new LatLng(curLoc), a.getLocation(), new Geocoder.RouteCallback() {
             @Override
             public void onSuccess(SMRoute route) {
@@ -200,8 +209,6 @@ public class IBCMapView extends MapView {
         userLocationOverlay.setDrawAccuracyEnabled(true);
         userLocationOverlay.enableFollowLocation();
         userLocationOverlay.setPersonBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.tracking_dot));
-
-
 
         this.getOverlays().add(userLocationOverlay);
         this.invalidate();
@@ -270,6 +277,23 @@ public class IBCMapView extends MapView {
         this.invalidate();
     }
 
+    @Override
+    public Marker addMarker(Marker m) {
+        Marker mm = super.addMarker(m);
+        markers.add(mm);
+        return mm;
+    }
 
+    @Override
+    public void removeMarker(Marker m) {
+        markers.remove(m);
+        super.removeMarker(m);
+    }
+
+    public void removeAllMarkers() {
+        for (Marker m : markers) {
+            this.removeMarker(m);
+        }
+    }
 
 }

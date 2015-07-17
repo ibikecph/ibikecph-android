@@ -81,6 +81,16 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
         etaText.setText(dt.format(arrivalTime));
 
+
+        // Add the ability to flip the route
+        ((ImageButton) v.findViewById(R.id.btnAddressSwap)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parent.flipRoute();
+            }
+        });
+
+
         return v;
     }
 

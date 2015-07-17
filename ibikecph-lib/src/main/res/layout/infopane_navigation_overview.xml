@@ -10,29 +10,53 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:padding="12dp">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:id="@+id/navigationOverviewSource" android:text="source"
-                  android:paddingTop="2dp"
-                  android:paddingBottom="2dp" android:layout_alignTop="@+id/navigationOverviewGoButton"
-                  android:layout_alignParentLeft="true" android:layout_alignParentStart="true"
-                  android:layout_toLeftOf="@+id/navigationOverviewGoButton"
-                  android:layout_toStartOf="@+id/navigationOverviewGoButton"/>
+
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnAddressSwap"
+                android:src="@drawable/infopane_navigation_address_flip"
+                android:background="@color/Transparent"
+                android:layout_marginTop="18dp"
+                android:layout_marginRight="8dp"
+                />
+
+        <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:id="@+id/navigationOverviewSource" android:text="source"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" android:layout_alignTop="@+id/navigationOverviewGoButton"
+                android:layout_toLeftOf="@+id/navigationOverviewGoButton"
+                android:layout_toStartOf="@+id/navigationOverviewGoButton"
+                android:layout_toRightOf="@+id/btnAddressSwap"
+                />
+        <View
+                android:layout_width="fill_parent" android:layout_height="1dp"
+                android:background="#e1e1e1"
+                android:layout_below="@+id/navigationOverviewSource"
+                android:layout_toRightOf="@+id/btnAddressSwap"
+                android:id="@+id/breaker"
+              ></View>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/navigationOverviewDestination"
                 android:text="destination"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
-                android:layout_below="@+id/navigationOverviewSource" android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"/>
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:layout_below="@+id/breaker"
+                android:layout_toRightOf="@+id/btnAddressSwap"
+                android:layout_marginBottom="8dp"/>
 
-        <ImageButton android:layout_width="wrap_content"
-                     android:layout_height="wrap_content"
-                     android:text="go"
-                     android:id="@+id/navigationOverviewGoButton"
-                     android:layout_alignParentRight="true"
-                     android:src="@drawable/btn_route_go" android:background="@color/White"/>
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="go"
+                android:id="@+id/navigationOverviewGoButton"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/btn_route_go" android:background="@color/White"
+                android:paddingLeft="8dp"
+                />
         <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

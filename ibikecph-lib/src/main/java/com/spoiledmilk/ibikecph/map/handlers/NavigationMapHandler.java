@@ -263,13 +263,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 }
             }
         }
-        // TODO: Also remove markers.
     }
 
     public void cleanUp() {
         if (cleanedUp) return;
 
         removeAnyPathOverlays();
+        this.mapView.removeAllMarkers();
 
         this.mapView.invalidate();
 
@@ -309,5 +309,10 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     public void setRouteETAFragment(RouteETAFragment routeETAFragment) {
         this.routeETAFragment = routeETAFragment;
+    }
+
+
+    public void flipRoute() {
+        Log.d("JC", "Flipping route");
     }
 }
