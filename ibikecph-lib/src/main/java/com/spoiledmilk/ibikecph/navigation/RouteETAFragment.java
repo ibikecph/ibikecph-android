@@ -44,6 +44,8 @@ public class RouteETAFragment extends InfoPaneFragment {
         durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
         etaText = (TextView) v.findViewById(R.id.navigationOverviewRouteETA);
 
+        render();
+
         return v;
     }
 
