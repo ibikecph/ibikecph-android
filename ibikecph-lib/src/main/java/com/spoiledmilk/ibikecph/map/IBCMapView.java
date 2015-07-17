@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -147,20 +146,13 @@ public class IBCMapView extends MapView {
         ((NavigationMapHandler) getMapHandler()).showRouteOverview(route);
     }
 
-    public void showRoute(final Address a) {
-        // First we need an SMRoute. Let's create one from the address
-        Location curLoc = IbikeApplication.getService().getLastValidLocation();
+    public void showRoute(final Address destination) {
+        showRoute(null, destination);
+    }
 
-        // If we don't have a fresh GPS coordinate, go with the best that we have.
-        if (curLoc == null) {
-            curLoc = IbikeApplication.getService().getLastKnownLocation();
-        }
-
-        // If we still don't have a fix, let the user know with a Toast
-        if (curLoc == null) {
-            Toast.makeText(IbikeApplication.getContext(), IbikeApplication.getString("error_no_gps_location"), Toast.LENGTH_LONG).show();
-            return;
-        }
+    public void showRoute(final Address givenSource, final Address givenDestination) {
+        Address source = givenSource;
+        Address destination = givenDestination;
 
         // Remove the address marker, because the route draws its own end marker.
         if (this.curAddressMarker != null) {
@@ -168,10 +160,38 @@ public class IBCMapView extends MapView {
             this.curAddressMarker = null;
         }
 
-        Geocoder.getRoute(new LatLng(curLoc), a.getLocation(), new Geocoder.RouteCallback() {
+        // If no source address is provided, assume current location
+        if (givenSource == null || givenDestination == null) {
+            Address loc = Address.fromCurLoc();
+
+            // If we don't have a GPS coordinate, we cannot get the current address. Let the user know and return.
+            if (loc == null) {
+                Toast.makeText(
+                        IbikeApplication.getContext(),
+                        IbikeApplication.getString("error_no_gps_location"),
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (givenSource == null) {
+                source = loc;
+            }
+
+            if (givenDestination == null) {
+                destination = null;
+            }
+        }
+
+        final Address finalDestination = destination;
+        final Address finalSource = source;
+        Geocoder.getRoute(source.getLocation(), destination.getLocation(), new Geocoder.RouteCallback() {
             @Override
             public void onSuccess(SMRoute route) {
-                route.endStationName = a.getStreetAddress();
+                route.startStationName = finalSource.getStreetAddress();
+                route.endStationName = finalDestination.getStreetAddress();
+                route.startAddress = finalSource;
+                route.endAddress = finalDestination;
+
                 showRoute(route);
             }
 

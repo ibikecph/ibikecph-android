@@ -77,7 +77,9 @@ public class BikeLocationService extends Service implements LocationListener {
 	}
 
 	public void addGPSListener(LocationListener listener) {
-		gpsListeners.add(listener);
+        if (!gpsListeners.contains(listener)) {
+            gpsListeners.add(listener);
+        }
 		onListenersChange();
 	}
 

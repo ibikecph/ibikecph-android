@@ -16,6 +16,7 @@ import com.spoiledmilk.ibikecph.map.SMHttpRequest;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest.RouteInfo;
 import com.spoiledmilk.ibikecph.map.SMHttpRequestListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction.TurnDirection;
+import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -76,6 +77,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public boolean reachedDestination = false;
     public int waypointStation1 = -1, waypointStation2 = -1;
     private boolean cleanedUp = false;
+
+    public Address startAddress, endAddress;
 
     public SMRoute() {
         init();

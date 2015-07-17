@@ -5,8 +5,10 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.search;
 
+import android.location.Location;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 
 import java.io.Serializable;
 
@@ -20,6 +22,7 @@ import java.io.Serializable;
  */
 
 public class Address implements Serializable {
+    private boolean isCurrent = false;
     public String street;
     public String houseNumber;
     public String zip;
@@ -29,12 +32,24 @@ public class Address implements Serializable {
     private ILatLng location;
 
     public ILatLng getLocation() {
+
+        if (isCurrent) {
+            if (IbikeApplication.getService().getLastValidLocation() != null)
+                return new LatLng(IbikeApplication.getService().getLastValidLocation());
+
+            if (IbikeApplication.getService().getLastKnownLocation() != null)
+                return new LatLng(IbikeApplication.getService().getLastKnownLocation());
+        }
+
         return location;
     }
 
 
     public Address() {
 
+    }
+    public Address(ILatLng location) {
+        this.location = location;
     }
 
     public Address(String street, String houseNumber, String zip, String city, double lat, double lon) {
@@ -58,7 +73,11 @@ public class Address implements Serializable {
     }
 
     public String getStreetAddress() {
-        return this.street + " " + this.houseNumber;
+        if (isCurrent) {
+            return IbikeApplication.getString("current_position");
+        } else {
+            return this.street + " " + this.houseNumber;
+        }
     }
 
     public String getPostCodeAndCity() {
@@ -104,6 +123,31 @@ public class Address implements Serializable {
             ret = false;
         }
         return ret;
+    }
+
+    public static Address fromCurLoc() {
+
+        // First we need an SMRoute. Let's create one from the address
+        Location curLoc = IbikeApplication.getService().getLastValidLocation();
+
+        // If we don't have a fresh GPS coordinate, go with the best that we have.
+        if (curLoc == null) {
+            curLoc = IbikeApplication.getService().getLastKnownLocation();
+        }
+
+        // If we still don't have a fix, we cannot do anything for them.
+        if (curLoc == null) {
+            return null;
+        }
+
+        Address ret = new Address(new LatLng(curLoc));
+        ret.isCurrent = true;
+
+        return ret;
+    }
+
+    public boolean isCurrentLocation() {
+        return isCurrent;
     }
 }
 

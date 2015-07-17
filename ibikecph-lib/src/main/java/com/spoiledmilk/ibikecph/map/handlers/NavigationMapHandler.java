@@ -13,12 +13,14 @@ import com.mapbox.mapboxsdk.overlay.*;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.map.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
 import com.spoiledmilk.ibikecph.navigation.RouteETAFragment;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
+import com.spoiledmilk.ibikecph.search.Address;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -157,8 +159,10 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
 
         // Add a waypoint at the user's current position
-        walkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
-        walkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
+        if (route.startAddress.isCurrentLocation()) {
+            walkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
+            walkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
+        }
 
         for (Location loc : route.waypoints) {
             path.addPoint(loc.getLatitude(), loc.getLongitude());
@@ -171,8 +175,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
 
         // Put markers at the beginning and end of the route.
-        Marker beginMarker = new Marker("", "", new LatLng(IbikeApplication.getService().getLastValidLocation()));
-        Marker endMarker = new Marker("", "", new LatLng(route.waypoints.get(route.waypoints.size() - 1)));
+        Marker beginMarker = new Marker("", "", new LatLng(route.getStartLocation()));
+        Marker endMarker = new Marker("", "", new LatLng(route.getEndLocation()));
 
         beginMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_start)));
         endMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_finish)));
@@ -314,5 +318,26 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     public void flipRoute() {
         Log.d("JC", "Flipping route");
+
+        final Address finalSource = this.getRoute().endAddress;
+        final Address finalDestination = this.getRoute().startAddress;
+
+        Geocoder.getRoute(finalSource.getLocation(), finalDestination.getLocation(), new Geocoder.RouteCallback() {
+            @Override
+            public void onSuccess(SMRoute route) {
+                route.startStationName = finalSource.getStreetAddress();
+                route.endStationName = finalDestination.getStreetAddress();
+                route.startAddress = finalSource;
+                route.endAddress = finalDestination;
+
+                mapView.showRoute(route);
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+
+        }, null);
     }
 }

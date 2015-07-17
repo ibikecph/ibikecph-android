@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
@@ -35,10 +34,10 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         View v = inflater.inflate(R.layout.infopane_navigation_overview, container, false);
 
         TextView sourceView = (TextView) v.findViewById(R.id.navigationOverviewSource);
-        sourceView.setText(IbikeApplication.getString("current_position"));
+        sourceView.setText(route.startAddress.getStreetAddress());
 
-        TextView addressView = (TextView) v.findViewById(R.id.navigationOverviewDestination);
-        addressView.setText(route.endStationName);
+        TextView destinationText = (TextView) v.findViewById(R.id.navigationOverviewDestination);
+        destinationText.setText(route.endAddress.getStreetAddress());
 
         ImageButton goButton = (ImageButton) v.findViewById(R.id.navigationOverviewGoButton);
         goButton.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +88,13 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
                 parent.flipRoute();
             }
         });
+
+        // Only show the go button if the route starts at the current location
+        if (parent.getRoute().startAddress.isCurrentLocation()) {
+            v.findViewById(R.id.navigationOverviewGoButton).setVisibility(View.VISIBLE);
+        } else {
+            v.findViewById(R.id.navigationOverviewGoButton).setVisibility(View.GONE);
+        }
 
 
         return v;
