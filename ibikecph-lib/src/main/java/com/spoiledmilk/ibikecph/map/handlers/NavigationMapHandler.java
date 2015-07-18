@@ -32,8 +32,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private UserLocationOverlay userLocationOverlay;
     private static SMRoute route; // TODO: Static is bad, but we'll never have two NavigationMapHandlers anyway.
     private boolean cleanedUp = true;
-    private TurnByTurnInstructionFragment turnByTurnFragment;
-    private RouteETAFragment routeETAFragment;
+    private transient TurnByTurnInstructionFragment turnByTurnFragment;
+    private transient RouteETAFragment routeETAFragment;
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -95,7 +95,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         }
 
         if (this.routeETAFragment != null) {
-            this.routeETAFragment.render();
+            this.routeETAFragment.render(this);
         }
     }
 
