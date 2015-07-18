@@ -275,7 +275,8 @@ public class IBCMapView extends MapView {
         showAddressInfoPane(a);
 
         removeAddressMarker();
-
+        removeAllMarkers();
+        
         // Put a marker on the map
         Marker m = new Marker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation());
         m.setIcon(new Icon(this.getResources().getDrawable(R.drawable.marker_finish)));
