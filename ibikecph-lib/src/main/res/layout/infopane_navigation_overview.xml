@@ -57,32 +57,43 @@
                 android:src="@drawable/btn_route_go" android:background="@color/White"
                 android:paddingLeft="8dp"
                 />
-        <ImageButton
-                android:layout_width="wrap_content"
+        <RelativeLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/navigationOverviewFastButton"
-                android:background="@color/White" android:src="@drawable/btn_route_fastest_enabled"
-                android:layout_below="@+id/navigationOverviewDestination" android:layout_toLeftOf="@+id/navigationOverviewCargoButton"
-                android:layout_toStartOf="@+id/navigationOverviewCargoButton" android:layout_marginRight="53dp"
-                android:layout_marginEnd="53dp"/>
-        <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/navigationOverviewCargoButton"
-                android:src="@drawable/btn_route_cargo_disabled" android:background="@color/White"
-                android:layout_marginRight="67dp"
-                android:layout_marginEnd="67dp"
-                android:layout_below="@+id/navigationOverviewDestination" android:layout_toLeftOf="@+id/navigationOverviewGreenButton"
-                android:layout_toStartOf="@+id/navigationOverviewGreenButton"/>
-        <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/navigationOverviewGreenButton"
-                android:background="@color/White" android:src="@drawable/btn_route_green_disabled"
-                android:layout_marginRight="53dp"
-                android:layout_marginEnd="53dp" android:layout_below="@+id/navigationOverviewDestination"
-                android:layout_alignRight="@+id/navigationOverviewSource"
-                android:layout_alignEnd="@+id/navigationOverviewSource"/>
+                android:layout_below="@+id/navigationOverviewDestination"
+                android:gravity="center_horizontal"
+                >
+
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/navigationOverviewFastButton"
+                    android:background="@color/White" android:src="@drawable/btn_route_fastest_enabled"
+                    android:layout_marginLeft="22dp"
+                    android:layout_marginRight="22dp"
+                    />
+
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/navigationOverviewCargoButton"
+                    android:src="@drawable/btn_route_cargo_disabled" android:background="@color/White"
+                    android:layout_toRightOf="@+id/navigationOverviewFastButton"
+                    android:layout_marginLeft="22dp"
+                    android:layout_marginRight="22dp"
+                    />
+
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/navigationOverviewGreenButton"
+                    android:background="@color/White" android:src="@drawable/btn_route_green_disabled"
+                    android:layout_toRightOf="@+id/navigationOverviewCargoButton"
+                    android:layout_marginLeft="22dp"
+                    android:layout_marginRight="22dp"
+                    />
+
+        </RelativeLayout>
     </RelativeLayout>
     <LinearLayout
             android:orientation="horizontal"
