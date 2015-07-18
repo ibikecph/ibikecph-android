@@ -5,15 +5,11 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.map;
 
+import android.location.Location;
+import com.spoiledmilk.ibikecph.util.Util;
+
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.OverlayItem;
-
-import android.location.Location;
-
-import com.spoiledmilk.ibikecph.util.Util;
 
 /**
  * Model class for overlay icons on the map view.
@@ -27,7 +23,7 @@ public class OverlayData implements Comparable<OverlayData> {
 	public double longitude;
 	public Location loc;
 	public int iconResource;
-	public ItemizedIconOverlay<OverlayItem> markerOverlay;
+	//public ItemizedIconOverlay<OverlayItem> markerOverlay;
 	public double bikeDistance = Double.MAX_VALUE;
 	public ArrayList<OverlayData> BStations;
 

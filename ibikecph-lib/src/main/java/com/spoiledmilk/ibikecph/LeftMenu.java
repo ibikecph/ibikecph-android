@@ -42,31 +42,20 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 	public static final int LAUNCH_LOGIN = 501;
 	public static final int LAUNCH_FAVORITE = 502;
 	
-    protected static final int menuItemHeight = Util.dp2px(40);
     protected static final int dividerHeight = Util.dp2px(2);
 
-    protected int favoritesContainerHeight;
-    TextView textFavorites,  textNewFavorite, textFavoriteHint;
     //SortableListView favoritesList;
     protected ArrayList<FavoritesData> favorites = new ArrayList<FavoritesData>();
-    ImageView imgAdd;
-    ImageButton btnEditFavorites;
-    LinearLayout addContainer;
-    protected RelativeLayout favoritesHeaderContainer, favoritesContainer, profileContainer, aboutContainer, settingsContainer;
-    Button btnDone;
-    View lastListDivider;
-    private boolean isEditMode = false;
-    public boolean favoritesEnabled = true;
-    private ListAdapter listAdapter;
+    protected RelativeLayout favoritesHeaderContainer, favoritesContainer;
     protected ListView menuList;
     
     public ArrayList<LeftMenuItem> menuItems;
     
     @Override
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-    	LeftMenu self = this;
-    	
+
         LOG.d("Left menu on createView");
         final View ret = inflater.inflate(R.layout.fragment_left_menu, container, false);
         

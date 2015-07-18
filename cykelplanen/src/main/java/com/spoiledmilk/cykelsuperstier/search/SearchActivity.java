@@ -6,39 +6,18 @@
 package com.spoiledmilk.cykelsuperstier.search;
 
 import android.os.Bundle;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.RelativeLayout;
-import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
-import com.spoiledmilk.cykelsuperstier.R;
-import com.spoiledmilk.ibikecph.util.Util;
 
 public class SearchActivity extends com.spoiledmilk.ibikecph.search.SearchActivity {
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (Util.getScreenWidth() * 9 / 12), Util.dp2px(1));
-		params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-		params.addRule(RelativeLayout.ALIGN_TOP, findViewById(R.id.imgInput).getId());
-		params.leftMargin = Util.dp2px(24);
-		params.topMargin = Util.dp2px(50);
-		findViewById(R.id.lineSplit).setLayoutParams(params);
+
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		
-		if (CykelsuperstierApplication.isUserLogedIn()) {
-			findViewById(R.id.lineShowMoreTopSeparator).setVisibility(View.VISIBLE);
-		} else {
-			findViewById(R.id.lineShowMoreTopSeparator).setVisibility(View.INVISIBLE);
-		}
-	}
-	
-	public boolean onOptionsItemSelected(MenuItem item) {
-		return super.onOptionsItemSelected(item);
 	}
 
 }

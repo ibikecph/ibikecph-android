@@ -44,7 +44,9 @@ public class FinishRouteDialog extends DialogFragment {
         textReport.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                ((SMRouteNavigationActivity) getActivity()).launchReportIssuesActivity();
+                // FIXME: Find an Activity to launch this from
+
+                //((SMRouteNavigationActivity) getActivity()).launchReportIssuesActivity();
             }
 
         });
@@ -72,7 +74,7 @@ public class FinishRouteDialog extends DialogFragment {
             public void onClick(View arg0) {
                 getDialog().dismiss();
                 Bundle conData = new Bundle();
-                conData.putInt("overlaysShown", ((SMRouteNavigationActivity) getActivity()).getOverlaysShown());
+                //conData.putInt("overlaysShown", ((SMRouteNavigationActivity) getActivity()).getOverlaysShown());
                 Intent intent = new Intent();
                 intent.putExtras(conData);
                 getActivity().setResult(MapActivity.RESULT_RETURN_FROM_NAVIGATION, intent);

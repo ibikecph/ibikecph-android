@@ -13,7 +13,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 /**
@@ -28,16 +28,17 @@ public class BikeLocationService extends Service implements LocationListener {
 	private final IBinder binder = new BikeLocationServiceBinder();
 	LocationManager androidLocationManager;
 	WakeLock wakeLock;
+    Location prevLastValidLocation;
+    Location lastValidLocation;
 
-    boolean locationServicesEnabledOnPhone;
-    ArrayList<LocationListener> gpsListeners = new ArrayList<LocationListener>();
+    public  boolean locationServicesEnabledOnPhone;
+    CopyOnWriteArrayList<LocationListener> gpsListeners = new CopyOnWriteArrayList<LocationListener>();
     boolean isListeningForGPS = false;
     private static BikeLocationService instance;
 
     public ActivityRecognitionClient getActivityRecognitionClient() {
         return activityRecognitionClient;
     }
-
     private ActivityRecognitionClient activityRecognitionClient;
 
     /**
@@ -45,8 +46,7 @@ public class BikeLocationService extends Service implements LocationListener {
      */
 	public BikeLocationService( ) {
         super();
-
-
+        instance = this;
 		Log.i("JC", "BikeLocationService instantiated.");
 	}
 
@@ -77,7 +77,9 @@ public class BikeLocationService extends Service implements LocationListener {
 	}
 
 	public void addGPSListener(LocationListener listener) {
-		gpsListeners.add(listener);
+        if (!gpsListeners.contains(listener)) {
+            gpsListeners.add(listener);
+        }
 		onListenersChange();
 	}
 
@@ -142,9 +144,13 @@ public class BikeLocationService extends Service implements LocationListener {
         Log.d("JC", "BikeLocationService new GPS coord");
 
 		// Tell all listeners about the new location.
-		for (LocationListener l : gpsListeners) {
-			l.onLocationChanged(location);
-		}
+        for (LocationListener l : gpsListeners) {
+            l.onLocationChanged(location);
+        }
+
+        // Update the local cache
+        prevLastValidLocation = lastValidLocation;
+        lastValidLocation = location;
 	}
 
 	@Override
@@ -162,6 +168,37 @@ public class BikeLocationService extends Service implements LocationListener {
 		locationServicesEnabledOnPhone = androidLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || androidLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 	}
 
+    public Location getPrevLastValidLocation() {
+        return prevLastValidLocation;
+    }
+
+    public Location getLastValidLocation() {
+        return lastValidLocation;
+    }
+
+    public Location getLastKnownLocation() {
+        Location locGPS = this.androidLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location locNetwork = this.androidLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location ret;
+
+        if (locGPS != null && locNetwork != null) {
+            if (locGPS.getTime() < locNetwork.getTime()) {
+                return locNetwork;
+            } else {
+                return locGPS;
+            }
+        } else if (locGPS == null && locNetwork == null) {
+            return null;
+        } else if (locGPS == null && locNetwork != null) {
+            return locNetwork;
+        } else {
+            return locGPS;
+        }
+    }
+
+    public boolean hasValidLocation() {
+        return lastValidLocation != null;
+    }
 
     public class BikeLocationServiceBinder extends Binder {
 		BikeLocationService getService() {

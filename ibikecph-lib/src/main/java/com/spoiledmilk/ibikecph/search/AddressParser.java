@@ -38,7 +38,7 @@ public class AddressParser {
 			if (rangeN.location >= 0 && rangeN.length > 0 && rangeN.length <= addressString.length()) {
 				String s = addressString.substring(rangeN.location, rangeN.location + rangeN.length);
 				if (s != null && !s.equals("")) {
-					addr.number = trim(s);
+					addr.houseNumber = trim(s);
 				}
 			}
 		} else {
@@ -47,7 +47,7 @@ public class AddressParser {
 			if (rangeN.location >= 0 && rangeN.length > 0 && rangeN.length <= addressString.length()) {
 				String s = addressString.substring(rangeN.location, rangeN.location + rangeN.length);
 				if (s != null && !s.equals("")) {
-					addr.number = trim(s);
+					addr.houseNumber = trim(s);
 
 				}
 			} else {
@@ -56,7 +56,7 @@ public class AddressParser {
 				if (rangeN.location != -1 && rangeN.length > 0 && rangeN.length <= addressString.length()) {
 					String s = addressString.substring(rangeN.location, rangeN.location + rangeN.length);
 					if (s != null && !s.equals("")) {
-						addr.number = trim(s);
+						addr.houseNumber = trim(s);
 					}
 				}
 			}

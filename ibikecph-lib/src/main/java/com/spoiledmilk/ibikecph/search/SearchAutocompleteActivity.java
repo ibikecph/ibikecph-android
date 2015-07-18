@@ -25,9 +25,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.MapFragmentBase;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.search.SearchListItem.nodeType;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -159,7 +159,7 @@ public class SearchAutocompleteActivity extends Activity {
 				KortforData kd = (KortforData) currentSelection;
 				if (kd.getNumber() != null && !kd.getNumber().equals("") && kd.hasCoordinates()) {
 					isAddressSearched = true;
-					addr.number = kd.getNumber();
+					addr.houseNumber = kd.getNumber();
 					isFinishing = true;
 					finishAndPutData();
 				}
@@ -193,14 +193,14 @@ public class SearchAutocompleteActivity extends Activity {
 				}
 			}
 			if (!isFromAdapter) {
-				if (addr.number == null || addr.number.equals("") && currentSelection != null && currentSelection.getNumber() != null) {
-					addr.number = currentSelection.getName();
+				if (addr.houseNumber == null || addr.houseNumber.equals("") && currentSelection != null && currentSelection.getNumber() != null) {
+					addr.houseNumber = currentSelection.getName();
 				}
 				finishEditing();
 			}
 
 			else if (currentSelection != null && currentSelection.getNumber() != null && !currentSelection.number.equals("")) {
-				addr.number = currentSelection.getNumber();
+				addr.houseNumber = currentSelection.getNumber();
 				finishEditing();
 			}
 		}
@@ -209,9 +209,9 @@ public class SearchAutocompleteActivity extends Activity {
 
 	private void finishEditing() {
 		progressBar.setVisibility(View.VISIBLE);
-		if (addr != null && (addr.number == null || addr.number.equals("")) && currentSelection != null
+		if (addr != null && (addr.houseNumber == null || addr.houseNumber.equals("")) && currentSelection != null
 				&& currentSelection instanceof KortforData && !((KortforData) currentSelection).isPlace()) {
-			addr.number = "1";
+			addr.houseNumber = "1";
 		}
 		performGeocode();
 	}
@@ -221,29 +221,29 @@ public class SearchAutocompleteActivity extends Activity {
 			@Override
 			public void run() {
 				isAddressSearched = true;
-				if (addr != null && addr.number != null && !addr.number.trim().equals("") && !isClose) {
+				if (addr != null && addr.houseNumber != null && !addr.houseNumber.trim().equals("") && !isClose) {
 					JsonNode node;
 					try {
 						if (currentSelection == null) {
 							currentSelection = new KortforData(AddressParser.addresWithoutNumber(textSrch.getText().toString()),
-									addr.number);
+									addr.houseNumber);
 						}
-						LOG.d("Street searchfor the number " + addr.number);
+						LOG.d("Street searchfor the number " + addr.houseNumber);
 						String urlString = "http://geo.oiorest.dk/adresser.json?q="
-								+ URLEncoder.encode(currentSelection.getStreet() + " " + addr.number, "UTF-8");
+								+ URLEncoder.encode(currentSelection.getStreet() + " " + addr.houseNumber, "UTF-8");
 						boolean coordinatesFound = false;
 						if (adapter != null && adapter.getCount() > 0 && adapter.getItem(0) instanceof KortforData) {
 							KortforData kd = (KortforData) adapter.getItem(0);
-							LOG.d("search first item number = " + kd.getNumber() + " parsed addres number = " + addr.number
+							LOG.d("search first item number = " + kd.getNumber() + " parsed addres number = " + addr.houseNumber
 									+ " first item lattitude = " + kd.getLatitude());
-							if (kd.getNumber() != null && kd.getNumber().equals(addr.number) && kd.hasCoordinates()) {
+							if (kd.getNumber() != null && kd.getNumber().equals(addr.houseNumber) && kd.hasCoordinates()) {
 								currentSelection.setLatitude(kd.getLatitude());
 								currentSelection.setLongitude(kd.getLongitude());
 								coordinatesFound = true;
 							}
 						}
 						if (!coordinatesFound) {
-							node = HTTPAutocompleteHandler.getOiorestGeocode(urlString, "" + addr.number);
+							node = HTTPAutocompleteHandler.getOiorestGeocode(urlString, "" + addr.houseNumber);
 							if (node != null) {
 								if (node.has("wgs84koordinat") && node.get("wgs84koordinat").has("bredde")) {
 									currentSelection.setLatitude(Double.parseDouble(node.get("wgs84koordinat").get("bredde").asText()));
@@ -315,12 +315,12 @@ public class SearchAutocompleteActivity extends Activity {
 				adapter.clear();
 				if (textSrch.getText().toString().length() >= 2) {
 					final Location loc1;
-					if (SMLocationManager.getInstance().hasValidLocation()) {
-						loc1 = SMLocationManager.getInstance().getLastValidLocation();
-					} else if (SMLocationManager.getInstance().getLastKnownLocation() != null) {
-						loc1 = SMLocationManager.getInstance().getLastKnownLocation();
+					if (IbikeApplication.getService().hasValidLocation()) {
+						loc1 = IbikeApplication.getService().getLastValidLocation();
+					} else if (IbikeApplication.getService().getLastKnownLocation() != null) {
+						loc1 = IbikeApplication.getService().getLastKnownLocation();
 					} else {
-						loc1 = MapFragmentBase.locCopenhagen;
+						loc1 = Util.COPENHAGEN;
 					}
 					final String searchText = AddressParser.addresWithoutNumber(textSrch.getText().toString());
 					isOirestFetched = false;
@@ -510,15 +510,16 @@ public class SearchAutocompleteActivity extends Activity {
 				}
 				isFinishing = true;
 				Intent intent = new Intent();
+
 				if (currentSelection != null) {
 					if (isAddressSearched && addr != null) {
-						intent.putExtra("number", addr.number);
+						intent.putExtra("number", addr.houseNumber);
 					}
 					if (currentSelection instanceof KortforData && !((KortforData) currentSelection).isPlace()) {
 						String name = currentSelection.getName();
-						if (addr != null && addr.number != null && !addr.number.equals("") && !addr.number.equals("1")
-								&& AddressParser.containsNumber(addr.number)) {
-							name += " " + addr.number;
+						if (addr != null && addr.houseNumber != null && !addr.houseNumber.equals("") && !addr.houseNumber.equals("1")
+								&& AddressParser.containsNumber(addr.houseNumber)) {
+							name += " " + addr.houseNumber;
 						}
 						if (currentSelection.getZip() != null && !currentSelection.getZip().equals("")) {
 							name += ", " + currentSelection.getZip();
@@ -527,9 +528,12 @@ public class SearchAutocompleteActivity extends Activity {
 							name += " " + currentSelection.getCity();
 						}
 						intent.putExtra("name", name);
+                        addr.name = name;
 					} else {
+                        addr.name = currentSelection.getName();
 						intent.putExtra("name", currentSelection.getName());
 					}
+
 					if (currentSelection.type == nodeType.FOURSQUARE
 							|| (currentSelection instanceof KortforData && ((KortforData) currentSelection).isPlace()))
 						intent.putExtra("poi", currentSelection.getName());
@@ -541,19 +545,26 @@ public class SearchAutocompleteActivity extends Activity {
 					intent.putExtra("subsource", currentSelection.getSubSource());
 					intent.putExtra("lat", currentSelection.getLatitude());
 					intent.putExtra("lon", currentSelection.getLongitude());
+
+                    addr.setLocation(new LatLng(currentSelection.getLatitude(), currentSelection.getLongitude()));
+
 					if (currentSelection instanceof FoursquareData
 							|| (currentSelection instanceof KortforData && ((KortforData) currentSelection).isPlace())) {
 						intent.putExtra("isPoi", true);
 					}
 					if (currentSelection.getZip() != null && !currentSelection.getZip().trim().equals("")) {
-						intent.putExtra("zip", currentSelection.getZip());
+						addr.zip = currentSelection.getZip();
+                        intent.putExtra("zip", currentSelection.getZip());
 					}
 					if (currentSelection.getCity() != null && !currentSelection.getCity().trim().equals("")) {
-						intent.putExtra("city", currentSelection.getCity());
+                        addr.city = currentSelection.getCity();
+                        intent.putExtra("city", currentSelection.getCity());
 					}
 					if (currentSelection.getStreet() != null && !currentSelection.getStreet().trim().equals("")) {
+                        addr.street = currentSelection.getStreet();
 						intent.putExtra("street", currentSelection.getStreet());
 					}
+                    intent.putExtra("addressObject", addr);
 					SearchAutocompleteActivity.this.setResult(RESULT_AUTOTOCMPLETE_SET, intent);
 				} else {
 					SearchAutocompleteActivity.this.setResult(RESULT_AUTOTOCMPLETE_NOT_SET, intent);
@@ -565,6 +576,7 @@ public class SearchAutocompleteActivity extends Activity {
 						prefs.edit().putString("lastSearchItem", node.toString()).commit();
 					}
 				}
+
 				finish();
 			}
 		});

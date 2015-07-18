@@ -1,0 +1,121 @@
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+    <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:padding="12dp">
+
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnAddressSwap"
+                android:src="@drawable/infopane_navigation_address_flip"
+                android:background="@color/Transparent"
+                android:layout_marginTop="18dp"
+                android:layout_marginRight="8dp"
+                />
+
+        <TextView
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:id="@+id/navigationOverviewSource" android:text="source"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" android:layout_alignTop="@+id/navigationOverviewGoButton"
+                android:layout_toLeftOf="@+id/navigationOverviewGoButton"
+                android:layout_toStartOf="@+id/navigationOverviewGoButton"
+                android:layout_toRightOf="@+id/btnAddressSwap"
+                />
+        <View
+                android:layout_width="fill_parent" android:layout_height="1dp"
+                android:background="#e1e1e1"
+                android:layout_below="@+id/navigationOverviewSource"
+                android:layout_toRightOf="@+id/btnAddressSwap"
+                android:id="@+id/breaker"
+              ></View>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/navigationOverviewDestination"
+                android:text="destination"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:layout_below="@+id/breaker"
+                android:layout_toRightOf="@+id/btnAddressSwap"
+                android:layout_marginBottom="8dp"/>
+
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="go"
+                android:id="@+id/navigationOverviewGoButton"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/btn_route_go" android:background="@color/White"
+                android:paddingLeft="8dp"
+                />
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/navigationOverviewDestination"
+                android:gravity="center_horizontal"
+                >
+
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/navigationOverviewFastButton"
+                    android:background="@color/White" android:src="@drawable/btn_route_fastest_disabled"
+                    android:layout_marginLeft="22dp"
+                    android:layout_marginRight="22dp"
+                    />
+
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/navigationOverviewCargoButton"
+                    android:src="@drawable/btn_route_cargo_disabled" android:background="@color/White"
+                    android:layout_toRightOf="@+id/navigationOverviewFastButton"
+                    android:layout_marginLeft="22dp"
+                    android:layout_marginRight="22dp"
+                    />
+
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/navigationOverviewGreenButton"
+                    android:background="@color/White" android:src="@drawable/btn_route_green_disabled"
+                    android:layout_toRightOf="@+id/navigationOverviewCargoButton"
+                    android:layout_marginLeft="22dp"
+                    android:layout_marginRight="22dp"
+                    />
+
+        </RelativeLayout>
+    </RelativeLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/navigationOverviewCargoButton" android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" android:background="#f7f7f7" android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="length"
+                android:id="@+id/navigationOverviewRouteLength" android:layout_weight="3" android:gravity="center_horizontal"/>
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="duration"
+                android:id="@+id/navigationOverviewRouteDuration" android:layout_weight="3" android:gravity="center_horizontal"/>
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="eta"
+                android:id="@+id/navigationOverviewRouteETA" android:layout_weight="3" android:gravity="center_horizontal"/>
+    </LinearLayout>
+</LinearLayout>

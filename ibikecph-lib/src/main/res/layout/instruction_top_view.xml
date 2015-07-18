@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#1a1a1a"
+    android:background="#ffffff"
     android:paddingBottom="8dp"
     android:paddingTop="8dp" >
 
@@ -24,8 +24,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/imgDirectionIcon"
         android:gravity="center_horizontal"
-        android:text=""
-        android:textColor="#fff"
+        android:text="textDistance"
+        android:textColor="#000"
         android:textSize="18dp" />
 
     <TextView
@@ -38,8 +38,8 @@
         android:layout_marginLeft="96dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="15dp"
-        android:text=""
-        android:textColor="#fff"
+        android:text="textWayname"
+        android:textColor="#000"
         android:textSize="24dp" />
 
     <ImageView

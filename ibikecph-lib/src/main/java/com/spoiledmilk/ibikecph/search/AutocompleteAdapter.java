@@ -5,12 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.search;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
@@ -23,15 +17,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
-import com.spoiledmilk.ibikecph.map.MapFragmentBase;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+
+import java.util.*;
 
 public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 
@@ -191,8 +184,8 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			clear();
 			return;
 		}
-		Location loc = SMLocationManager.getInstance().hasValidLocation() ? SMLocationManager.getInstance().getLastValidLocation()
-				: MapFragmentBase.locCopenhagen;
+		Location loc = IbikeApplication.getService().hasValidLocation() ? IbikeApplication.getService().getLastValidLocation()
+				: Util.COPENHAGEN;
 		splitString(searchStr);
 		if (searchStr.length() != stringLength) {
 			clear();
@@ -205,7 +198,7 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			while (it.hasNext()) {
 				HistoryData sli = (HistoryData) it.next();
 				Address a = AddressParser.parseAddressRegex(sli.getName().replaceAll(",", ""));
-				sli.setName(a.street + " " + a.number);
+				sli.setName(a.street + " " + a.houseNumber);
 				sli.setAddress(((a.zip != null && !a.zip.equals("")) ? a.zip + " " : "") + a.city);
 				sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getLatitude(), sli.getLongitude())));
 				add(sli);
@@ -228,8 +221,8 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			clear();
 			return;
 		}
-		Location loc = SMLocationManager.getInstance().hasValidLocation() ? SMLocationManager.getInstance().getLastValidLocation()
-				: MapFragmentBase.locCopenhagen;
+		Location loc = IbikeApplication.getService().hasValidLocation() ? IbikeApplication.getService().getLastValidLocation()
+				: Util.COPENHAGEN;
 		boolean isForPreviousCleared = false, isKMSPreviousCleared = false;
 		splitString(searchStr);
 		if (searchStr.length() != stringLength) {
@@ -247,7 +240,7 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 				while (it.hasNext()) {
 					HistoryData sli = (HistoryData) it.next();
 					Address a = AddressParser.parseAddressRegex(sli.getName().replaceAll(",", ""));
-					sli.setName(a.street + " " + a.number);
+					sli.setName(a.street + " " + a.houseNumber);
 					sli.setAddress(((a.zip != null && !a.zip.equals("")) ? a.zip + " " : "") + a.city);
 					sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getLatitude(), sli.getLongitude())));
 					add(sli);

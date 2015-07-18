@@ -5,18 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
-import org.osmdroid.api.IGeoPoint;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,16 +25,23 @@ import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mapbox.mapboxsdk.api.ILatLng;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
+
+import java.io.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Util {
     public static final String TIME_FORMAT = "HH.mm";
@@ -56,6 +51,8 @@ public class Util {
     public static final String TIME_SECONDS_SHORT = "s";
     public static final String DISTANCE_KM_SHORT = "km";
     public static final String DISTANCE_M_SHORT = "m";
+    public static final Location COPENHAGEN = Util.locationFromCoordinates(55.675455, 12.566643);
+
 
     private static DisplayMetrics metrics = null;
     private static float screenWidht = 0;
@@ -185,8 +182,8 @@ public class Util {
         }).show();
     }
 
-    public static Location locationFromGeoPoint(IGeoPoint geoPoint) {
-        return locationFromCoordinates(geoPoint.getLatitudeE6() * (float) 1E-6, geoPoint.getLongitudeE6() * (float) 1E-6);
+    public static Location locationFromGeoPoint(ILatLng geoPoint) {
+        return locationFromCoordinates(geoPoint.getLongitude() * (float) 1E-6, geoPoint.getLatitude() * (float) 1E-6);
     }
 
     public static Location locationFromCoordinates(double lat, double lng) {
@@ -424,4 +421,11 @@ public class Util {
         return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
     }
 
+    public static Location latLngToLocation(ILatLng location) {
+        Location ret = new Location("I BIKE CPH");
+        ret.setLongitude(location.getLongitude());
+        ret.setLatitude(location.getLatitude());
+        ret.setAltitude(location.getAltitude());
+        return ret;
+    }
 }

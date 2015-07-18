@@ -1,6 +1,5 @@
 package com.spoiledmilk.ibikecph.tracking;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,9 +9,10 @@ import android.view.View;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
-import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.IBCMapActivity;
+import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import io.realm.Realm;
@@ -21,8 +21,8 @@ import io.realm.RealmResults;
 import java.util.ArrayList;
 
 
-public class TrackMapView extends Activity {
-    MapView mapView ;
+public class TrackMapView extends IBCMapActivity {
+    IBCMapView mapView ;
     BoundingBox bbox ;
 
     @Override
@@ -32,7 +32,9 @@ public class TrackMapView extends Activity {
 
         int track_position = this.getIntent().getIntExtra("track_position", -1);
 
-        mapView = (MapView) findViewById(R.id.mapview);
+        mapView = (IBCMapView) findViewById(R.id.mapview);
+        mapView.init(IBCMapView.MapState.TRACK_DISPLAY, this);
+        //mapView.setMaxZoomLevel(19f);
 
         // Get the route
         Realm realm = Realm.getInstance(this);
@@ -42,9 +44,7 @@ public class TrackMapView extends Activity {
         tracks.sort("timestamp", false);
 
         Track track = tracks.get(track_position);
-        PathOverlay path = new PathOverlay(Color.RED, 5);
-
-        LatLng center = null;
+        PathOverlay path = new PathOverlay(Color.RED, 10);
 
         /**
          * Convert the list of points to a list of LatLng objects. This is used for drawing the path and creating the
