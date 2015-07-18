@@ -121,7 +121,14 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     @Override
     public void routeRecalculationDone() {
         Log.d("JC", "NavigationMapHandler routeRecalculationDone");
+        removeAnyPathOverlays();
 
+        PathOverlay path = new PathOverlay(Color.RED, 10);
+        for (Location loc : this.route.waypoints) {
+            path.addPoint(loc.getLatitude(), loc.getLongitude());
+        }
+
+        this.mapView.getOverlays().add(path);
     }
 
     @Override
@@ -275,7 +282,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         removeAnyPathOverlays();
         this.mapView.removeAllMarkers();
-
         this.mapView.invalidate();
 
         // And remove the fragment(s)
