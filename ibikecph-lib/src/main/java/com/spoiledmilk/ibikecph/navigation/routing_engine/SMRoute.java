@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.util.Log;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest.RouteInfo;
 import com.spoiledmilk.ibikecph.map.SMHttpRequestListener;
@@ -77,6 +78,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public boolean reachedDestination = false;
     public int waypointStation1 = -1, waypointStation2 = -1;
     private boolean cleanedUp = false;
+    private RouteType type;
 
     public Address startAddress, endAddress;
 
@@ -101,12 +103,14 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         IbikeApplication.getService().addGPSListener(this);
     }
 
-    public void init(Location start, Location end, SMRouteListener listener, JsonNode routeJSON) {
+    public void init(Location start, Location end, SMRouteListener listener, JsonNode routeJSON, RouteType type) {
         init();
 
         locationStart = start;
         locationEnd = end;
         setListener(listener);
+
+        this.type = type;
 
         // TODO: Require a JSON coming from outside
         if (routeJSON == null) {
@@ -117,10 +121,11 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         }
     }
 
-    public void init(Location start, Location end, Location startStation, Location endStation, SMRouteListener listener, JsonNode routeJSON) {
+    public void init(Location start, Location end, Location startStation, Location endStation, SMRouteListener listener, JsonNode routeJSON, RouteType type) {
         init();
         locationStart = start;
         locationEnd = end;
+        this.type = type;
         setListener(listener);
         setupBrokenRoute(routeJSON);
     }
@@ -905,6 +910,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     }
 
 
+
+    public RouteType getType() {
+        return type;
+    }
 
     public float getDistanceLeft() {
         return distanceLeft;

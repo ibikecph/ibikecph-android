@@ -200,7 +200,7 @@ public class IBCMapView extends MapView {
 
             }
 
-        }, null);
+        }, null, RouteType.FASTEST);
 
     }
 

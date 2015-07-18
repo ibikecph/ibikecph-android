@@ -68,7 +68,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/navigationOverviewFastButton"
-                    android:background="@color/White" android:src="@drawable/btn_route_fastest_enabled"
+                    android:background="@color/White" android:src="@drawable/btn_route_fastest_disabled"
                     android:layout_marginLeft="22dp"
                     android:layout_marginRight="22dp"
                     />

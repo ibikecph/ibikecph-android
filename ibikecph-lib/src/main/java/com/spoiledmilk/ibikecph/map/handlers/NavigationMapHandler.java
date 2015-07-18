@@ -15,6 +15,7 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
+import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
 import com.spoiledmilk.ibikecph.navigation.RouteETAFragment;
@@ -321,18 +322,26 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
      * @param givenSrc
      * @param givenDst
      */
-    private void changeAddress(Address givenSrc, Address givenDst) {
+    private void changeAddress(Address givenSrc, Address givenDst, RouteType routeType) {
         Address newSrc, newDst;
+        RouteType newRouteType;
 
         if (givenSrc == null) {
             newSrc = this.getRoute().startAddress;
         } else {
             newSrc = givenSrc;
         }
+
         if (givenDst == null) {
             newDst = this.getRoute().endAddress;
         } else {
             newDst = givenDst;
+        }
+
+        if (routeType == null) {
+            newRouteType = this.getRoute().getType();
+        } else {
+            newRouteType = routeType;
         }
 
         final Address finalSource = newSrc;
@@ -354,21 +363,25 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
             }
 
-        }, null);
+        }, null, newRouteType);
 
     }
 
     public void changeDestinationAddress(Address a) {
-        changeAddress(null, a);
+        changeAddress(null, a, null);
     }
 
     public void changeSourceAddress(Address a) {
-        changeAddress(a, null);
+        changeAddress(a, null, null);
+    }
+
+    public void changeRouteType(RouteType routeType) {
+        changeAddress(null, null, routeType);
     }
 
     public void flipRoute() {
         Log.d("JC", "Flipping route");
-        changeAddress(this.getRoute().endAddress, this.getRoute().startAddress);
+        changeAddress(this.getRoute().endAddress, this.getRoute().startAddress, null);
     }
 
 }

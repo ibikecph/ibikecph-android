@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.MapActivity;
+import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
@@ -99,6 +100,20 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             v.findViewById(R.id.navigationOverviewGoButton).setVisibility(View.GONE);
         }
 
+        // Highlight the relevant route type button
+        switch (route.getType()) {
+            case GREEN:
+                greenButton.setImageResource(R.drawable.btn_route_green_enabled);
+                break;
+            case CARGO:
+                cargoButton.setImageResource(R.drawable.btn_route_cargo_enabled);
+                break;
+            case FASTEST:
+                fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
+            default:
+                break;
+        }
+
         sourceText.setOnClickListener(this);
         destinationText.setOnClickListener(this);
 
@@ -119,12 +134,21 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         if (v.getId() == R.id.navigationOverviewFastButton)  {
             disableAllRouteButtons();
             fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
+
+            this.parent.changeRouteType(RouteType.FASTEST);
+
         } else if (v.getId() == R.id.navigationOverviewCargoButton) {
             disableAllRouteButtons();
             cargoButton.setImageResource(R.drawable.btn_route_cargo_enabled);
+
+            this.parent.changeRouteType(RouteType.CARGO);
+
         } else if (v.getId() == R.id.navigationOverviewGreenButton) {
             disableAllRouteButtons();
             greenButton.setImageResource(R.drawable.btn_route_green_enabled);
+
+            this.parent.changeRouteType(RouteType.GREEN);
+
         } else if (v.getId() == R.id.navigationOverviewSource) {
             MapActivity activity = (MapActivity) this.getActivity();
             Intent i = new Intent(activity, SearchAutocompleteActivity.class);

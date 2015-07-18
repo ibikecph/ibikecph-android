@@ -72,14 +72,29 @@ public class Geocoder {
      * @param end
      * @param callback
      */
-    public static void getRoute(final ILatLng start, final ILatLng end, final RouteCallback callback, final SMRouteListener routeListener) {
+    public static void getRoute(final ILatLng start, final ILatLng end, final RouteCallback callback, final SMRouteListener routeListener, final RouteType type) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         // OSRM directive to not ignore small road fragments
         int z = 18;
 
+        String osrmServer;
+
+        switch (type) {
+            case CARGO:
+                osrmServer = Config.OSRM_SERVER_CARGO;
+                break;
+            case GREEN:
+                osrmServer = Config.OSRM_SERVER_GREEN;
+                break;
+            case FASTEST:
+            default:
+                osrmServer = Config.OSRM_SERVER;
+                break;
+        }
+
         String url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f&loc=%.6f,%.6f&instructions=true",
-                Config.OSRM_SERVER,
+                osrmServer,
                 start.getLatitude(),
                 start.getLongitude(),
                 end.getLatitude(),
@@ -94,8 +109,9 @@ public class Geocoder {
                     JsonNode node = mapper.readTree(response.toString());
 
                     SMRoute route = new SMRoute();
-                    route.init(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), routeListener, node);
+                    route.init(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), routeListener, node, type);
 
+                    // Pass the route back to the caller
                     callback.onSuccess(route);
 
                 } catch(IOException e) {
