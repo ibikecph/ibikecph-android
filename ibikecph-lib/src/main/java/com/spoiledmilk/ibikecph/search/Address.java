@@ -27,6 +27,7 @@ public class Address implements Serializable {
     public String houseNumber;
     public String zip;
     public String city;
+    public String name;
     public double lat;
     public double lon;
     private ILatLng location;
@@ -42,6 +43,14 @@ public class Address implements Serializable {
         }
 
         return location;
+    }
+
+    public void setLocation(ILatLng loc) {
+        if (!isCurrent) {
+            this.location = loc;
+            this.lat = loc.getLatitude();
+            this.lon = loc.getLongitude();
+        }
     }
 
 

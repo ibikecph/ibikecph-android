@@ -315,12 +315,28 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.routeETAFragment = routeETAFragment;
     }
 
+    /**
+     * Calculates a new route from either a new source point, a new destination point,  or both. If null supplied, then
+     * we assume the user to leave the other field unchanged.
+     * @param givenSrc
+     * @param givenDst
+     */
+    private void changeAddress(Address givenSrc, Address givenDst) {
+        Address newSrc, newDst;
 
-    public void flipRoute() {
-        Log.d("JC", "Flipping route");
+        if (givenSrc == null) {
+            newSrc = this.getRoute().startAddress;
+        } else {
+            newSrc = givenSrc;
+        }
+        if (givenDst == null) {
+            newDst = this.getRoute().endAddress;
+        } else {
+            newDst = givenDst;
+        }
 
-        final Address finalSource = this.getRoute().endAddress;
-        final Address finalDestination = this.getRoute().startAddress;
+        final Address finalSource = newSrc;
+        final Address finalDestination = newDst;
 
         Geocoder.getRoute(finalSource.getLocation(), finalDestination.getLocation(), new Geocoder.RouteCallback() {
             @Override
@@ -339,5 +355,20 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             }
 
         }, null);
+
     }
+
+    public void changeDestinationAddress(Address a) {
+        changeAddress(null, a);
+    }
+
+    public void changeSourceAddress(Address a) {
+        changeAddress(a, null);
+    }
+
+    public void flipRoute() {
+        Log.d("JC", "Flipping route");
+        changeAddress(this.getRoute().endAddress, this.getRoute().startAddress);
+    }
+
 }

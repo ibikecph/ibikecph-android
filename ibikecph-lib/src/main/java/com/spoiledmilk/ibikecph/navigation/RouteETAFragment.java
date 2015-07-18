@@ -73,7 +73,6 @@ public class RouteETAFragment extends InfoPaneFragment {
     }
 
     public String getFormattedDistance(int distanceInMeters) {
-
         float distanceInKilometers = ((float) distanceInMeters) / 1000;
 
         if (distanceInMeters < 20) {

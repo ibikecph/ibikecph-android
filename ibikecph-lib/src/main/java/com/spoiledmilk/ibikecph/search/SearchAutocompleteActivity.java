@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.search.SearchListItem.nodeType;
@@ -509,6 +510,7 @@ public class SearchAutocompleteActivity extends Activity {
 				}
 				isFinishing = true;
 				Intent intent = new Intent();
+
 				if (currentSelection != null) {
 					if (isAddressSearched && addr != null) {
 						intent.putExtra("number", addr.houseNumber);
@@ -526,9 +528,12 @@ public class SearchAutocompleteActivity extends Activity {
 							name += " " + currentSelection.getCity();
 						}
 						intent.putExtra("name", name);
+                        addr.name = name;
 					} else {
+                        addr.name = currentSelection.getName();
 						intent.putExtra("name", currentSelection.getName());
 					}
+
 					if (currentSelection.type == nodeType.FOURSQUARE
 							|| (currentSelection instanceof KortforData && ((KortforData) currentSelection).isPlace()))
 						intent.putExtra("poi", currentSelection.getName());
@@ -540,19 +545,26 @@ public class SearchAutocompleteActivity extends Activity {
 					intent.putExtra("subsource", currentSelection.getSubSource());
 					intent.putExtra("lat", currentSelection.getLatitude());
 					intent.putExtra("lon", currentSelection.getLongitude());
+
+                    addr.setLocation(new LatLng(currentSelection.getLatitude(), currentSelection.getLongitude()));
+
 					if (currentSelection instanceof FoursquareData
 							|| (currentSelection instanceof KortforData && ((KortforData) currentSelection).isPlace())) {
 						intent.putExtra("isPoi", true);
 					}
 					if (currentSelection.getZip() != null && !currentSelection.getZip().trim().equals("")) {
-						intent.putExtra("zip", currentSelection.getZip());
+						addr.zip = currentSelection.getZip();
+                        intent.putExtra("zip", currentSelection.getZip());
 					}
 					if (currentSelection.getCity() != null && !currentSelection.getCity().trim().equals("")) {
-						intent.putExtra("city", currentSelection.getCity());
+                        addr.city = currentSelection.getCity();
+                        intent.putExtra("city", currentSelection.getCity());
 					}
 					if (currentSelection.getStreet() != null && !currentSelection.getStreet().trim().equals("")) {
+                        addr.street = currentSelection.getStreet();
 						intent.putExtra("street", currentSelection.getStreet());
 					}
+                    intent.putExtra("addressObject", addr);
 					SearchAutocompleteActivity.this.setResult(RESULT_AUTOTOCMPLETE_SET, intent);
 				} else {
 					SearchAutocompleteActivity.this.setResult(RESULT_AUTOTOCMPLETE_NOT_SET, intent);
@@ -564,6 +576,7 @@ public class SearchAutocompleteActivity extends Activity {
 						prefs.edit().putString("lastSearchItem", node.toString()).commit();
 					}
 				}
+
 				finish();
 			}
 		});

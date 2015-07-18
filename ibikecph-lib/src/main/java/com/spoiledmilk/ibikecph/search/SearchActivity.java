@@ -52,6 +52,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     private long timestampHistoryFetched = 0;
     private boolean isDestroyed = false;
     private ActionBar actionBar;
+    private Address addressFound;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -151,6 +152,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
         if (historyData != null)
             new DB(SearchActivity.this).saveSearchHistory(historyData, new HistoryData(fromName, ALatitude, ALongitude), SearchActivity.this);
+
 
         // TODO: This sucks. It'd be nice to keep Address objects in the Recent buffer, rather than re-establishing here
 
@@ -268,6 +270,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             case SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET:
                 if (data != null) {
                     Bundle b = data.getExtras();
+
                     try {
                         if (isAsearched) {
                             ALatitude = b.getDouble("lat");
@@ -299,6 +302,8 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                             }
                             startButtonHandler();
                         }
+
+
                     } catch (Exception e) {
                         LOG.e(e.getLocalizedMessage());
                         BLatitude = -1;

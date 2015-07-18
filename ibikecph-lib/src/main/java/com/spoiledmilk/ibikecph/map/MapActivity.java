@@ -33,8 +33,10 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
+import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
+import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -53,6 +55,9 @@ import java.util.ArrayList;
 @SuppressLint("NewApi")
 public class MapActivity extends IBCMapActivity implements iLanguageListener {
     public final static int REQUEST_SEARCH_ADDRESS = 2;
+    public final static int REQUEST_CHANGE_SOURCE_ADDRESS = 250;
+    public final static int REQUEST_CHANGE_DESTINATION_ADDRESS = 251;
+
     public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
     protected LeftMenu leftMenu;
@@ -277,6 +282,9 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("JC", "onActivityResult, requestCode " + requestCode + " resultCode " + resultCode);
+
+
         if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
             AlertDialog dialog;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -312,6 +320,20 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
 
             // Center the map around the search result.
             this.mapView.setCenter(destination, true);
+        } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
+            final Bundle extras = data.getExtras();
+            Address a = (Address) extras.getSerializable("addressObject");
+
+            Log.d("JC", "CHANGING SOURCE ADDRESS");
+
+            ((NavigationMapHandler) this.mapView.getMapHandler()).changeSourceAddress(a);
+        } else if (requestCode == REQUEST_CHANGE_DESTINATION_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
+            final Bundle extras = data.getExtras();
+            Address a = (Address) extras.getSerializable("addressObject");
+
+            Log.d("JC", "CHANGING DESTINATION ADDRESS");
+
+            ((NavigationMapHandler) this.mapView.getMapHandler()).changeDestinationAddress(a);
         }
     }
 

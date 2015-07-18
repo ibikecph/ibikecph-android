@@ -1,5 +1,6 @@
 package com.spoiledmilk.ibikecph.navigation;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +9,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
+import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
 import java.text.SimpleDateFormat;
@@ -33,8 +36,8 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
 
         View v = inflater.inflate(R.layout.infopane_navigation_overview, container, false);
 
-        TextView sourceView = (TextView) v.findViewById(R.id.navigationOverviewSource);
-        sourceView.setText(route.startAddress.getStreetAddress());
+        TextView sourceText = (TextView) v.findViewById(R.id.navigationOverviewSource);
+        sourceText.setText(route.startAddress.getStreetAddress());
 
         TextView destinationText = (TextView) v.findViewById(R.id.navigationOverviewDestination);
         destinationText.setText(route.endAddress.getStreetAddress());
@@ -96,6 +99,8 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             v.findViewById(R.id.navigationOverviewGoButton).setVisibility(View.GONE);
         }
 
+        sourceText.setOnClickListener(this);
+        destinationText.setOnClickListener(this);
 
         return v;
     }
@@ -110,14 +115,25 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
      */
     @Override
     public void onClick(View v) {
-        disableAllRouteButtons();
 
         if (v.getId() == R.id.navigationOverviewFastButton)  {
+            disableAllRouteButtons();
             fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
         } else if (v.getId() == R.id.navigationOverviewCargoButton) {
+            disableAllRouteButtons();
             cargoButton.setImageResource(R.drawable.btn_route_cargo_enabled);
-        } else {
+        } else if (v.getId() == R.id.navigationOverviewGreenButton) {
+            disableAllRouteButtons();
             greenButton.setImageResource(R.drawable.btn_route_green_enabled);
+        } else if (v.getId() == R.id.navigationOverviewSource) {
+            MapActivity activity = (MapActivity) this.getActivity();
+            Intent i = new Intent(activity, SearchAutocompleteActivity.class);
+            activity.startActivityForResult(i, MapActivity.REQUEST_CHANGE_SOURCE_ADDRESS);
+
+        } else if (v.getId() == R.id.navigationOverviewDestination) {
+            MapActivity activity = (MapActivity) this.getActivity();
+            Intent i = new Intent(activity, SearchAutocompleteActivity.class);
+            activity.startActivityForResult(i, MapActivity.REQUEST_CHANGE_DESTINATION_ADDRESS);
         }
     }
 
