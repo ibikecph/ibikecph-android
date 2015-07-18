@@ -22,6 +22,7 @@ import com.spoiledmilk.ibikecph.navigation.RouteETAFragment;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.search.Address;
+import com.spoiledmilk.ibikecph.util.bearing.BearingToNorthProvider;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -209,7 +210,23 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         mapView.addGPSOverlay();
         mapView.getGPSOverlay().setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
 
+        registerBearingRotation();
+
         initInstructions();
+    }
+
+    private void registerBearingRotation() {
+        BearingToNorthProvider bearingToNorthProvider = new BearingToNorthProvider(this.mapView.getContext()/*, 1, 0.1, 10*/);
+        final IBCMapView finalMapView = this.mapView;
+
+        bearingToNorthProvider.setChangeEventListener(new BearingToNorthProvider.ChangeEventListener() {
+            @Override
+            public void onBearingChanged(double bearing) {
+                finalMapView.setMapOrientation( 360 - ((float) bearing) - 90);
+            }
+        });
+
+        bearingToNorthProvider.start();
     }
 
     /**
