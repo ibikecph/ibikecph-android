@@ -88,6 +88,8 @@ public class TrackingSettingsActivity extends Activity {
         });
 
         initStrings();
+
+        updateEnablednessOfMilestoneSwitches();
     }
 
     public void onEnableTrackingClick(boolean isChecked) {
@@ -98,6 +100,23 @@ public class TrackingSettingsActivity extends Activity {
 
         } else {
             this.settings.setTrackingEnabled(this.trackingEnableSwitch.isChecked());
+            
+            updateEnablednessOfMilestoneSwitches();
+        }
+    }
+
+    private void updateEnablednessOfMilestoneSwitches() {
+        // If we disabled tracking, then gray out the milestone notification
+        this.notifyMilestoneCheckbox.setEnabled(this.trackingEnableSwitch.isChecked());
+        this.notifyWeeklyCheckbox.setEnabled(this.trackingEnableSwitch.isChecked());
+
+        // Also disable the milestones if the tracking isn't enabled
+        if (!this.trackingEnableSwitch.isChecked()) {
+            this.notifyMilestoneCheckbox.setChecked(false);
+            this.notifyWeeklyCheckbox.setChecked(false);
+
+            onNotifyWeekly(false);
+            onNotifyMilestone(false);
         }
     }
 
