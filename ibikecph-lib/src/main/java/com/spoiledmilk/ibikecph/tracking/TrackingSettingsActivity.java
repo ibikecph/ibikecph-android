@@ -171,6 +171,7 @@ public class TrackingSettingsActivity extends Activity {
         */
     }
 
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // If we got back from a login box AND the used successfully logged in, go on.
         if (requestCode == LeftMenu.LAUNCH_LOGIN && resultCode == RESULT_OK) {

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -41,8 +42,6 @@ public class TrackingActivity extends Activity {
         this.tripListView = (StickyListHeadersListView) findViewById(R.id.tripListView);
         this.tripListView.addHeaderView(this.getLayoutInflater().inflate(R.layout.track_list_header, null, false));
 
-
-
         this.activityText = (TextView) findViewById(R.id.tracking_activity_text);
         this.sinceText    = (TextView) findViewById(R.id.tracking_activity_since);
 
@@ -57,6 +56,7 @@ public class TrackingActivity extends Activity {
         this.kmPrTripText = (TextView) findViewById(R.id.kmPrTripText);
         this.hoursText = (TextView) findViewById(R.id.hoursText);
 
+        ((Button) findViewById(R.id.reactivateButton)).setText(IbikeApplication.getString("reenable_tracking"));
 
         try {
             this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
@@ -70,7 +70,7 @@ public class TrackingActivity extends Activity {
         updateSummaryStatistics();
         updateStrings();
         updateListOfTracks();
-        printDebugInfo();
+        updateReactivateButtonVisibility();
     }
 
     private void updateListOfTracks() {
@@ -85,6 +85,7 @@ public class TrackingActivity extends Activity {
         updateSummaryStatistics();
         updateStrings();
         updateListOfTracks();
+        updateReactivateButtonVisibility();
     }
 
     @Override
@@ -190,4 +191,30 @@ public class TrackingActivity extends Activity {
         Log.d("JC", "Current max length ordinal: " + IbikeApplication.getSettings().getLengthNotificationOrdinal());
     }
 
+    public void onReactivateButtonClick(View v) {
+        if (IbikeApplication.isUserLogedIn()||IbikeApplication.isFacebookLogin()) {
+            // Enable the tracking
+            IbikeApplication.getSettings().setTrackingEnabled(true);
+
+            // Remove the button and spacer
+            findViewById(R.id.reactivateButton).setVisibility(View.GONE);
+            findViewById(R.id.reactivateButtonSpacer).setVisibility(View.GONE);
+        } else {
+            TrackingWelcomeActivity.MustLogInDialogFragment mustLogInDialogFragment = new TrackingWelcomeActivity.MustLogInDialogFragment();
+            mustLogInDialogFragment.show(getFragmentManager(), "MustLoginDialog");
+        }
+    }
+
+
+    void updateReactivateButtonVisibility() {
+
+        if (!IbikeApplication.getSettings().getTrackingEnabled()) {
+            findViewById(R.id.reactivateButton).setVisibility(View.VISIBLE);
+            findViewById(R.id.reactivateButtonSpacer).setVisibility(View.VISIBLE);
+        } else {
+            findViewById(R.id.reactivateButton).setVisibility(View.GONE);
+            findViewById(R.id.reactivateButtonSpacer).setVisibility(View.GONE);
+        }
+
+    }
 }
