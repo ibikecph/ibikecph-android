@@ -29,7 +29,6 @@ public class OverlaysActivity extends Activity {
 
     boolean isPathSelected,
         isServiceSelected,
-        isStrainSelected,
         isMetroSelected,
         isLocalTrainSelected;
 
@@ -37,7 +36,6 @@ public class OverlaysActivity extends Activity {
 
     TextView textPath,
             textService,
-            textStrain,
             textMetro,
             textLocalTrain;
 
