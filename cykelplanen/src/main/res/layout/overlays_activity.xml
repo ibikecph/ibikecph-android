@@ -144,49 +144,6 @@
         </RelativeLayout>
 
         <!--  S-tog -->
-        <RelativeLayout
-            android:id="@+id/strainContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/metroContainer"
-            android:background="@color/White"
-            android:clickable="true"
-            android:onClick="onStrainContainerClick"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp" >
-
-            <ImageView
-                android:id="@+id/strainImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/s_togs_icon" />
-
-            <TextView
-                android:id="@+id/strainText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_toLeftOf="@+id/strainCheckbox"
-                android:layout_toRightOf="@id/strainImg"
-                android:gravity="left"
-                android:paddingLeft="8dp"
-                android:textColor="@color/TextDarkGrey"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/strainCheckbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/check_field" />
-        </RelativeLayout>
 
         <!--  Reparation -->
         <RelativeLayout
@@ -194,12 +151,11 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/strainContainer"
             android:background="@color/White"
             android:clickable="true"
             android:onClick="onServiceContainerClick"
             android:paddingLeft="8dp"
-            android:paddingRight="8dp" >
+            android:paddingRight="8dp" android:layout_below="@+id/metroContainer">
 
             <ImageView
                 android:id="@+id/serviceImg"

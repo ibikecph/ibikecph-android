@@ -51,7 +51,6 @@ public class OverlaysActivity extends Activity {
         IbikePreferences settings = IbikeApplication.getSettings();
         isPathSelected       = settings.getOverlay(OverlayType.PATH);
         isServiceSelected    = settings.getOverlay(OverlayType.SERVICE);
-        isStrainSelected     = settings.getOverlay(OverlayType.S_TRAIN);
         isMetroSelected      = settings.getOverlay(OverlayType.METRO);
         isLocalTrainSelected = settings.getOverlay(OverlayType.LOCAL_TRAIN);
 
@@ -59,7 +58,6 @@ public class OverlaysActivity extends Activity {
 
         textPath       = (TextView) findViewById(R.id.pathText);
         textService    = (TextView) findViewById(R.id.serviceText);
-        textStrain     = (TextView) findViewById(R.id.strainText);
         textMetro      = (TextView) findViewById(R.id.metroText);
         textLocalTrain = (TextView) findViewById(R.id.localTrainText);
 
@@ -84,11 +82,6 @@ public class OverlaysActivity extends Activity {
         IbikeApplication.getSettings().setOverlay(OverlayType.SERVICE, isServiceSelected);
     }
 
-    public void onStrainContainerClick(View v) {
-        isStrainSelected = !isStrainSelected;
-        updateContainer(OverlayType.S_TRAIN, isStrainSelected);
-        IbikeApplication.getSettings().setOverlay(OverlayType.S_TRAIN, isStrainSelected);
-    }
 
     public void onMetroContainerClick(View v) {
         isMetroSelected = !isMetroSelected;
@@ -105,20 +98,8 @@ public class OverlaysActivity extends Activity {
     public void refreshOverlays() {
         updateContainer(OverlayType.PATH, isPathSelected);
         updateContainer(OverlayType.SERVICE, isServiceSelected);
-        updateContainer(OverlayType.S_TRAIN, isStrainSelected);
         updateContainer(OverlayType.METRO, isMetroSelected);
         updateContainer(OverlayType.LOCAL_TRAIN, isLocalTrainSelected);
-
-//        if (((overlaysShown & 1) > 0 && !isPathSelected) || ((overlaysShown & 1) == 0 && isPathSelected))
-//            onPathContainerClick(findViewById(R.id.pathContainer));
-//        if (((overlaysShown & 2) > 0 && !isServiceSelected) || ((overlaysShown & 2) == 0 && isServiceSelected))
-//            onServiceContainerClick(findViewById(R.id.serviceContainer));
-//        if (((overlaysShown & 4) > 0 && !isStrainSelected) || ((overlaysShown & 4) == 0 && isStrainSelected))
-//            onStrainContainerClick(findViewById(R.id.strainContainer));
-//        if (((overlaysShown & 8) > 0 && !isMetroSelected) || ((overlaysShown & 8) == 0 && isMetroSelected))
-//            onMetroContainerClick(findViewById(R.id.metroContainer));
-//        if (((overlaysShown & 16) > 0 && !isLocalTrainSelected) || ((overlaysShown & 16) == 0 && isLocalTrainSelected))
-//            onLocalTrainContainerClick(findViewById(R.id.localTrainContainer));
     }
 
     private void updateContainer(OverlayType type, boolean selected) {
@@ -145,15 +126,6 @@ public class OverlaysActivity extends Activity {
                 imageWhite = R.drawable.service_pump_icon_white;
                 imageGrey = R.drawable.service_pump_icon_gray;
                 text = (TextView) findViewById(R.id.serviceText);
-                break;
-
-            case S_TRAIN:
-                view = findViewById(R.id.strainContainer);
-                checkbox = (ImageView) findViewById(R.id.strainCheckbox);
-                image = (ImageView) findViewById(R.id.strainImg);
-                imageWhite = R.drawable.s_togs_icon_white;
-                imageGrey = R.drawable.s_togs_icon;
-                text = (TextView) findViewById(R.id.strainText);
                 break;
 
             case METRO:
@@ -190,8 +162,6 @@ public class OverlaysActivity extends Activity {
         textPath.setText(CykelsuperstierApplication.getString("cycle_super_highways"));
         textService.setTypeface(CykelsuperstierApplication.getNormalFont());
         textService.setText(CykelsuperstierApplication.getString("service_stations"));
-        textStrain.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textStrain.setText(CykelsuperstierApplication.getString("s_train_stations"));
         textMetro.setTypeface(CykelsuperstierApplication.getNormalFont());
         textMetro.setText(CykelsuperstierApplication.getString("metro_stations"));
         textLocalTrain.setTypeface(CykelsuperstierApplication.getNormalFont());

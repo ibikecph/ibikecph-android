@@ -48,8 +48,6 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
                 this.cpMenuItems.get(i).setLabelID("about_app_cp");
             }
         }
-
-
     }
 
 	@Override
