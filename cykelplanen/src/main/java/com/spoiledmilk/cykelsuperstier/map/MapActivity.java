@@ -7,8 +7,11 @@ package com.spoiledmilk.cykelsuperstier.map;
 
 import android.os.Bundle;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.spoiledmilk.cykelsuperstier.LeftMenu;
 
 public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
+
+    LeftMenu leftMenu;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -28,4 +31,12 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 		super.onResume();
 	}
 
+    @Override
+    protected LeftMenu getLeftMenu() {
+        if (leftMenu == null) {
+            return leftMenu = new LeftMenu();
+        } else {
+            return leftMenu;
+        }
+    }
 }

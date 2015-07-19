@@ -12,8 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
@@ -49,10 +50,15 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     protected RelativeLayout favoritesHeaderContainer, favoritesContainer;
     protected ListView menuList;
     
-    public ArrayList<LeftMenuItem> menuItems;
-    
-    @Override
+    protected ArrayList<LeftMenuItem> menuItems;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        populateMenu();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
@@ -61,74 +67,25 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         
         // Initialize the menu
         this.menuList = (ListView) ret.findViewById(R.id.menuListView);
-        populateMenu();
-        
-		// This is kind of magical. Each LeftMenuItem has a handler field that describes
-		// a method to be called when that element is tapped. Here we read out that field
-		// and launch the right method by reflection.
-        this.menuList.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				String handler = menuItems.get(position).getHandler();
-				spawnFunction(handler);
-			}
-		});
-        
-        // TODO: Get rid of all these handlers...
-        /*
-        btnEditFavorites.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                favoritesList.disableScroll();
-                FavoritesAdapter adapter = (FavoritesAdapter) favoritesList.getAdapter();
-                if (adapter != null)
-                    adapter.setIsEditMode(isEditMode = true);
-                btnDone.setVisibility(View.VISIBLE);
-                btnEditFavorites.setVisibility(View.INVISIBLE);
-                btnDone.setEnabled(true);
-                btnEditFavorites.setEnabled(false);
-                addContainer.setVisibility(View.GONE);
-                updateControls();
-            }
-        });
-        btnDone = (Button) ret.findViewById(R.id.btnDone);
-        btnDone.setEnabled(false);
-        btnDone.setOnClickListener(new OnClickListener() {
+        this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), menuItems));
 
+        // This is kind of magical. Each LeftMenuItem has a handler field that describes
+        // a method to be called when that element is tapped. Here we read out that field
+        // and launch the right method by reflection.
+        this.menuList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
-                favoritesList.enableScroll();
-                FavoritesAdapter adapter = (FavoritesAdapter) favoritesList.getAdapter();
-                if (adapter != null)
-                    adapter.setIsEditMode(isEditMode = false);
-                btnDone.setVisibility(View.INVISIBLE);
-                btnDone.setEnabled(false);
-                btnEditFavorites.setVisibility(View.VISIBLE);
-                btnEditFavorites.setEnabled(true);
-                addContainer.setVisibility(View.VISIBLE);
-                updateControls();
-            }
-
-        });
-        
-        ret.findViewById(R.id.favoritesContainer).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                if (IbikeApplication.isUserLogedIn())
-                    openNewFavoriteFragment();
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String handler = getMenuItems().get(position).getHandler();
+                spawnFunction(handler);
             }
         });
-        addContainer.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                if (IbikeApplication.isUserLogedIn())
-                    openNewFavoriteFragment();
-            }
-        });
-        */
         return ret;
     }
-    
+
+    public ArrayList<LeftMenuItem> getMenuItems() {
+        return this.menuItems;
+    }
+
     /**
      * This method adds elements to the menu. It is called onCreate, but also when the menu needs
      * to be updated, e.g. when the user has logged in and the "Log in" button needs to change to
@@ -151,10 +108,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
             menuItems.add(new LeftMenuItem("log_in", R.drawable.ic_menu_profile, "spawnLoginActivity"));
         }
 
-
         menuItems.add(new LeftMenuItem("about_app_ibc", R.drawable.ic_menu_info, "spawnAboutActivity"));
-
-        this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), menuItems));
     }
     
     /**

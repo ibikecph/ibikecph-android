@@ -141,7 +141,7 @@ public class BikeLocationService extends Service implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-        Log.d("JC", "BikeLocationService new GPS coord");
+        //Log.d("JC", "BikeLocationService new GPS coord");
 
 		// Tell all listeners about the new location.
         for (LocationListener l : gpsListeners) {
