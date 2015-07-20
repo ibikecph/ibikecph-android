@@ -2,8 +2,9 @@ package com.spoiledmilk.cykelsuperstier.map;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
-import com.mapbox.mapboxsdk.overlay.Marker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.map.IBCMarker;
+import com.spoiledmilk.ibikecph.map.MarkerType;
 import com.spoiledmilk.ibikecph.util.Util;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,12 +15,19 @@ import java.util.ArrayList;
 /**
  * Created by jens on 7/20/15.
  */
-public class CPOverlay  {
+public class ServiceStationMarker extends IBCMarker {
 
+    public static final Icon serviceStationIcon = new Icon(IbikeApplication.getContext().getResources().getDrawable(com.spoiledmilk.ibikecph.R.drawable.service_pin));
 
-    public void loadStations() {
+    public ServiceStationMarker(String title, LatLng latLng) {
+        super(title, "", latLng, MarkerType.OVERLAY);
 
-        ArrayList<Marker> serviceStations = new ArrayList<Marker>();
+        this.setIcon(serviceStationIcon);
+    }
+
+    public static ArrayList<ServiceStationMarker> getServiceStationMarkersFromJSON() {
+
+        ArrayList<ServiceStationMarker> serviceStations = new ArrayList<ServiceStationMarker>();
 
         try {
             String stationsStr = Util.stringFromJsonAssets(IbikeApplication.getContext(), "stations/stations.json");
@@ -33,9 +41,7 @@ public class CPOverlay  {
                     String type = stationJson.getString("type");
                     if (coords.length > 1) {
                         if (type.equals("service")) {
-                            Marker m = new Marker(stationJson.getString("name"),stationJson.getString("line"),new LatLng(Double.parseDouble(coords[1]),Double.parseDouble(coords[0])));
-
-                            m.setIcon(new Icon(IbikeApplication.getContext().getResources().getDrawable(com.spoiledmilk.ibikecph.R.drawable.service_pin)));
+                            ServiceStationMarker m = new ServiceStationMarker(stationJson.getString("name"), new LatLng(Double.parseDouble(coords[1]),Double.parseDouble(coords[0])));
 
                             serviceStations.add(m);
                         }
@@ -45,5 +51,7 @@ public class CPOverlay  {
         } catch(JSONException e) {
             // whatever
         }
+
+        return serviceStations;
     }
 }

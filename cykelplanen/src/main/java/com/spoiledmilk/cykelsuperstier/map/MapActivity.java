@@ -6,8 +6,15 @@
 package com.spoiledmilk.cykelsuperstier.map;
 
 import android.os.Bundle;
+import android.util.Log;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
 import com.spoiledmilk.cykelsuperstier.LeftMenu;
+import com.spoiledmilk.ibikecph.map.IBCMarker;
+import com.spoiledmilk.ibikecph.map.MarkerType;
+import com.spoiledmilk.ibikecph.map.OverlayType;
+
+import java.util.ArrayList;
 
 public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 
@@ -20,7 +27,9 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
         super.mapView.setCenter(new LatLng(55.74, 12.424));
         super.mapView.setZoom(11.3f);
 
-        // Initialize the overlays
+
+        plotOverlays();
+
     }
 
     @Override
@@ -31,7 +40,28 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
+
+        plotOverlays();
 	}
+
+    private void plotOverlays() {
+        Log.d("JC", "MapActivity.plotOverlays");
+
+        // Remove all overlays first.
+        this.mapView.removeAllMarkersOfType(MarkerType.OVERLAY);
+
+        // Plot the service stations.
+        if (CykelsuperstierApplication.getSettings().getOverlay(OverlayType.SERVICE)) {
+            // Initialize the overlays
+            ArrayList<ServiceStationMarker> serviceStations = ServiceStationMarker.getServiceStationMarkersFromJSON();
+
+            for (IBCMarker m : serviceStations) {
+                this.mapView.addMarker(m);
+            }
+        }
+
+        this.mapView.invalidate();
+    }
 
     @Override
     protected LeftMenu getLeftMenu() {

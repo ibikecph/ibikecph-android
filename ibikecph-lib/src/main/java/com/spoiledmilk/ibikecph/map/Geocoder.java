@@ -57,10 +57,10 @@ public class Geocoder {
                             location.getLongitude());
 
                     callback.onSuccess(address);
-                    m = new Marker(address.getStreetAddress(), address.getPostCodeAndCity(), (LatLng) location);
+                    m = new IBCMarker(address.getStreetAddress(), address.getPostCodeAndCity(), (LatLng) location, MarkerType.ADDRESS);
                 } catch (JSONException e) {
                     callback.onFailure();
-                    m = new Marker("Ukendt position", "", (LatLng) location);
+                    m = new IBCMarker("Ukendt position", "", (LatLng) location, MarkerType.ADDRESS);
                 }
             }
         });
