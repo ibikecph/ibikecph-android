@@ -27,17 +27,11 @@ import com.spoiledmilk.ibikecph.util.IbikePreferences;
  */
 public class OverlaysActivity extends Activity {
 
-    boolean isPathSelected,
-        isServiceSelected,
-        isMetroSelected,
-        isLocalTrainSelected;
+    boolean isPathSelected, isServiceSelected;
 
     ActionBar actionBar;
 
-    TextView textPath,
-            textService,
-            textMetro,
-            textLocalTrain;
+    TextView textPath, textService;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -49,15 +43,11 @@ public class OverlaysActivity extends Activity {
         IbikePreferences settings = IbikeApplication.getSettings();
         isPathSelected       = settings.getOverlay(OverlayType.PATH);
         isServiceSelected    = settings.getOverlay(OverlayType.SERVICE);
-        isMetroSelected      = settings.getOverlay(OverlayType.METRO);
-        isLocalTrainSelected = settings.getOverlay(OverlayType.LOCAL_TRAIN);
 
         actionBar = getActionBar();
 
         textPath       = (TextView) findViewById(R.id.pathText);
         textService    = (TextView) findViewById(R.id.serviceText);
-        textMetro      = (TextView) findViewById(R.id.metroText);
-        textLocalTrain = (TextView) findViewById(R.id.localTrainText);
 
         refreshOverlays();
     }
@@ -81,23 +71,9 @@ public class OverlaysActivity extends Activity {
     }
 
 
-    public void onMetroContainerClick(View v) {
-        isMetroSelected = !isMetroSelected;
-        updateContainer(OverlayType.METRO, isMetroSelected);
-        IbikeApplication.getSettings().setOverlay(OverlayType.METRO, isMetroSelected);
-    }
-
-    public void onLocalTrainContainerClick(View v) {
-        isLocalTrainSelected = !isLocalTrainSelected;
-        updateContainer(OverlayType.LOCAL_TRAIN, isLocalTrainSelected);
-        IbikeApplication.getSettings().setOverlay(OverlayType.LOCAL_TRAIN, isLocalTrainSelected);
-    }
-
     public void refreshOverlays() {
         updateContainer(OverlayType.PATH, isPathSelected);
         updateContainer(OverlayType.SERVICE, isServiceSelected);
-        updateContainer(OverlayType.METRO, isMetroSelected);
-        updateContainer(OverlayType.LOCAL_TRAIN, isLocalTrainSelected);
     }
 
     private void updateContainer(OverlayType type, boolean selected) {
@@ -126,24 +102,6 @@ public class OverlaysActivity extends Activity {
                 text = (TextView) findViewById(R.id.serviceText);
                 break;
 
-            case METRO:
-                view = findViewById(R.id.metroContainer);
-                checkbox = (ImageView) findViewById(R.id.metroCheckbox);
-                image = (ImageView) findViewById(R.id.metroImg);
-                imageWhite = R.drawable.metro_icon_white;
-                imageGrey = R.drawable.metro_icon;
-                text = (TextView) findViewById(R.id.metroText);
-                break;
-
-            case LOCAL_TRAIN:
-                view = findViewById(R.id.localTrainContainer);
-                checkbox = (ImageView) findViewById(R.id.localTrainCheckbox);
-                image = (ImageView) findViewById(R.id.localTrainImg);
-                imageWhite = R.drawable.local_train_icon_white;
-                imageGrey = R.drawable.local_train_icon_gray;
-                text = (TextView) findViewById(R.id.localTrainText);
-                break;
-
             default:
                 return;
         }
@@ -160,9 +118,5 @@ public class OverlaysActivity extends Activity {
         textPath.setText(CykelsuperstierApplication.getString("cycle_super_highways"));
         textService.setTypeface(CykelsuperstierApplication.getNormalFont());
         textService.setText(CykelsuperstierApplication.getString("service_stations"));
-        textMetro.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textMetro.setText(CykelsuperstierApplication.getString("metro_stations"));
-        textLocalTrain.setTypeface(CykelsuperstierApplication.getNormalFont());
-        textLocalTrain.setText(CykelsuperstierApplication.getString("local_trains_stations"));
     }
 }

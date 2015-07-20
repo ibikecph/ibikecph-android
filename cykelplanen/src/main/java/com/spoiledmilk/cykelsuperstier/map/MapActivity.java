@@ -19,6 +19,8 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 
         super.mapView.setCenter(new LatLng(55.74, 12.424));
         super.mapView.setZoom(11.3f);
+
+        // Initialize the overlays
     }
 
     @Override
