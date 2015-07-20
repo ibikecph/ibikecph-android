@@ -145,7 +145,6 @@ public class LeftMenu extends Fragment implements iLanguageListener {
                     i = new Intent(getActivity(), ProfileActivity.class);
             }
             getActivity().startActivityForResult(i, LAUNCH_LOGIN);
-            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
     }
 
@@ -164,28 +163,24 @@ public class LeftMenu extends Fragment implements iLanguageListener {
             i = new Intent(getActivity(), TrackingActivity.class);
         }
         getActivity().startActivity(i);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public void spawnAboutActivity() {
         Intent i = new Intent(getActivity(), AboutActivity.class);
         getActivity().startActivity(i);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
 
     @SuppressWarnings("UnusedDeclaration")
     public void spawnFavoritesListActivity() {
         Intent i = new Intent(getActivity(), FavoritesListActivity.class);
         getActivity().startActivityForResult(i, LAUNCH_FAVORITE);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
 
     @SuppressWarnings("UnusedDeclaration")
     public void spawnTTSSettingsActivity() {
         Intent i = new Intent(getActivity(), TTSSettingsActivity.class);
         getActivity().startActivity(i);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
 
     @Override
