@@ -14,7 +14,6 @@ import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Icon;
-import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
@@ -44,8 +43,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class IBCMapView extends MapView {
 
     private UserLocationOverlay userLocationOverlay;
-    private Marker curAddressMarker;
-    private CopyOnWriteArrayList<Marker> markers = new CopyOnWriteArrayList<Marker>();
+    private IBCMarker curAddressMarker;
+    private CopyOnWriteArrayList<IBCMarker> markers = new CopyOnWriteArrayList<IBCMarker>();
 
     public enum MapState {
         DEFAULT,
@@ -275,10 +274,10 @@ public class IBCMapView extends MapView {
         showAddressInfoPane(a);
 
         removeAddressMarker();
-        removeAllMarkers();
+        //removeAllMarkers();
 
         // Put a marker on the map
-        Marker m = new Marker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation());
+        IBCMarker m = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation(), MarkerType.ADDRESS);
         m.setIcon(new Icon(this.getResources().getDrawable(R.drawable.marker_finish)));
         this.addMarker(m);
 
@@ -298,22 +297,29 @@ public class IBCMapView extends MapView {
         this.invalidate();
     }
 
-    @Override
-    public Marker addMarker(Marker m) {
-        Marker mm = super.addMarker(m);
-        markers.add(mm);
-        return mm;
+    public IBCMarker addMarker(IBCMarker m) {
+        super.addMarker(m);
+        markers.add(m);
+        return m;
     }
 
-    @Override
-    public void removeMarker(Marker m) {
+    public void removeMarker(IBCMarker m) {
         markers.remove(m);
         super.removeMarker(m);
     }
 
     public void removeAllMarkers() {
-        for (Marker m : markers) {
+        for (IBCMarker m : markers) {
             this.removeMarker(m);
+        }
+    }
+
+    public void removeAllMarkersOfType(MarkerType t) {
+        for (IBCMarker m : markers) {
+
+            if (m.getType() == t) {
+                this.removeMarker(m);
+            }
         }
     }
 

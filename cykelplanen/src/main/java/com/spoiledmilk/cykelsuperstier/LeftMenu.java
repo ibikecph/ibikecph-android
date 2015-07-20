@@ -11,46 +11,58 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import com.spoiledmilk.cykelsuperstier.favorites.AddFavoriteFragment;
+import android.widget.AdapterView;
 import com.spoiledmilk.cykelsuperstier.map.OverlaysActivity;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenuItem;
+import com.spoiledmilk.ibikecph.LeftMenuItemAdapter;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
-import com.spoiledmilk.ibikecph.util.LOG;
-import com.spoiledmilk.ibikecph.util.Util;
 import io.realm.Realm;
 
+import java.util.ArrayList;
+
 public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
-
-	boolean remindersExpanded = false;
-	boolean wasBtnDoneVisible = false;
-	LinearLayout remindersContainer;
-	LinearLayout remindersSettingsContainer;
-
-	int repetition;
 	int settingsHeight = 0;
-	boolean isAnimationStarted = false;
-	boolean checked1 = false, checked2 = false, checked3 = false, checked4 = false, checked5 = false;
+
+    private ArrayList<LeftMenuItem> cpMenuItems = new ArrayList<LeftMenuItem>();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("JC", "CP LeftMenu onCreate");
+
+        // TODO: Technically we should be able to just do everything we need on menuItems directly.
+        cpMenuItems.addAll(this.menuItems);
+
+        // Find the ID of the "voice" menu item. Append the overlays after that.
+        for (int i = 0; i<this.cpMenuItems.size(); i++) {
+            if (this.cpMenuItems.get(i).getLabelID().equals("favorites")) {
+                Log.d("JC", "Adding overlays menu");
+                this.cpMenuItems.add(i+1, new LeftMenuItem("map_overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
+            }
+
+            if (this.cpMenuItems.get(i).getLabelID().equals("about_app_ibc")) {
+                this.cpMenuItems.get(i).setLabelID("about_app_cp");
+            }
+        }
+    }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		final View ret = super.onCreateView(inflater, container, savedInstanceState);
 
-        // Find the ID of the "voice" menu item. Append the overlays after that.
-        for (int i = 0; i<this.menuItems.size(); i++) {
-            //if (this.menuItems.get(i).getLabelID().equals("voice")) {
-            if (this.menuItems.get(i).getLabelID().equals("favorites")) {
-                this.menuItems.add(i+1, new LeftMenuItem("map_overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
+        Log.d("JC", "CP LeftMenu onCreateView");
+        this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), cpMenuItems));
+        super.menuList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String handler = cpMenuItems.get(position).getHandler();
+                spawnFunction(handler);
             }
-
-            if (this.menuItems.get(i).getLabelID().equals("about_app_ibc")) {
-                this.menuItems.get(i).setLabelID("about_app_cp");
-            }
-        }
+        });
 
 		return ret;
 	}
@@ -100,9 +112,6 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 	@Override
 	public void onResume() {
 		super.onResume();
-
-		LOG.d("repetition = " + repetition);
-		settingsHeight = Util.dp2px(220);
 	}
 
 	@Override
@@ -110,11 +119,5 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 		super.initStrings();
 
 	}
-
-	@Override
-	protected AddFavoriteFragment getAddFavoriteFragment() {
-		return new AddFavoriteFragment();
-	}
-
 
 }

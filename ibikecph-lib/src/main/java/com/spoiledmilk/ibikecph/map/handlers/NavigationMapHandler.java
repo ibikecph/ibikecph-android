@@ -13,10 +13,7 @@ import com.mapbox.mapboxsdk.overlay.*;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.Geocoder;
-import com.spoiledmilk.ibikecph.map.IBCMapView;
-import com.spoiledmilk.ibikecph.map.RouteType;
-import com.spoiledmilk.ibikecph.map.TurnByTurnInstructionFragment;
+import com.spoiledmilk.ibikecph.map.*;
 import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
 import com.spoiledmilk.ibikecph.navigation.RouteETAFragment;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
@@ -36,6 +33,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private boolean cleanedUp = true;
     private transient TurnByTurnInstructionFragment turnByTurnFragment;
     private transient RouteETAFragment routeETAFragment;
+    private transient IBCMarker beginMarker, endMarker;
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -184,8 +182,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
 
         // Put markers at the beginning and end of the route.
-        Marker beginMarker = new Marker("", "", new LatLng(route.getStartLocation()));
-        Marker endMarker = new Marker("", "", new LatLng(route.getEndLocation()));
+        beginMarker = new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT);
+        endMarker = new IBCMarker("", "", new LatLng(route.getEndLocation()), MarkerType.PATH_ENDPOINT);
 
         beginMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_start)));
         endMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_finish)));
@@ -210,7 +208,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         mapView.addGPSOverlay();
         mapView.getGPSOverlay().setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
 
-        registerBearingRotation();
+        //registerBearingRotation();
 
         initInstructions();
     }
@@ -298,7 +296,16 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         if (cleanedUp) return;
 
         removeAnyPathOverlays();
-        this.mapView.removeAllMarkers();
+        // this.mapView.removeAllMarkers();
+
+        if (beginMarker != null) {
+            this.mapView.removeMarker(beginMarker);
+        }
+
+        if (endMarker != null) {
+            this.mapView.removeMarker(endMarker);
+        }
+
         this.mapView.invalidate();
 
         // And remove the fragment(s)

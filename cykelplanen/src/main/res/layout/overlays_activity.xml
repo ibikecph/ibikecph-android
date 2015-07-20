@@ -42,7 +42,7 @@
                 android:gravity="left"
                 android:paddingLeft="8dp"
                 android:textColor="@color/TextDarkGrey"
-                android:textSize="14sp" />
+                android:textSize="14sp" android:text="pathText"/>
 
             <ImageView
                 android:id="@+id/pathCheckbox"
@@ -55,138 +55,10 @@
         </RelativeLayout>
 
         <!--  Lokalbaner -->
-        <RelativeLayout
-            android:id="@+id/localTrainContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/pathContainer"
-            android:background="@color/White"
-            android:clickable="true"
-            android:onClick="onLocalTrainContainerClick"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp" >
-
-            <ImageView
-                android:id="@+id/localTrainImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="8dp"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/local_train_icon_gray" />
-
-            <TextView
-                android:id="@+id/localTrainText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="26dp"
-                android:layout_toLeftOf="@+id/localTrainCheckbox"
-                android:layout_toRightOf="@+id/localTrainImg"
-                android:gravity="left"
-                android:textColor="@color/TextDarkGrey"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/localTrainCheckbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/check_field" />
-        </RelativeLayout>
 
         <!--  Metroer -->
-        <RelativeLayout
-            android:id="@+id/metroContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/localTrainContainer"
-            android:background="@color/White"
-            android:clickable="true"
-            android:onClick="onMetroContainerClick"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp" >
-
-            <ImageView
-                android:id="@+id/metroImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/metro_icon" />
-
-            <TextView
-                android:id="@+id/metroText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_toLeftOf="@+id/metroCheckbox"
-                android:layout_toRightOf="@id/metroImg"
-                android:gravity="left"
-                android:textColor="@color/TextDarkGrey"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/metroCheckbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/check_field" />
-        </RelativeLayout>
 
         <!--  S-tog -->
-        <RelativeLayout
-            android:id="@+id/strainContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/metroContainer"
-            android:background="@color/White"
-            android:clickable="true"
-            android:onClick="onStrainContainerClick"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp" >
-
-            <ImageView
-                android:id="@+id/strainImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/s_togs_icon" />
-
-            <TextView
-                android:id="@+id/strainText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
-                android:layout_toLeftOf="@+id/strainCheckbox"
-                android:layout_toRightOf="@id/strainImg"
-                android:gravity="left"
-                android:paddingLeft="8dp"
-                android:textColor="@color/TextDarkGrey"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/strainCheckbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/check_field" />
-        </RelativeLayout>
 
         <!--  Reparation -->
         <RelativeLayout
@@ -194,12 +66,11 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/strainContainer"
             android:background="@color/White"
             android:clickable="true"
             android:onClick="onServiceContainerClick"
             android:paddingLeft="8dp"
-            android:paddingRight="8dp" >
+            android:paddingRight="8dp" android:layout_below="@+id/pathContainer">
 
             <ImageView
                 android:id="@+id/serviceImg"
@@ -220,7 +91,7 @@
                 android:layout_toRightOf="@id/serviceImg"
                 android:gravity="left"
                 android:textColor="@color/TextDarkGrey"
-                android:textSize="14sp" />
+                android:textSize="14sp" android:text="serviceText"/>
 
             <ImageView
                 android:id="@+id/serviceCheckbox"
