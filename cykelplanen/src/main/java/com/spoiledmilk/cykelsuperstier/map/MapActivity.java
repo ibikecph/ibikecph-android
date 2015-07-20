@@ -8,6 +8,7 @@ package com.spoiledmilk.cykelsuperstier.map;
 import android.os.Bundle;
 import android.util.Log;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
 import com.spoiledmilk.cykelsuperstier.LeftMenu;
 import com.spoiledmilk.ibikecph.map.IBCMarker;
@@ -60,6 +61,21 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
             }
         }
 
+        // Plot the Supercykelsti
+        if (CykelsuperstierApplication.getSettings().getOverlay(OverlayType.PATH)) {
+            ArrayList<SupercykelstiPathOverlay> paths = SupercykelstiPathOverlay.getSupercykelstiPathsFromJSON();
+
+            for (SupercykelstiPathOverlay path : paths) {
+                Log.d("JC", "Adding SuperCykelSti");
+                this.mapView.getOverlays().add(path);
+            }
+        } else {
+            for (Overlay o : this.mapView.getOverlays()) {
+                if (o instanceof SupercykelstiPathOverlay) {
+                    this.mapView.getOverlays().remove(o);
+                }
+            }
+        }
         this.mapView.invalidate();
     }
 

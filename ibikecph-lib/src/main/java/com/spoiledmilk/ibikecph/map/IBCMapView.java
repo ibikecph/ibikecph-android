@@ -315,9 +315,7 @@ public class IBCMapView extends MapView {
     }
 
     public void removeAllMarkersOfType(MarkerType t) {
-        Log.d("JC", "removeAllMarkersOfType: "+t.name());
         for (IBCMarker m : markers) {
-            Log.d("JC", "Marker of type: " + t.name());
 
             if (m.getType() == t) {
                 this.removeMarker(m);
