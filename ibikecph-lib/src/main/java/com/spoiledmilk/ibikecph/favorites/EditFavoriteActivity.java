@@ -2,9 +2,9 @@ package com.spoiledmilk.ibikecph.favorites;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.spoiledmilk.ibikecph.R;
 
 public class EditFavoriteActivity extends Activity {
@@ -45,4 +45,9 @@ public class EditFavoriteActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+    @Override
+    public void onBackPressed() {
+        Log.d("JC", "back pressed");
+    }
 }
