@@ -44,4 +44,6 @@ public class Config {
 
     public static String TRACKING_TERMS_URL = "https://www.ibikecph.dk/terms";
     public static String TRACKING_USAGE_URL = "https://www.ibikecph.dk/about/privacy";
+
+    public static String TRACKING_TERMS_JSON_URL = "http://kodekode.dk/ibikecph-terms.json";
 }

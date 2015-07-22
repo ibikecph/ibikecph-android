@@ -187,9 +187,9 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     public void onResume() {
         super.onResume();
         LOG.d("Left menu onResume");
+
         initStrings();
-        
-        updateControls();
+        populateMenu();
     }
 
     // TODO: Get rid of this
@@ -197,7 +197,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         DB db = new DB(getActivity());
         favorites = db.getFavorites(favorites);
         LOG.d("update favorites from reloadFavorites() count = " + favorites.size());
-        updateControls();
+        populateMenu();
     }
 
     @Override
@@ -215,11 +215,6 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 
     protected AddFavoriteFragment getAddFavoriteFragment() {
         return new AddFavoriteFragment();
-    }
-
-    @SuppressWarnings("deprecation")
-    public void updateControls() {
-        this.populateMenu();
     }
 
 }
