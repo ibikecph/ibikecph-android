@@ -100,9 +100,7 @@ public class AcceptNewTermsActivity extends Activity {
      }
 
     public void onNoThanksButtonClick(View v) {
-        IbikeApplication.logout();
-
-        finish();
+        onBackPressed();
     }
 
     public  void onAcceptButtonClick(View v) {
