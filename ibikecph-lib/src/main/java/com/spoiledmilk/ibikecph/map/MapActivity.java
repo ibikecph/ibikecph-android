@@ -27,10 +27,7 @@ import com.mapbox.mapboxsdk.events.ScrollEvent;
 import com.mapbox.mapboxsdk.events.ZoomEvent;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
-import com.spoiledmilk.ibikecph.IbikeApplication;
-import com.spoiledmilk.ibikecph.LeftMenu;
-import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.iLanguageListener;
+import com.spoiledmilk.ibikecph.*;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
@@ -135,6 +132,10 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
                 updateUserTrackingState();
             }
         });
+
+
+        // Check if the user accepts the newest terms
+        TermsManager.checkTerms(this);
     }
 
     /**
@@ -200,7 +201,10 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
             Util.launchNoConnectionDialog(this);
         }
         checkForCrashes();
-        getLeftMenu().updateControls();
+        getLeftMenu().onResume();
+
+        // Check if the user accepts the newest terms
+        TermsManager.checkTerms(this);
     }
 
     @Override
@@ -208,7 +212,7 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
         super.onRestoreInstanceState(savedInstanceState);
 
         leftMenu = getLeftMenu();
-        leftMenu.updateControls();
+        leftMenu.onResume();
     }
 
     protected void checkForCrashes() {
@@ -324,14 +328,10 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
             final Bundle extras = data.getExtras();
             Address a = (Address) extras.getSerializable("addressObject");
 
-            Log.d("JC", "CHANGING SOURCE ADDRESS");
-
             ((NavigationMapHandler) this.mapView.getMapHandler()).changeSourceAddress(a);
         } else if (requestCode == REQUEST_CHANGE_DESTINATION_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             final Bundle extras = data.getExtras();
             Address a = (Address) extras.getSerializable("addressObject");
-
-            Log.d("JC", "CHANGING DESTINATION ADDRESS");
 
             ((NavigationMapHandler) this.mapView.getMapHandler()).changeDestinationAddress(a);
         }

@@ -33,6 +33,7 @@ public class IbikePreferences {
     public static final String PREFS_SHARE_DATA       = "notifyWeekly";
     public static final String LENGTH_NOTIFICATION    = "lengthNotification";
     public static final String STREAK_NOTIFICATION    = "streakNotification";
+    public static final String NEWEST_TERMS_ACCEPTED  = "newest_terms_accepted";
 
     public static final int ROUTE_COLOR = Color.rgb(0, 174, 239);
     public static final float ROUTE_STROKE_WIDTH = 10.0f;
@@ -40,6 +41,7 @@ public class IbikePreferences {
     public static final int ROUTE_DIMMED_COLOR = Color.LTGRAY;
 
     public static final float DEFAULT_ZOOM_LEVEL = 17.0f;
+    private int newestTermsAccepted;
 
 
     public enum Language {
@@ -164,6 +166,14 @@ public class IbikePreferences {
 
     public void setMaxStreakLength(int streakLength) {
         getPrefs().edit().putInt(STREAK_NOTIFICATION, streakLength).commit();
+    }
+
+    public int getNewestTermsAccepted() {
+        return getPrefs().getInt(NEWEST_TERMS_ACCEPTED, 0);
+    }
+
+    public void setNewestTermsAccepted(int newestTermsAccepted) {
+        getPrefs().edit().putInt(NEWEST_TERMS_ACCEPTED, newestTermsAccepted).commit();
     }
 
 
