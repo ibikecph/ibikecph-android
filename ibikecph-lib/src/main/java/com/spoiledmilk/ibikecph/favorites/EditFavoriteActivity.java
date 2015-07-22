@@ -2,12 +2,19 @@ package com.spoiledmilk.ibikecph.favorites;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.spoiledmilk.ibikecph.R;
 
+
+
 public class EditFavoriteActivity extends Activity {
+
+    public interface FavoriteCallback {
+        public void onSuccess();
+        public void onFailure();
+    }
+
 	EditFavoriteFragment editFavoriteFragment;
 	
 	@Override
@@ -48,6 +55,8 @@ public class EditFavoriteActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        Log.d("JC", "back pressed");
+        // Save the favorite first.
+        this.editFavoriteFragment.saveFavorite();
+        super.onBackPressed();
     }
 }

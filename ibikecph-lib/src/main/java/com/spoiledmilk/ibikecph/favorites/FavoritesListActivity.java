@@ -133,7 +133,6 @@ public class FavoritesListActivity extends Activity {
 	        i.putExtra("favoritesData", fav);
 	        
 	        this.startActivityForResult(i, ADD_FAVORITE);
-	        this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
 			break;
 			
@@ -235,7 +234,7 @@ public class FavoritesListActivity extends Activity {
 	}
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == ADD_FAVORITE && resultCode == RESULT_OK) {
+		if (requestCode == ADD_FAVORITE) {
 			this.reloadFavorites();
 		}
 	}
