@@ -45,8 +45,6 @@ public class TermsManager {
                 } catch(JSONException e) {
 
                 }
-
-
             }
         });
 

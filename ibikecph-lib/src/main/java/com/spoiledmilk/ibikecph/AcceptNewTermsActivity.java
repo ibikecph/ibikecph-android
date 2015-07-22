@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 
 
@@ -24,8 +29,27 @@ public class AcceptNewTermsActivity extends Activity {
 
         version = this.getIntent().getIntExtra("version", 0);
         importantNews = this.getIntent().getStringExtra("important_news");
-    }
 
+        TextView user_terms_description = (TextView) findViewById(R.id.user_terms_description);
+        TextView most_important_terms_are = (TextView) findViewById(R.id.most_important_terms_are);
+        TextView termsText = (TextView) findViewById(R.id.termsText);
+        TextView read_terms = (TextView) findViewById(R.id.read_terms);
+
+        user_terms_description.setText(IbikeApplication.getString("user_terms_description"));
+        most_important_terms_are.setText(IbikeApplication.getString("most_important_terms_are"));
+        termsText.setText(importantNews);
+        read_terms.setText(Html.fromHtml("<a href=\"" + Config.TRACKING_TERMS_URL + "\">" + IbikeApplication.getString("read_terms") + "</a>"));
+        read_terms.setMovementMethod(LinkMovementMethod.getInstance());
+
+        Button btnNoThanks = (Button) findViewById(R.id.btnNoThanks);
+        Button btnAcceptTerms = (Button) findViewById(R.id.btnAcceptTerms);
+
+        btnNoThanks.setText(IbikeApplication.getString("no_thanks"));
+        btnAcceptTerms.setText(IbikeApplication.getString("accept"));
+
+        if (IbikeApplication.getSettings().getNewestTermsAccepted() == version)
+            finish();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,7 +99,7 @@ public class AcceptNewTermsActivity extends Activity {
         dialog.show();
      }
 
-    public void onLogoutButtonClick(View v) {
+    public void onNoThanksButtonClick(View v) {
         IbikeApplication.logout();
 
         finish();

@@ -135,7 +135,7 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
 
 
         // Check if the user accepts the newest terms
-        TermsManager.checkTerms(this);
+        // TermsManager.checkTerms(this);
     }
 
     /**
