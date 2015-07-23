@@ -5,10 +5,7 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.favorites;
 
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,19 +21,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.search.AddressParser;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
-import com.spoiledmilk.ibikecph.util.APIListener;
-import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.DB;
-import com.spoiledmilk.ibikecph.util.HttpUtils;
-import com.spoiledmilk.ibikecph.util.LOG;
-import com.spoiledmilk.ibikecph.util.Util;
+import com.spoiledmilk.ibikecph.util.*;
+import org.json.JSONObject;
 
 /**
  * A Fragment used inside the LeftMenu for editing a favorite.
@@ -145,45 +137,7 @@ public class EditFavoriteFragment extends Fragment implements APIListener {
 		btnSave.setTextColor(Color.WHITE);
 		btnSave.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if (Util.isNetworkConnected(getActivity())) {
-					if (favoritesData != null && textFavoriteName.getText().toString() != null
-							&& !textFavoriteName.getText().toString().trim().equals("")) {
-						if (new DB(getActivity()).favoritesForName(textFavoriteName.getText().toString().trim()) < 1
-								|| favoritesData.getName().trim().equalsIgnoreCase(textFavoriteName.getText().toString())) {
-							String st = favoritesData.getName() + " - (" + favoritesData.getLatitude() + "," + favoritesData.getLongitude()
-									+ ")";
-							IbikeApplication.getTracker().sendEvent("Favorites", "Save", st, (long) 0);
-							favoritesData.setName(textFavoriteName.getText().toString());
-							favoritesData.setAdress(textAddress.getText().toString());
-							favoritesData.setSubSource(currentFavoriteType);
-							Thread updateThread = new Thread(new Runnable() {
-								@Override
-								public void run() {
-									(new DB(getActivity())).updateFavorite(favoritesData, getActivity(), EditFavoriteFragment.this);
-								}
-							});
-							getView().findViewById(R.id.progress).setVisibility(View.VISIBLE);
-							updateThread.start();
-						} else {
-							Builder builder = new AlertDialog.Builder(getActivity());
-							builder.setMessage(IbikeApplication.getString("name_used"));
-							builder.setTitle(IbikeApplication.getString("Error"));
-							builder.setCancelable(false);
-							builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									dialog.dismiss();
-								}
-							});
-							dialog = builder.create();
-							dialog.show();
-						}
-					} else if (getActivity() != null) {
-						Util.showSimpleMessageDlg(getActivity(), IbikeApplication.getString("register_error_fields"));
-					}
-				} else {
-					Util.launchNoConnectionDialog(getActivity());
-				}
+				saveFavorite();
 			}
 		});
 
@@ -412,4 +366,46 @@ public class EditFavoriteFragment extends Fragment implements APIListener {
 			});
 		}
 	}
+
+    public void saveFavorite() {
+        if (Util.isNetworkConnected(getActivity())) {
+            if (favoritesData != null && textFavoriteName.getText().toString() != null
+                    && !textFavoriteName.getText().toString().trim().equals("")) {
+                if (new DB(getActivity()).favoritesForName(textFavoriteName.getText().toString().trim()) < 1
+                        || favoritesData.getName().trim().equalsIgnoreCase(textFavoriteName.getText().toString())) {
+                    String st = favoritesData.getName() + " - (" + favoritesData.getLatitude() + "," + favoritesData.getLongitude()
+                            + ")";
+                    IbikeApplication.getTracker().sendEvent("Favorites", "Save", st, (long) 0);
+                    favoritesData.setName(textFavoriteName.getText().toString());
+                    favoritesData.setAdress(textAddress.getText().toString());
+                    favoritesData.setSubSource(currentFavoriteType);
+                    Thread updateThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            (new DB(getActivity())).updateFavorite(favoritesData, getActivity(), EditFavoriteFragment.this);
+                        }
+                    });
+                    getView().findViewById(R.id.progress).setVisibility(View.VISIBLE);
+                    updateThread.start();
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage(IbikeApplication.getString("name_used"));
+                    builder.setTitle(IbikeApplication.getString("Error"));
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog = builder.create();
+                    dialog.show();
+                }
+            } else if (getActivity() != null) {
+                Util.showSimpleMessageDlg(getActivity(), IbikeApplication.getString("register_error_fields"));
+            }
+        } else {
+            Util.launchNoConnectionDialog(getActivity());
+        }
+    }
 }

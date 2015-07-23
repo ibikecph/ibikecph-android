@@ -4,10 +4,17 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.spoiledmilk.ibikecph.R;
 
+
+
 public class EditFavoriteActivity extends Activity {
+
+    public interface FavoriteCallback {
+        public void onSuccess();
+        public void onFailure();
+    }
+
 	EditFavoriteFragment editFavoriteFragment;
 	
 	@Override
@@ -45,4 +52,11 @@ public class EditFavoriteActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+    @Override
+    public void onBackPressed() {
+        // Save the favorite first.
+        this.editFavoriteFragment.saveFavorite();
+        super.onBackPressed();
+    }
 }
