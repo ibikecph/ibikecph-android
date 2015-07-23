@@ -47,7 +47,7 @@ public class TrackingInfoPaneFragment extends InfoPaneFragment {
 
         // Set the labels
         TextView todayTextView = (TextView) v.findViewById(R.id.todayTextView);
-        todayTextView.setText(IbikeApplication.getString("Today").toLowerCase());
+        todayTextView.setText(IbikeApplication.getString("Today"));
 
         TextView totalDurationTextView = (TextView) v.findViewById(R.id.totalDurationTextView);
         totalDurationTextView.setText(TrackListAdapter.durationToFormattedTime(totalDuration) );
