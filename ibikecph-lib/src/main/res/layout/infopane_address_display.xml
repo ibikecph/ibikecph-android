@@ -27,4 +27,16 @@
             android:id="@+id/btnStartRoute"
             android:src="@drawable/btn_route_to"
             />
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+            android:layout_below="@id/btnStartRoute"
+            android:layout_alignStart="@id/btnStartRoute"
+            android:layout_alignLeft="@id/btnStartRoute"
+            android:text="new_route"
+            android:textSize="10dp"
+            android:id="@+id/newRouteText"
+            android:textColor="@color/IBCActionBar"
+            android:layout_marginTop="4dp"
+            />
 </RelativeLayout>

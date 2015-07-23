@@ -25,9 +25,9 @@
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:id="@+id/navigationOverviewSource" android:text="source"
                 android:paddingTop="4dp"
-                android:paddingBottom="4dp" android:layout_alignTop="@+id/navigationOverviewGoButton"
-                android:layout_toLeftOf="@+id/navigationOverviewGoButton"
-                android:layout_toStartOf="@+id/navigationOverviewGoButton"
+                android:paddingBottom="4dp" android:layout_alignTop="@+id/navigationOverviewGoButtonContainer"
+                android:layout_toLeftOf="@+id/navigationOverviewGoButtonContainer"
+                android:layout_toStartOf="@+id/navigationOverviewGoButtonContainer"
                 android:layout_toRightOf="@+id/btnAddressSwap"
                 />
         <View
@@ -48,15 +48,31 @@
                 android:layout_toRightOf="@+id/btnAddressSwap"
                 android:layout_marginBottom="8dp"/>
 
-        <ImageButton
-                android:layout_width="wrap_content"
+        <RelativeLayout
+                android:layout_width="33dp"
                 android:layout_height="wrap_content"
-                android:text="go"
-                android:id="@+id/navigationOverviewGoButton"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/btn_route_go" android:background="@color/White"
-                android:paddingLeft="8dp"
-                />
+                android:id="@+id/navigationOverviewGoButtonContainer" android:layout_alignParentEnd="false"
+                android:layout_alignParentRight="true">
+
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="go"
+                    android:id="@+id/navigationOverviewGoButton"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/btn_route_go" android:background="@color/White"
+                    />
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/newRouteText"
+                      android:text="new_route"
+                      android:textSize="10dp"
+                      android:layout_below="@+id/navigationOverviewGoButton"
+                      android:textColor="@color/IBCActionBar"
+                      android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+
         <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

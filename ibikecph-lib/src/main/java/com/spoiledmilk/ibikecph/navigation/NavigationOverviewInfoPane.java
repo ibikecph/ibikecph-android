@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.MapActivity;
@@ -116,6 +117,8 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
 
         sourceText.setOnClickListener(this);
         destinationText.setOnClickListener(this);
+
+        ((TextView) v.findViewById(R.id.newRouteText)).setText(IbikeApplication.getString("new_route"));
 
         return v;
     }
