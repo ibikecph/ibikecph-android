@@ -29,13 +29,14 @@ import java.util.ArrayList;
 
 /**
  * The activity for reporting issues with a route.
- * @author jens
+ * @author SpoiledMilk
  *
+ * TODO: Have this Activity take a SMRoute instead of all this string passing.
  */
 public class IssuesActivity extends Activity {
 
 	private Spinner spinner;
-	private TextView textTitle, textOption1, textOption2, textOption3, textOption4, textOption5, textOption6;
+	private TextView textOption1, textOption2, textOption3, textOption4, textOption5, textOption6;
 	private EditText textComment1, textComment2, textComment3, textComment4, textComment5, textComment6;
 	private ImageView imgRadio1, imgRadio2, imgRadio3, imgRadio4, imgRadio5, imgRadio6;
 	private TexturedButton btnSend;
@@ -57,7 +58,6 @@ public class IssuesActivity extends Activity {
 		endName = data.getString("endName");
 		IssuesAdapter dataAdapter = new IssuesAdapter(this, turns, R.layout.list_row_issues, R.layout.spinner_layout);
 		spinner.setAdapter(dataAdapter);
-		textTitle = (TextView) findViewById(R.id.textTitle);
 		textOption1 = (TextView) findViewById(R.id.textOption1);
 		textOption2 = (TextView) findViewById(R.id.textOption2);
 		textOption3 = (TextView) findViewById(R.id.textOption3);
@@ -88,8 +88,8 @@ public class IssuesActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		spinner.setPrompt(IbikeApplication.getString("choose_a_route_step"));
-		textTitle.setText(IbikeApplication.getString("describe_problem"));
-		textTitle.setTypeface(IbikeApplication.getNormalFont());
+
+        this.getActionBar().setTitle(IbikeApplication.getString("describe_problem"));
 		textOption1.setText(IbikeApplication.getString("report_wrong_address"));
 		textOption1.setTypeface(IbikeApplication.getNormalFont());
 		textOption2.setText(IbikeApplication.getString("report_road_closed"));

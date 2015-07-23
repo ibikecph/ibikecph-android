@@ -32,7 +32,7 @@
                 android:layout_marginRight="12dp"
                 android:textColor="#dadada"
                 android:id="@+id/textProblem"
-                android:text="problem"
+                android:text="Problem"
                 />
 
 

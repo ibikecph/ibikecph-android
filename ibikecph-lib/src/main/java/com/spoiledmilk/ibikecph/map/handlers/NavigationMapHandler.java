@@ -325,7 +325,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         return (NavigationOverviewInfoPane) mapView.getParentActivity().getFragmentManager().findFragmentByTag("NavigationOverviewInfoPane");
     }
 
-    public SMRoute getRoute() {
+    public static SMRoute getRoute() {
         return route;
     }
 
