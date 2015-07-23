@@ -73,7 +73,7 @@ public class IBCMapView extends MapView {
      * Do some initializations that are always needed
      */
     public void init(MapState initialState, IBCMapActivity parent) {
-        WebSourceTileLayer ws = new WebSourceTileLayer("ibikecph", "http://tiles.ibikecph.dk/tiles/{z}/{x}/{y}.png");
+        WebSourceTileLayer ws = new WebSourceTileLayer("ibikecph", "https://tiles.ibikecph.dk/tiles/{z}/{x}/{y}.png");
         ws.setName("OpenStreetMap")
                 .setAttribution("© OpenStreetMap Contributors")
                 .setMinimumZoomLevel(1)
