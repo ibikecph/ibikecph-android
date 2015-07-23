@@ -653,12 +653,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                         .distanceTo(startStation))))) {
             routePhase = TO_DESTINATION;
             isRouteBroken = false;
-            new SMHttpRequest().getRecalculatedRoute(loc, end, null, routeChecksum, null, destinationHint, this);
+            new SMHttpRequest().getRecalculatedRoute(loc, end, null, routeChecksum, null, destinationHint, this.type, this);
         } else if (isRouteBroken) {
             List<Location> viaList = new LinkedList<Location>();
             viaList.add(startStation);
             viaList.add(endStation);
-            new SMHttpRequest().getRecalculatedRoute(loc, end, viaList, null, null, null, this);
+            new SMHttpRequest().getRecalculatedRoute(loc, end, viaList, null, null, null, this.type, this);
         }
     }
 
@@ -672,7 +672,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         if (loc == null || end == null) {
             return false;
         }
-        new SMHttpRequest().getRecalculatedRoute(loc, end, null, null, null, null, this);
+        new SMHttpRequest().getRecalculatedRoute(loc, end, null, null, null, null, this.type, this);
         return true;
     }
 

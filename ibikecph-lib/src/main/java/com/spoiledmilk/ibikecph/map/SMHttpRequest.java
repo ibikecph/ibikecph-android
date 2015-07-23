@@ -110,31 +110,40 @@ public class SMHttpRequest {
     }
 
     public void getRoute(final Location start, final Location end, List<Location> viaPoints, final SMHttpRequestListener listener) {
-        getRoute(start, end, viaPoints, null, null, null, listener, REQUEST_GET_ROUTE, 18, false);
-    }
-
-    public void getRecalculatedRoute(final Location start, final Location end, List<Location> viaPoints, String chksum,
-            final SMHttpRequestListener listener) {
-        getRoute(start, end, viaPoints, chksum, null, null, listener, REQUEST_GET_RECALCULATED_ROUTE, 18, false);
+        getRoute(start, end, viaPoints, null, null, null, listener, REQUEST_GET_ROUTE, 18, false, RouteType.FASTEST);
     }
 
     public void getRecalculatedRoute(final Location start, final Location end, List<Location> viaPoints, final String chksum, final String startHint,
-            final String hint, final SMHttpRequestListener listener) {
-        getRoute(start, end, viaPoints, chksum, startHint, hint, listener, REQUEST_GET_RECALCULATED_ROUTE, 18, false);
+            final String hint, final RouteType type, final SMHttpRequestListener listener) {
+        getRoute(start, end, viaPoints, chksum, startHint, hint, listener, REQUEST_GET_RECALCULATED_ROUTE, 18, false, type);
     }
 
     public void getRoute(final Location start, final Location end, final List<Location> viaPoints, final String chksum, final String startHint,
-            final String hint, final SMHttpRequestListener listener, final int msgType, final int z, final boolean isFromZ10) {
+            final String hint, final SMHttpRequestListener listener, final int msgType, final int z, final boolean isFromZ10, final RouteType type) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String url;
+                String routingServer;
+
+                switch(type) {
+                    case GREEN:
+                        routingServer = Config.OSRM_SERVER_GREEN;
+                        break;
+                    case CARGO:
+                        routingServer = Config.OSRM_SERVER_CARGO;
+                        break;
+                    case FASTEST:
+                    default:
+                        routingServer = Config.OSRM_SERVER_FAST;
+                }
+
                 if (startHint != null) {
-                    url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f&hint=" + startHint + "", Config.OSRM_SERVER,
+                    url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f&hint=" + startHint + "", routingServer,
 
                     start.getLatitude(), start.getLongitude());
                 } else {
-                    url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f", Config.OSRM_SERVER, start.getLatitude(),
+                    url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f", routingServer, start.getLatitude(),
                             start.getLongitude());
                 }
 
@@ -220,7 +229,7 @@ public class SMHttpRequest {
                 hintStart = locations.get(0).asText();
                 endHint = locations.get(locations.size() - 1).asText();
             }
-            getRoute(start, end, viaPoints, checksum, hintStart, endHint, listener, msgType, 18, true);
+            getRoute(start, end, viaPoints, checksum, hintStart, endHint, listener, msgType, 18, true, RouteType.FASTEST);
         }
     }
 
