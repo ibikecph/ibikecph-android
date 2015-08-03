@@ -11,7 +11,11 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+
+                >
 
             <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
                     android:text="address_label"
@@ -98,21 +102,36 @@
                 android:paddingBottom="3dp"
                 android:src="@drawable/fav_search_name_icon" />
 
-            <RadioGroup android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textFavoriteName">
+            <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textFavoriteName"
+                    android:id="@+id/favoriteTypeRadioGroup"
+                    android:layout_marginTop="18dp"
+                    >
 
                 <RadioButton android:layout_width="fill_parent" android:layout_height="wrap_content"
                         android:text="home"
+                        android:drawableRight="@drawable/fav_home_grey"
+                        android:id="@+id/radioButtonHome"
                         />
-                <RadioButton android:layout_width="fill_parent" android:layout_height="wrap_content"
-                             android:text="work"
+                <RadioButton
+                        android:layout_width="fill_parent" android:layout_height="wrap_content"
+                        android:text="work"
+                        android:drawableRight="@drawable/fav_work_grey"
+                        android:id="@+id/radioButtonWork"
                         />
-                <RadioButton android:layout_width="fill_parent" android:layout_height="wrap_content"
-                             android:text="school"
+                <RadioButton
+                        android:layout_width="fill_parent" android:layout_height="wrap_content"
+                        android:text="school"
+                        android:drawableRight="@drawable/fav_school_grey"
+                        android:id="@+id/radioButtonSchool"
                         />
-                <RadioButton android:layout_width="fill_parent" android:layout_height="wrap_content"
-                             android:text="favorite"
+                <RadioButton
+                        android:layout_width="fill_parent" android:layout_height="wrap_content"
+                        android:text="favorite"
+                        android:drawableRight="@drawable/fav_star"
+                        android:id="@+id/radioButtonFavorite"
                         />
 
             </RadioGroup>

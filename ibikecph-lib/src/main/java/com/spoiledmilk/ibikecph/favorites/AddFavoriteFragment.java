@@ -11,7 +11,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,10 +19,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.*;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.search.AddressParser;
@@ -36,18 +32,10 @@ import com.spoiledmilk.ibikecph.util.Util;
  * @author jens
  *
  */
-public class AddFavoriteFragment extends Fragment {
+public class AddFavoriteFragment extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
 	protected EditText textAddress;
 	protected EditText textFavoriteName;
-	private ImageButton btnFavorite;
-	private ImageButton btnHome;
-	private ImageButton btnWork;
-	private ImageButton btnSchool;
-	private TextView textFavorite;
-	private TextView textHome;
-	private TextView textWork;
-	private TextView textSchool;
 	private Button btnSave;
 	private FavoritesData favoritesData = null;
 	private String currentFavoriteType = "";
@@ -82,116 +70,80 @@ public class AddFavoriteFragment extends Fragment {
 			}
 		});
 
-		textFavorite = (TextView) ret.findViewById(R.id.textFavorite);
-		textHome = (TextView) ret.findViewById(R.id.textHome);
-		textWork = (TextView) ret.findViewById(R.id.textWork);
-		textSchool = (TextView) ret.findViewById(R.id.textSchool);
 
-		btnFavorite = (ImageButton) ret.findViewById(R.id.btnFavorite);
-		btnFavorite.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				unselectGraphics();
-				btnFavorite.setImageResource(R.drawable.favtypefavoritebuttonpressed);
-				if (isPredefinedName(textFavoriteName.getText().toString()))
-					textFavoriteName.setText(IbikeApplication.getString("Favorite"));
-				currentFavoriteType = FavoritesData.favFav;
-				textFavorite.setTextColor(getSelectedTextColor());
-			}
-
-		});
-
-		btnHome = (ImageButton) ret.findViewById(R.id.btnHome);
-		btnHome.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				unselectGraphics();
-				btnHome.setImageResource(R.drawable.favtypehomebuttonpressed);
-				if (isPredefinedName(textFavoriteName.getText().toString()))
-					textFavoriteName.setText(IbikeApplication.getString("Home"));
-				currentFavoriteType = FavoritesData.favHome;
-				textHome.setTextColor(getSelectedTextColor());
-			}
-		});
-
-		btnWork = (ImageButton) ret.findViewById(R.id.btnWork);
-		btnWork.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				unselectGraphics();
-				btnWork.setImageResource(R.drawable.favtypeworkbuttonpressed);
-				if (isPredefinedName(textFavoriteName.getText().toString()))
-					textFavoriteName.setText(IbikeApplication.getString("Work"));
-				currentFavoriteType = FavoritesData.favWork;
-				textWork.setTextColor(getSelectedTextColor());
-			}
-		});
-
-		btnSchool = (ImageButton) ret.findViewById(R.id.btnSchool);
-		btnSchool.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				unselectGraphics();
-				btnSchool.setImageResource(R.drawable.favtypeschoolbuttonpressed);
-				if (isPredefinedName(textFavoriteName.getText().toString()))
-					textFavoriteName.setText(IbikeApplication.getString("School"));
-				currentFavoriteType = FavoritesData.favSchool;
-				textSchool.setTextColor(getSelectedTextColor());
-			}
-		});
 
 		btnSave = (Button) ret.findViewById(R.id.btnSave);
 		btnSave.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				if (Util.isNetworkConnected(getActivity())) {
-					if (favoritesData != null && textFavoriteName.getText().toString() != null
-							&& !textFavoriteName.getText().toString().trim().equals("")) {
-						if (new DB(getActivity()).favoritesForName(textFavoriteName.getText().toString().trim()) == 0) {
-							favoritesData.setName(textFavoriteName.getText().toString());
-							favoritesData.setSubSource(currentFavoriteType);
-							String st = favoritesData.getName() + " - (" + favoritesData.getLatitude() + "," + favoritesData.getLongitude()
-									+ ")";
-							IbikeApplication.getTracker().sendEvent("Favorites", "Save", st, (long) 0);
-
-							Thread saveThread = new Thread(new Runnable() {
-								@Override
-								public void run() {
-									(new DB(getActivity())).saveFavorite(favoritesData, getActivity(), false);
-								}
-							});
-							saveThread.start();
-							try {
-								saveThread.join();
-							} catch (Exception e) {
-								e.getLocalizedMessage();
-							}
-							
-							getActivity().setResult(FavoritesListActivity.RESULT_OK);
-							getActivity().finish();
-							
-						} else {
-							Builder builder = new AlertDialog.Builder(getActivity());
-							builder.setMessage(IbikeApplication.getString("name_used"));
-							builder.setTitle(IbikeApplication.getString("Error"));
-							builder.setCancelable(false);
-							builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									dialog.dismiss();
-								}
-							});
-							dialog = builder.create();
-							dialog.show();
-						}
-					} else if (getActivity() != null) {
-						Util.showSimpleMessageDlg(getActivity(), IbikeApplication.getString("register_error_fields"));
-					}
-				} else {
-					Util.launchNoConnectionDialog(getActivity());
-				}
+                saveFavorite();
 			}
 		});
 
 		textFavoriteName.setText(IbikeApplication.getString("Favorite"));
 
-		return ret;
+        ((TextView) ret.findViewById(R.id.labelName)).setText(IbikeApplication.getString("Name"));
+        ((TextView) ret.findViewById(R.id.labelAddress)).setText(IbikeApplication.getString("Address"));
+
+        ((RadioButton) ret.findViewById(R.id.radioButtonFavorite)).setText(IbikeApplication.getString("Favorite"));
+        ((RadioButton) ret.findViewById(R.id.radioButtonHome)).setText(IbikeApplication.getString("Home"));
+        ((RadioButton) ret.findViewById(R.id.radioButtonSchool)).setText(IbikeApplication.getString("School"));
+        ((RadioButton) ret.findViewById(R.id.radioButtonWork)).setText(IbikeApplication.getString("Work"));
+
+        ((RadioGroup) ret.findViewById(R.id.favoriteTypeRadioGroup)).setOnCheckedChangeListener(this);
+
+        return ret;
 	}
+
+    public final void saveFavorite() {
+        if (Util.isNetworkConnected(getActivity())) {
+            if (favoritesData != null && textFavoriteName.getText().toString() != null
+                    && !textFavoriteName.getText().toString().trim().equals("")) {
+                if (new DB(getActivity()).favoritesForName(textFavoriteName.getText().toString().trim()) == 0) {
+                    favoritesData.setName(textFavoriteName.getText().toString());
+                    favoritesData.setSubSource(currentFavoriteType);
+                    String st = favoritesData.getName() + " - (" + favoritesData.getLatitude() + "," + favoritesData.getLongitude()
+                            + ")";
+                    IbikeApplication.getTracker().sendEvent("Favorites", "Save", st, (long) 0);
+
+                    Thread saveThread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            (new DB(getActivity())).saveFavorite(favoritesData, getActivity(), false);
+                        }
+                    });
+
+                    // TODO: Why even use threading if you join right after starting the thread?
+                    saveThread.start();
+                    try {
+                        saveThread.join();
+                    } catch (Exception e) {
+                        e.getLocalizedMessage();
+                    }
+
+                    getActivity().setResult(FavoritesListActivity.RESULT_OK);
+                    getActivity().finish();
+
+                } else {
+                    Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage(IbikeApplication.getString("name_used"));
+                    builder.setTitle(IbikeApplication.getString("Error"));
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog = builder.create();
+                    dialog.show();
+                }
+            } else if (getActivity() != null) {
+                Util.showSimpleMessageDlg(getActivity(), IbikeApplication.getString("register_error_fields"));
+            }
+        } else {
+            Util.launchNoConnectionDialog(getActivity());
+        }
+    }
 
 	@Override
 	public void onResume() {
@@ -201,24 +153,9 @@ public class AddFavoriteFragment extends Fragment {
 
 	private void initStrings() {
 		textAddress.setHint(IbikeApplication.getString("add_favorite_address_placeholder"));
-		textFavorite.setText(IbikeApplication.getString("Favorite"));
-		textHome.setText(IbikeApplication.getString("Home"));
-		textWork.setText(IbikeApplication.getString("Work"));
-		textSchool.setText(IbikeApplication.getString("School"));
 		btnSave.setText(IbikeApplication.getString("save_favorite"));
 		if (currentFavoriteType.equals(""))
 			currentFavoriteType = IbikeApplication.getString("Favorite");
-	}
-
-	private void unselectGraphics() {
-		btnFavorite.setImageResource(R.drawable.favtypefavoritebutton);
-		textFavorite.setTextColor(getUnSelectedTextColor());
-		btnHome.setImageResource(R.drawable.favtypehomebutton);
-		textHome.setTextColor(getUnSelectedTextColor());
-		btnWork.setImageResource(R.drawable.favtypeworkbutton);
-		textWork.setTextColor(getUnSelectedTextColor());
-		btnSchool.setImageResource(R.drawable.favtypeschoolbutton);
-		textSchool.setTextColor(getUnSelectedTextColor());
 	}
 
 	@Override
@@ -251,17 +188,13 @@ public class AddFavoriteFragment extends Fragment {
 		hideKeyboard();
 	}
 
-	protected int getSelectedTextColor() {
-		return Color.BLACK;
-	}
-
-	protected int getUnSelectedTextColor() {
-		return Color.LTGRAY;
-	}
-
 	private static boolean isPredefinedName(final String name) {
-		if (name.equals(IbikeApplication.getString("Favorite")) || name.equals(IbikeApplication.getString("School"))
-				|| name.equals(IbikeApplication.getString("Work")) || name.equals(IbikeApplication.getString("Home")) || name.equals(""))
+		if (
+                name.equals(IbikeApplication.getString("Favorite")) ||
+                name.equals(IbikeApplication.getString("School"))  ||
+				name.equals(IbikeApplication.getString("Work")) ||
+                name.equals(IbikeApplication.getString("Home")) ||
+                name.equals(""))
 			return true;
 		else
 			return false;
@@ -273,4 +206,29 @@ public class AddFavoriteFragment extends Fragment {
 			inputManager.hideSoftInputFromWindow(textFavoriteName.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		}
 	}
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        if (checkedId == R.id.radioButtonFavorite) {
+            if (isPredefinedName(textFavoriteName.getText().toString()))
+                textFavoriteName.setText(IbikeApplication.getString("Favorite"));
+
+            currentFavoriteType = FavoritesData.favFav;
+        } else if (checkedId == R.id.radioButtonHome) {
+            if (isPredefinedName(textFavoriteName.getText().toString()))
+                textFavoriteName.setText(IbikeApplication.getString("Home"));
+
+            currentFavoriteType = FavoritesData.favHome;
+        } else if (checkedId == R.id.radioButtonSchool) {
+            if (isPredefinedName(textFavoriteName.getText().toString()))
+                textFavoriteName.setText(IbikeApplication.getString("School"));
+
+            currentFavoriteType = FavoritesData.favSchool;
+        } else if (checkedId == R.id.radioButtonWork) {
+            if (isPredefinedName(textFavoriteName.getText().toString()))
+                textFavoriteName.setText(IbikeApplication.getString("Work"));
+
+            currentFavoriteType = FavoritesData.favWork;
+        }
+    }
 }

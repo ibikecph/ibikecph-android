@@ -11,7 +11,7 @@ import com.spoiledmilk.ibikecph.R;
 
 public class AddFavoriteActivity extends Activity {
 
-	Fragment addFavoriteFragment;
+	AddFavoriteFragment addFavoriteFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,4 +76,11 @@ public class AddFavoriteActivity extends Activity {
 		Log.i("JC", "AddFavoriteActivity on address result");
 		addFavoriteFragment.onActivityResult(requestCode, resultCode, data);
 	}
+
+    @Override
+    public void onBackPressed() {
+        // Save the favorite first.
+        this.addFavoriteFragment.saveFavorite();
+        super.onBackPressed();
+    }
 }
