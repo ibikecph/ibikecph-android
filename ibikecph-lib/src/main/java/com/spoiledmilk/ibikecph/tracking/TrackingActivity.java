@@ -25,14 +25,14 @@ public class TrackingActivity extends Activity {
     private TextView activityText, sinceText, distanceText;
     TrackingManager trackingManager;
     private String DATE_FORMAT = "dd MMMM yyyy";
-    private TextView avgPerTrackDistanceTextView;
+    private TextView calText;
     private TextView distanceTextView;
     private TextView speedTextView;
     private TextView timeTextView;
     private TextView trackingStatusTextView;
     private StickyListHeadersListView tripListView;
 
-    private TextView kmText, kmtText, kmPrTripText, hoursText;
+    private TextView kmText, kmtText, calUnitText, hoursText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +47,13 @@ public class TrackingActivity extends Activity {
 
         this.distanceTextView    = (TextView) findViewById(R.id.distanceTextView);
         this.speedTextView    = (TextView) findViewById(R.id.speedTextView);
-        this.avgPerTrackDistanceTextView    = (TextView) findViewById(R.id.avgPerTrackDistanceTextView);
+        this.calText = (TextView) findViewById(R.id.calText);
         this.timeTextView    = (TextView) findViewById(R.id.timeTextView);
         this.trackingStatusTextView = (TextView) findViewById(R.id.trackingStatusTextView);
 
         this.kmText = (TextView) findViewById(R.id.kmText);
         this.kmtText = (TextView) findViewById(R.id.kmtText);
-        this.kmPrTripText = (TextView) findViewById(R.id.kmPrTripText);
+        this.calUnitText = (TextView) findViewById(R.id.calUnitText);
         this.hoursText = (TextView) findViewById(R.id.hoursText);
 
         ((Button) findViewById(R.id.reactivateButton)).setText(IbikeApplication.getString("reenable_tracking"));
@@ -124,7 +124,7 @@ public class TrackingActivity extends Activity {
 
         this.kmText.setText(IbikeApplication.getString("unit_km"));
         this.kmtText.setText(IbikeApplication.getString("unit_km_pr_h"));
-        this.kmPrTripText.setText(IbikeApplication.getString("unit_km_pr_trip"));
+        this.calUnitText.setText(IbikeApplication.getString("unit_cal"));
 
         this.hoursText.setText(IbikeApplication.getString("unit_h_long"));
 
@@ -164,12 +164,7 @@ public class TrackingActivity extends Activity {
 
         distanceTextView.setText(String.format("%d", Math.round(totalDistance/1000)));
 
-        if (results.size() > 0 ) {
-            avgPerTrackDistanceTextView.setText(String.format("%.1f", (totalDistance / 1000 / results.size())));
-        }
-        else { // Can't divide by 0
-            avgPerTrackDistanceTextView.setText("0");
-        }
+        calText.setText(String.format("%d", (int) ((totalDistance / 1000) * 11)) );
 
         if (totalSeconds > 0 ) {
             // The speedAggregate is in meters/sec, we multiply with 3.6 to get km/h

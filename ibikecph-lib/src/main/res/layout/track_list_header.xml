@@ -135,15 +135,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="12.4"
-                    android:id="@+id/avgPerTrackDistanceTextView"
+                    android:text="12"
+                    android:id="@+id/calText"
                     android:textSize="32dp" android:layout_marginTop="10dp" android:gravity="right" />
 
             <TextView
-                    android:text="KM PR TUR"
+                    android:text="CAL"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="right"  android:id="@+id/kmPrTripText"/>
+                    android:gravity="right"  android:id="@+id/calUnitText"/>
         </LinearLayout>
 
 

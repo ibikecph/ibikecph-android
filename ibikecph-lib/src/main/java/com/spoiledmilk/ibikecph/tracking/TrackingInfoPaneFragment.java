@@ -55,6 +55,9 @@ public class TrackingInfoPaneFragment extends InfoPaneFragment {
         TextView totalDistanceTextView = (TextView) v.findViewById(R.id.totalDistanceTextView);
         totalDistanceTextView.setText(String.format("%d km", Math.round(totalDistance/1000)));
 
+        TextView totalCaloriesTextView = (TextView) v.findViewById(R.id.totalCaloriesTextView);
+        totalCaloriesTextView.setText( (int)((totalDistance/1000) * 11) + " Cal");
+
         return v;
     }
 
