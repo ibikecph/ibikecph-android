@@ -5,7 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.favorites;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Fragment;
@@ -14,7 +13,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +20,12 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.search.AddressParser;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.util.DB;
@@ -51,7 +48,7 @@ public class AddFavoriteFragment extends Fragment {
 	private TextView textHome;
 	private TextView textWork;
 	private TextView textSchool;
-	private TexturedButton btnSave;
+	private Button btnSave;
 	private FavoritesData favoritesData = null;
 	private String currentFavoriteType = "";
 	private AlertDialog dialog;
@@ -139,10 +136,7 @@ public class AddFavoriteFragment extends Fragment {
 			}
 		});
 
-		btnSave = (TexturedButton) ret.findViewById(R.id.btnSave);
-		btnSave.setTextureResource(R.drawable.btn_pattern_repeteable);
-		btnSave.setBackgroundResource(R.drawable.btn_blue_selector);
-		btnSave.setTextColor(Color.WHITE);
+		btnSave = (Button) ret.findViewById(R.id.btnSave);
 		btnSave.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				if (Util.isNetworkConnected(getActivity())) {
@@ -207,22 +201,11 @@ public class AddFavoriteFragment extends Fragment {
 
 	private void initStrings() {
 		textAddress.setHint(IbikeApplication.getString("add_favorite_address_placeholder"));
-		textAddress.setHintTextColor(getActivity().getResources().getColor(R.color.HintColor));
-		textAddress.setTypeface(IbikeApplication.getNormalFont());
 		textFavorite.setText(IbikeApplication.getString("Favorite"));
-		textFavorite.setTypeface(IbikeApplication.getNormalFont());
-		textFavorite.setTextColor(getSelectedTextColor());
 		textHome.setText(IbikeApplication.getString("Home"));
-		textHome.setTypeface(IbikeApplication.getNormalFont());
-		textHome.setTextColor(getUnSelectedTextColor());
 		textWork.setText(IbikeApplication.getString("Work"));
-		textWork.setTypeface(IbikeApplication.getNormalFont());
-		textWork.setTextColor(getUnSelectedTextColor());
 		textSchool.setText(IbikeApplication.getString("School"));
-		textSchool.setTypeface(IbikeApplication.getNormalFont());
-		textSchool.setTextColor(getUnSelectedTextColor());
 		btnSave.setText(IbikeApplication.getString("save_favorite"));
-		btnSave.setTypeface(IbikeApplication.getBoldFont());
 		if (currentFavoriteType.equals(""))
 			currentFavoriteType = IbikeApplication.getString("Favorite");
 	}
@@ -269,7 +252,7 @@ public class AddFavoriteFragment extends Fragment {
 	}
 
 	protected int getSelectedTextColor() {
-		return Color.WHITE;
+		return Color.BLACK;
 	}
 
 	protected int getUnSelectedTextColor() {
