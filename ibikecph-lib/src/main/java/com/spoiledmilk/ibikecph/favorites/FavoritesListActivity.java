@@ -59,16 +59,8 @@ public class FavoritesListActivity extends Activity {
 		favoritesList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				if (!((FavoritesAdapter) favoritesList.getAdapter()).isEditMode) {
-					if (favoritesEnabled) {
-						Log.d("JC", "Calling click handler");
-						favoritesEnabled = false;
-						onListItemClick(position);
-					}
-				}
+				onListItemClick(position);
 			}
-			
-
 		});
 
         if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
