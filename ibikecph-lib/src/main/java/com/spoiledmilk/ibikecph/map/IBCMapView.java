@@ -20,6 +20,7 @@ import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
@@ -143,6 +144,15 @@ public class IBCMapView extends MapView {
         changeState(MapState.NAVIGATION_OVERVIEW);
 
         ((NavigationMapHandler) getMapHandler()).showRouteOverview(route);
+    }
+
+    public void showRoute(final FavoritesData fd) {
+        Address a = new Address();
+        a.setLocation(new LatLng(fd.getLatitude(), fd.getLongitude()));
+        a.street = fd.getStreet();
+        a.name = fd.getAdress();
+
+        showRoute(a);
     }
 
     public void showRoute(final Address destination) {

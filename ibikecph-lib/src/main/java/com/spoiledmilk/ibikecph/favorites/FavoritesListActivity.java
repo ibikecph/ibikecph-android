@@ -27,7 +27,8 @@ import java.util.ArrayList;
 
 public class FavoritesListActivity extends Activity {
 	public static final int ADD_FAVORITE = 510;
-	
+	public static final int RESULT_ROUTE = 620;
+
 	SortableListView favoritesList;
 	private ListAdapter listAdapter;
 	private FavoritesAdapter adapter;
@@ -197,7 +198,6 @@ public class FavoritesListActivity extends Activity {
 				setResult(RESULT_OK, returnIntent);
 				finishActivity(LeftMenu.LAUNCH_FAVORITE);
 				finish();
-				Log.d("JC", "Should have finished activity");
 
 			} else {
 				favoritesEnabled = true;
@@ -234,9 +234,22 @@ public class FavoritesListActivity extends Activity {
 	}
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == ADD_FAVORITE) {
-			this.reloadFavorites();
-		}
+		if (resultCode == RESULT_ROUTE) {
+            Log.d("JC", "FavoritesList, start route");
+
+            Intent returnIntent = new Intent();
+
+            // Return some information as to where to route, so the MapActivity knows and can handle it.
+            returnIntent.putExtra("ROUTE_TO", data.getParcelableExtra("favoritesData"));
+            setResult(RESULT_OK, returnIntent);
+            finishActivity(LeftMenu.LAUNCH_FAVORITE);
+            finish();
+
+        } else {
+            if (requestCode == ADD_FAVORITE) {
+                this.reloadFavorites();
+            }
+        }
 	}
 
 	private class tFetchFavorites extends Thread {

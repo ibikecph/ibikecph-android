@@ -2,6 +2,7 @@ package com.spoiledmilk.ibikecph.favorites;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -45,17 +46,26 @@ public class EditFavoriteActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.edit_favorite, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.edit_favorite, menu);
+
+		menu.getItem(0).setTitle(IbikeApplication.getString("start_route"));
+
+        return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_start_route) {
+
+            // The user wants to route to the address in the current Fav. Finish the activity and set up a route in the
+            // MapActivity.
+
+            Log.d("JC", "Starting Route");
+            // Putting the original intent into the result, passing on the address to the parent
+            setResult(FavoritesListActivity.RESULT_ROUTE, getIntent());
+            finish();
+
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
