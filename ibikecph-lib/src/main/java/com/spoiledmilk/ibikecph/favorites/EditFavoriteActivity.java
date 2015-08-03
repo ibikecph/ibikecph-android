@@ -1,6 +1,7 @@
 package com.spoiledmilk.ibikecph.favorites;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -77,4 +78,13 @@ public class EditFavoriteActivity extends Activity {
         this.editFavoriteFragment.saveEditedFavorite();
         super.onBackPressed();
     }
+
+    // We're delegating the result from the address dialog directly to the fragment
+    // in order for it to take care of things.
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("JC", "EditFavoriteActivity on address result");
+        editFavoriteFragment.onActivityResult(requestCode, resultCode, data);
+    }
+
 }

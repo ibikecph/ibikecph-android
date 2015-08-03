@@ -97,7 +97,7 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
         return ret;
 	}
 
-    public final void saveFavorite() {
+    public final void saveFavorite(boolean finish) {
         if (Util.isNetworkConnected(getActivity())) {
             if (favoritesData != null && textFavoriteName.getText().toString() != null
                     && !textFavoriteName.getText().toString().trim().equals("")) {
@@ -123,8 +123,10 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
                         e.getLocalizedMessage();
                     }
 
-                    getActivity().setResult(FavoritesListActivity.RESULT_OK);
-                    getActivity().finish();
+                    if (finish) {
+                        getActivity().setResult(FavoritesListActivity.RESULT_OK);
+                        getActivity().finish();
+                    }
 
                 } else {
                     Builder builder = new AlertDialog.Builder(getActivity());
@@ -146,6 +148,10 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
         } else {
             Util.launchNoConnectionDialog(getActivity());
         }
+    }
+
+    public final void saveFavorite() {
+        saveFavorite(true);
     }
 
 	@Override

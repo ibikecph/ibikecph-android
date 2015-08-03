@@ -92,13 +92,13 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
 				if (b.containsKey("poi")) {
 					favoritesData.setName(b.getString("poi"));
 				}
+
+                saveEditedFavorite();
 			}
 		}
-
 	}
 
 	private void popFragment() {
-		
 		getActivity().setResult(FavoritesListActivity.RESULT_OK);
 		getActivity().finish();
 	}
@@ -164,7 +164,7 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
 				@Override
 				public void run() {
 					if (success) {
-						popFragment();
+						//popFragment();
 					} else {
 						Util.launchNoConnectionDialog(getActivity());
 					}
