@@ -27,6 +27,7 @@ import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.TrackDisplayHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
+import com.spoiledmilk.ibikecph.search.AddressParser;
 import com.spoiledmilk.ibikecph.util.Util;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -147,9 +148,9 @@ public class IBCMapView extends MapView {
     }
 
     public void showRoute(final FavoritesData fd) {
-        Address a = new Address();
+        Address a = AddressParser.parseAddressRegex(fd.getStreet());
         a.setLocation(new LatLng(fd.getLatitude(), fd.getLongitude()));
-        a.street = fd.getStreet();
+
         a.name = fd.getAdress();
 
         showRoute(a);
