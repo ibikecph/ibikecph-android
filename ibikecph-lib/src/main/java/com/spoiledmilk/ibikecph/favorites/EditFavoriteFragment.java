@@ -9,13 +9,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -25,7 +25,6 @@ import org.json.JSONObject;
 
 /**
  * A Fragment used inside the LeftMenu for editing a favorite.
- * TODO: Can this be merged with AddFavoriteFragment?
  * @author jens
  *
  */
@@ -51,6 +50,19 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
         this.textAddress.setText(favoritesData.getAdress());
         this.textFavoriteName.setText(favoritesData.getName());
 
+        String type = favoritesData.getSubSource();
+        this.currentFavoriteType = type;
+
+        if (type.equals(favoritesData.favFav)) {
+            ((RadioButton) ret.findViewById(R.id.radioButtonFavorite)).setChecked(true);
+        } else if (type.equals(favoritesData.favHome)) {
+            ((RadioButton) ret.findViewById(R.id.radioButtonHome)).setChecked(true);
+        } else if (type.equals(favoritesData.favSchool)) {
+            ((RadioButton) ret.findViewById(R.id.radioButtonSchool)).setChecked(true);
+        } else if (type.equals(favoritesData.favWork)) {
+            ((RadioButton) ret.findViewById(R.id.radioButtonWork)).setChecked(true);
+        }
+
         return ret;
 	}
 
@@ -61,18 +73,6 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
         }
 
         super.onResume();
-		initStrings();
-	}
-
-	private void initStrings() {
-        //textFavorite.setText(IbikeApplication.getString("Favorite"));
-
-		/*
-        textAddress.setText(favoritesData.getAdress());
-		textFavoriteName.setText(favoritesData.getName());
-
-		currentFavoriteType = favoritesData.getSubSource();
-		*/
 	}
 
 
@@ -81,12 +81,14 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
 		super.onActivityResult(requestCode, resultCode, data);
 		if (data != null) {
 			Bundle b = data.getExtras();
-			if (b.containsKey("address") && b.containsKey("lat") && b.containsKey("lon")) {
+
+            if (b.containsKey("address") && b.containsKey("lat") && b.containsKey("lon")) {
 				favoritesData.setAdress(AddressParser.textFromBundle(b).replaceAll("\n", ""));
 				favoritesData.setLatitude(b.getDouble("lat"));
 				favoritesData.setLongitude(b.getDouble("lon"));
 				String txt = favoritesData.getAdress();
 				textAddress.setText(txt);
+
 				if (b.containsKey("poi")) {
 					favoritesData.setName(b.getString("poi"));
 				}
@@ -111,14 +113,6 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
 			dialog2.dismiss();
 		}
 		hideKeyboard();
-	}
-
-	protected int getSelectedTextColor() {
-		return Color.WHITE;
-	}
-
-	protected int getUnSelectedTextColor() {
-		return Color.LTGRAY;
 	}
 
 	private static boolean isPredefinedName(final String name) {
