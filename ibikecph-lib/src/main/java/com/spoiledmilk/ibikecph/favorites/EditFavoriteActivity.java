@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 
 
@@ -32,6 +33,13 @@ public class EditFavoriteActivity extends Activity {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, editFavoriteFragment).commit();
 		}
+
+        // Set the ActionBar
+        try {
+            this.getActionBar().setTitle(IbikeApplication.getString("favorites"));
+        } catch(NullPointerException e) {
+            // There was no ActionBar. Oh well...
+        }
 	}
 
 	@Override
@@ -56,7 +64,7 @@ public class EditFavoriteActivity extends Activity {
     @Override
     public void onBackPressed() {
         // Save the favorite first.
-        this.editFavoriteFragment.saveFavorite();
+        this.editFavoriteFragment.saveEditedFavorite();
         super.onBackPressed();
     }
 }

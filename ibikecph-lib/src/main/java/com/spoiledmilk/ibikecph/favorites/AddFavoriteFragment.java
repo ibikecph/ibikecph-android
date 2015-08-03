@@ -38,7 +38,7 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
 	protected EditText textFavoriteName;
 	private Button btnSave;
 	private FavoritesData favoritesData = null;
-	private String currentFavoriteType = "";
+	protected String currentFavoriteType = "";
 	private AlertDialog dialog;
 	boolean isTextChanged = false;
 
@@ -65,7 +65,7 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
 				if (hasFocus && !isTextChanged) {
 
 					isTextChanged = true;
-					textFavoriteName.setText("");
+					//textFavoriteName.setText("");
 				}
 			}
 		});
@@ -90,6 +90,9 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
         ((RadioButton) ret.findViewById(R.id.radioButtonWork)).setText(IbikeApplication.getString("Work"));
 
         ((RadioGroup) ret.findViewById(R.id.favoriteTypeRadioGroup)).setOnCheckedChangeListener(this);
+
+        ((RadioButton) ret.findViewById(R.id.radioButtonFavorite)).setChecked(true);
+        onCheckedChanged((RadioGroup) ret.findViewById(R.id.favoriteTypeRadioGroup), R.id.radioButtonFavorite);
 
         return ret;
 	}
