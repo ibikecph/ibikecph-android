@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:background="@color/DarkGrey" >
+        >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -11,18 +11,29 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+
+                >
+
+            <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+                    android:text="address_label"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/labelAddress"
+                    />
+
 
             <EditText
                 android:id="@+id/textAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/input_on_black_selector"
                 android:ellipsize="end"
                 android:focusable="false"
                 android:focusableInTouchMode="true"
@@ -32,7 +43,9 @@
                 android:paddingRight="25dp"
                 android:singleLine="true"
                 android:text=""
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                    android:layout_below="@+id/labelAddress"
+                    />
 
             <View
                 android:id="@+id/dummy1"
@@ -53,16 +66,24 @@
                 android:paddingBottom="0dp"
                 android:src="@drawable/fav_search_icon" />
 
+            <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+                      android:text="name_label"
+                      android:layout_marginLeft="5dp"
+                      android:layout_marginRight="5dp"
+                      android:layout_marginTop="10dp"
+                      android:id="@+id/labelName"
+                      android:layout_below="@+id/textAddress"
+                    />
+
             <EditText
                 android:id="@+id/textFavoriteName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textAddress"
+                android:layout_below="@+id/labelName"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/input_on_black_selector"
                 android:inputType="text"
                 android:paddingLeft="10dp"
                 android:paddingRight="25dp"
@@ -81,6 +102,41 @@
                 android:paddingBottom="3dp"
                 android:src="@drawable/fav_search_name_icon" />
 
+            <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textFavoriteName"
+                    android:id="@+id/favoriteTypeRadioGroup"
+                    android:layout_marginTop="18dp"
+                    >
+
+                <RadioButton android:layout_width="fill_parent" android:layout_height="wrap_content"
+                        android:text="home"
+                        android:drawableRight="@drawable/fav_home_grey"
+                        android:id="@+id/radioButtonHome"
+                        />
+                <RadioButton
+                        android:layout_width="fill_parent" android:layout_height="wrap_content"
+                        android:text="work"
+                        android:drawableRight="@drawable/fav_work_grey"
+                        android:id="@+id/radioButtonWork"
+                        />
+                <RadioButton
+                        android:layout_width="fill_parent" android:layout_height="wrap_content"
+                        android:text="school"
+                        android:drawableRight="@drawable/fav_school_grey"
+                        android:id="@+id/radioButtonSchool"
+                        />
+                <RadioButton
+                        android:layout_width="fill_parent" android:layout_height="wrap_content"
+                        android:text="favorite"
+                        android:drawableRight="@drawable/fav_star"
+                        android:id="@+id/radioButtonFavorite"
+                        />
+
+            </RadioGroup>
+            
+            <!--
             <LinearLayout
                 android:id="@+id/buttonsContainer"
                 android:layout_width="match_parent"
@@ -120,7 +176,7 @@
                         android:layout_gravity="center_horizontal"
                         android:gravity="center"
                         android:text=""
-                        android:textColor="@color/White" />
+                            />
 
                     <ImageButton
                         android:id="@+id/btnWork"
@@ -138,8 +194,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center"
-                        android:text=""
-                        android:textColor="@color/White" />
+                        android:text=""/>
                 </LinearLayout>
 
                 <View
@@ -168,8 +223,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center"
-                        android:text=""
-                        android:textColor="@color/White" />
+                        android:text="" />
 
                     <ImageButton
                         android:id="@+id/btnSchool"
@@ -187,8 +241,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center"
-                        android:text=""
-                        android:textColor="@color/White" />
+                        android:text="" />
                 </LinearLayout>
 
                 <View
@@ -196,8 +249,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.1" />
             </LinearLayout>
-
-            <com.spoiledmilk.ibikecph.controls.TexturedButton
+            -->
+            <Button
                 android:id="@+id/btnSave"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -208,7 +261,9 @@
                 android:layout_marginTop="0dp"
                 android:background="@null"
                 android:gravity="center"
-                android:textColor="@color/White" />
+                android:textColor="@color/White"
+                android:visibility="invisible"/>
+
         </RelativeLayout>
     </ScrollView>
 

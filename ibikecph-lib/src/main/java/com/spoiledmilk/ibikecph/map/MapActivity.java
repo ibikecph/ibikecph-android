@@ -28,6 +28,7 @@ import com.mapbox.mapboxsdk.events.ZoomEvent;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.*;
+import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
@@ -334,6 +335,14 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
             Address a = (Address) extras.getSerializable("addressObject");
 
             ((NavigationMapHandler) this.mapView.getMapHandler()).changeDestinationAddress(a);
+        }
+        // We got a favorite to navigate to
+        else if (requestCode == LeftMenu.LAUNCH_FAVORITE && resultCode == RESULT_OK) {
+            FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
+
+            // Close the LeftMenu
+            drawerLayout.closeDrawer(Gravity.START);
+            mapView.showRoute(fd);
         }
     }
 

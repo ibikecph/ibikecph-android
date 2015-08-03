@@ -20,12 +20,14 @@ import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.TrackDisplayHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
+import com.spoiledmilk.ibikecph.search.AddressParser;
 import com.spoiledmilk.ibikecph.util.Util;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -143,6 +145,15 @@ public class IBCMapView extends MapView {
         changeState(MapState.NAVIGATION_OVERVIEW);
 
         ((NavigationMapHandler) getMapHandler()).showRouteOverview(route);
+    }
+
+    public void showRoute(final FavoritesData fd) {
+        Address a = AddressParser.parseAddressRegex(fd.getStreet());
+        a.setLocation(new LatLng(fd.getLatitude(), fd.getLongitude()));
+
+        a.name = fd.getAdress();
+
+        showRoute(a);
     }
 
     public void showRoute(final Address destination) {

@@ -27,7 +27,8 @@ import java.util.ArrayList;
 
 public class FavoritesListActivity extends Activity {
 	public static final int ADD_FAVORITE = 510;
-	
+	public static final int RESULT_ROUTE = 620;
+
 	SortableListView favoritesList;
 	private ListAdapter listAdapter;
 	private FavoritesAdapter adapter;
@@ -58,33 +59,11 @@ public class FavoritesListActivity extends Activity {
 		favoritesList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				if (!((FavoritesAdapter) favoritesList.getAdapter()).isEditMode) {
-					if (favoritesEnabled) {
-						Log.d("JC", "Calling click handler");
-						favoritesEnabled = false;
-						onListItemClick(position);
-					}
-				}
-			}
-			
-
-		});
-
-
-		/*
-		favoritesList.setOnItemLongClickListener( new OnItemLongClickListener() {
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				Log.d("JC", "Long clicked on some favorite");
-				
-				// TODO: We want to spawn a dialog to ask about editing or deleting a favorite here. 
-				
-				return true;
+				onListItemClick(position);
 			}
 		});
-		*/
 
         if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
-            registerForContextMenu(favoritesList);
             reloadFavorites();
 
             favoritesList.setVisibility(View.VISIBLE);
@@ -103,47 +82,7 @@ public class FavoritesListActivity extends Activity {
 			fetchFavorites.start();
 		}
 	}
-	
-	@Override
-	public void onCreateContextMenu(android.view.ContextMenu menu, View v, android.view.ContextMenu.ContextMenuInfo menuInfo) {
-		Log.d("JC", "FavoritesList context menu");
-	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-	    menu.setHeaderTitle(favorites.get(info.position).getName());
-	    String[] menuItems = {"Edit" /*, "Delete" */};
-	    for (int i = 0; i<menuItems.length; i++) {
-	    	menu.add(Menu.NONE, i, i, menuItems[i]);
-	    }
 
-	};
-	
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {		
-		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-		int menuItemIndex = item.getItemId();
-		String[] menuItems = {"Edit" /*, "Delete" */};
-		FavoritesData fav = favorites.get(info.position);
-		
-		switch (menuItemIndex) {
-		case 0:
-			Log.d("JC", "Editing "+fav.getName());
-			
-	        Intent i = new Intent(this, EditFavoriteActivity.class);
-	        
-	        // Add the favorite to the intent so it can be passed on to the EditFavoriteFragment later on.
-	        i.putExtra("favoritesData", fav);
-	        
-	        this.startActivityForResult(i, ADD_FAVORITE);
-
-			break;
-			
-		case 1:
-			Log.d("JC", "Deleting "+fav.getName());
-			break;
-		
-		}
-				
-		return true;
-	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -186,23 +125,13 @@ public class FavoritesListActivity extends Activity {
 		} else {
 			FavoritesData fd = (FavoritesData) (favoritesList.getAdapter().getItem(position));
 
-			Log.d("JC", "Clicked favorite: " + fd.getName());
-			Log.d("JC", "Coords: " + fd.getLatitude() + " , "+ fd.getLongitude());
+            // Start editing the fav
+            Intent i = new Intent(this, EditFavoriteActivity.class);
 
-			if (SMLocationManager.getInstance().hasValidLocation()) {
-				Intent returnIntent = new Intent();
+            // Add the favorite to the intent so it can be passed on to the EditFavoriteFragment later on.
+            i.putExtra("favoritesData", fd);
 
-				// Return some information as to where to route, so the MapActivity knows and can handle it.				
-				returnIntent.putExtra("ROUTE_TO", fd);
-				setResult(RESULT_OK, returnIntent);
-				finishActivity(LeftMenu.LAUNCH_FAVORITE);
-				finish();
-				Log.d("JC", "Should have finished activity");
-
-			} else {
-				favoritesEnabled = true;
-				showRouteNotFoundDlg();
-			}
+            this.startActivityForResult(i, ADD_FAVORITE);
 		}
 	}
 
@@ -234,9 +163,22 @@ public class FavoritesListActivity extends Activity {
 	}
 	
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == ADD_FAVORITE) {
-			this.reloadFavorites();
-		}
+		if (resultCode == RESULT_ROUTE) {
+            Log.d("JC", "FavoritesList, start route");
+
+            Intent returnIntent = new Intent();
+
+            // Return some information as to where to route, so the MapActivity knows and can handle it.
+            returnIntent.putExtra("ROUTE_TO", data.getParcelableExtra("favoritesData"));
+            setResult(RESULT_OK, returnIntent);
+            finishActivity(LeftMenu.LAUNCH_FAVORITE);
+            finish();
+
+        } else {
+            if (requestCode == ADD_FAVORITE) {
+                this.reloadFavorites();
+            }
+        }
 	}
 
 	private class tFetchFavorites extends Thread {

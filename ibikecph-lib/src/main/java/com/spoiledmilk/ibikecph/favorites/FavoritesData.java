@@ -20,6 +20,7 @@ import com.spoiledmilk.ibikecph.search.Address;
  */
 public class FavoritesData extends SearchListItem implements Parcelable {
 
+    // TODO: Heard about Enumerable?
 	public static final String favHome = "home";
 	public static final String favWork = "work";
 	public static final String favFav = "favorite";
