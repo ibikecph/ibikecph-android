@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -27,7 +26,6 @@ public class AboutActivity extends Activity {
 
 	TextView textAboutTitle;
 	TextView textAboutText;
-	ImageButton btnBack;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -36,11 +34,11 @@ public class AboutActivity extends Activity {
 
 		textAboutTitle = (TextView) findViewById(R.id.textAboutTitle);
 		textAboutText = (TextView) findViewById(R.id.textAboutText);
-		// textAboutText.setMovementMethod(new ScrollingMovementMethod());
+
 		textAboutText.setMovementMethod(LinkMovementMethod.getInstance());
 		textAboutText.setClickable(true);
 
-		getBuildInfo();
+		//getBuildInfo();
 	}
 
 	@Override
@@ -54,7 +52,7 @@ public class AboutActivity extends Activity {
 		textAboutTitle.setTypeface(IbikeApplication.getBoldFont());
 		String text = IbikeApplication.getString("about_text_ibc");
 		textAboutText.setText(text);
-		// textAboutText.setTypeface(IbikeApplication.getNormalFont());
+
 	}
 
 	@Override
@@ -78,7 +76,7 @@ public class AboutActivity extends Activity {
 			long time = ze.getTime();
 			zf.close();
 			String s = SimpleDateFormat.getInstance().format(new java.util.Date(time));
-			((TextView) findViewById(R.id.textBuild)).setText("Build: " + s);
+			//((TextView) findViewById(R.id.textBuild)).setText("Build: " + s);
 		} catch (Exception e) {
 		}
 
