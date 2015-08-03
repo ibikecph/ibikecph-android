@@ -85,7 +85,7 @@ public class IBCMapView extends MapView {
         this.setZoom(17);
         this.setMaxZoomLevel(19);
 
-        this.setMapRotationEnabled(true);
+        //this.setMapRotationEnabled(true);
         changeState(initialState);
 
     }

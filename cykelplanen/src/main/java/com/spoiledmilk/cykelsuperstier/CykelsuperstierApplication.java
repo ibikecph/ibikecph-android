@@ -21,4 +21,10 @@ public class CykelsuperstierApplication extends IbikeApplication {
         IbikeApplication.APP_NAME = "Cykelplanen";
 	}
 
+
+    public static Class getTermsAcceptanceClass() {
+        return com.spoiledmilk.cykelsuperstier.AcceptNewTermsActivity.class;
+    }
+
+
 }

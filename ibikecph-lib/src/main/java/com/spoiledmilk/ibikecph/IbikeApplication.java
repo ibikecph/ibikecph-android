@@ -240,4 +240,8 @@ public class IbikeApplication extends Application {
         return APP_NAME;
     }
 
+    public static Class getTermsAcceptanceClass() {
+        return AcceptNewTermsActivity.class;
+    }
+
 }

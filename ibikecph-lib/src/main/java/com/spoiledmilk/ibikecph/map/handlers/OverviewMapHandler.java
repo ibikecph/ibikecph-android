@@ -100,6 +100,7 @@ public class OverviewMapHandler extends IBCMapHandler {
     @Override
     public void onLongPressMap(final MapView _mapView, final ILatLng location) {
         Log.d("JC", "OverviewMapHandler.onLongPressMap");
+
         Geocoder.getAddressForLocation(location, new Geocoder.GeocoderCallback() {
             @Override
             public void onSuccess(Address address) {

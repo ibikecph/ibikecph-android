@@ -384,8 +384,6 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
             userTrackingButton.setImageDrawable(getResources().getDrawable(R.drawable.compass_tracking));
         }
     }
-
-
 }
 
 

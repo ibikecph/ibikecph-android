@@ -18,7 +18,6 @@ import com.spoiledmilk.ibikecph.map.OverlayType;
 import java.util.ArrayList;
 
 public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
-
     LeftMenu leftMenu;
 
 	@Override
@@ -87,4 +86,5 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
             return leftMenu;
         }
     }
+
 }

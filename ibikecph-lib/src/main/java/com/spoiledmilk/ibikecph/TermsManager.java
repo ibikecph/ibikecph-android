@@ -33,7 +33,7 @@ public class TermsManager {
 
                     // If the most recent terms we read turns out to be older than the current one, then spawn a dialog.
                     if (IbikeApplication.getSettings().getNewestTermsAccepted() < version) {
-                        Intent i = new Intent(hostActivity, AcceptNewTermsActivity.class);
+                        Intent i = new Intent(hostActivity, IbikeApplication.getTermsAcceptanceClass());
 
                         i.putExtra("important_news", importantNews);
                         i.putExtra("version", version);
