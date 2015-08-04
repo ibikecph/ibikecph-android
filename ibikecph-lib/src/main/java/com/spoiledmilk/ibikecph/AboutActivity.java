@@ -24,7 +24,6 @@ import java.util.zip.ZipFile;
  */
 public class AboutActivity extends Activity {
 
-	TextView textAboutTitle;
 	TextView textAboutText;
 
 	@Override
@@ -32,11 +31,12 @@ public class AboutActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.about_activity);
 
-		textAboutTitle = (TextView) findViewById(R.id.textAboutTitle);
 		textAboutText = (TextView) findViewById(R.id.textAboutText);
 
 		textAboutText.setMovementMethod(LinkMovementMethod.getInstance());
 		textAboutText.setClickable(true);
+
+        this.getActionBar().setTitle(IbikeApplication.getString("about_app_ibc"));
 
 		//getBuildInfo();
 	}
@@ -48,11 +48,8 @@ public class AboutActivity extends Activity {
 	}
 
 	private void initStrings() {
-		textAboutTitle.setText(IbikeApplication.getString("about_app_ibc"));
-		textAboutTitle.setTypeface(IbikeApplication.getBoldFont());
 		String text = IbikeApplication.getString("about_text_ibc");
 		textAboutText.setText(text);
-
 	}
 
 	@Override
