@@ -96,9 +96,9 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
 
         // Only show the go button if the route starts at the current location
         if (parent.getRoute().startAddress.isCurrentLocation()) {
-            v.findViewById(R.id.navigationOverviewGoButton).setVisibility(View.VISIBLE);
+            v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.VISIBLE);
         } else {
-            v.findViewById(R.id.navigationOverviewGoButton).setVisibility(View.GONE);
+            v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.GONE);
         }
 
         // Highlight the relevant route type button

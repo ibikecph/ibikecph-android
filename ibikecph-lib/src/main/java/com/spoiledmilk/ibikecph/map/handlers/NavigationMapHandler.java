@@ -34,6 +34,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient TurnByTurnInstructionFragment turnByTurnFragment;
     private transient RouteETAFragment routeETAFragment;
     private transient IBCMarker beginMarker, endMarker;
+    private boolean isRouting;
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -155,6 +156,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
      */
     public void showRouteOverview(SMRoute route) {
         this.route = route;
+        this.cleanUp();
 
         route.setListener(this);
 
@@ -209,6 +211,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         mapView.getGPSOverlay().setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
 
         //registerBearingRotation();
+
+        isRouting = true;
 
         initInstructions();
     }
@@ -271,7 +275,16 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
      */
     public boolean onBackPressed() {
         if (!cleanedUp) {
-            this.mapView.stopRouting();
+
+            // Navigation happens in two steps. First is showing the route, second is actually following it turn-by-turn
+            // If we're in turn-by-turn mode, go back to showing the route. If we're seeing the route, go back to
+            // showing the overview.
+            if (isRouting) {
+                this.showRouteOverview(this.route);
+                isRouting = false;
+            } else {
+                this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+            }
             return false;
         }
 

@@ -214,9 +214,6 @@ public class IBCMapView extends MapView {
 
     }
 
-    public void stopRouting() {
-        changeState(MapState.DEFAULT);
-    }
 
     public IBCMapHandler getMapHandler() {
         return this.curHandler;
