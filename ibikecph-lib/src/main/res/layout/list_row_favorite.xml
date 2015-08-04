@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
-    android:background="@null" >
+    android:layout_height="48dp"
+    android:background="@null">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:background="@color/Grey" />
+        android:background="@color/LightGrey" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,6 +36,7 @@
             android:layout_marginLeft="12dp"
             android:layout_toRightOf="@+id/icon"
             android:textColor="@color/black"
+            android:text="textFavoriteName"
                 />
 
         <ImageButton

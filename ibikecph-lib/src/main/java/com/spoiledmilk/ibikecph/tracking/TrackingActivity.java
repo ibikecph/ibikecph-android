@@ -18,6 +18,7 @@ import io.realm.RealmResults;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class TrackingActivity extends Activity {
@@ -124,7 +125,7 @@ public class TrackingActivity extends Activity {
 
         this.kmText.setText(IbikeApplication.getString("unit_km"));
         this.kmtText.setText(IbikeApplication.getString("unit_km_pr_h"));
-        this.calUnitText.setText(IbikeApplication.getString("unit_cal"));
+        this.calUnitText.setText(IbikeApplication.getString("unit_kcal_pr_day"));
 
         this.hoursText.setText(IbikeApplication.getString("unit_h_long"));
 
@@ -145,7 +146,18 @@ public class TrackingActivity extends Activity {
 
     }
 
+    public int getNumberOfDaysSinceFirstCycled() {
+        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        RealmResults<Track> results = realm.allObjects(Track.class);
+        results.sort("timestamp", RealmResults.SORT_ORDER_ASCENDING);
 
+        Calendar firstTrip = Calendar.getInstance();
+        firstTrip.setTime(results.first().getTimestamp());
+
+        Calendar now = Calendar.getInstance();
+
+        return (int)(now.getTimeInMillis() - firstTrip.getTimeInMillis())/(1000*60*60*24);
+    }
 
     /**
      * Updates the overview of the bicycling activities.
@@ -157,6 +169,9 @@ public class TrackingActivity extends Activity {
         double totalDistance = 0;
         double totalSeconds = 0;
 
+        int totalDays = getNumberOfDaysSinceFirstCycled();
+        Log.d("JC", "It is " + getNumberOfDaysSinceFirstCycled() + " days since first cycled.");
+
         for (Track t : results) {
             totalDistance += t.getLength();
             totalSeconds += t.getDuration();
@@ -164,7 +179,7 @@ public class TrackingActivity extends Activity {
 
         distanceTextView.setText(String.format("%d", Math.round(totalDistance/1000)));
 
-        calText.setText(String.format("%d", (int) ((totalDistance / 1000) * 11)) );
+        calText.setText(String.format("%d", (int) ((totalDistance / 1000 / totalDays) * 11)) );
 
         if (totalSeconds > 0 ) {
             // The speedAggregate is in meters/sec, we multiply with 3.6 to get km/h
