@@ -85,8 +85,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/navigationOverviewFastButton"
                     android:background="@color/White" android:src="@drawable/btn_route_fastest_disabled"
-                    android:layout_marginLeft="22dp"
-                    android:layout_marginRight="22dp"
+                    android:paddingLeft="22dp"
+                    android:paddingRight="22dp"
                     />
 
             <ImageButton
@@ -95,8 +95,8 @@
                     android:id="@+id/navigationOverviewCargoButton"
                     android:src="@drawable/btn_route_cargo_disabled" android:background="@color/White"
                     android:layout_toRightOf="@+id/navigationOverviewFastButton"
-                    android:layout_marginLeft="22dp"
-                    android:layout_marginRight="22dp"
+                    android:paddingLeft="22dp"
+                    android:paddingRight="22dp"
                     />
 
             <ImageButton
@@ -105,8 +105,8 @@
                     android:id="@+id/navigationOverviewGreenButton"
                     android:background="@color/White" android:src="@drawable/btn_route_green_disabled"
                     android:layout_toRightOf="@+id/navigationOverviewCargoButton"
-                    android:layout_marginLeft="22dp"
-                    android:layout_marginRight="22dp"
+                    android:paddingLeft="22dp"
+                    android:paddingRight="22dp"
                     />
 
         </RelativeLayout>
