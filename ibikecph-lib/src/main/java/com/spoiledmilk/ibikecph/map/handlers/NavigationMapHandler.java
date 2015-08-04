@@ -162,6 +162,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         removeAnyPathOverlays();
 
+        // Set up the infoPane
+        initInfopane();
+
         // TODO: Fix confusion between Location and LatLng objects
         PathOverlay path = new PathOverlay(Color.RED, 10);
         PathOverlay walkingPath = new PathOverlay(Color.GRAY, 10);
@@ -181,7 +184,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         // Show the whole route, zooming to make it fit
         this.mapView.getOverlays().add(walkingPath);
         this.mapView.getOverlays().add(path);
-        this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, true, true, true);
 
         // Put markers at the beginning and end of the route.
         beginMarker = new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT);
@@ -193,9 +195,18 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.mapView.addMarker(beginMarker);
         this.mapView.addMarker(endMarker);
 
-        // Set up the infoPane
-        initInfopane();
+        this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, false, true, true);
 
+
+        /**
+         * Sometimes the route is displayed such that it JUST fits, but not the markers. That's too tight, so in that
+         * case we'll have to zoom out a notch. First, though, we have to figure out if the begin and end markers are
+         * within the bounds of the MapView.
+         */
+
+        if (beginMarker.getPositionOnMap().y == 0.0 || endMarker.getPositionOnMap().y == 0.0) {
+            this.mapView.zoomOut();
+        }
         cleanedUp = false;
     }
 
