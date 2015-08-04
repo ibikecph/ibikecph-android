@@ -156,7 +156,11 @@ public class TrackingActivity extends Activity {
 
         Calendar now = Calendar.getInstance();
 
-        return (int)(now.getTimeInMillis() - firstTrip.getTimeInMillis())/(1000*60*60*24);
+        int totalDays = (int)(now.getTimeInMillis() - firstTrip.getTimeInMillis())/(1000*60*60*24);
+
+        // It's counter-intuitive, but at a certain day, you want to count both today AND yesterday, even though it's
+        // technically only one day ago.
+        return totalDays+1;
     }
 
     /**
