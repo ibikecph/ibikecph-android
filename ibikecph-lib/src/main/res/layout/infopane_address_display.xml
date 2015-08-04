@@ -14,11 +14,22 @@
     <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="addressLabel\naddressLabel"
+            android:text="addressNameLabel"
+            android:textColor="@color/black"
+            android:id="@+id/addressNameLabel"
+            android:layout_toRightOf="@+id/btnAddFavorite"
+            android:textSize="16dp"
+            />
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="addressLabel"
             android:textColor="@color/black"
             android:id="@+id/addressLabel"
             android:layout_toRightOf="@+id/btnAddFavorite"
+            android:layout_below="@+id/addressNameLabel"
             />
+
 
     <ImageView
             android:layout_width="wrap_content"

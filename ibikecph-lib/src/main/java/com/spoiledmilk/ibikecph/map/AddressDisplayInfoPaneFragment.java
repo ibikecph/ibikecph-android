@@ -32,7 +32,8 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
 
         this.address = (Address) getArguments().getSerializable("address");
 
-        ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getStreetAddress() + "\n" + this.address.getPostCodeAndCity());
+        ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getStreetAddress());
+        ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
 
         // Set click listeners
         v.findViewById(R.id.btnStartRoute).setOnClickListener(this);
