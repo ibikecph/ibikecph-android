@@ -1,22 +1,17 @@
 package com.spoiledmilk.ibikecph.navigation;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.spoiledmilk.ibikecph.IssuesActivity;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -27,7 +22,6 @@ public class RouteETAFragment extends InfoPaneFragment {
     private TextView durationText, lengthText, etaText;
     private ImageView imgRouteType;
     private TextView textAddress;
-    private TextView textProblem;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,20 +34,12 @@ public class RouteETAFragment extends InfoPaneFragment {
 
         imgRouteType = (ImageView) v.findViewById(R.id.imgRouteType);
         textAddress = (TextView) v.findViewById(R.id.textAddress);
-        textProblem = (TextView) v.findViewById(R.id.textProblem);
 
         lengthText = (TextView) v.findViewById(R.id.navigationOverviewRouteLength);
         durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
         etaText = (TextView) v.findViewById(R.id.navigationOverviewRouteETA);
 
         render((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler"));
-
-        textProblem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onProblemButtonClicked(v);
-            }
-        });
 
         return v;
     }
@@ -113,25 +99,6 @@ public class RouteETAFragment extends InfoPaneFragment {
         else {
             return x + 25;
         }
-    }
-
-    public void onProblemButtonClicked(View v) {
-        Log.d("JC", "User clicked Problem button");
-
-        Intent i = new Intent(getActivity(), IssuesActivity.class);
-
-        ArrayList<String> turnsArray = new ArrayList<String>();
-        for (SMTurnInstruction instruction : NavigationMapHandler.getRoute().getTurnInstructions()) {
-            turnsArray.add(instruction.generateFullDescriptionString());
-        }
-
-        i.putStringArrayListExtra("turns", turnsArray);
-        i.putExtra("startLoc", NavigationMapHandler.getRoute().getStartLocation().toString());
-        i.putExtra("endLoc", NavigationMapHandler.getRoute().getEndLocation().toString());
-        i.putExtra("startName", NavigationMapHandler.getRoute().startStationName);
-        i.putExtra("endName", NavigationMapHandler.getRoute().endStationName);
-
-        startActivity(i);
     }
 
 }

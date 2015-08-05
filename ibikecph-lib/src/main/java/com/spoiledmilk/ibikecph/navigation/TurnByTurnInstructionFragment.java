@@ -1,4 +1,4 @@
-package com.spoiledmilk.ibikecph.map;
+package com.spoiledmilk.ibikecph.navigation;
 
 import android.app.Fragment;
 import android.os.Bundle;

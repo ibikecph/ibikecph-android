@@ -26,15 +26,6 @@
                 android:id="@+id/textAddress"
                 android:text="textAddress"/>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="12dp"
-                android:textColor="#dadada"
-                android:id="@+id/textProblem"
-                android:text="Problem"
-                />
-
 
     </RelativeLayout>
 

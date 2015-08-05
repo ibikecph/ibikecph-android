@@ -1,6 +1,5 @@
 package com.spoiledmilk.ibikecph.map;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -219,7 +218,7 @@ public class IBCMapView extends MapView {
         return this.curHandler;
     }
 
-    public Activity getParentActivity() {
+    public IBCMapActivity getParentActivity() {
         return parentActivity;
     }
 

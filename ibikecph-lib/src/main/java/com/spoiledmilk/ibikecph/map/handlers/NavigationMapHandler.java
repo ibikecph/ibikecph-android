@@ -2,6 +2,7 @@ package com.spoiledmilk.ibikecph.map.handlers;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
@@ -12,12 +13,15 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.*;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IssuesActivity;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.*;
 import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
 import com.spoiledmilk.ibikecph.navigation.RouteETAFragment;
+import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.bearing.BearingToNorthProvider;
 
@@ -225,6 +229,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         isRouting = true;
 
+        showProblemButton();
+
         initInstructions();
     }
 
@@ -342,7 +348,18 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         }
         transaction.commit();
 
+        // Remove the problem button
+        hideProblemButton();
+
         cleanedUp = true;
+    }
+
+    public void hideProblemButton() {
+        this.mapView.getParentActivity().hideProblemButton();
+    }
+
+    public void showProblemButton() {
+        this.mapView.getParentActivity().showProblemButton();
     }
 
     public NavigationOverviewInfoPane getInfoPane() {
@@ -438,4 +455,27 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         changeAddress(this.getRoute().endAddress, this.getRoute().startAddress, null);
     }
 
+    /**
+     * This was copied from the Spoiled Milk code. It would of course make more sense to just pass the SMRoute instead
+     * of this. TODO i guess.
+     */
+    public void problemButtonPressed() {
+        Log.d("JC", "Problem button pressed");
+
+        Intent i = new Intent(mapView.getParentActivity(), IssuesActivity.class);
+
+        ArrayList<String> turnsArray = new ArrayList<String>();
+        for (SMTurnInstruction instruction : NavigationMapHandler.getRoute().getTurnInstructions()) {
+            turnsArray.add(instruction.generateFullDescriptionString());
+        }
+
+        i.putStringArrayListExtra("turns", turnsArray);
+        i.putExtra("startLoc", NavigationMapHandler.getRoute().getStartLocation().toString());
+        i.putExtra("endLoc", NavigationMapHandler.getRoute().getEndLocation().toString());
+        i.putExtra("startName", NavigationMapHandler.getRoute().startStationName);
+        i.putExtra("endName", NavigationMapHandler.getRoute().endStationName);
+
+        mapView.getParentActivity().startActivity(i);
+
+    }
 }

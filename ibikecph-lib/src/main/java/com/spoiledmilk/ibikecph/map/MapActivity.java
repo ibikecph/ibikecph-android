@@ -168,6 +168,8 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
             Intent i = new Intent(MapActivity.this, SearchActivity.class);
             startActivityForResult(i, REQUEST_SEARCH_ADDRESS);
             overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
+        } else if (id == R.id.ab_problem) {
+            ((NavigationMapHandler) this.mapView.getMapHandler()).problemButtonPressed();
         }
         // Toggle the drawer when tapping the app icon.
         else if (id == android.R.id.home) {
@@ -283,6 +285,9 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_map_activity, menu);
+
+        menu.findItem(R.id.ab_problem).setVisible(this.problemButtonVisible);
+
         return true;
     }
 
@@ -393,6 +398,10 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
             userTrackingButton.setImageDrawable(getResources().getDrawable(R.drawable.compass_tracking));
         }
     }
+
+
+
+
 }
 
 
