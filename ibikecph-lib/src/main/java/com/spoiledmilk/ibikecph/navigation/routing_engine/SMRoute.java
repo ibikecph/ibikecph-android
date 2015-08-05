@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest;
@@ -219,6 +220,14 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         if (waypoints != null && waypoints.size() > 0)
             return waypoints.get(waypoints.size() - 1);
         return null;
+    }
+
+    public LatLng getRealEndLocation() {
+        if (locationEnd != null) {
+            return (LatLng) endAddress.getLocation();
+        } else {
+            return new LatLng(getEndLocation());
+        }
     }
 
     public List<Location> getWaypoints() {

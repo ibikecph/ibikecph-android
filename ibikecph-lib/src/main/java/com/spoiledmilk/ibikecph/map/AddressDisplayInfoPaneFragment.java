@@ -47,6 +47,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
     public void btnStartRouteClicked(View v) {
         if (IbikeApplication.getService().hasValidLocation()) {
             Address a = (Address) getArguments().getSerializable("address");
+
             ((MapActivity) this.getActivity()).mapView.showRoute(a);
         } else {
             Toast.makeText(IbikeApplication.getContext(), IbikeApplication.getString("error_no_gps_location"), Toast.LENGTH_LONG).show();

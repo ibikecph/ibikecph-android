@@ -60,14 +60,6 @@ public class OverviewMapHandler extends IBCMapHandler {
             curMarker = null;
         }
 
-        /*
-        View userTrackingButton = mapView.getParentActivity().findViewById(R.id.userTrackingButton);
-        if (userTrackingButton != null) {
-            userTrackingButton.setVisibility(View.GONE);
-        }
-        */
-
-
         mapView.removeGPSOverlay();
     }
 
@@ -94,8 +86,7 @@ public class OverviewMapHandler extends IBCMapHandler {
 
     @Override
     public void onTapMap(MapView mapView, ILatLng iLatLng) {
-        Log.d("JC", "Tapmap");
-        onLongPressMap(mapView, iLatLng);
+
     }
 
     @Override

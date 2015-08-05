@@ -171,13 +171,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // TODO: Fix confusion between Location and LatLng objects
         PathOverlay path = new PathOverlay(Color.RED, 10);
-        PathOverlay walkingPath = new PathOverlay(Color.GRAY, 10);
+        PathOverlay beginWalkingPath = new PathOverlay(Color.GRAY, 10);
         ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
 
         // Add a waypoint at the user's current position
         if (route.startAddress.isCurrentLocation()) {
-            walkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
-            walkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
+            beginWalkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
+            beginWalkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
         }
 
         for (Location loc : route.waypoints) {
@@ -185,13 +185,24 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             waypoints.add(new LatLng(loc));
         }
 
+        // We also want a grey line if the user is expected to walk somewhere we cannot route directly to.
+        PathOverlay endWalkingPath = new PathOverlay(Color.GRAY, 10);
+        LatLng lastPoint = new LatLng(route.waypoints.get(route.waypoints.size()-1));
+        LatLng realLastPoint = route.getRealEndLocation();
+        endWalkingPath.addPoint(lastPoint);
+        endWalkingPath.addPoint(realLastPoint);
+
+        Log.d("JC", "distance: "+ lastPoint.distanceTo(realLastPoint));
+
         // Show the whole route, zooming to make it fit
-        this.mapView.getOverlays().add(walkingPath);
+        this.mapView.getOverlays().add(beginWalkingPath);
+        this.mapView.getOverlays().add(endWalkingPath);
         this.mapView.getOverlays().add(path);
 
-        // Put markers at the beginning and end of the route.
+        // Put markers at the beginning and end of the route. We use the "real" end location, which means the place that
+        // the user tapped.
         beginMarker = new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT);
-        endMarker = new IBCMarker("", "", new LatLng(route.getEndLocation()), MarkerType.PATH_ENDPOINT);
+        endMarker = new IBCMarker("", "", new LatLng(route.getRealEndLocation()), MarkerType.PATH_ENDPOINT);
 
         beginMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_start)));
         endMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_finish)));
@@ -207,7 +218,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
          * case we'll have to zoom out a notch. First, though, we have to figure out if the begin and end markers are
          * within the bounds of the MapView.
          */
-
         if (beginMarker.getPositionOnMap().y == 0.0 || endMarker.getPositionOnMap().y == 0.0) {
             this.mapView.zoomOut();
         }
