@@ -1,7 +1,10 @@
 package com.spoiledmilk.ibikecph.tracking;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,6 +101,35 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
                 Intent i = new Intent(IbikeApplication.getContext(), TrackMapView.class);
                 i.putExtra("track_position", position);
                 context.startActivity(i);
+            }
+        });
+
+        // Bring up a menu on long press, to let the user delete.
+        rowView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                String[] options = {IbikeApplication.getString("Delete")};
+
+                builder.setTitle(IbikeApplication.getString("Delete"))
+                       .setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("JC", "Deleted a track");
+                        Track t = tracks.get(position);
+
+                        Realm realm = Realm.getInstance(context);
+                        realm.beginTransaction();
+                        t.removeFromRealm();
+                        realm.commitTransaction();
+
+                        notifyDataSetInvalidated();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return false;
             }
         });
 
