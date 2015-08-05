@@ -1,6 +1,8 @@
 package com.spoiledmilk.ibikecph.map;
 
+import android.graphics.PointF;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
 
 /**
@@ -17,5 +19,17 @@ public class IBCMarker extends Marker {
 
     public MarkerType getType() {
         return type;
+    }
+
+    @Override
+    public IBCMarker setIcon(Icon i) {
+        IBCMarker m = (IBCMarker) super.setIcon(i);
+
+        if (this.type == MarkerType.ADDRESS || this.type == MarkerType.PATH_ENDPOINT) {
+            // Make sure the anchor fits the graphic.
+            this.setAnchor(new PointF(0.5f, 1.7f));
+        }
+
+        return m;
     }
 }

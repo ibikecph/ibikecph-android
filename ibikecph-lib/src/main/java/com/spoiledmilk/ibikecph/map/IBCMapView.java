@@ -7,9 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.Toast;
-import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Icon;
@@ -123,17 +121,6 @@ public class IBCMapView extends MapView {
         state = newState;
         updateListeners();
     }
-
-    /**
-     * Handle long presses on the map.
-     * @param position
-     */
-    @Override
-    public void onLongPress(ILatLng position) {
-        super.onLongPress(position);
-        Log.d("JC", "Long pressed on map " + position.toString());
-    }
-
 
     /**
      * Starts routing. This is a two-stage process, in which we first show the route to the user. Then they press "Go"
@@ -285,7 +272,8 @@ public class IBCMapView extends MapView {
 
         // Put a marker on the map
         IBCMarker m = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation(), MarkerType.ADDRESS);
-        m.setIcon(new Icon(this.getResources().getDrawable(R.drawable.marker_finish)));
+        Icon markerIcon = new Icon(this.getResources().getDrawable(R.drawable.marker_finish));
+        m.setIcon(markerIcon);
         this.addMarker(m);
 
         this.curAddressMarker = m;

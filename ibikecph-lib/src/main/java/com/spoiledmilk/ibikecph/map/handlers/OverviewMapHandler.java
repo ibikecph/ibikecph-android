@@ -94,7 +94,8 @@ public class OverviewMapHandler extends IBCMapHandler {
 
     @Override
     public void onTapMap(MapView mapView, ILatLng iLatLng) {
-
+        Log.d("JC", "Tapmap");
+        onLongPressMap(mapView, iLatLng);
     }
 
     @Override
