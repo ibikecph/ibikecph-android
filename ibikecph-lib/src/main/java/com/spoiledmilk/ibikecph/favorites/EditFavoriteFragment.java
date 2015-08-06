@@ -181,7 +181,6 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
                         || favoritesData.getName().trim().equalsIgnoreCase(textFavoriteName.getText().toString())) {
                     String st = favoritesData.getName() + " - (" + favoritesData.getLatitude() + "," + favoritesData.getLongitude()
                             + ")";
-                    IbikeApplication.getTracker().sendEvent("Favorites", "Save", st, (long) 0);
                     favoritesData.setName(textFavoriteName.getText().toString());
                     favoritesData.setAdress(textAddress.getText().toString());
                     favoritesData.setSubSource(currentFavoriteType);
