@@ -104,6 +104,10 @@ public class BikeLocationService extends Service implements LocationListener {
 			Log.d("JC", "GPS listener added to the BikeLocationService, started listening for locations upstream.");
 
 			this.androidLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, 0, this);
+
+            // Allow mock updates. Should be disabled
+            // this.androidLocationManager.setTestProviderEnabled(LocationManager.GPS_PROVIDER, true);
+
 			try {
 				this.androidLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, UPDATE_INTERVAL, 0, this);
 			} catch (IllegalArgumentException exp) {
