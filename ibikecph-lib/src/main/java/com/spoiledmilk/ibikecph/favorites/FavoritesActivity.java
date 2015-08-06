@@ -132,10 +132,8 @@ public class FavoritesActivity extends Activity implements SMLocationListener {
 		textAddFavorite.setTypeface(IbikeApplication.getBoldFont());
 		textHome.setHint(Html.fromHtml("<i>" + IbikeApplication.getString("favorites_home_placeholder") + "</i>"));
 		textHome.setHintTextColor(getResources().getColor(R.color.HintColor));
-		textHome.setTypeface(IbikeApplication.getNormalFont());
 		textWork.setHint(Html.fromHtml("<i>" + IbikeApplication.getString("favorites_work_placeholder") + "</i>"));
 		textWork.setHintTextColor(getResources().getColor(R.color.HintColor));
-		textWork.setTypeface(IbikeApplication.getNormalFont());
 		btnSave.setText(IbikeApplication.getString("save_favorites"));
 		btnSave.setTypeface(IbikeApplication.getBoldFont());
 		textSkip.setText(IbikeApplication.getString("skip"));

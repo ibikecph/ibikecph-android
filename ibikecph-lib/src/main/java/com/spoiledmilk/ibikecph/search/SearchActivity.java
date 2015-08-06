@@ -202,8 +202,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                     toName = toName.substring(0, toName.indexOf(','));
                 BLatitude = hd.getLatitude();
                 BLongitude = hd.getLongitude();
-                
-                textB.setTypeface(IbikeApplication.getNormalFont());
+
                 startButtonHandler();
             }
 
@@ -228,7 +227,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                     toName = toName.substring(0, toName.indexOf(','));
                 }
 
-                textB.setTypeface(IbikeApplication.getNormalFont());
                 startButtonHandler();
             }
 
@@ -252,14 +250,11 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
     private void initStrings() {
         textCurrentLoc.setText(IbikeApplication.getString("current_position"));
-        textCurrentLoc.setTypeface(IbikeApplication.getNormalFont());
         textB.setHint(IbikeApplication.getString("search_to_placeholder"));
-        textB.setTypeface(IbikeApplication.getNormalFont());
         textFavorites.setText(IbikeApplication.getString("favorites"));
         textFavorites.setTypeface(IbikeApplication.getBoldFont());
         textRecent.setText(IbikeApplication.getString("recent_results"));
         textRecent.setTypeface(IbikeApplication.getBoldFont());
-        textA.setTypeface(IbikeApplication.getNormalFont());
         ((TextView) findViewById(R.id.textOverviewHeader)).setTypeface(IbikeApplication.getBoldFont());
     }
 

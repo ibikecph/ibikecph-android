@@ -91,18 +91,11 @@ public class IssuesActivity extends Activity {
 
         this.getActionBar().setTitle(IbikeApplication.getString("describe_problem"));
 		textOption1.setText(IbikeApplication.getString("report_wrong_address"));
-		textOption1.setTypeface(IbikeApplication.getNormalFont());
 		textOption2.setText(IbikeApplication.getString("report_road_closed"));
-		textOption2.setTypeface(IbikeApplication.getNormalFont());
 		textOption3.setText(IbikeApplication.getString("report_one_way"));
-		textOption3.setTypeface(IbikeApplication.getNormalFont());
 		textOption4.setText(IbikeApplication.getString("report_illegal_turn"));
-		textOption4.setTypeface(IbikeApplication.getNormalFont());
 		textOption5.setText(IbikeApplication.getString("report_wrong_instruction"));
-		textOption5.setTypeface(IbikeApplication.getNormalFont());
 		textOption6.setText(IbikeApplication.getString("report_other"));
-		textOption6.setTypeface(IbikeApplication.getNormalFont());
-		btnSend.setTypeface(IbikeApplication.getBoldFont());
 		btnSend.setText(IbikeApplication.getString("report_send"));
 	}
 	

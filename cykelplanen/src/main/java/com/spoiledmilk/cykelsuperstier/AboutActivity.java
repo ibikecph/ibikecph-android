@@ -6,10 +6,8 @@
 package com.spoiledmilk.cykelsuperstier;
 
 import android.widget.TextView;
-
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.util.Util;
 
 /**
  * The "About" window. Mostly inherits the functionality from the lib, but 
@@ -22,10 +20,8 @@ public class AboutActivity extends com.spoiledmilk.ibikecph.AboutActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (Util.getDensity() >= 2.0)
-			((TextView) findViewById(R.id.textAboutTitle)).setPadding(0, Util.dp2px(14), 0, 0);
 
-        ((TextView) findViewById(R.id.textAboutTitle)).setText(IbikeApplication.getString("about_app_cp"));
+        this.getActionBar().setTitle(IbikeApplication.getString("about_app_cp"));
         ((TextView) findViewById(R.id.textAboutText)).setText(IbikeApplication.getString("about_text_cp"));
 
 	}

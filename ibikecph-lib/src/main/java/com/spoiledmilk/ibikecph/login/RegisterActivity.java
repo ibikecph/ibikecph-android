@@ -188,18 +188,13 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
 
         textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
         textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textNewPassword.setTypeface(IbikeApplication.getNormalFont());
         textPasswordConfirm.setHint(IbikeApplication.getString("register_password_repeat_placeholder"));
         textPasswordConfirm.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textPasswordConfirm.setTypeface(IbikeApplication.getNormalFont());
         btnRegister.setText(IbikeApplication.getString("register_save"));
-        btnRegister.setTypeface(IbikeApplication.getNormalFont());
         textName.setHint(IbikeApplication.getString("register_name_placeholder"));
         textName.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textName.setTypeface(IbikeApplication.getNormalFont());
         textEmail.setHint(IbikeApplication.getString("register_email_placeholder"));
         textEmail.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textEmail.setTypeface(IbikeApplication.getNormalFont());
     }
 
     private void launchAlertDialog(String msg) {

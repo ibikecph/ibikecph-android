@@ -104,17 +104,11 @@ public class RemindersSplashActivity extends Activity {
 	private void initStrings() {
 		textTitle.setTypeface(CykelsuperstierApplication.getBoldFont());
 		textTitle.setText(CykelsuperstierApplication.getString("reminder_title"));
-		textReminders.setTypeface(CykelsuperstierApplication.getNormalFont());
 		textReminders.setText(CykelsuperstierApplication.getString("reminder_text"));
-		textMonday.setTypeface(CykelsuperstierApplication.getNormalFont());
 		textMonday.setText(CykelsuperstierApplication.getString("monday"));
-		textTuesday.setTypeface(CykelsuperstierApplication.getNormalFont());
 		textTuesday.setText(CykelsuperstierApplication.getString("tuesday"));
-		textWednesday.setTypeface(CykelsuperstierApplication.getNormalFont());
 		textWednesday.setText(CykelsuperstierApplication.getString("wednesday"));
-		textThursday.setTypeface(CykelsuperstierApplication.getNormalFont());
 		textThursday.setText(CykelsuperstierApplication.getString("thursday"));
-		textFriday.setTypeface(CykelsuperstierApplication.getNormalFont());
 		textFriday.setText(CykelsuperstierApplication.getString("friday"));
 		btnSave.setTypeface(CykelsuperstierApplication.getBoldFont());
 		btnSave.setText(CykelsuperstierApplication.getString("reminder_save_btn"));

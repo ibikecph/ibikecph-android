@@ -157,16 +157,12 @@ public class RegisterDialog {
         textDialogTitle.setTypeface(IbikeApplication.getBoldFont());
         textName.setHint(IbikeApplication.getString("register_name_placeholder"));
         textName.setHintTextColor(context.getResources().getColor(R.color.HintColor));
-        textName.setTypeface(IbikeApplication.getNormalFont());
         textEmail.setHint(IbikeApplication.getString("register_email_placeholder"));
         textEmail.setHintTextColor(context.getResources().getColor(R.color.HintColor));
-        textEmail.setTypeface(IbikeApplication.getNormalFont());
         textPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
         textPassword.setHintTextColor(context.getResources().getColor(R.color.HintColor));
-        textPassword.setTypeface(IbikeApplication.getNormalFont());
         textPasswordConfirm.setHint(IbikeApplication.getString("register_password_repeat_placeholder"));
         textPasswordConfirm.setHintTextColor(context.getResources().getColor(R.color.HintColor));
-        textPasswordConfirm.setTypeface(IbikeApplication.getNormalFont());
         btnBack.setText(IbikeApplication.getString("back"));
         btnBack.setTypeface(IbikeApplication.getBoldFont());
         btnRegister.setText(IbikeApplication.getString("register_save"));

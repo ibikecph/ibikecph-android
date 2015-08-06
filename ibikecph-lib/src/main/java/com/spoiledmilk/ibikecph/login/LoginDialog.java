@@ -60,11 +60,9 @@ public class LoginDialog {
         textEmail = (EditText) dialog.findViewById(R.id.textEmail);
         textEmail.setHint(IbikeApplication.getString("register_email_placeholder"));
         textEmail.setHintTextColor(context.getResources().getColor(R.color.HintColor));
-        textEmail.setTypeface(IbikeApplication.getNormalFont());
         textPassword = (EditText) dialog.findViewById(R.id.textPassword);
         textPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
         textPassword.setHintTextColor(context.getResources().getColor(R.color.HintColor));
-        textPassword.setTypeface(IbikeApplication.getNormalFont());
         btnBack = (Button) dialog.findViewById(R.id.btnBack);
         btnBack.setText(IbikeApplication.getString("back"));
         btnBack.setTypeface(IbikeApplication.getBoldFont());

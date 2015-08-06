@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 
 import java.util.ArrayList;
@@ -41,7 +40,6 @@ public class HistoryAdapter extends ArrayAdapter<SearchListItem> {
 		}
 		final SearchListItem item = getItem(position);
 
-		holder.textLocation.setTypeface(IbikeApplication.getNormalFont());
 		String text = item.getName();
 		if (item.getName().length() > 30) {
 			text = item.getName().substring(0, 27) + "...";

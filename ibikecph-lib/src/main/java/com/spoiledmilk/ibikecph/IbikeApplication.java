@@ -49,9 +49,9 @@ public class IbikeApplication extends Application {
         settings.load();
         dictionary = new SMDictionary(this);
         dictionary.init();
-        normalFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Md.ttf");
-        boldFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Bd.ttf");
-        italicFont = Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
+        normalFont = Typeface.DEFAULT; //Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Md.ttf");
+        boldFont = Typeface.DEFAULT_BOLD; //Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Bd.ttf");
+        italicFont = Typeface.defaultFromStyle(Typeface.ITALIC); // Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
         GoogleAnalytics.getInstance(this).setAppOptOut(!Config.ANALYTICS_ENABLED);
 
         this.startService(new Intent(this, BikeLocationService.class));
@@ -143,10 +143,6 @@ public class IbikeApplication extends Application {
 
     public static boolean isFacebookLogin() {
         return PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("is_facebook_login", false);
-    }
-
-    public static Typeface getNormalFont() {
-        return normalFont;
     }
 
     public static Typeface getBoldFont() {

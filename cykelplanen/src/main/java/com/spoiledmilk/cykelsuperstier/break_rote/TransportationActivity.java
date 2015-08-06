@@ -5,16 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.cykelsuperstier.break_rote;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -23,12 +13,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
 import com.spoiledmilk.cykelsuperstier.Config;
 import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.cykelsuperstier.util.XMLParser;
 import com.spoiledmilk.ibikecph.util.LOG;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class TransportationActivity extends Activity {
 
@@ -88,8 +86,6 @@ public class TransportationActivity extends Activity {
 
 	private void initStrings() {
 		((TextView) findViewById(R.id.textFrom))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textFrom))
 				.setText(CykelsuperstierApplication.getString("from") + ":");
 		((TextView) findViewById(R.id.textFromStation))
 				.setTypeface(CykelsuperstierApplication.getBoldFont());
@@ -116,11 +112,7 @@ public class TransportationActivity extends Activity {
 				.setTypeface(CykelsuperstierApplication.getBoldFont());
 		((TextView) findViewById(R.id.textCurrentTime)).setText(currentTime);
 		((TextView) findViewById(R.id.textTo))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textTo))
 				.setText(CykelsuperstierApplication.getString("to") + ":");
-		((TextView) findViewById(R.id.textTime))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
 		((TextView) findViewById(R.id.textTime))
 				.setText(CykelsuperstierApplication.getString("time") + ":");
 		((TextView) findViewById(R.id.textDeparture))
@@ -143,34 +135,8 @@ public class TransportationActivity extends Activity {
 		((TextView) findViewById(R.id.textTitle)).setTextSize(
 				TypedValue.COMPLEX_UNIT_SP, 16);
 		((TextView) findViewById(R.id.textTitle))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textTitle))
 				.setText(CykelsuperstierApplication
 						.getString("recommended_routes"));
-		((TextView) findViewById(R.id.textDeparture1))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textDeparture2))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textDeparture3))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textArrival1))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textArrival2))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textArrival3))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textTime1))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textTime2))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textTime3))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textShift1))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textShift2))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
-		((TextView) findViewById(R.id.textShift3))
-				.setTypeface(CykelsuperstierApplication.getNormalFont());
 	}
 
 	private String monthString(final int i) {

@@ -5,13 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.cykelsuperstier.break_rote;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,13 +16,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.TextView;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
 import com.spoiledmilk.cykelsuperstier.R;
@@ -42,6 +30,12 @@ import com.spoiledmilk.ibikecph.map.SMHttpRequestListener;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 
 public class BreakRouteActivity extends Activity implements
 		SMHttpRequestListener {
@@ -516,9 +510,7 @@ public class BreakRouteActivity extends Activity implements
 		textDistance.setTypeface(CykelsuperstierApplication.getBoldFont());
 		textDistance.setText(CykelsuperstierApplication
 				.getString("break_route_header_title"));
-		textDistanceKm.setTypeface(CykelsuperstierApplication.getNormalFont());
 		textDistanceKm.setText(" " + (distance / 1000) + " km");
-		btnBreak.setTypeface(CykelsuperstierApplication.getNormalFont());
 		btnBreak.setText(CykelsuperstierApplication
 				.getString("btn_break_route"));
 		textAAddress.setTypeface(CykelsuperstierApplication.getBoldFont());
@@ -528,10 +520,6 @@ public class BreakRouteActivity extends Activity implements
 		btnRejseplanen.setTypeface(CykelsuperstierApplication.getBoldFont());
 		btnRejseplanen.setText("      "
 				+ CykelsuperstierApplication.getString("route_plan_button"));
-		textARegion.setTypeface(CykelsuperstierApplication.getNormalFont());
-		textBRegion.setTypeface(CykelsuperstierApplication.getNormalFont());
-		textDistance1.setTypeface(CykelsuperstierApplication.getNormalFont());
-		textDistance2.setTypeface(CykelsuperstierApplication.getNormalFont());
 	}
 
 	public void onBtnRejsplanenClick(View v) {

@@ -114,9 +114,7 @@ public class OverlaysActivity extends Activity {
 
     private void initStrings() {
         actionBar.setTitle(CykelsuperstierApplication.getString("map_overlays"));
-        textPath.setTypeface(CykelsuperstierApplication.getNormalFont());
         textPath.setText(CykelsuperstierApplication.getString("cycle_super_highways"));
-        textService.setTypeface(CykelsuperstierApplication.getNormalFont());
         textService.setText(CykelsuperstierApplication.getString("service_stations"));
     }
 }
