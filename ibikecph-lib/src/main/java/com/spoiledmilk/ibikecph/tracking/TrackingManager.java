@@ -21,7 +21,7 @@ import java.util.List;
  * Created by jens on 2/25/15.
  */
 public class TrackingManager implements LocationListener  {
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     private static final int MAX_INACCURACY = 20;
     private static final int TRACK_PAUSE_THRESHOLD = 120000; // 2 minutes in milliseconds
 
@@ -99,6 +99,14 @@ public class TrackingManager implements LocationListener  {
         Log.d("MF", "############## makeAndSaveTrack ##############");
         Log.d("MF", "threshold: " + TRACK_PAUSE_THRESHOLD);
 
+        // If the track is too short, just disregard it. We have nothing more to do, so just return.
+        if (curLocationList.size() < 3) {
+            Log.d("MF", "track too short");
+            Log.d("MF", "##############################################");
+            realm.cancelTransaction();
+            return;
+        }
+
         Track track;
         // last track
         try {
@@ -109,6 +117,7 @@ public class TrackingManager implements LocationListener  {
             Log.d("MF", "last track time: " + lastTrack.getLocations().last().getTimestamp().getTime());
 
             // use previous track if still fresh, or create new
+
             long lastTrackDiff = curLocationList.get(0).getTime() - lastTrack.getLocations().last().getTimestamp().getTime();
 
             Log.d("MF", "time diff: " + lastTrackDiff);
@@ -121,16 +130,8 @@ public class TrackingManager implements LocationListener  {
                 track = realm.createObject(Track.class);
             }
         } catch(ArrayIndexOutOfBoundsException e) {
-            // There was no tracks in the first place!
+            // There were no tracks in the first place!
             track = realm.createObject(Track.class);
-        }
-
-        // If the track is too short, just disregard it. We have nothing more to do, so just return.
-        if (curLocationList.size() < 3) {
-            Log.d("MF", "track too short");
-            Log.d("MF", "##############################################");
-            realm.cancelTransaction();
-            return;
         }
 
         // Set a timestamp for the Track.
@@ -210,7 +211,7 @@ public class TrackingManager implements LocationListener  {
         realm = Realm.getInstance(IbikeApplication.getContext());
 
         if (isTracking && givenLocation.getAccuracy() <= MAX_INACCURACY) {
-            //Log.d("JC", "Got new GPS coord");
+            Log.d("JC", "Got new GPS coord");
             curLocationList.add(givenLocation);
         }
     }
@@ -230,11 +231,12 @@ public class TrackingManager implements LocationListener  {
         //Log.d("JC", "TrackingManager new activity");
         if (
                 IbikeApplication.getSettings().getTrackingEnabled() &&
-                (!this.isTracking && activityType == DetectedActivity.ON_BICYCLE || (DEBUG && activityType == DetectedActivity.TILTING))
+                ((!this.isTracking            && activityType == DetectedActivity.ON_BICYCLE) ||
+                 (!this.isTracking() && DEBUG && activityType == DetectedActivity.TILTING))
            ) {
             Log.i("JC", "Activity changed to bicycle, starting track.");
             startTracking();
-        } else if(activityType != DetectedActivity.ON_BICYCLE && this.isTracking) {
+        } else if(activityType != DetectedActivity.ON_BICYCLE && activityType != DetectedActivity.UNKNOWN && this.isTracking) {
             Log.i("JC", "Activity changed away from bicycle, stopping track.");
             stopTracking();
         }
