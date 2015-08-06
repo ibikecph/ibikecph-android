@@ -53,7 +53,6 @@ public class FinishRouteDialog extends DialogFragment {
 
         textTitle = (TextView) view.findViewById(R.id.textTitle);
         textTitle.setText(IbikeApplication.getString("route_stop_title"));
-        textTitle.setTypeface(IbikeApplication.getNormalFont());
         btnBack = (Button) view.findViewById(R.id.btnBack);
         btnBack.setText(IbikeApplication.getString("back"));
         btnBack.setTypeface(IbikeApplication.getBoldFont());

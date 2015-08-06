@@ -51,9 +51,7 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			view = inflater.inflate(R.layout.list_row_search, parent, false);
 			viewHolder = new ViewHolder();
 			viewHolder.textLocation = (TextView) view.findViewById(R.id.textLocation);
-			viewHolder.textLocation.setTypeface(IbikeApplication.getNormalFont());
 			viewHolder.textAddress = (TextView) view.findViewById(R.id.textAddress);
-			viewHolder.textAddress.setTypeface(IbikeApplication.getNormalFont());
 			if (Util.getDensity() > 1.5f) {
 				viewHolder.textLocation.setTextSize(22);
 				viewHolder.textAddress.setTextSize(20);

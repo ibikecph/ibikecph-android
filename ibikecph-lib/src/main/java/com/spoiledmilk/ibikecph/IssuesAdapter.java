@@ -5,8 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * Acts as a frontend for issues that can be picked in a Spinner.
@@ -51,7 +51,6 @@ public class IssuesAdapter extends ArrayAdapter<String> implements SpinnerAdapte
 		final View view = inflater.inflate(layoutResource, parent, false);
 		TextView textInstruction = (TextView) view.findViewById(R.id.textInstruction);
 		textInstruction.setText(getItem(position));
-		textInstruction.setTypeface(IbikeApplication.getNormalFont());
 		return view;
 	}
 }

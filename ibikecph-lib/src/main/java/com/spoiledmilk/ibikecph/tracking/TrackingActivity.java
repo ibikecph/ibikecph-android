@@ -147,20 +147,25 @@ public class TrackingActivity extends Activity {
     }
 
     public int getNumberOfDaysSinceFirstCycled() {
-        Realm realm = Realm.getInstance(IbikeApplication.getContext());
-        RealmResults<Track> results = realm.allObjects(Track.class);
-        results.sort("timestamp", RealmResults.SORT_ORDER_ASCENDING);
+        try {
+            Realm realm = Realm.getInstance(IbikeApplication.getContext());
+            RealmResults<Track> results = realm.allObjects(Track.class);
+            results.sort("timestamp", RealmResults.SORT_ORDER_ASCENDING);
 
-        Calendar firstTrip = Calendar.getInstance();
-        firstTrip.setTime(results.first().getTimestamp());
+            Calendar firstTrip = Calendar.getInstance();
+            firstTrip.setTime(results.first().getTimestamp());
 
-        Calendar now = Calendar.getInstance();
+            Calendar now = Calendar.getInstance();
 
-        int totalDays = (int)(now.getTimeInMillis() - firstTrip.getTimeInMillis())/(1000*60*60*24);
+            int totalDays = (int) (now.getTimeInMillis() - firstTrip.getTimeInMillis()) / (1000 * 60 * 60 * 24);
 
-        // It's counter-intuitive, but at a certain day, you want to count both today AND yesterday, even though it's
-        // technically only one day ago.
-        return totalDays+1;
+            // It's counter-intuitive, but at a certain day, you want to count both today AND yesterday, even though it's
+            // technically only one day ago.
+            return totalDays + 1;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // We have no tracks.
+            return 1;
+        }
     }
 
     /**

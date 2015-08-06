@@ -208,11 +208,9 @@ public class LoginSplashActivity extends FragmentActivity implements iLanguageLi
         btnFacebookLogin.setText(IbikeApplication.getString("login_with_fb"));
         btnFacebookLogin.setTypeface(IbikeApplication.getBoldFont());
         btnLogin.setText(IbikeApplication.getString("log_in"));
-        btnLogin.setTypeface(IbikeApplication.getNormalFont());
         textCreateAccount.setText(IbikeApplication.getString("create_account"));
         textCreateAccount.setTypeface(IbikeApplication.getBoldFont());
         textLoginExplanation.setText(IbikeApplication.getString("create_account_text"));
-        textLoginExplanation.setTypeface(IbikeApplication.getNormalFont());
     }
 
     public void launchMainMapActivity() {

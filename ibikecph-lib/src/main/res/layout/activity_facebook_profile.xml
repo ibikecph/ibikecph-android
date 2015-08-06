@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/DarkGrey" xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@null" >
+                >
 
             <TextView
                 android:id="@+id/textLogedIn"
@@ -24,7 +24,7 @@
                 android:layout_marginTop="30dp"
                 android:gravity="center"
                 android:text=""
-                android:textColor="@color/TextLightGrey" />
+                    />
 
             <ImageView
                 android:id="@+id/pictureContainer"
@@ -67,8 +67,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:gravity="center"
-                android:text=""
-                android:textColor="@color/TextLightGrey" />
+                android:text="asdfasdf"
+                    />
 
             <ImageView
                 android:id="@+id/imgLinked"
@@ -91,8 +91,8 @@
                 android:gravity="center"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
-                android:text=""
-                android:textColor="@color/TextLightGrey" />
+                android:text="asdfasdf"
+                    />
 
             <Button
                 android:id="@+id/btnDelete"
@@ -105,8 +105,8 @@
                 android:onClick="onBtnDelete"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:text=""
-                android:textColor="@color/White" />
+                android:text="Delete account"
+                android:textColor="@color/White"/>
 
             <Button
                     android:id="@+id/btnLogout"
@@ -119,7 +119,7 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/btn_delete_selector"
                     android:textColor="@color/White"
-                    android:textSize="14sp" />
+                    android:textSize="14sp" android:text="Log out"/>
         </RelativeLayout>
     </ScrollView>
 

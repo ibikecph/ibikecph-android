@@ -38,12 +38,10 @@ public class BreakRouteSplashActivity extends Activity {
 		textTitle.setText(CykelsuperstierApplication.getString("break_route_title"));
 
 		TextView textBreakRoute = (TextView) findViewById(R.id.textBreakRoute);
-		textBreakRoute.setTypeface(CykelsuperstierApplication.getNormalFont());
 		textBreakRoute.setTextColor(Color.rgb(131, 131, 131)); // 60, 60, 60
 		textBreakRoute.setText(CykelsuperstierApplication.getString("break_route_text_top"));
 
 		TextView textBreakRouteHint = (TextView) findViewById(R.id.textBreakRouteHint);
-		textBreakRouteHint.setTypeface(CykelsuperstierApplication.getNormalFont());
 		textBreakRouteHint.setTextColor(Color.rgb(131, 131, 131));
 		textBreakRouteHint.setText(CykelsuperstierApplication.getString("break_route_text_bottom"));
 

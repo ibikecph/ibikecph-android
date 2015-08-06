@@ -161,7 +161,6 @@ public class FacebookProfileActivity extends Activity {
     private void initStrings() {
         actionBar.setTitle(IbikeApplication.getString("account"));
         btnLogout.setText(IbikeApplication.getString("logout"));
-        btnLogout.setTypeface(IbikeApplication.getNormalFont());
         textLogedIn.setText(IbikeApplication.getString("you_are_logged_in_as"));
         textLogedIn.setTypeface(IbikeApplication.getItalicFont());
         textLinked.setText(IbikeApplication.getString("account_is_linked_to_facebook"));

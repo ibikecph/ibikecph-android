@@ -246,20 +246,14 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         //textTitle.setText(IbikeApplication.getString("account"));
         //textTitle.setTypeface(IbikeApplication.getNormalFont());
         btnLogout.setText(IbikeApplication.getString("logout"));
-        btnLogout.setTypeface(IbikeApplication.getNormalFont());
         textOldPassword.setHint(IbikeApplication.getString("old_password"));
         textOldPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textOldPassword.setTypeface(IbikeApplication.getNormalFont());
         textNewPassword.setHint(IbikeApplication.getString("account_password_placeholder"));
         textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textNewPassword.setTypeface(IbikeApplication.getNormalFont());
         textPasswordConfirm.setHint(IbikeApplication.getString("account_repeat_placeholder"));
         textPasswordConfirm.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textPasswordConfirm.setTypeface(IbikeApplication.getNormalFont());
         btnSave.setText(IbikeApplication.getString("save_changes"));
-        btnSave.setTypeface(IbikeApplication.getNormalFont());
         btnDelete.setText(IbikeApplication.getString("delete_my_account"));
-        btnDelete.setTypeface(IbikeApplication.getNormalFont());
     }
 
     private void updateControls() {

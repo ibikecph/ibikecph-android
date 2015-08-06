@@ -34,7 +34,6 @@ public class NoGPSDialog extends DialogFragment {
 		View view = inflater.inflate(R.layout.dialog_no_gps, container);
 
 		Button btnCancel = (Button) view.findViewById(R.id.btnCancel);
-		btnCancel.setTypeface(IbikeApplication.getNormalFont());
 		btnCancel.setText(IbikeApplication.getString("leave_no_gps"));
 		btnCancel.setOnClickListener(new OnClickListener() {
 			@Override
@@ -47,7 +46,6 @@ public class NoGPSDialog extends DialogFragment {
 		TexturedButton btnGPS = (TexturedButton) view.findViewById(R.id.btnActivateGps);
 		btnGPS.setBackgroundResource(R.drawable.btn_blue_selector);
 		btnGPS.setTextureResource(R.drawable.pattern_btn);
-		btnGPS.setTypeface(IbikeApplication.getNormalFont());
 		btnGPS.setTextColor(Color.WHITE);
 		btnGPS.setText(IbikeApplication.getString("activate_gps"));
 		btnGPS.setOnClickListener(new OnClickListener() {

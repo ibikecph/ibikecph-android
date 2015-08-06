@@ -10,9 +10,7 @@ import android.graphics.Color;
 import android.view.Gravity;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.spoiledmilk.cykelsuperstier.BreakRouteSplashActivity;
-import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -37,7 +35,6 @@ public class FavoritesActivity extends com.spoiledmilk.ibikecph.favorites.Favori
 		((TextView) findViewById(R.id.textTitle)).setTextColor(Color.rgb(243, 109, 0));
 		((TextView) findViewById(R.id.textAddFavorite)).setTextColor(Color.rgb(116, 116, 116));
 		((TextView) findViewById(R.id.textAddFavorite)).setGravity(Gravity.CENTER);
-		((TextView) findViewById(R.id.textAddFavorite)).setTypeface(CykelsuperstierApplication.getNormalFont());
 
 	}
 
