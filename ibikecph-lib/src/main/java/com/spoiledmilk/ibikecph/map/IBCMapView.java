@@ -274,7 +274,7 @@ public class IBCMapView extends MapView {
         // user tapped. In a minute, when we're drawing a route, we have to be wary to draw a line from where the route
         // ends to this coordinate.
         IBCMarker m = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation(), MarkerType.ADDRESS);
-        Icon markerIcon = new Icon(this.getResources().getDrawable(R.drawable.marker_finish));
+        Icon markerIcon = new Icon(this.getResources().getDrawable(R.drawable.marker));
         m.setIcon(markerIcon);
         this.addMarker(m);
 
