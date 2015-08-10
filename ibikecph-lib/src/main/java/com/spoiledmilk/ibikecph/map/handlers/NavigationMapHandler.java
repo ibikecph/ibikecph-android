@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 import com.mapbox.mapboxsdk.api.ILatLng;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 /**
  * Created by jens on 5/30/15.
  */
-public class NavigationMapHandler extends IBCMapHandler implements SMRouteListener, Serializable {
+public class NavigationMapHandler extends IBCMapHandler implements SMRouteListener, Serializable, LocationListener {
     private UserLocationOverlay userLocationOverlay;
     private static SMRoute route; // TODO: Static is bad, but we'll never have two NavigationMapHandlers anyway.
     private boolean cleanedUp = true;
@@ -237,6 +238,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         //registerBearingRotation();
 
+        IbikeApplication.getService().addGPSListener(this);
+
         isRouting = true;
 
         showProblemButton();
@@ -345,6 +348,10 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         if (endMarker != null) {
             this.mapView.removeMarker(endMarker);
         }
+
+        // Return the orientation to normal.
+        this.mapView.setMapOrientation(0);
+        IbikeApplication.getService().removeGPSListener(this);
 
         this.mapView.invalidate();
 
@@ -486,6 +493,28 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         i.putExtra("endName", NavigationMapHandler.getRoute().endStationName);
 
         mapView.getParentActivity().startActivity(i);
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (this.isRouting) {
+            mapView.setMapOrientation(-1 * location.getBearing());
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
 
     }
 }
