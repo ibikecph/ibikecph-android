@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/DarkGrey" >
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -53,7 +52,6 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/input_on_black_selector"
             android:inputType="text"
             android:paddingLeft="10dp"
             android:paddingRight="25dp"
@@ -81,7 +79,6 @@
             android:layout_alignRight="@+id/textName"
             android:layout_below="@+id/textName"
             android:layout_marginTop="10dp"
-            android:background="@drawable/input_on_black_selector"
             android:inputType="textEmailAddress"
             android:paddingLeft="10dp"
             android:paddingRight="25dp"
@@ -106,7 +103,6 @@
             android:layout_alignRight="@+id/textName"
             android:layout_below="@+id/textEmail"
             android:layout_marginTop="10dp"
-            android:background="@drawable/input_on_black_selector"
             android:inputType="textPassword"
             android:paddingLeft="10dp"
             android:paddingRight="25dp"
@@ -131,7 +127,6 @@
                 android:layout_alignRight="@+id/textName"
                 android:layout_below="@+id/textNewPassword"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/input_on_black_selector"
                 android:inputType="textPassword"
                 android:paddingLeft="10dp"
                 android:paddingRight="25dp"
