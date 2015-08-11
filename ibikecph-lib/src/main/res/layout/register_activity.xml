@@ -147,7 +147,7 @@
                   android:layout_below="@+id/textPasswordConfirm"
                   android:layout_toRightOf="@+id/termsAcceptanceCheckbox"
                   android:layout_alignBaseline="@+id/termsAcceptanceCheckbox"
-                  android:textColor="@color/white"
+                  android:textColor="@color/black"
                   android:text="accept_user_terms"
                   android:id="@+id/termsAcceptanceLabel"
                 />
@@ -163,7 +163,7 @@
                 />
 
 
-        <com.spoiledmilk.ibikecph.controls.TexturedButton
+        <Button
             android:id="@+id/btnRegister"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
@@ -173,7 +173,7 @@
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
             android:layout_marginTop="10dp"
-            android:background="@null"
+            android:background="@color/app_primary_color"
             android:textColor="@color/White"
             android:textSize="16sp"
             />
