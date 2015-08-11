@@ -35,8 +35,11 @@ public class LoginSplashActivity extends Activity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(getLayoutId());
+        this.setContentView(R.layout.login_splash_activity);
         this.savedInstanceState = savedInstanceState;
+
+        this.findViewById(R.id.rootLayout).setBackgroundColor(getResources().getColor(IbikeApplication.getPrimaryColor()));
+
 
         // If the user has already seen the welcome screen, don't bother her again.
         if (IbikeApplication.isWelcomeScreenSeen() && !DEBUG) {

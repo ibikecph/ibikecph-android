@@ -13,13 +13,6 @@ public class AcceptNewTermsActivity extends com.spoiledmilk.ibikecph.AcceptNewTe
         super.onCreate(savedInstanceState);
         Log.d("JC", "Cykelplanen AcceptNewTermsActivity");
 
-        this.findViewById(com.spoiledmilk.ibikecph.R.id.backgroundLayout).setBackgroundColor(this.getBackgroundColor());
-
-    }
-
-    @Override
-    protected int getBackgroundColor() {
-        return getResources().getColor(R.color.CPActionBar);
     }
 
 }

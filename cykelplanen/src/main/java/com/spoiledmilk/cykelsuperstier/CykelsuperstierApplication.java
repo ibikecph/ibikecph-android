@@ -19,12 +19,12 @@ public class CykelsuperstierApplication extends IbikeApplication {
 		Config.EXTENDED_PULL_TOUCH = false;
 
         IbikeApplication.APP_NAME = "Cykelplanen";
+        this.primaryColor = R.color.CPActionBar;
 	}
 
 
     public static Class getTermsAcceptanceClass() {
         return com.spoiledmilk.cykelsuperstier.AcceptNewTermsActivity.class;
     }
-
 
 }
