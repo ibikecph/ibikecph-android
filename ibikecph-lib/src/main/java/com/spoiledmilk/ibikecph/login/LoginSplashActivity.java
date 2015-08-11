@@ -29,7 +29,7 @@ public class LoginSplashActivity extends Activity {
     Bundle savedInstanceState;
     Handler handler;
 
-    private static boolean DEBUG = true;
+    private static boolean DEBUG = false;
     public static final int LOGIN_REQUEST = 80;
 
     @Override
@@ -212,6 +212,4 @@ public class LoginSplashActivity extends Activity {
         Intent i = new Intent(this, LoginActivity.class);
         startActivityForResult(i, LOGIN_REQUEST);
     }
-
-
 }
