@@ -18,7 +18,17 @@
             android:textSize="26dp"
             />
 
-    <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/imageView" android:src="@drawable/bikesplash"
+                android:layout_gravity="right"
+                android:layout_marginRight="12dp"
+                />
+
+
+
+        <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
             android:id="@+id/welcomeExplanationTextView"
             android:text="Indsaml dine cykeldata og se hvor og hvor meget du cykler til dagligt. Få ugentlige beskeder og opnå milepæle når du cykler.\n\nDine cykeldata blever delt anonymt med Københavns Kommune og Regions Hovedstaden og er med til skabe ny viden om cykeladfærd. Viden som gør at vi kan skabe bedre cykelforhold i og omkring København."
             android:layout_margin="16dp"
