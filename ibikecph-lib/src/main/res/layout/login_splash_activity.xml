@@ -16,6 +16,7 @@
             android:layout_margin="16dp"
             android:textColor="@color/white"
             android:textSize="26dp"
+            android:textStyle="bold"
             />
 
         <ImageView
