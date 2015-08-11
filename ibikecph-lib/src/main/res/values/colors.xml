@@ -26,5 +26,5 @@
     <color name="SplashBtnPressed">#FF07568B</color>
     <color name="IBCActionBar">#D0021B</color>
     <color name="CPActionBar">#FF6600</color>
-
+    <color name="app_primary_color">#D0021B</color>
 </resources>

@@ -21,7 +21,7 @@ import java.util.List;
  * Created by jens on 2/25/15.
  */
 public class TrackingManager implements LocationListener  {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final int MAX_INACCURACY = 20;
     private static final int TRACK_PAUSE_THRESHOLD = 120000; // 2 minutes in milliseconds
 

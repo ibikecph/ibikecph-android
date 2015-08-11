@@ -39,6 +39,7 @@ public class IbikeApplication extends Application {
     private static Typeface normalFont, boldFont, italicFont;
 
     private static TrackingManager trackingManager;
+    protected static int primaryColor = R.color.IBCActionBar;
 
     @Override
     public void onCreate() {
@@ -238,6 +239,10 @@ public class IbikeApplication extends Application {
 
     public static Class getTermsAcceptanceClass() {
         return AcceptNewTermsActivity.class;
+    }
+
+    public static int getPrimaryColor() {
+        return primaryColor;
     }
 
 }
