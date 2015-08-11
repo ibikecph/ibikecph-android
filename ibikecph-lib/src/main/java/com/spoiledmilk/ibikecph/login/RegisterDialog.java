@@ -10,7 +10,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -27,7 +26,6 @@ import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.*;
 import android.widget.ImageView.ScaleType;
-
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
@@ -207,18 +205,6 @@ public class RegisterDialog {
         });
 
         dialog.getWindow().setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-
-        final Context contextFinal = context;
-        dialog.setOnDismissListener(new OnDismissListener() {
-
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (contextFinal != null) {
-                    ((LoginSplashActivity) contextFinal).onDialogDismissed();
-                }
-
-            }
-        });
 
         try {
             dialog.show();

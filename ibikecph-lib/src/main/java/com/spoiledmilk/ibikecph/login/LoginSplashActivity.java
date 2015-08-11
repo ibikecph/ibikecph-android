@@ -5,6 +5,7 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.login;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,11 +14,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.*;
@@ -28,56 +26,49 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesActivity;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
-import com.spoiledmilk.ibikecph.iLanguageListener;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.util.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class LoginSplashActivity extends FragmentActivity implements iLanguageListener, FBLoginListener, ImagerPrefetcherListener {
+public class LoginSplashActivity extends Activity implements FBLoginListener, ImagerPrefetcherListener {
 
-    RelativeLayout btnSkip;
-    RelativeLayout btnRegister;
-    Button btnLogin;
-    TextView textCreateAccount;
-    TextView textLoginExplanation;
     public static final int IMAGE_REQUEST = 1888;
-    LoginDialog lg;
-    RegisterDialog rd;
-    TextView textSkip;
-    TextView textRegister;
-    Handler handler;
-    Button btnFacebookLogin;
-    AlertDialog registrationDialog;
-    private Session.StatusCallback statusCallback = new SessionStatusCallback();
     Bundle savedInstanceState;
+    Handler handler;
+    RegisterDialog rd;
+    LoginDialog lg;
+    private Session.StatusCallback statusCallback = new SessionStatusCallback();
+    AlertDialog registrationDialog;
+
+    private static boolean DEBUG = true;
+    public static final int LOGIN_REQUEST = 80;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(getLayoutId());
         this.savedInstanceState = savedInstanceState;
-        btnSkip = (RelativeLayout) findViewById(R.id.btnSkip);
-        btnRegister = (RelativeLayout) findViewById(R.id.btnRegister);
-        btnFacebookLogin = (Button) findViewById(R.id.btnFacebookLogin);
-        textSkip = (TextView) findViewById(R.id.textSkip);
-        textRegister = (TextView) findViewById(R.id.textRegister);
 
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnLogin.setOnClickListener(new OnClickListener() {
+        // If the user has already seen the welcome screen, don't bother her again.
+        if (IbikeApplication.isWelcomeScreenSeen() && !DEBUG) {
+            launchMainMapActivity();
+        }
 
-            @Override
-            public void onClick(View arg0) {
-                disableButtons();
-                lg = new LoginDialog();
-                lg.createLoginDialog(LoginSplashActivity.this);
-            }
+        TextView welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
+        TextView welcomeExplanationTextView = (TextView) findViewById(R.id.welcomeExplanationTextView);
+        Button readMoreButton = (Button) findViewById(R.id.readMoreButton);
+        Button skipButton = (Button) findViewById(R.id.skipButton);
+        Button logInButton = (Button) findViewById(R.id.logInButton);
 
-        });
+        welcomeTextView.setText(IbikeApplication.getString("startup_welcome"));
+        welcomeExplanationTextView.setText(IbikeApplication.getString("startup_explanation"));
+        readMoreButton.setText(IbikeApplication.getString("startup_readmore"));
 
-        textCreateAccount = (TextView) findViewById(R.id.textCreateAccount);
-        textLoginExplanation = (TextView) findViewById(R.id.textLoginExplanation);
+        skipButton.setText(IbikeApplication.getString("no_thanks"));
+        logInButton.setText(IbikeApplication.getString("log_in"));
+
 
         if (handler == null) {
             handler = new Handler(new Handler.Callback() {
@@ -132,12 +123,9 @@ public class LoginSplashActivity extends FragmentActivity implements iLanguageLi
     @Override
     public void onResume() {
         super.onResume();
-        initStrings();
-        enableButtons();
     }
 
     public void onFacebookLoginClick(View v) {
-        disableButtons();
         performFBLogin();
     }
 
@@ -166,7 +154,6 @@ public class LoginSplashActivity extends FragmentActivity implements iLanguageLi
     }
 
     public void onBtnRegisterClick(View v) {
-        disableButtons();
         rd = new RegisterDialog();
         rd.createRegisterDialog(LoginSplashActivity.this);
     }
@@ -199,25 +186,10 @@ public class LoginSplashActivity extends FragmentActivity implements iLanguageLi
         if (registrationDialog != null && registrationDialog.isShowing())
             registrationDialog.dismiss();
     }
-
-    private void initStrings() {
-        textSkip.setText(IbikeApplication.getString("skip"));
-        textSkip.setTypeface(IbikeApplication.getBoldFont());
-        textRegister.setText(IbikeApplication.getString("register_with_mail"));
-        textRegister.setTypeface(IbikeApplication.getBoldFont());
-        btnFacebookLogin.setText(IbikeApplication.getString("login_with_fb"));
-        btnFacebookLogin.setTypeface(IbikeApplication.getBoldFont());
-        btnLogin.setText(IbikeApplication.getString("log_in"));
-        textCreateAccount.setText(IbikeApplication.getString("create_account"));
-        textCreateAccount.setTypeface(IbikeApplication.getBoldFont());
-        textLoginExplanation.setText(IbikeApplication.getString("create_account_text"));
-    }
-
     public void launchMainMapActivity() {
         IbikeApplication.setWelcomeScreenSeen(true);
         Intent i = new Intent(LoginSplashActivity.this, MapActivity.class);
         LoginSplashActivity.this.startActivity(i);
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         finish();
     }
 
@@ -236,6 +208,8 @@ public class LoginSplashActivity extends FragmentActivity implements iLanguageLi
             aif.execute(data);
         } else if (Session.getActiveSession() != null && data != null && data.getExtras() != null) {
             Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        } else if (requestCode == LOGIN_REQUEST && resultCode == RESULT_OK) {
+            launchMainMapActivity();
         }
 
     }
@@ -277,8 +251,6 @@ public class LoginSplashActivity extends FragmentActivity implements iLanguageLi
     }
 
     public void launchMainMapActivity(String auth_token, int id) {
-        disableButtons();
-        findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
         PreferenceManager.getDefaultSharedPreferences(this).edit().putString("auth_token", auth_token).commit();
         PreferenceManager.getDefaultSharedPreferences(this).edit().putInt("id", id).commit();
         new Thread(new Runnable() {
@@ -332,11 +304,6 @@ public class LoginSplashActivity extends FragmentActivity implements iLanguageLi
 
     public void setRegisterDialog(RegisterDialog rd) {
         this.rd = rd;
-    }
-
-    @Override
-    public void reloadStrings() {
-        initStrings();
     }
 
     public void launchRegistrationDialog(String info) {
@@ -453,22 +420,10 @@ public class LoginSplashActivity extends FragmentActivity implements iLanguageLi
         dismissProgressDialog();
     }
 
-    public void onDialogDismissed() {
-        enableButtons();
+    public void onBtnLogInClick(View v) {
+        Intent i = new Intent(this, LoginActivity.class);
+        startActivityForResult(i, LOGIN_REQUEST);
     }
 
-    private void enableButtons() {
-        btnLogin.setEnabled(true);
-        btnFacebookLogin.setEnabled(true);
-        btnSkip.setEnabled(true);
-        btnRegister.setEnabled(true);
-    }
-
-    private void disableButtons() {
-        btnLogin.setEnabled(false);
-        btnFacebookLogin.setEnabled(false);
-        btnSkip.setEnabled(false);
-        btnRegister.setEnabled(false);
-    }
 
 }

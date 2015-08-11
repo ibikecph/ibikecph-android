@@ -10,7 +10,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,7 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
@@ -150,16 +148,6 @@ public class LoginDialog {
 
         dialog.getWindow().setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
-        dialog.setOnDismissListener(new OnDismissListener() {
-
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (contextFinal != null) {
-                    ((LoginSplashActivity) contextFinal).onDialogDismissed();
-                }
-
-            }
-        });
         textEmail.setText(IbikeApplication.getEmail());
         textPassword.setText(IbikeApplication.getPassword());
         dialog.show();
