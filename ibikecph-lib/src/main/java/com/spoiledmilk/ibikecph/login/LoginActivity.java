@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -98,6 +99,8 @@ public class LoginActivity extends Activity implements FBLoginListener {
 
                 @Override
                 public boolean handleMessage(Message msg) {
+                    Log.d("JC", "Received Facebook handler callback");
+
                     Bundle data = msg.getData();
                     Boolean success = data.getBoolean("success");
                     if (success) {

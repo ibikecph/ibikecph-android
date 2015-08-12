@@ -6,8 +6,8 @@
 package com.spoiledmilk.ibikecph.util;
 
 public class Config {
-	//public static String API_URL = "http://ibikecph-staging.herokuapp.com/api";
-	public static String API_URL = "https://www.ibikecph.dk/api";
+	public static String API_URL = "http://ibikecph-staging.herokuapp.com/api";
+	//public static String API_URL = "https://www.ibikecph.dk/api";
 	public static final String API_SERVER_LOGIN = API_URL + "/login";
 	public static final String API_SERVER_REGISTER = API_URL + "/users";
 
