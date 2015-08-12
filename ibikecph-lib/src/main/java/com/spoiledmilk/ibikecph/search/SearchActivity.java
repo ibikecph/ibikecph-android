@@ -152,13 +152,20 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         intent.putExtra("endLat", BLatitude);
         intent.putExtra("fromName", fromName);
         intent.putExtra("toName", toName);
-        if(address != null){
+        if (address != null) {
             intent.putExtra("addressObject", address);
         }
 
-        if (historyData != null)
-            new DB(SearchActivity.this).saveSearchHistory(historyData, new HistoryData(fromName, ALatitude, ALongitude), SearchActivity.this);
+        if (address.getAddressSource() == Address.AddressSource.SEARCH) {
+            Calendar cal = Calendar.getInstance();
+            String date = cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR);
 
+            HistoryData hd = new HistoryData(-1, address.name, address.street, date, date, "", "", address.getLocation().getLatitude(), address.getLocation().getLongitude());
+
+            hd.setAddress(address.street + " " + address.houseNumber);
+            Log.d("DV", "SearchActivity, address.street = " + hd.getAdress());
+            new DB(SearchActivity.this).saveSearchHistory(hd, hd, SearchActivity.this);
+        }
 
         // TODO: This sucks. It'd be nice to keep Address objects in the Recent buffer, rather than re-establishing here
 
@@ -167,7 +174,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         overridePendingTransition(R.anim.slide_out_down, R.anim.fixed);
     }
 
-    public void startButtonHandler(){
+    public void startButtonHandler() {
         startButtonHandler(null);
     }
 
@@ -204,6 +211,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 HistoryData hd = (HistoryData) ((HistoryAdapter) listHistory.getAdapter()).getItem(position);
+                Address address = Address.fromHistoryData(hd);
                 textB.setText(hd.getName().length() > 30 ? hd.getName().substring(0, 27) + "..." : hd.getName());
                 bName = hd.getName();
                 toName = hd.getAdress();
@@ -213,7 +221,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 BLatitude = hd.getLatitude();
                 BLongitude = hd.getLongitude();
 
-                startButtonHandler();
+                startButtonHandler(address);
             }
 
         });
@@ -286,38 +294,16 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                     Log.d("DV", "SearchActivity, lon == " + address.lon);
 
                     try {
-                        if (isAsearched) {
-                            ALatitude = b.getDouble("lat");
-                            ALongitude = b.getDouble("lon");
-                            textA.setVisibility(View.VISIBLE);
-                            String txt = AddressParser.textFromBundle(b);
-                            aName = txt;
-                            textA.setText(txt);
-                            textCurrentLoc.setVisibility(View.GONE);
-                            findViewById(R.id.imgCurrentLoc).setVisibility(View.GONE);
-                            fromName = b.getString("address");
-                            if (fromName == null)
-                                fromName = "";
-                            if (fromName.contains(","))
-                                fromName = fromName.substring(0, fromName.indexOf(','));
-                        } else {
-                            BLatitude = b.getDouble("lat");
-                            BLongitude = b.getDouble("lon");
-                            String txt = AddressParser.textFromBundle(b);
-                            bName = txt;
-                            textB.setText(txt);
-                            Calendar cal = Calendar.getInstance();
-                            String date = cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR);
-                            historyData = new HistoryData(-1, b.getString("name"), b.getString("address"), date, date, b.getString("source"),
-                                    b.getString("subsource"), BLatitude, BLongitude);
-                            toName = b.getString("address");
-                            if (toName.contains(",")) {
-                                toName = toName.substring(0, toName.indexOf(','));
-                            }
-                            startButtonHandler();
+                        BLatitude = b.getDouble("lat");
+                        BLongitude = b.getDouble("lon");
+                        String txt = AddressParser.textFromBundle(b);
+                        bName = txt;
+                        textB.setText(txt);
+                        toName = b.getString("address");
+                        if (toName.contains(",")) {
+                            toName = toName.substring(0, toName.indexOf(','));
                         }
-
-
+                        startButtonHandler(address);
                     } catch (Exception e) {
                         LOG.e(e.getLocalizedMessage());
                         BLatitude = -1;

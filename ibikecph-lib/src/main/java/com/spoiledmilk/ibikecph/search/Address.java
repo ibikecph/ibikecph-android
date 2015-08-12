@@ -34,6 +34,12 @@ public class Address implements Serializable {
     public double lon;
     private ILatLng location;
 
+    public enum AddressSource {
+        SEARCH, HISTORYDATA
+    }
+
+    private AddressSource addressSource;
+
     public ILatLng getLocation() {
 
         if (isCurrent) {
@@ -170,28 +176,18 @@ public class Address implements Serializable {
 
         address.setLocation(new LatLng(searchListItem.getLatitude(), searchListItem.getLongitude()));
 
-        if (searchListItem instanceof FoursquareData
-                || (searchListItem instanceof KortforData && ((KortforData) searchListItem).isPlace())) {
-            //intent.putExtra("isPoi", true); ??
-        }
         if (searchListItem.getZip() != null && !searchListItem.getZip().trim().equals("")) {
             address.zip = searchListItem.getZip();
-            //intent.putExtra("zip", searchListItem.getZip());
         }
         if (searchListItem.getCity() != null && !searchListItem.getCity().trim().equals("")) {
             address.city = searchListItem.getCity();
         } else {
             address.city = searchListItem.getAdress();
-        }//intent.putExtra("city", searchListItem.getCity());
-
-        if (searchListItem.getStreet() != null && !searchListItem.getStreet().trim().equals("")) {
-            if (!searchListItem.getStreet().equals(searchListItem.getName())) {
-                address.name = searchListItem.getName();
-            } else {
-                address.name = searchListItem.getStreet();
-            }
-            //intent.putExtra("street", searchListItem.getStreet());
         }
+
+        address.street = searchListItem.getStreet();
+        address.name = searchListItem.getName();
+        address.houseNumber = searchListItem.getNumber();
 
         /*Log.d("DV", "Address, city == " + address.city);
         Log.d("DV", "Address, street == " + address.street);
@@ -200,8 +196,32 @@ public class Address implements Serializable {
         Log.d("DV", "Address, lat == " + address.lat);
         Log.d("DV", "Address, lon == " + address.lon);*/
 
+        address.setAddressSource(AddressSource.SEARCH);
         return address;
 
+    }
+
+    public static Address fromHistoryData(HistoryData historyData) {
+
+        Address address = new Address();
+
+        address.name = historyData.getName();
+        address.setLocation(new LatLng(historyData.latitude, historyData.longitude));
+
+        address.setAddressSource(AddressSource.HISTORYDATA);
+        return address;
+
+    }
+
+    //fromfavoritesdata
+
+
+    public AddressSource getAddressSource() {
+        return addressSource;
+    }
+
+    public void setAddressSource(AddressSource addressSource) {
+        this.addressSource = addressSource;
     }
 
 }
