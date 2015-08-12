@@ -23,7 +23,6 @@ import android.widget.*;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.util.AsyncImageFetcher;
 import com.spoiledmilk.ibikecph.util.ImageData;
 import com.spoiledmilk.ibikecph.util.ImagerPrefetcherListener;
@@ -34,7 +33,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     EditText textEmail;
     EditText textNewPassword;
     EditText textPasswordConfirm;
-    TexturedButton btnRegister;
+    Button btnRegister;
     CheckBox termsAcceptanceCheckbox;
     TextView termsAcceptanceLabel;
     TextView termsAcceptanceLink;
@@ -72,15 +71,10 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         termsAcceptanceLink = (TextView) findViewById(R.id.termsAcceptanceLink);
 
 
-        btnRegister = (TexturedButton) findViewById(R.id.btnRegister);
-        btnRegister.setTextureResource(R.drawable.btn_pattern_repeteable);
+        btnRegister = (Button) findViewById(R.id.btnRegister);
 
         btnRegister.setEnabled(false);
-        btnRegister.setBackgroundResource(R.drawable.btn_grey_selector);
-
-
-        btnRegister.setTextColor(Color.WHITE);
-
+        btnRegister.setBackgroundColor(Color.LTGRAY);
 
         btnRegister.setOnClickListener(new OnClickListener() {
             @Override
@@ -289,7 +283,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     public void onTermsAcceptanceCheckboxClick(View v) {
         boolean isChecked = this.termsAcceptanceCheckbox.isChecked();
         btnRegister.setEnabled(isChecked);
-        btnRegister.setBackgroundResource(isChecked?R.drawable.btn_blue_selector:R.drawable.btn_grey_selector);
+        btnRegister.setBackgroundColor(isChecked?getResources().getColor(IbikeApplication.getPrimaryColor()):Color.LTGRAY);
     }
 
 }
