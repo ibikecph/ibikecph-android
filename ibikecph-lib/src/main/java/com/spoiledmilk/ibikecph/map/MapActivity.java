@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
 import com.mapbox.mapboxsdk.events.MapListener;
@@ -38,6 +39,7 @@ import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 
@@ -45,10 +47,10 @@ import java.util.ArrayList;
 
 /**
  * The main map view.
- *
+ * <p/>
  * TODO: Look into ways of making this class shorter.
- * @author jens
  *
+ * @author jens
  */
 @SuppressLint("NewApi")
 public class MapActivity extends IBCMapActivity implements iLanguageListener {
@@ -103,7 +105,8 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
             }
 
             @Override
-            public void onDrawerStateChanged(int newState) {}
+            public void onDrawerStateChanged(int newState) {
+            }
 
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -144,6 +147,7 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
 
     /**
      * Initializes the LeftMenu
+     *
      * @param savedInstanceState
      */
     private void initLeftMenu(final Bundle savedInstanceState) {
@@ -242,6 +246,7 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
     }
 
     AlertDialog loginDlg;
+
     private void launchLoginDialog() {
         if (loginDlg == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -317,22 +322,29 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
 
             Log.d("JC", "Got back from address search, spawning");
             final Bundle extras = data.getExtras();
-            LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
+            Address address = (Address) extras.getSerializable("addressObject");
+            if (address != null) {
+                mapView.showAddress(address);
+                mapView.setCenter(address.getLocation());
+            }
+            else {
+                LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
 
-            Geocoder.getAddressForLocation(destination, new Geocoder.GeocoderCallback() {
-                @Override
-                public void onSuccess(Address address) {
-                    mapView.showAddress(address);
-                }
+                Geocoder.getAddressForLocation(destination, new Geocoder.GeocoderCallback() {
+                    @Override
+                    public void onSuccess(Address address) {
+                        mapView.showAddress(address);
+                    }
 
-                @Override
-                public void onFailure() {
+                    @Override
+                    public void onFailure() {
 
-                }
-            });
+                    }
+                });
+                // Center the map around the search result.
+                this.mapView.setCenter(destination, true);
+            }
 
-            // Center the map around the search result.
-            this.mapView.setCenter(destination, true);
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             final Bundle extras = data.getExtras();
             Address a = (Address) extras.getSerializable("addressObject");
@@ -397,12 +409,10 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
 
         if (curMode == UserLocationOverlay.TrackingMode.NONE) {
             userTrackingButton.setImageDrawable(getResources().getDrawable(R.drawable.compass_not_tracking));
-        } else  {
+        } else {
             userTrackingButton.setImageDrawable(getResources().getDrawable(R.drawable.compass_tracking));
         }
     }
-
-
 
 
 }
