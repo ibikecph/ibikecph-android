@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
@@ -32,8 +33,13 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
 
         this.address = (Address) getArguments().getSerializable("address");
 
-        ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getStreetAddress());
-        ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
+        if (!this.address.name.equals("")) {
+            ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.street);
+            ((TextView) v.findViewById(R.id.addressLabel)).setText("");
+        } else {
+            ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getStreetAddress());
+            ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
+        }
 
         // Set click listeners
         v.findViewById(R.id.btnStartRoute).setOnClickListener(this);

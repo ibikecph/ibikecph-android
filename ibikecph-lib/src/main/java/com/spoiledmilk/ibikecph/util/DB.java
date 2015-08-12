@@ -14,11 +14,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.location.Location;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.search.HistoryData;
 import com.spoiledmilk.ibikecph.search.SearchListItem;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -91,7 +93,7 @@ public class DB extends SQLiteOpenHelper {
         if (db == null)
             return null;
 
-        String[] columns = { KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_START_DATE, KEY_END_DATE, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG };
+        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_START_DATE, KEY_END_DATE, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG};
 
         Cursor cursor = db.query(TABLE_SEARCH_HISTORY, columns, null, null, null, null, KEY_START_DATE + " DESC", null);
 
@@ -136,10 +138,10 @@ public class DB extends SQLiteOpenHelper {
         if (db == null)
             return null;
 
-        String[] columns = { KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_START_DATE, KEY_END_DATE, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG };
+        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_START_DATE, KEY_END_DATE, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG};
 
-        Cursor cursor = db.query(TABLE_SEARCH_HISTORY, columns, KEY_NAME + " LIKE ? OR " + KEY_ADDRESS + " LIKE ?", new String[] {
-                "%" + srchString + "%", "%" + srchString + "%" }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_SEARCH_HISTORY, columns, KEY_NAME + " LIKE ? OR " + KEY_ADDRESS + " LIKE ?", new String[]{
+                "%" + srchString + "%", "%" + srchString + "%"}, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             while (cursor != null && !cursor.isAfterLast()) {
@@ -178,9 +180,9 @@ public class DB extends SQLiteOpenHelper {
         if (db == null)
             return null;
 
-        String[] columns = { KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_START_DATE, KEY_END_DATE, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG };
+        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_START_DATE, KEY_END_DATE, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG};
 
-        Cursor cursor = db.query(TABLE_SEARCH_HISTORY, columns, KEY_NAME + " = ? ", new String[] { name.trim() }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_SEARCH_HISTORY, columns, KEY_NAME + " = ? ", new String[]{name.trim()}, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             while (cursor != null && !cursor.isAfterLast()) {
@@ -217,9 +219,9 @@ public class DB extends SQLiteOpenHelper {
         if (db == null)
             return -1;
 
-        String[] columns = { KEY_ID, KEY_NAME };
+        String[] columns = {KEY_ID, KEY_NAME};
         long id;
-        Cursor cursor = db.query(TABLE_SEARCH_HISTORY, columns, KEY_NAME + " = ?", new String[] { hd.getName() }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_SEARCH_HISTORY, columns, KEY_NAME + " = ?", new String[]{hd.getName()}, null, null, null, null);
         if (cursor == null || cursor.isAfterLast()) {
             ContentValues values = new ContentValues();
             values.put(KEY_NAME, hd.getName());
@@ -234,10 +236,11 @@ public class DB extends SQLiteOpenHelper {
         } else {
             cursor.moveToFirst();
             id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
-
         }
+
         if (cursor != null)
             cursor.close();
+
 
         db.close();
 
@@ -399,7 +402,7 @@ public class DB extends SQLiteOpenHelper {
         if (db == null) {
             return null;
         }
-        String[] columns = { KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID };
+        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID};
         Cursor cursor = db.query(TABLE_FAVORITES, columns, null, null, null, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
             while (cursor != null && !cursor.isAfterLast()) {
@@ -478,7 +481,7 @@ public class DB extends SQLiteOpenHelper {
         if (db == null)
             return null;
 
-        String[] columns = { KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID };
+        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID};
 
         Cursor cursor = db.query(TABLE_FAVORITES, columns, null, null, null, null, null, null);
 
@@ -515,9 +518,9 @@ public class DB extends SQLiteOpenHelper {
         if (db == null)
             return null;
 
-        String[] columns = { KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID };
+        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID};
 
-        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " LIKE ? ", new String[] { "%" + srchString + "%" }, null, null,
+        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " LIKE ? ", new String[]{"%" + srchString + "%"}, null, null,
                 null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -553,9 +556,9 @@ public class DB extends SQLiteOpenHelper {
         if (db == null)
             return null;
 
-        String[] columns = { KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID };
+        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID};
 
-        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " = ? ", new String[] { name.trim() }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " = ? ", new String[]{name.trim()}, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             while (cursor != null && !cursor.isAfterLast()) {
@@ -593,7 +596,7 @@ public class DB extends SQLiteOpenHelper {
         values.put(KEY_SUBSOURCE, fd.getSubSource());
         values.put(KEY_LAT, Double.valueOf(fd.getLatitude()));
         values.put(KEY_LONG, Double.valueOf(fd.getLongitude()));
-        db.update(TABLE_FAVORITES, values, KEY_ID + " = ?", new String[] { "" + fd.getId() });
+        db.update(TABLE_FAVORITES, values, KEY_ID + " = ?", new String[]{"" + fd.getId()});
 
         db.close();
 
@@ -611,7 +614,7 @@ public class DB extends SQLiteOpenHelper {
         if (db == null)
             return;
 
-        db.delete(TABLE_FAVORITES, KEY_ID + " = ?", new String[] { "" + fd.getId() });
+        db.delete(TABLE_FAVORITES, KEY_ID + " = ?", new String[]{"" + fd.getId()});
 
         db.close();
 
@@ -739,8 +742,8 @@ public class DB extends SQLiteOpenHelper {
         int ret = 0;
         SQLiteDatabase db = getReadableDatabase();
         if (db != null) {
-            String[] columns = { KEY_NAME };
-            Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " = ? ", new String[] { "" + name }, null, null, null, null);
+            String[] columns = {KEY_NAME};
+            Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " = ? ", new String[]{"" + name}, null, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 ret = cursor.getCount();
             }
@@ -757,7 +760,7 @@ public class DB extends SQLiteOpenHelper {
         if (db == null)
             return -1;
         String strFilter = "_id= ?";
-        Cursor cur = db.query(TABLE_FAVORITES, new String[] { KEY_API_ID }, strFilter, new String[] { id + "" }, null, null, null);
+        Cursor cur = db.query(TABLE_FAVORITES, new String[]{KEY_API_ID}, strFilter, new String[]{id + ""}, null, null, null);
         if (cur != null && cur.moveToFirst()) {
             if (cur != null && !cur.isAfterLast()) {
                 ret = cur.getInt(cur.getColumnIndex(KEY_API_ID));
