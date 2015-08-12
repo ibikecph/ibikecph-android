@@ -206,6 +206,7 @@ public class Address implements Serializable {
         Address address = new Address();
 
         address.name = historyData.getName();
+        address.street = historyData.getAdress();
         address.setLocation(new LatLng(historyData.latitude, historyData.longitude));
 
         address.setAddressSource(AddressSource.HISTORYDATA);
