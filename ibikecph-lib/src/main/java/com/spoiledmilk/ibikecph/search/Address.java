@@ -6,6 +6,8 @@
 package com.spoiledmilk.ibikecph.search;
 
 import android.location.Location;
+import android.util.Log;
+
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -14,11 +16,11 @@ import java.io.Serializable;
 
 /**
  * Contains address information used in searches.
- * 
+ * <p/>
  * TODO: Abstract this so it contains an enum describing where the data came
  * from originally, instead on relying on heuristics like the ones below.
- * @author jens
  *
+ * @author jens
  */
 
 public class Address implements Serializable {
@@ -57,6 +59,7 @@ public class Address implements Serializable {
     public Address() {
 
     }
+
     public Address(ILatLng location) {
         this.location = location;
     }
@@ -158,6 +161,49 @@ public class Address implements Serializable {
     public boolean isCurrentLocation() {
         return isCurrent;
     }
+
+    public static Address fromSearchListItem(SearchListItem searchListItem) {
+
+
+        Address address = new Address();
+
+
+        address.setLocation(new LatLng(searchListItem.getLatitude(), searchListItem.getLongitude()));
+
+        if (searchListItem instanceof FoursquareData
+                || (searchListItem instanceof KortforData && ((KortforData) searchListItem).isPlace())) {
+            //intent.putExtra("isPoi", true); ??
+        }
+        if (searchListItem.getZip() != null && !searchListItem.getZip().trim().equals("")) {
+            address.zip = searchListItem.getZip();
+            //intent.putExtra("zip", searchListItem.getZip());
+        }
+        if (searchListItem.getCity() != null && !searchListItem.getCity().trim().equals("")) {
+            address.city = searchListItem.getCity();
+        } else {
+            address.city = searchListItem.getAdress();
+        }//intent.putExtra("city", searchListItem.getCity());
+
+        if (searchListItem.getStreet() != null && !searchListItem.getStreet().trim().equals("")) {
+            if (!searchListItem.getStreet().equals(searchListItem.getName())) {
+                address.name = searchListItem.getName();
+            } else {
+                address.name = searchListItem.getStreet();
+            }
+            //intent.putExtra("street", searchListItem.getStreet());
+        }
+
+        /*Log.d("DV", "Address, city == " + address.city);
+        Log.d("DV", "Address, street == " + address.street);
+        Log.d("DV", "Address, name == " + address.name);
+        Log.d("DV", "Address, zip == " + address.zip);
+        Log.d("DV", "Address, lat == " + address.lat);
+        Log.d("DV", "Address, lon == " + address.lon);*/
+
+        return address;
+
+    }
+
 }
 
 /*

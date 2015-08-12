@@ -8,8 +8,10 @@ package com.spoiledmilk.ibikecph.search;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.ObservableScrollView;
@@ -64,9 +67,9 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         textOverviewHeader = (TextView) findViewById(R.id.textOverviewHeader);
         scrollView = (ObservableScrollView) findViewById(R.id.scrollView);
         scrollView.setScrollViewListener(this);
-        
+
         actionBar = getActionBar();
-        
+
         textCurrentLoc = (TextView) findViewById(R.id.textCurrentLoc);
         textCurrentLoc.setOnClickListener(new OnClickListener() {
 
@@ -127,8 +130,8 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     /**
      * Handler for the Start routing button.
      */
-    public void startButtonHandler() {
-    	// Start routing
+    public void startButtonHandler(Address address) {
+        // Start routing
         Intent intent = new Intent();
         if (ALatitude == -1 || ALongitude == -1) {
             Location start = IbikeApplication.getService().getLastValidLocation();
@@ -149,6 +152,9 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         intent.putExtra("endLat", BLatitude);
         intent.putExtra("fromName", fromName);
         intent.putExtra("toName", toName);
+        if(address != null){
+            intent.putExtra("addressObject", address);
+        }
 
         if (historyData != null)
             new DB(SearchActivity.this).saveSearchHistory(historyData, new HistoryData(fromName, ALatitude, ALongitude), SearchActivity.this);
@@ -159,6 +165,10 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         setResult(Activity.RESULT_OK, intent);
         finish();
         overridePendingTransition(R.anim.slide_out_down, R.anim.fixed);
+    }
+
+    public void startButtonHandler(){
+        startButtonHandler(null);
     }
 
     @Override
@@ -265,6 +275,15 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             case SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET:
                 if (data != null) {
                     Bundle b = data.getExtras();
+
+                    Address address = (Address) b.getSerializable("addressObject");
+
+                    Log.d("DV", "SearchActivity, city == " + address.city);
+                    Log.d("DV", "SearchActivity, street == " + address.street);
+                    Log.d("DV", "SearchActivity, name == " + address.name);
+                    Log.d("DV", "SearchActivity, zip == " + address.zip);
+                    Log.d("DV", "SearchActivity, lat == " + address.lat);
+                    Log.d("DV", "SearchActivity, lon == " + address.lon);
 
                     try {
                         if (isAsearched) {
