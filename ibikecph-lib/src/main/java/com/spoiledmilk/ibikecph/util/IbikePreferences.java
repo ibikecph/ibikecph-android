@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.util.Log;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.map.OverlayType;
 
@@ -104,8 +106,12 @@ public class IbikePreferences {
 
         // Make sure the user's choice is immediately respected.
         if (trackingEnabled) {
-            IbikeApplication.getService().getActivityRecognitionClient().setTracking(true);
+            Log.d("DV", "tracking sat til true");
+            //IbikeApplication.getService().getActivityRecognitionClient().setTracking(true);
+            IbikeApplication.getService().getActivityRecognitionClient().requestActivityUpdates();
+
         } else {
+            Log.d("DV", "tracking released");
             IbikeApplication.getService().getActivityRecognitionClient().releaseActivityUpdates();
         }
     }

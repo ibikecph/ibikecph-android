@@ -96,12 +96,14 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
     public void requestActivityUpdates() {
         Log.d("JC", "Requesting activity updates");
         if (!tracking && mGoogleApiClient.isConnected()) {
+            Log.d("JC", "requesting!");
             ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(
                     mGoogleApiClient,
                     7500,
                     getActivityDetectionPendingIntent()
             ).setResultCallback(this);
         } else if (!tracking && !mGoogleApiClient.isConnected()) {
+            Log.d("JC", "setting apiclient!");
             this.buildGoogleApiClient();
         }
         this.tracking = true;
