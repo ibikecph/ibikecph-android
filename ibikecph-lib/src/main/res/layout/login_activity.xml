@@ -71,7 +71,7 @@
             android:paddingRight="15dp"
             android:src="@drawable/icon_pass" />
 
-        <com.spoiledmilk.ibikecph.controls.TexturedButton
+        <Button
             android:id="@+id/btnLogin"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
@@ -79,7 +79,7 @@
             android:layout_alignRight="@+id/textEmail"
             android:layout_below="@+id/textPassword"
             android:layout_marginTop="10dp"
-            android:background="@null"
+            android:background="@color/app_primary_color"
             android:textColor="@color/White"
             android:textSize="14sp" />
 
@@ -126,9 +126,9 @@
             android:layout_below="@+id/btnFacebookLogin"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/btn_white_selector"
-            android:textColor="@color/Black"
+            android:layout_marginTop="84dp"
+            android:background="@drawable/stroke_button_inverted"
+            android:textColor="@color/app_primary_color"
             android:textSize="14sp" />
 
         <ProgressBar

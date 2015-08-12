@@ -29,7 +29,6 @@ import com.facebook.model.GraphUser;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.util.LOG;
 
 import java.util.Arrays;
@@ -40,7 +39,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
     TextView textLoginTitle;
     EditText textEmail;
     EditText textPassword;
-    TexturedButton btnLogin;
+    Button btnLogin;
     TextView textOr;
     Button btnFacebookLogin;
     Button btnRegister;
@@ -65,9 +64,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
         textOr = (TextView) findViewById(R.id.textOr);
         textEmail = (EditText) findViewById(R.id.textEmail);
         textPassword = (EditText) findViewById(R.id.textPassword);
-        btnLogin = (TexturedButton) findViewById(R.id.btnLogin);
-        btnLogin.setTextureResource(R.drawable.btn_pattern_repeteable);
-        btnLogin.setBackgroundResource(R.drawable.btn_blue_selector);
+        btnLogin = (Button) findViewById(R.id.btnLogin);
         btnLogin.setTextColor(Color.WHITE);
         btnLogin.setOnClickListener(new OnClickListener() {
 
