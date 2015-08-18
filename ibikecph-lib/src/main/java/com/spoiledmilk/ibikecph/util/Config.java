@@ -6,26 +6,26 @@
 package com.spoiledmilk.ibikecph.util;
 
 public class Config {
-	public static String API_URL = "http://ibikecph-staging.herokuapp.com/api";
+	public static String API_URL = "https://ibikecph-staging.herokuapp.com/api";
 	//public static String API_URL = "https://www.ibikecph.dk/api";
 	public static final String API_SERVER_LOGIN = API_URL + "/login";
 	public static final String API_SERVER_REGISTER = API_URL + "/users";
 
 	// routing
-	public static final String OSRM_SERVER_FAST = "http://routes.ibikecph.dk/v1.1/fast";
-	public static final String OSRM_SERVER_GREEN = "http://routes.ibikecph.dk/v1.1/green";
-	public static final String OSRM_SERVER_CARGO = "http://routes.ibikecph.dk/v1.1/cargo";
+	public static final String OSRM_SERVER_FAST = "https://routes.ibikecph.dk/v1.1/fast";
+	public static final String OSRM_SERVER_GREEN = "https://routes.ibikecph.dk/v1.1/green";
+	public static final String OSRM_SERVER_CARGO = "https://routes.ibikecph.dk/v1.1/cargo";
 	
 	public static boolean GREEN_ROUTES_ENABLED = true;
 
     public static final double GEOMETRY_DIGITS_LATITUDE = 1e6;
     public static final double GEOMETRY_DIGITS_LONGITUDE = 1e6;
 	
-    public static final String OSRM_SERVER_DEFAULT = "http://routes.ibikecph.dk/v1.1/fast";
+    public static final String OSRM_SERVER_DEFAULT = "https://routes.ibikecph.dk/v1.1/fast";
     
 	public static String OSRM_SERVER = OSRM_SERVER_DEFAULT;
 
-	public static final String GEOCODER = "http://geo.oiorest.dk/adresser";
+	public static final String GEOCODER = "https://geo.oiorest.dk/adresser";
 
 	// TODO uncomment this before submission
 	public static final String ALTERNATE_TILESOURCE = "IBikeCPH";
