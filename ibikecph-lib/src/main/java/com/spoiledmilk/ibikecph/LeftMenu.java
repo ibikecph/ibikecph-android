@@ -24,7 +24,6 @@ import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity;
-import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -39,7 +38,7 @@ import java.util.ArrayList;
  * @author jens
  *
  */
-public class LeftMenu extends Fragment implements iLanguageListener {
+public class LeftMenu extends Fragment {
 	public static final int LAUNCH_LOGIN = 501;
 	public static final int LAUNCH_FAVORITE = 502;
 	
@@ -109,6 +108,12 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         }
 
         menuItems.add(new LeftMenuItem("about_app_ibc", R.drawable.ic_menu_info, "spawnAboutActivity"));
+
+        // updating the view
+        if (this.menuList != null && this.menuList.getAdapter() != null) {
+            Log.d("JC", "updating leftmenu");
+            this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), menuItems));
+        }
     }
     
     /**
@@ -188,30 +193,15 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         super.onResume();
         LOG.d("Left menu onResume");
 
-        initStrings();
         populateMenu();
     }
 
-    // TODO: Get rid of this
-    public void reloadFavorites() {
-        DB db = new DB(getActivity());
-        favorites = db.getFavorites(favorites);
-        LOG.d("update favorites from reloadFavorites() count = " + favorites.size());
-        populateMenu();
-    }
 
-    @Override
-    public void reloadStrings() {
-    	this.reloadFavorites();
-    }
-    
     @Override
     public void onPause() {
         super.onPause();
     }
 
-    public void initStrings() {
-    }
 
     protected AddFavoriteFragment getAddFavoriteFragment() {
         return new AddFavoriteFragment();

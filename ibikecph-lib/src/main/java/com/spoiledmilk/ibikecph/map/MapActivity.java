@@ -53,7 +53,7 @@ import java.util.ArrayList;
  * @author jens
  */
 @SuppressLint("NewApi")
-public class MapActivity extends IBCMapActivity implements iLanguageListener {
+public class MapActivity extends IBCMapActivity  {
     public final static int REQUEST_SEARCH_ADDRESS = 2;
     public final static int REQUEST_CHANGE_SOURCE_ADDRESS = 250;
     public final static int REQUEST_CHANGE_DESTINATION_ADDRESS = 251;
@@ -234,12 +234,6 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
         CrashManager.register(this, Config.HOCKEY_APP_ID);
     }
 
-
-    public void reloadStrings() {
-        leftMenu.initStrings();
-        leftMenu.reloadStrings();
-    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -308,7 +302,10 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
         Log.d("JC", "onActivityResult, requestCode " + requestCode + " resultCode " + resultCode);
 
 
-        if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
+        if (requestCode == LeftMenu.LAUNCH_LOGIN) {
+            Log.d("JC", "Got back from LAUNCH_LOGIN");
+            leftMenu.populateMenu();
+        } else if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
             AlertDialog dialog;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(IbikeApplication.getString("account_deleted"));
