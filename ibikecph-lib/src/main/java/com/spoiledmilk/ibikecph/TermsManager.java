@@ -24,6 +24,7 @@ public class TermsManager {
         }
 
         AsyncHttpClient client = new AsyncHttpClient();
+        client.addHeader("Accept", "application/vnd.ibikecph.v1");
         client.get(Config.TRACKING_TERMS_JSON_URL, new JsonHttpResponseHandler() {
             public void onSuccess(int statusCode, org.apache.http.Header[] headers, org.json.JSONObject response) {
 
