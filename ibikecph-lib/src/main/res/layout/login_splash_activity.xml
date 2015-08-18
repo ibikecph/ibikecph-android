@@ -68,6 +68,10 @@
                 android:text="log_in" android:paddingTop="12dp" android:paddingBottom="12dp"
                 android:id="@+id/logInButton"
                 android:onClick="onBtnLogInClick"/>
+        <Button android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"
+                android:background="@drawable/stroke_button_inverted" android:text="enable_trac" android:paddingTop="12dp"
+                android:paddingBottom="12dp" android:id="@+id/enableTrackingButton" android:onClick="onEnableTrackingClick"
+                android:visibility="gone"/>
 
     </LinearLayout>
 
