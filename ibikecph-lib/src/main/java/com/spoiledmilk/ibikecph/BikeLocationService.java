@@ -229,9 +229,6 @@ public class BikeLocationService extends Service implements LocationListener, co
     public void onLocationChanged(Location location) {
         Log.d("DV", "lastValidLocation = " + lastValidLocation);
 
-
-        //Log.d("JC", "BikeLocationService new GPS coord");
-
         // Tell all listeners about the new location.
         for (LocationListener l : gpsListeners) {
             l.onLocationChanged(location);

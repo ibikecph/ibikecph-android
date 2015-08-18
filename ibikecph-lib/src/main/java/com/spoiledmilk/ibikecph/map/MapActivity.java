@@ -141,7 +141,12 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
         // Check if the user accepts the newest terms
         // TermsManager.checkTerms(this);
 
+        if (IbikeApplication.getService().hasValidLocation()) {
+            this.mapView.setCenter(new LatLng(IbikeApplication.getService().getLastValidLocation()));
+        }
 
+        this.mapView.getUserLocationOverlay().enableFollowLocation();
+        this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
     }
 
@@ -180,11 +185,11 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
         }
         // Toggle the drawer when tapping the app icon.
         else if (id == android.R.id.home) {
-            if (drawerLayout.isDrawerOpen(Gravity.START)) {
-                drawerLayout.closeDrawer(Gravity.START);
+            if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                drawerLayout.closeDrawer(Gravity.LEFT);
                 materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
             } else {
-                drawerLayout.openDrawer(Gravity.START);
+                drawerLayout.openDrawer(Gravity.LEFT);
                 materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
 
             }
@@ -361,7 +366,7 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
             FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
 
             // Close the LeftMenu
-            drawerLayout.closeDrawer(Gravity.START);
+            drawerLayout.closeDrawer(Gravity.LEFT);
             mapView.showRoute(fd);
         }
     }
