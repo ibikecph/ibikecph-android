@@ -61,7 +61,7 @@
                 android:text="no_thanks"
                 android:id="@+id/btnNoThanks"
                 android:onClick="onNoThanksButtonClick"
-                android:textColor="@color/app_primary_color"
+                android:textColor="@color/black"
                 android:background="@drawable/stroke_button_inverted"
                 ></Button>
         <Button android:layout_width="wrap_content"
@@ -70,7 +70,7 @@
                 android:text="accept"
                 android:id="@+id/btnAcceptTerms"
                 android:onClick="onAcceptButtonClick"
-                android:textColor="@color/app_primary_color"
+                android:textColor="@color/black"
                 android:background="@drawable/stroke_button_inverted"></Button>
     </LinearLayout>
 

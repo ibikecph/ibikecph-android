@@ -49,8 +49,6 @@ public class AcceptNewTermsActivity extends Activity {
 
         if (IbikeApplication.getSettings().getNewestTermsAccepted() == version)
             finish();
-
-        this.findViewById(R.id.backgroundLayout).setBackgroundColor(getResources().getColor(IbikeApplication.getPrimaryColor()));
     }
 
     @Override
