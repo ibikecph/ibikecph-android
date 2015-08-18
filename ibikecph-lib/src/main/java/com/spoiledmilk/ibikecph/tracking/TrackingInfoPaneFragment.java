@@ -1,5 +1,6 @@
 package com.spoiledmilk.ibikecph.tracking;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,15 @@ public class TrackingInfoPaneFragment extends InfoPaneFragment {
 
         TextView totalCaloriesTextView = (TextView) v.findViewById(R.id.totalCaloriesTextView);
         totalCaloriesTextView.setText( (int)((totalDistance/1000) * 11) + " Cal");
+
+        // When user clicks the statistics, open the Tracking Settings.
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), TrackingActivity.class);
+                startActivity(i);
+            }
+        });
 
         return v;
     }
