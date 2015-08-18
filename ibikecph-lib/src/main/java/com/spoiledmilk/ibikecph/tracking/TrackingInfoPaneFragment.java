@@ -10,6 +10,7 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.persist.Track;
+import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -63,7 +64,20 @@ public class TrackingInfoPaneFragment extends InfoPaneFragment {
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), TrackingActivity.class);
+                // TODO: This is not DRY -- copied from LeftMenu code.
+                Intent i;
+                IbikePreferences settings = IbikeApplication.getSettings();
+                if (!settings.getTrackingEnabled() &&
+                        Realm.getInstance(IbikeApplication.getContext()).allObjects(Track.class).size() == 0) {
+
+                    i = new Intent(getActivity(), TrackingWelcomeActivity.class);
+
+                    // We don't want this pushed to the back stack.
+                    i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                } else {
+                    i = new Intent(getActivity(), TrackingActivity.class);
+                }
+
                 startActivity(i);
             }
         });
