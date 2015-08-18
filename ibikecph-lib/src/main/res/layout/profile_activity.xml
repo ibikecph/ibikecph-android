@@ -183,7 +183,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/btn_delete_selector"
                 android:textColor="@color/White"
-                android:textSize="14sp" />
+                android:textSize="14sp" android:text="delete"/>
             
             <Button
                 android:id="@+id/btnLogout"
@@ -196,7 +196,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/btn_delete_selector"
                 android:textColor="@color/White"
-                android:textSize="14sp" />
+                android:textSize="14sp" android:text="logout"/>
         </RelativeLayout>
     </ScrollView>
 
