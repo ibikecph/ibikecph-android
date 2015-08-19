@@ -10,7 +10,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,7 +24,6 @@ import android.widget.*;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.util.*;
 
 import java.io.InputStream;
@@ -37,7 +35,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
 
     Button btnLogout;
     EditText textName, textEmail, textOldPassword, textNewPassword, textPasswordConfirm;
-    TexturedButton btnSave;
+    Button btnSave;
     Button btnDelete;
     ImageView pictureContainer;
     Handler handler;
@@ -89,10 +87,8 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         textNewPassword = (EditText) findViewById(R.id.textNewPassword);
         textPasswordConfirm = (EditText) findViewById(R.id.textPasswordConfirm);
         textOldPassword = (EditText) findViewById(R.id.textOldPassword);
-        btnSave = (TexturedButton) findViewById(R.id.btnSave);
-        btnSave.setTextureResource(R.drawable.btn_pattern_repeteable);
-        btnSave.setBackgroundResource(R.drawable.btn_blue_selector);
-        btnSave.setTextColor(Color.WHITE);
+        btnSave = (Button) findViewById(R.id.btnSave);
+
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

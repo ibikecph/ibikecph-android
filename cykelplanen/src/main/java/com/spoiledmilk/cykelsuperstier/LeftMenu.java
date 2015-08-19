@@ -114,9 +114,8 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 		super.onResume();
 	}
 
-	@Override
 	public void initStrings() {
-		super.initStrings();
+
 
 	}
 

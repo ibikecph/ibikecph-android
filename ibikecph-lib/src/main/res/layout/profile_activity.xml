@@ -68,17 +68,6 @@
                 android:textColor="#000" android:autoText="false">
             </EditText>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/textName"
-                android:layout_alignRight="@+id/textName"
-                android:layout_alignTop="@+id/textName"
-                android:background="@null"
-                android:contentDescription="@string/app_name"
-                android:paddingRight="10dp"
-                android:src="@drawable/icon_name" />
-
             <EditText
                 android:id="@+id/textEmail"
                 android:layout_width="wrap_content"
@@ -94,17 +83,6 @@
                 android:textColor="#000"
                 />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/textEmail"
-                android:layout_alignRight="@+id/textEmail"
-                android:layout_alignTop="@+id/textEmail"
-                android:background="@null"
-                android:contentDescription="@string/app_name"
-                android:paddingRight="10dp"
-                android:src="@drawable/icon_email" />
-
             <EditText
                 android:id="@+id/textOldPassword"
                 android:layout_width="wrap_content"
@@ -118,17 +96,6 @@
                 android:paddingRight="25dp"
                 android:textSize="14sp"
                 android:textColor="#000" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/textOldPassword"
-                android:layout_alignRight="@+id/textOldPassword"
-                android:layout_alignTop="@+id/textOldPassword"
-                android:background="@null"
-                android:contentDescription="@string/app_name"
-                android:paddingRight="15dp"
-                android:src="@drawable/icon_pass" />
 
             <EditText
                 android:id="@+id/textNewPassword"
@@ -158,9 +125,9 @@
                 android:textSize="14sp" 
                 android:textColor="#000"/>
 
-            <com.spoiledmilk.ibikecph.controls.TexturedButton
+            <Button
                 android:id="@+id/btnSave"
-                android:layout_width="wrap_content"
+                android:layout_width="170dp"
                 android:layout_height="45dp"
                 android:layout_alignLeft="@+id/textName"
                 android:layout_alignRight="@+id/textName"
@@ -168,7 +135,7 @@
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@null"
+                android:background="@drawable/stroke_button"
                 android:textColor="@color/White"
                 android:textSize="16sp" />
 
@@ -181,7 +148,7 @@
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/btn_delete_selector"
+                android:background="@drawable/stroke_button"
                 android:textColor="@color/White"
                 android:textSize="14sp" android:text="delete"/>
             
@@ -194,7 +161,7 @@
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/btn_delete_selector"
+                android:background="@drawable/stroke_button"
                 android:textColor="@color/White"
                 android:textSize="14sp" android:text="logout"/>
         </RelativeLayout>
