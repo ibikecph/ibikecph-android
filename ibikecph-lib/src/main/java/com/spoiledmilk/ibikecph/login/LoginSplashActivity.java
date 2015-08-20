@@ -13,9 +13,11 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.facebook.Session;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.ReadMoreActivity;
 import com.spoiledmilk.ibikecph.favorites.FavoritesActivity;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.map.MapActivity;
@@ -84,16 +86,23 @@ public class LoginSplashActivity extends Activity {
         launchMainMapActivity();
     }
 
+    public void onReadMoreClick(View v) {
+        Intent i = new Intent(LoginSplashActivity.this, ReadMoreActivity.class);
+        LoginSplashActivity.this.startActivity(i);
+    }
+
     @Override
     public void onPause() {
         super.onPause();
     }
+
     public void launchMainMapActivity() {
         IbikeApplication.setWelcomeScreenSeen(true);
         Intent i = new Intent(LoginSplashActivity.this, MapActivity.class);
         LoginSplashActivity.this.startActivity(i);
         finish();
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

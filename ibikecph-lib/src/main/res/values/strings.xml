@@ -23,5 +23,6 @@
     <string name="title_activity_tracking_settings">GPS Tracking Settings</string>
     <string name="title_activity_track_map_view">TrackMapView</string>
     <string name="title_activity_accept_new_terms">AcceptNewTermsActivity</string>
+    <string name="title_activity_read_more">ReadMoreActivity</string>
 
 </resources>
