@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-        >
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerHorizontal="true" >
+        android:layout_centerHorizontal="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -15,21 +14,23 @@
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
 
-                >
+            >
 
-            <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
-                    android:text="address_label"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginTop="10dp"
-                    android:id="@+id/labelAddress"
-                    />
+            <TextView
+                android:id="@+id/labelAddress"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:text="address_label" />
 
 
             <EditText
                 android:id="@+id/textAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/labelAddress"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
@@ -43,9 +44,7 @@
                 android:paddingRight="25dp"
                 android:singleLine="true"
                 android:text=""
-                android:textSize="14sp"
-                    android:layout_below="@+id/labelAddress"
-                    />
+                android:textSize="14sp" />
 
             <View
                 android:id="@+id/dummy1"
@@ -54,14 +53,15 @@
                 android:layout_alignRight="@+id/textAddress"
                 android:background="@null" />
 
-            <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
-                      android:text="name_label"
-                      android:layout_marginLeft="5dp"
-                      android:layout_marginRight="5dp"
-                      android:layout_marginTop="10dp"
-                      android:id="@+id/labelName"
-                      android:layout_below="@+id/textAddress"
-                    />
+            <TextView
+                android:id="@+id/labelName"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textAddress"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:text="name_label" />
 
             <EditText
                 android:id="@+id/textFavoriteName"
@@ -79,39 +79,42 @@
                 android:textSize="14sp" />
 
             <RadioGroup
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/textFavoriteName"
-                    android:id="@+id/favoriteTypeRadioGroup"
-                    android:layout_marginTop="18dp"
-                    >
+                android:id="@+id/favoriteTypeRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textFavoriteName"
+                android:layout_marginTop="18dp">
 
-                <RadioButton android:layout_width="fill_parent" android:layout_height="wrap_content"
-                        android:text="home"
-                        android:drawableRight="@drawable/fav_home_red"
-                        android:id="@+id/radioButtonHome"
-                        />
                 <RadioButton
-                        android:layout_width="fill_parent" android:layout_height="wrap_content"
-                        android:text="work"
-                        android:drawableRight="@drawable/fav_work_red"
-                        android:id="@+id/radioButtonWork"
-                        />
+                    android:id="@+id/radioButtonHome"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/fav_home_red"
+                    android:text="home" />
+
                 <RadioButton
-                        android:layout_width="fill_parent" android:layout_height="wrap_content"
-                        android:text="school"
-                        android:drawableRight="@drawable/fav_school_red"
-                        android:id="@+id/radioButtonSchool"
-                        />
+                    android:id="@+id/radioButtonWork"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/fav_work_red"
+                    android:text="work" />
+
                 <RadioButton
-                        android:layout_width="fill_parent" android:layout_height="wrap_content"
-                        android:text="favorite"
-                        android:drawableRight="@drawable/fav_star_red"
-                        android:id="@+id/radioButtonFavorite"
-                        />
+                    android:id="@+id/radioButtonSchool"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/fav_school_red"
+                    android:text="school" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonFavorite"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/fav_star_red"
+                    android:text="favorite" />
 
             </RadioGroup>
-            
+
             <!--
             <LinearLayout
                 android:id="@+id/buttonsContainer"
@@ -238,7 +241,7 @@
                 android:background="@null"
                 android:gravity="center"
                 android:textColor="@color/White"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
         </RelativeLayout>
     </ScrollView>
