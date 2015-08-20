@@ -99,6 +99,8 @@ public class LoginActivity extends Activity implements FBLoginListener {
 
                 @Override
                 public boolean handleMessage(Message msg) {
+                    Log.d("JC", "Received Facebook handler callback");
+
                     Bundle data = msg.getData();
                     Boolean success = data.getBoolean("success");
                     if (success) {

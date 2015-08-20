@@ -35,17 +35,6 @@
             android:textSize="14sp"
                 android:textColor="#000000"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textEmail"
-            android:layout_alignRight="@+id/textEmail"
-            android:layout_alignTop="@+id/textEmail"
-            android:background="@null"
-            android:contentDescription="@string/app_name"
-            android:paddingRight="10dp"
-            android:src="@drawable/icon_email"/>
-
         <EditText
             android:id="@+id/textPassword"
             android:layout_width="wrap_content"
@@ -59,17 +48,6 @@
             android:paddingRight="25dp"
             android:textSize="14sp"
                 android:textColor="#000000"/>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textPassword"
-            android:layout_alignRight="@+id/textPassword"
-            android:layout_alignTop="@+id/textPassword"
-            android:background="@null"
-            android:contentDescription="@string/app_name"
-            android:paddingRight="15dp"
-            android:src="@drawable/icon_pass" />
 
         <Button
             android:id="@+id/btnLogin"

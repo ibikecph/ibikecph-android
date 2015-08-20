@@ -54,18 +54,6 @@
                 android:layout_alignRight="@+id/textAddress"
                 android:background="@null" />
 
-            <ImageView
-                android:id="@+id/imgSearchAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/textAddress"
-                android:layout_alignTop="@+id/textAddress"
-                android:layout_marginRight="9dp"
-                android:layout_toLeftOf="@+id/dummy1"
-                android:contentDescription="@string/app_name"
-                android:paddingBottom="0dp"
-                android:src="@drawable/fav_search_icon" />
-
             <TextView android:layout_width="fill_parent" android:layout_height="wrap_content"
                       android:text="name_label"
                       android:layout_marginLeft="5dp"
@@ -89,18 +77,6 @@
                 android:paddingRight="25dp"
                 android:text=""
                 android:textSize="14sp" />
-
-            <ImageView
-                android:id="@+id/imgSearchName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/textFavoriteName"
-                android:layout_alignLeft="@+id/imgSearchAddress"
-                android:layout_alignRight="@+id/imgSearchAddress"
-                android:layout_alignTop="@+id/textFavoriteName"
-                android:contentDescription="@string/app_name"
-                android:paddingBottom="3dp"
-                android:src="@drawable/fav_search_name_icon" />
 
             <RadioGroup
                     android:layout_width="match_parent"

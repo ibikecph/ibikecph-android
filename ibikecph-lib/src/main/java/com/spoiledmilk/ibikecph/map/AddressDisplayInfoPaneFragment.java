@@ -33,7 +33,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
 
         this.address = (Address) getArguments().getSerializable("address");
 
-        if (!this.address.name.equals("")) {
+        if (this.address.name != null && !this.address.name.equals("")) {
             ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.street);
             ((TextView) v.findViewById(R.id.addressLabel)).setText("");
         } else {

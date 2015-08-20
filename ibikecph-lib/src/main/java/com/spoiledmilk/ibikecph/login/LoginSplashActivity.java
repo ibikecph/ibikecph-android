@@ -31,6 +31,7 @@ public class LoginSplashActivity extends Activity {
 
     private static boolean DEBUG = false;
     public static final int LOGIN_REQUEST = 80;
+    private Button logInButton, enableTrackingButton;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -50,53 +51,16 @@ public class LoginSplashActivity extends Activity {
         TextView welcomeExplanationTextView = (TextView) findViewById(R.id.welcomeExplanationTextView);
         Button readMoreButton = (Button) findViewById(R.id.readMoreButton);
         Button skipButton = (Button) findViewById(R.id.skipButton);
-        Button logInButton = (Button) findViewById(R.id.logInButton);
+        logInButton = (Button) findViewById(R.id.logInButton);
+        enableTrackingButton = (Button) findViewById(R.id.enableTrackingButton);
 
-        welcomeTextView.setText(IbikeApplication.getString("startup_welcome"));
-        welcomeExplanationTextView.setText(IbikeApplication.getString("startup_explanation"));
-        readMoreButton.setText(IbikeApplication.getString("startup_readmore"));
+        welcomeTextView.setText(IbikeApplication.getString("launch_activate_tracking_title"));
+        welcomeExplanationTextView.setText(IbikeApplication.getString("launch_activate_tracking_description"));
+        readMoreButton.setText(IbikeApplication.getString("launch_activate_tracking_read_more"));
 
         skipButton.setText(IbikeApplication.getString("no_thanks"));
         logInButton.setText(IbikeApplication.getString("log_in"));
-
-
-        /*
-        if (handler == null) {
-            handler = new Handler(new Handler.Callback() {
-
-                @Override
-                public boolean handleMessage(Message msg) {
-                    Bundle data = msg.getData();
-                    Boolean success = data.getBoolean("success");
-                    dismissProgressDialog();
-                    if (rd != null) {
-                        rd.inProgress = false;
-                    }
-                    if (success) {
-                        String auth_token = data.getString("auth_token");
-                        int id = data.getInt("id");
-                        if (id < 0) {
-                            launchErrorDialog("", "Login failed : " + data.toString());
-                        } else {
-                            if (auth_token == null || auth_token.equals("") || auth_token.equals("null")) {
-                                auth_token = "";
-                            }
-                            launchMainMapActivity(auth_token, id);
-                        }
-                    } else {
-                        String title = "";
-                        if (data.containsKey("info_title")) {
-                            title = data.getString("info_title");
-                        }
-                        launchErrorDialog(title, data.getString("info"));
-                    }
-                    return true;
-                }
-            });
-        }
-
-        Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
-        */
+        enableTrackingButton.setText(IbikeApplication.getString("enable"));
     }
 
     protected int getLayoutId() {
@@ -116,46 +80,10 @@ public class LoginSplashActivity extends Activity {
         super.onResume();
     }
 
-/*
-    public void performFBLogin() {
-        Session session = Session.getActiveSession();
-        if (session == null) {
-            if (savedInstanceState != null) {
-                session = Session.restoreSession(this, null, statusCallback, savedInstanceState);
-            }
-            if (session == null) {
-                session = new Session(this);
-            }
-        }
-        Session.setActiveSession(session);
-        if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED) || (!session.isOpened() && !session.isClosed())) {
-            session.openForRead(new Session.OpenRequest(this).setCallback(statusCallback).setPermissions(Arrays.asList("email")));
-        } else if (session.isOpened() && !session.getPermissions().contains("email")) {
-            session.requestNewPublishPermissions(new NewPermissionsRequest(this, Arrays.asList("email")).setCallback(statusCallback));
-        } else {
-            Session.openActiveSession(this, true, statusCallback);
-        }
-    }
-*/
     public void onBtnSkipClick(View v) {
         launchMainMapActivity();
     }
 
-    /*
-    private void login(final String accessToken) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Looper.myLooper();
-                Looper.prepare();
-                LOG.d("facebook login fb token = " + accessToken);
-                Message message = HTTPAccountHandler.performFacebookLogin(accessToken);
-                handler.sendMessage(message);
-
-            }
-        }).start();
-    }
-    */
     @Override
     public void onPause() {
         super.onPause();
@@ -172,9 +100,16 @@ public class LoginSplashActivity extends Activity {
         if (Session.getActiveSession() != null && data != null && data.getExtras() != null) {
             Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
         } else if (requestCode == LOGIN_REQUEST && resultCode == RESULT_OK) {
-            launchMainMapActivity();
+            // launchMainMapActivity();
+
+            changeLoginButtonToEnableTrackingButton();
         }
 
+    }
+
+    private void changeLoginButtonToEnableTrackingButton() {
+        logInButton.setVisibility(View.GONE);
+        enableTrackingButton.setVisibility(View.VISIBLE);
     }
 
     public void launchMainMapActivity(String auth_token, int id) {
@@ -214,5 +149,10 @@ public class LoginSplashActivity extends Activity {
     public void onBtnLogInClick(View v) {
         Intent i = new Intent(this, LoginActivity.class);
         startActivityForResult(i, LOGIN_REQUEST);
+    }
+
+    public void onEnableTrackingClick(View v) {
+        IbikeApplication.getSettings().setTrackingEnabled(true);
+        launchMainMapActivity();
     }
 }

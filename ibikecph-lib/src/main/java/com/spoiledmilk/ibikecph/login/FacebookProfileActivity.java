@@ -166,7 +166,6 @@ public class FacebookProfileActivity extends Activity {
         textLinked.setText(IbikeApplication.getString("account_is_linked_to_facebook"));
         textLinked.setTypeface(IbikeApplication.getItalicFont());
         btnDelete.setText(IbikeApplication.getString("delete_my_account"));
-        btnDelete.setTypeface(IbikeApplication.getBoldFont());
     }
 
     public void onBtnDelete(View v) {

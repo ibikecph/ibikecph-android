@@ -14,17 +14,17 @@
                 android:id="@+id/imgRouteType"
                 android:src="@drawable/btn_route_fastest_enabled"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="12dp"
-                android:layout_marginLeft="12dp"/>
+                android:layout_marginLeft="12dp" android:visibility="gone"/>
 
         <TextView
                 android:layout_width="wrap_content"
+                android:layout_marginLeft="12dp"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/imgRouteType"
                 android:layout_alignBaseline="@+id/imgRouteType"
                 android:layout_centerVertical="true"
                 android:id="@+id/textAddress"
-                android:text="textAddress"/>
+                android:text="textAddress" android:textSize="16dp"/>
 
 
     </RelativeLayout>

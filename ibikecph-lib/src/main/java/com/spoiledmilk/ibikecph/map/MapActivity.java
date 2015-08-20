@@ -53,7 +53,7 @@ import java.util.ArrayList;
  * @author jens
  */
 @SuppressLint("NewApi")
-public class MapActivity extends IBCMapActivity implements iLanguageListener {
+public class MapActivity extends IBCMapActivity  {
     public final static int REQUEST_SEARCH_ADDRESS = 2;
     public final static int REQUEST_CHANGE_SOURCE_ADDRESS = 250;
     public final static int REQUEST_CHANGE_DESTINATION_ADDRESS = 251;
@@ -141,7 +141,12 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
         // Check if the user accepts the newest terms
         // TermsManager.checkTerms(this);
 
+        if (IbikeApplication.getService().hasValidLocation()) {
+            this.mapView.setCenter(new LatLng(IbikeApplication.getService().getLastValidLocation()));
+        }
 
+        this.mapView.getUserLocationOverlay().enableFollowLocation();
+        this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
     }
 
@@ -180,11 +185,11 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
         }
         // Toggle the drawer when tapping the app icon.
         else if (id == android.R.id.home) {
-            if (drawerLayout.isDrawerOpen(Gravity.START)) {
-                drawerLayout.closeDrawer(Gravity.START);
+            if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+                drawerLayout.closeDrawer(Gravity.LEFT);
                 materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
             } else {
-                drawerLayout.openDrawer(Gravity.START);
+                drawerLayout.openDrawer(Gravity.LEFT);
                 materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
 
             }
@@ -227,12 +232,6 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
 
     protected void checkForCrashes() {
         CrashManager.register(this, Config.HOCKEY_APP_ID);
-    }
-
-
-    public void reloadStrings() {
-        leftMenu.initStrings();
-        leftMenu.reloadStrings();
     }
 
     @Override
@@ -303,7 +302,10 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
         Log.d("JC", "onActivityResult, requestCode " + requestCode + " resultCode " + resultCode);
 
 
-        if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
+        if (requestCode == LeftMenu.LAUNCH_LOGIN) {
+            Log.d("JC", "Got back from LAUNCH_LOGIN");
+            leftMenu.populateMenu();
+        } else if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
             AlertDialog dialog;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(IbikeApplication.getString("account_deleted"));
@@ -361,7 +363,7 @@ public class MapActivity extends IBCMapActivity implements iLanguageListener {
             FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
 
             // Close the LeftMenu
-            drawerLayout.closeDrawer(Gravity.START);
+            drawerLayout.closeDrawer(Gravity.LEFT);
             mapView.showRoute(fd);
         }
     }

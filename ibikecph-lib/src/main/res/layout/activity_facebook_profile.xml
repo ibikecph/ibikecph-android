@@ -67,7 +67,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:gravity="center"
-                android:text="asdfasdf"
                     />
 
             <ImageView
@@ -91,7 +90,6 @@
                 android:gravity="center"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
-                android:text="asdfasdf"
                     />
 
             <Button
@@ -118,8 +116,7 @@
                     android:layout_marginRight="1dp"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/btn_delete_selector"
-                    android:textColor="@color/White"
-                    android:textSize="14sp" android:text="Log out"/>
+                    android:textColor="@color/White" android:text="Log out"/>
         </RelativeLayout>
     </ScrollView>
 

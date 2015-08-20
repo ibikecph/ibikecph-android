@@ -6,7 +6,7 @@
 package com.spoiledmilk.ibikecph.util;
 
 public class Config {
-	public static String API_URL = "http://ibikecph-staging.herokuapp.com/api";
+	public static String API_URL = "https://ibikecph-staging.herokuapp.com/api";
 	//public static String API_URL = "https://www.ibikecph.dk/api";
 	public static final String API_SERVER_LOGIN = API_URL + "/login";
 	public static final String API_SERVER_REGISTER = API_URL + "/users";
@@ -21,7 +21,7 @@ public class Config {
     public static final double GEOMETRY_DIGITS_LATITUDE = 1e6;
     public static final double GEOMETRY_DIGITS_LONGITUDE = 1e6;
 	
-    public static final String OSRM_SERVER_DEFAULT = "http://routes.ibikecph.dk/v1.1/fast";
+    public static final String OSRM_SERVER_DEFAULT = OSRM_SERVER_FAST;
     
 	public static String OSRM_SERVER = OSRM_SERVER_DEFAULT;
 
@@ -45,5 +45,5 @@ public class Config {
     public static String TRACKING_TERMS_URL = "https://www.ibikecph.dk/terms";
     public static String TRACKING_USAGE_URL = "https://www.ibikecph.dk/about/privacy";
 
-    public static String TRACKING_TERMS_JSON_URL = "http://kodekode.dk/ibikecph-terms.json";
+    public static String TRACKING_TERMS_JSON_URL = API_URL + "/terms";
 }

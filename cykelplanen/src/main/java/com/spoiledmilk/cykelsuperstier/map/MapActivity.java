@@ -7,8 +7,8 @@ package com.spoiledmilk.cykelsuperstier.map;
 
 import android.os.Bundle;
 import android.util.Log;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Overlay;
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
 import com.spoiledmilk.cykelsuperstier.LeftMenu;
 import com.spoiledmilk.ibikecph.map.IBCMarker;
@@ -24,9 +24,16 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 	public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        super.mapView.setCenter(new LatLng(55.74, 12.424));
-        super.mapView.setZoom(11.3f);
+        super.mapView.getUserLocationOverlay().enableFollowLocation();
+        super.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
+        updateUserTrackingState();
 
+        /*
+        if (!IbikeApplication.getService().hasValidLocation()) {
+            super.mapView.setCenter(new LatLng(55.74, 12.424));
+            super.mapView.setZoom(11.3f);
+        }
+        */
 
         plotOverlays();
 
