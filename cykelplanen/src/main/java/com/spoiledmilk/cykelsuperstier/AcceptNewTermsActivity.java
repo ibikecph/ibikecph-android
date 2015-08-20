@@ -12,7 +12,6 @@ public class AcceptNewTermsActivity extends com.spoiledmilk.ibikecph.AcceptNewTe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("JC", "Cykelplanen AcceptNewTermsActivity");
-
     }
 
 }

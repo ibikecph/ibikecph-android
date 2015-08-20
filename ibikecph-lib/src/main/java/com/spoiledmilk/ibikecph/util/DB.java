@@ -447,7 +447,7 @@ public class DB extends SQLiteOpenHelper {
                     for (int i = 0; i < favoritesList.size(); i++) {
                         JsonNode data = favoritesList.get(i);
                         FavoritesData fd = new FavoritesData(data.get("name").asText(), data.get("address").asText(), data
-                                .get("sub_source").asText(), data.get("latitude").asDouble(), data.get("longitude").asDouble(), data.get(
+                                .get("sub_source").asText(), data.get("lattitude").asDouble(), data.get("longitude").asDouble(), data.get(
                                 "id").asInt());
                         saveFavorite(fd, null, false);
                         // ret.add(fd);
