@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+
 import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
@@ -28,6 +29,7 @@ import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+
 import io.realm.Realm;
 
 import java.lang.reflect.Method;
@@ -36,20 +38,20 @@ import java.util.ArrayList;
 /**
  * A menu that can be spawned in the MapActivity. It allows the user to access
  * the preferences, go to their favorites, and spawn the AboutActivity.
- * @author jens
  *
+ * @author jens
  */
 public class LeftMenu extends Fragment implements iLanguageListener {
-	public static final int LAUNCH_LOGIN = 501;
-	public static final int LAUNCH_FAVORITE = 502;
-	
+    public static final int LAUNCH_LOGIN = 501;
+    public static final int LAUNCH_FAVORITE = 502;
+
     protected static final int dividerHeight = Util.dp2px(2);
 
     //SortableListView favoritesList;
     protected ArrayList<FavoritesData> favorites = new ArrayList<FavoritesData>();
     protected RelativeLayout favoritesHeaderContainer, favoritesContainer;
     protected ListView menuList;
-    
+
     protected ArrayList<LeftMenuItem> menuItems;
 
     @Override
@@ -64,7 +66,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 
         LOG.d("Left menu on createView");
         final View ret = inflater.inflate(R.layout.fragment_left_menu, container, false);
-        
+
         // Initialize the menu
         this.menuList = (ListView) ret.findViewById(R.id.menuListView);
         this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), menuItems));
@@ -91,9 +93,9 @@ public class LeftMenu extends Fragment implements iLanguageListener {
      * to be updated, e.g. when the user has logged in and the "Log in" button needs to change to
      * "account".
      */
-    public void populateMenu()  {
-    	this.menuItems = new ArrayList<LeftMenuItem>();
-        
+    public void populateMenu() {
+        this.menuItems = new ArrayList<LeftMenuItem>();
+
         menuItems.add(new LeftMenuItem("favorites", R.drawable.ic_menu_favorite, "spawnFavoritesListActivity"));
         //menuItems.add(new LeftMenuItem("voice", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
         // Kortlag
@@ -110,33 +112,34 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 
         menuItems.add(new LeftMenuItem("about_app_ibc", R.drawable.ic_menu_info, "spawnAboutActivity"));
     }
-    
+
     /**
-     * This method is called as a click handler on all items in the menu. It is called with the 
+     * This method is called as a click handler on all items in the menu. It is called with the
      * name parameter corresponding to the method that the particular FavoritesListActivity denotes,
-     * for example spawnAboutActivity for the About button. 
-     * @param name Name of the method to be called. 
+     * for example spawnAboutActivity for the About button.
+     *
+     * @param name Name of the method to be called.
      */
     public void spawnFunction(String name) {
-		Method handlerMethod;
-		try {
-			handlerMethod = this.getClass().getDeclaredMethod(name, null);
-			handlerMethod.invoke(this);
-		} catch (Exception e) {
-			Log.e("JC", "Handler " + name + " not found");
-			e.printStackTrace();
-		}
+        Method handlerMethod;
+        try {
+            handlerMethod = this.getClass().getDeclaredMethod(name, null);
+            handlerMethod.invoke(this);
+        } catch (Exception e) {
+            Log.e("JC", "Handler " + name + " not found");
+            e.printStackTrace();
+        }
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public void spawnLoginActivity() {
-    	if (!Util.isNetworkConnected(getActivity())) {
+        if (!Util.isNetworkConnected(getActivity())) {
             Util.launchNoConnectionDialog(getActivity());
         } else {
             Intent i;
-            
+
             // If the user is not logged in, show her a login screen, otherwise show the relevant profile activity. 
-            if ( !IbikeApplication.isUserLogedIn() && !IbikeApplication.isFacebookLogin()) {
+            if (!IbikeApplication.isUserLogedIn() && !IbikeApplication.isFacebookLogin()) {
                 i = new Intent(getActivity(), LoginActivity.class);
             } else {
                 if (IbikeApplication.isFacebookLogin())
@@ -153,7 +156,7 @@ public class LeftMenu extends Fragment implements iLanguageListener {
         Intent i;
         IbikePreferences settings = IbikeApplication.getSettings();
         if (!settings.getTrackingEnabled() &&
-            Realm.getInstance(IbikeApplication.getContext()).allObjects(Track.class).size() == 0) {
+                Realm.getInstance(IbikeApplication.getContext()).allObjects(Track.class).size() == 0) {
 
             i = new Intent(getActivity(), TrackingWelcomeActivity.class);
 
@@ -169,19 +172,19 @@ public class LeftMenu extends Fragment implements iLanguageListener {
     public void spawnAboutActivity() {
         Intent i = new Intent(getActivity(), AboutActivity.class);
         getActivity().startActivity(i);
-	}
+    }
 
     @SuppressWarnings("UnusedDeclaration")
     public void spawnFavoritesListActivity() {
         Intent i = new Intent(getActivity(), FavoritesListActivity.class);
         getActivity().startActivityForResult(i, LAUNCH_FAVORITE);
-	}
+    }
 
     @SuppressWarnings("UnusedDeclaration")
     public void spawnTTSSettingsActivity() {
         Intent i = new Intent(getActivity(), TTSSettingsActivity.class);
         getActivity().startActivity(i);
-	}
+    }
 
     @Override
     public void onResume() {
@@ -202,9 +205,9 @@ public class LeftMenu extends Fragment implements iLanguageListener {
 
     @Override
     public void reloadStrings() {
-    	this.reloadFavorites();
+        this.reloadFavorites();
     }
-    
+
     @Override
     public void onPause() {
         super.onPause();

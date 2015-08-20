@@ -152,6 +152,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         intent.putExtra("endLat", BLatitude);
         intent.putExtra("fromName", fromName);
         intent.putExtra("toName", toName);
+
         if (address != null) {
             intent.putExtra("addressObject", address);
         }

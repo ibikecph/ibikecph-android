@@ -12,8 +12,8 @@ dependencies {
     compile 'se.emilsjolander:stickylistheaders:2.6.0'
     compile 'com.balysv.materialmenu:material-menu:1.5.3'
     compile 'com.loopj.android:android-async-http:1.4.7'
-    compile ('com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.4@aar') {
-        transitive=true
+    compile('com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.4@aar') {
+        transitive = true
     }
 }
 
@@ -21,4 +21,5 @@ dependencies {
 android {
     compileSdkVersion 17
     buildToolsVersion "21.1.2"
+    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/fav_work_red'] } }
 }

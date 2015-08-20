@@ -112,19 +112,19 @@
 
                 <RadioButton android:layout_width="fill_parent" android:layout_height="wrap_content"
                         android:text="home"
-                        android:drawableRight="@drawable/fav_home_grey"
+                        android:drawableRight="@drawable/fav_home"
                         android:id="@+id/radioButtonHome"
                         />
                 <RadioButton
                         android:layout_width="fill_parent" android:layout_height="wrap_content"
                         android:text="work"
-                        android:drawableRight="@drawable/fav_work_grey"
+                        android:drawableRight="@drawable/fav_work"
                         android:id="@+id/radioButtonWork"
                         />
                 <RadioButton
                         android:layout_width="fill_parent" android:layout_height="wrap_content"
                         android:text="school"
-                        android:drawableRight="@drawable/fav_school_grey"
+                        android:drawableRight="@drawable/fav_school"
                         android:id="@+id/radioButtonSchool"
                         />
                 <RadioButton
