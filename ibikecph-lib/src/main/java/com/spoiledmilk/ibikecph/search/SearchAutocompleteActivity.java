@@ -546,6 +546,8 @@ public class SearchAutocompleteActivity extends Activity {
                     intent.putExtra("lat", currentSelection.getLatitude());
                     intent.putExtra("lon", currentSelection.getLongitude());
 
+                    currentSelection.setNumber(addr.houseNumber);
+
                     addr = Address.fromSearchListItem(currentSelection);
                     intent.putExtra("addressObject", addr);
                     SearchAutocompleteActivity.this.setResult(RESULT_AUTOTOCMPLETE_SET, intent);

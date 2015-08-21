@@ -11,6 +11,7 @@ import android.util.Log;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 
 import java.io.Serializable;
 
@@ -172,7 +173,7 @@ public class Address implements Serializable {
 
 
         Address address = new Address();
-
+        Log.d("DV", "fromSearch");
 
         address.setLocation(new LatLng(searchListItem.getLatitude(), searchListItem.getLongitude()));
 
@@ -204,6 +205,7 @@ public class Address implements Serializable {
     public static Address fromHistoryData(HistoryData historyData) {
 
         Address address = new Address();
+        Log.d("DV", "fromHistory");
 
         address.name = historyData.getName();
         address.street = historyData.getAdress();
@@ -214,7 +216,17 @@ public class Address implements Serializable {
 
     }
 
-    //fromfavoritesdata
+    public static Address fromFavoritesData(FavoritesData favoritesData) {
+
+        Address address = new Address();
+        Log.d("DV", "fromFavorites");
+
+        address.name = favoritesData.getName();
+        address.street = favoritesData.getStreet();
+        address.setLocation(new LatLng(favoritesData.latitude, favoritesData.longitude));
+
+        return address;
+    }
 
 
     public AddressSource getAddressSource() {

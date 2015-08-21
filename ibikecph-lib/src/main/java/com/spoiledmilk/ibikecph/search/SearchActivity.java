@@ -161,16 +161,16 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             Calendar cal = Calendar.getInstance();
             String date = cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR);
 
-            HistoryData hd = new HistoryData(-1, address.name, address.street, date, date, "", "", address.getLocation().getLatitude(), address.getLocation().getLongitude());
+            HistoryData hd = new HistoryData(-1, address.name+" "+address.houseNumber+", "+address.getPostCodeAndCity(), address.street, date, date, "", "", address.getLocation().getLatitude(), address.getLocation().getLongitude());
 
             hd.setAddress(address.street + " " + address.houseNumber);
             Log.d("DV", "SearchActivity, address.street = " + hd.getAdress());
             new DB(SearchActivity.this).saveSearchHistory(hd, hd, SearchActivity.this);
         }
 
-        if(address.getAddressSource() == Address.AddressSource.HISTORYDATA){
+        if (address.getAddressSource() == Address.AddressSource.HISTORYDATA) {
             Log.d("DV", "HISTORY!");
-            if(address != null){
+            if (address != null) {
                 intent.putExtra("addressObject", address);
             }
         }
@@ -244,6 +244,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 FavoritesData hd = (FavoritesData) ((HistoryAdapter) listFavorites.getAdapter()).getItem(position);
+                Address address = Address.fromFavoritesData(hd);
                 textB.setText(hd.getName().length() > 30 ? hd.getName().substring(0, 27) + "..." : hd.getName());
                 bName = hd.getName();
                 BLatitude = hd.getLatitude();
@@ -252,8 +253,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 if (toName.contains(",")) {
                     toName = toName.substring(0, toName.indexOf(','));
                 }
-
-                startButtonHandler();
+                startButtonHandler(address);
             }
 
         });

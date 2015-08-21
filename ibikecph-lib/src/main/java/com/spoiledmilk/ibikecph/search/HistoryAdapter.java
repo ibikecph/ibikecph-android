@@ -40,9 +40,9 @@ public class HistoryAdapter extends ArrayAdapter<SearchListItem> {
 		}
 		final SearchListItem item = getItem(position);
 
-		String text = item.getStreet(); //item.getName();
-		if (item.getStreet().length() > 30) {
-			text = item.getStreet().substring(0, 27) + "...";
+		String text = item.getName();
+		if (item.getName().length() > 30) {
+			text = item.getName().substring(0, 27) + "...";
 		}
 		holder.textLocation.setText(text);
 
