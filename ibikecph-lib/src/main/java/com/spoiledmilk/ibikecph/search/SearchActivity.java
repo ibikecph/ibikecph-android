@@ -45,7 +45,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     private TextView textCurrentLoc, textB, textA, textFavorites, textRecent, textOverviewHeader;
     private ListView listHistory, listFavorites;
     private double BLatitude = -1, BLongitude = -1, ALatitude = -1, ALongitude = -1;
-    private HistoryData historyData;
     private boolean isAsearched = false;
     private ArrayList<SearchListItem> favorites;
     private ObservableScrollView scrollView;
@@ -168,36 +167,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             Log.d("DV", "handleButton, houseNumber " + address.houseNumber);
             Log.d("DV", "handleButton, city " + address.city);
             Log.d("DV", "handleButton, zip " + address.zip);*/
-
-            /*if (address.name.matches(".*\\d+.*")) {
-                if (address.zip.length() < 5) {
-                    hd.setName(address.name + ", " + address.zip + " " + address.city);
-                    hd.setAddress(address.name + ", " + address.zip + " " + address.city);
-                } else {
-                    hd.setName(address.name + ", " + address.zip);
-                    hd.setAddress(address.name + ", " + address.zip);
-                }
-            } else {
-                if (address.houseNumber != null) {
-                    if (address.zip.length() < 5) {
-                        hd.setName(address.name + " " + address.houseNumber + ", " + address.zip + " " + address.city);
-                        hd.setAddress(address.name + " " + address.houseNumber + ", " + address.zip + " " + address.city);
-                    } else {
-                        hd.setName(address.name + " " + address.houseNumber + ", " + address.zip);
-                        hd.setAddress(address.name + " " + address.houseNumber + ", " + address.zip);
-                    }
-                } else {
-                    if (address.zip.length() < 5) {
-                        hd.setName(address.name + ", " + address.zip + " " + address.city);
-                        hd.setAddress(address.name + ", " + address.zip + " " + address.city);
-                    } else {
-                        hd.setName(address.name + ", " + address.zip);
-                        hd.setAddress(address.name + ", " + address.zip);
-                    }
-
-                }
-            }*/
-
+            
             Log.d("DV", "SearchActivity, address.street = " + hd.getAdress());
             new DB(SearchActivity.this).saveSearchHistory(hd, hd, SearchActivity.this);
             intent.putExtra("addressObject", address);
@@ -250,8 +220,14 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 HistoryData hd = (HistoryData) ((HistoryAdapter) listHistory.getAdapter()).getItem(position);
-                Address address = Address.fromHistoryData(hd);
-                textB.setText(hd.getName().length() > 30 ? hd.getName().substring(0, 27) + "..." : hd.getName());
+                Address address = Address.fromHistoryData(hd); // <- her går det galt
+
+                if (hd.getName() != null && !hd.getName().equals("")) {
+                    textB.setText(hd.getName() + ", " + hd.getAdress());
+                } else {
+                    textB.setText(hd.getAdress());
+                }
+
                 bName = hd.getName();
                 toName = hd.getAdress();
                 toName = hd.getAdress();

@@ -175,7 +175,7 @@ public class HTTPAutocompleteHandler {
 		String urlString;
 		List<JsonNode> list = new ArrayList<JsonNode>();
 		try {
-
+			// TODO: Get this from Config
 			urlString = "http://kortforsyningen.kms.dk/?servicename=RestGeokeys_v2&method=";
 
 			if (

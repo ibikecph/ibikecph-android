@@ -386,40 +386,46 @@ public class SearchAutocompleteActivity extends Activity {
                     final ArrayList<SearchListItem> data = new ArrayList<SearchListItem>();
                     if (addr.hasStreet()) {
 
-                        List<JsonNode> list = HTTPAutocompleteHandler.getKortforsyningenAutocomplete(loc, addr);
-
-                        int count = 0;
-                        if (list != null) {
-                            for (JsonNode node : list) {
-                                if (count == 10) {
-                                    break;
-                                }
-                                KortforData kd = new KortforData(node);
-                                if (kd.getCity() != null && addr.getCity() != null && kd.getCity().toLowerCase(Locale.US).contains(addr.getCity())) {
+                        // Wrapping this in try/catch in case the user has already quit the Activity before the thread stops running
+                        try {
+                            List<JsonNode> list = HTTPAutocompleteHandler.getKortforsyningenAutocomplete(loc, addr);
+                            int count = 0;
+                            if (list != null) {
+                                for (JsonNode node : list) {
+                                    if (count == 10) {
+                                        break;
+                                    }
+                                    KortforData kd = new KortforData(node);
+                                    if (kd.getCity() != null && addr.getCity() != null && kd.getCity().toLowerCase(Locale.US).contains(addr.getCity())) {
+                                        LOG.d("kd = " + kd);
+                                    }
+                                    if (addr.getZip() != null && !addr.getZip().equals("") && kd.getZip() != null) {
+                                        if (!addr.getZip().trim().toLowerCase(Locale.UK).equals(kd.getZip().toLowerCase(Locale.UK))) {
+                                            continue;
+                                        }
+                                    }
                                     LOG.d("kd = " + kd);
-                                }
-                                if (addr.getZip() != null && !addr.getZip().equals("") && kd.getZip() != null) {
-                                    if (!addr.getZip().trim().toLowerCase(Locale.UK).equals(kd.getZip().toLowerCase(Locale.UK))) {
-                                        continue;
+                                    if (kd.getCity() != null && addr.getCity() != null && kd.getCity().toLowerCase(Locale.US).contains(addr.getCity())
+                                            && kd.getCity().contains("Aarhus")) {
+                                        LOG.d("kd.city = " + kd.getCity() + " addr city = " + addr.getCity());
                                     }
-                                }
-                                LOG.d("kd = " + kd);
-                                if (kd.getCity() != null && addr.getCity() != null && kd.getCity().toLowerCase(Locale.US).contains(addr.getCity())
-                                        && kd.getCity().contains("Aarhus")) {
-                                    LOG.d("kd.city = " + kd.getCity() + " addr city = " + addr.getCity());
-                                }
-                                if (addr.hasCity() && !addr.getCity().equals(addr.getStreet()) && kd.getCity() != null) {
-                                    if (!(addr.getCity().trim().toLowerCase(Locale.UK).contains(kd.getCity().toLowerCase(Locale.UK)) ||
-                                            kd.getCity().trim().toLowerCase(Locale.UK).contains(addr.getCity().toLowerCase(Locale.UK)))) {
-                                        continue;
+                                    if (addr.hasCity() && !addr.getCity().equals(addr.getStreet()) && kd.getCity() != null) {
+                                        if (!(addr.getCity().trim().toLowerCase(Locale.UK).contains(kd.getCity().toLowerCase(Locale.UK)) ||
+                                                kd.getCity().trim().toLowerCase(Locale.UK).contains(addr.getCity().toLowerCase(Locale.UK)))) {
+                                            continue;
+                                        }
                                     }
+                                    LOG.d("adding a kd to the list " + kd);
+                                    data.add(kd);
+                                    count++;
                                 }
-                                LOG.d("adding a kd to the list " + kd);
-                                data.add(kd);
-                                count++;
+
                             }
 
+                        } catch(NullPointerException e) {
+                            // whatever
                         }
+
                     }
                     if (!addr.isAddress()) {
                         List<JsonNode> places = HTTPAutocompleteHandler.getKortforsyningenPlaces(loc, addr);
@@ -580,8 +586,10 @@ public class SearchAutocompleteActivity extends Activity {
 
     @Override
     public void onStop() {
-        kmsThread.interrupt();
-        kmsThread = null;
+        if (kmsThread != null) {
+            kmsThread.interrupt();
+            kmsThread = null;
+        }
 
         super.onStop();
         EasyTracker.getInstance().activityStop(this);

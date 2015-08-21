@@ -58,8 +58,8 @@ public class FavoritesData extends SearchListItem implements Parcelable {
 
     public static FavoritesData fromAddress(Address a) {
         FavoritesData fd = new FavoritesData(
-                a.getStreetAddress(),
-                a.getStreetAddress(),
+                a.getDisplayName(),
+                a.getStreetAddress() +", "+a.getPostCodeAndCity(),
                 "Address",
                 a.getLocation().getLatitude(),
                 a.getLocation().getLongitude(),
