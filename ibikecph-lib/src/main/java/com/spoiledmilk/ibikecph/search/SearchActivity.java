@@ -163,14 +163,41 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
             HistoryData hd = new HistoryData(-1, address.name, address.street, date, date, "", "", address.getLocation().getLatitude(), address.getLocation().getLongitude());
 
-            Log.d("DV", "handleButton, name "+address.name);
-            Log.d("DV", "handleButton, street "+address.street);
-            Log.d("DV", "handleButton, houseNumber "+address.houseNumber);
-            Log.d("DV", "handleButton, city "+address.city);
-            Log.d("DV", "handleButton, zip "+address.zip);
+            Log.d("DV", "handleButton, name " + address.name);
+            Log.d("DV", "handleButton, street " + address.street);
+            Log.d("DV", "handleButton, houseNumber " + address.houseNumber);
+            Log.d("DV", "handleButton, city " + address.city);
+            Log.d("DV", "handleButton, zip " + address.zip);
 
-            hd.setName(address.name + ", " + address.zip);
-            hd.setAddress(address.name + ", " + address.zip);
+            /*if (address.name.matches(".*\\d+.*")) {
+                if (address.zip.length() < 5) {
+                    hd.setName(address.name + ", " + address.zip + " " + address.city);
+                    hd.setAddress(address.name + ", " + address.zip + " " + address.city);
+                } else {
+                    hd.setName(address.name + ", " + address.zip);
+                    hd.setAddress(address.name + ", " + address.zip);
+                }
+            } else {
+                if (address.houseNumber != null) {
+                    if (address.zip.length() < 5) {
+                        hd.setName(address.name + " " + address.houseNumber + ", " + address.zip + " " + address.city);
+                        hd.setAddress(address.name + " " + address.houseNumber + ", " + address.zip + " " + address.city);
+                    } else {
+                        hd.setName(address.name + " " + address.houseNumber + ", " + address.zip);
+                        hd.setAddress(address.name + " " + address.houseNumber + ", " + address.zip);
+                    }
+                } else {
+                    if (address.zip.length() < 5) {
+                        hd.setName(address.name + ", " + address.zip + " " + address.city);
+                        hd.setAddress(address.name + ", " + address.zip + " " + address.city);
+                    } else {
+                        hd.setName(address.name + ", " + address.zip);
+                        hd.setAddress(address.name + ", " + address.zip);
+                    }
+
+                }
+            }*/
+
             Log.d("DV", "SearchActivity, address.street = " + hd.getAdress());
             new DB(SearchActivity.this).saveSearchHistory(hd, hd, SearchActivity.this);
             intent.putExtra("addressObject", address);

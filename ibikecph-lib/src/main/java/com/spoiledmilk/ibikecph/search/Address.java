@@ -170,8 +170,7 @@ public class Address implements Serializable {
     }
 
     public static Address fromSearchListItem(SearchListItem searchListItem) {
-
-
+        
         Address address = new Address();
         Log.d("DV", "fromSearch");
 
