@@ -32,6 +32,11 @@ public abstract class SearchListItem {
 	public static final int MINIMUM_PASS_LENGTH = 3;
 
 	protected JsonNode jsonNode;
+
+	public nodeType getType() {
+		return type;
+	}
+
 	protected nodeType type;
 	protected double latitude = -1, longitude = -1;
 	private int relevance = 0;

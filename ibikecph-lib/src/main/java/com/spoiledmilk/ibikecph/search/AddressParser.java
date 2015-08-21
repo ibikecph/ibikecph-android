@@ -38,7 +38,7 @@ public class AddressParser {
 			if (rangeN.location >= 0 && rangeN.length > 0 && rangeN.length <= addressString.length()) {
 				String s = addressString.substring(rangeN.location, rangeN.location + rangeN.length);
 				if (s != null && !s.equals("")) {
-					addr.houseNumber = trim(s);
+					addr.setHouseNumber(trim(s));
 				}
 			}
 		} else {
@@ -47,7 +47,7 @@ public class AddressParser {
 			if (rangeN.location >= 0 && rangeN.length > 0 && rangeN.length <= addressString.length()) {
 				String s = addressString.substring(rangeN.location, rangeN.location + rangeN.length);
 				if (s != null && !s.equals("")) {
-					addr.houseNumber = trim(s);
+					addr.setHouseNumber(trim(s));
 
 				}
 			} else {
@@ -56,7 +56,7 @@ public class AddressParser {
 				if (rangeN.location != -1 && rangeN.length > 0 && rangeN.length <= addressString.length()) {
 					String s = addressString.substring(rangeN.location, rangeN.location + rangeN.length);
 					if (s != null && !s.equals("")) {
-						addr.houseNumber = trim(s);
+						addr.setHouseNumber(trim(s));
 					}
 				}
 			}
@@ -68,7 +68,7 @@ public class AddressParser {
 		if (rangeZ.location != -1 && rangeZ.length > 0 && rangeZ.length <= addressString.length()) {
 			String s = addressString.substring(rangeZ.location, rangeZ.location + rangeZ.length);
 			if (s != null && !s.equals("")) {
-				addr.zip = trim(s);
+				addr.setZip(trim(s));
 			}
 		}
 
@@ -90,7 +90,7 @@ public class AddressParser {
 			if (rangeS.location != -1 && rangeS.length > 0 && rangeS.length <= addressString.length()) {
 				String s = addressString.substring(rangeS.location, rangeS.location + rangeS.length);
 				if (s != null && !s.equals("")) {
-					addr.street = trim(s);
+					addr.setStreet(trim(s));
 				}
 			} else {
 				exp = Pattern.compile("^[\\s,]*\\d{1,3}[a-zA-Z]?[\\s,]([^\\d,]+)");
@@ -98,7 +98,7 @@ public class AddressParser {
 				if (rangeS.location != -1 && rangeS.length > 0 && rangeS.length <= addressString.length()) {
 					String s = addressString.substring(rangeS.location, rangeS.location + rangeS.length);
 					if (s != null && !s.equals("")) {
-						addr.street = trim(s);
+						addr.setStreet(trim(s));
 					}
 				}
 			}
@@ -122,7 +122,7 @@ public class AddressParser {
 				final String s1 = trim(s);
 				s1.replaceAll(exp2, "København ");
 				s1.replaceAll(exp3, "København");
-				addr.city = s1;
+				addr.setCity(s1);
 			}
 		} else {
 			exp = Pattern.compile(",\\s*(([\\p{L}\\.]\\s*)+)");
@@ -134,7 +134,7 @@ public class AddressParser {
 					final String s1 = trim(s);
 					s1.replaceAll(exp2, "København ");
 					s1.replaceAll(exp3, "København");
-					addr.city = s1;
+					addr.setCity(s1);
 				}
 			}
 		}

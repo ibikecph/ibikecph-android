@@ -196,8 +196,10 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			while (it.hasNext()) {
 				HistoryData sli = (HistoryData) it.next();
 				Address a = AddressParser.parseAddressRegex(sli.getName().replaceAll(",", ""));
-				sli.setName(a.street + " " + a.houseNumber);
-				sli.setAddress(((a.zip != null && !a.zip.equals("")) ? a.zip + " " : "") + a.city);
+				sli.setName(a.getStreetAddress());
+
+				// TODO: Why the f. are we setting postcode and city inside the address field of a HistoryData?
+				sli.setAddress(a.getPostCodeAndCity());
 				sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getLatitude(), sli.getLongitude())));
 				add(sli);
 			}
@@ -238,8 +240,10 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 				while (it.hasNext()) {
 					HistoryData sli = (HistoryData) it.next();
 					Address a = AddressParser.parseAddressRegex(sli.getName().replaceAll(",", ""));
-					sli.setName(a.street + " " + a.houseNumber);
-					sli.setAddress(((a.zip != null && !a.zip.equals("")) ? a.zip + " " : "") + a.city);
+					sli.setName(a.getStreetAddress());
+
+					// TODO: konsekvensrettelse
+					sli.setAddress(a.getPostCodeAndCity());
 					sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getLatitude(), sli.getLongitude())));
 					add(sli);
 				}

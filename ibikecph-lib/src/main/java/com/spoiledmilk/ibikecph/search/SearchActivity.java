@@ -161,13 +161,13 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             Calendar cal = Calendar.getInstance();
             String date = cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR);
 
-            HistoryData hd = new HistoryData(-1, address.name, address.street, date, date, "", "", address.getLocation().getLatitude(), address.getLocation().getLongitude());
+            HistoryData hd = new HistoryData(-1, address.getDisplayName(), address.getStreetAddress(), date, date, "", "", address.getLocation().getLatitude(), address.getLocation().getLongitude());
 
-            Log.d("DV", "handleButton, name " + address.name);
+          /*  Log.d("DV", "handleButton, name " + address.name);
             Log.d("DV", "handleButton, street " + address.street);
             Log.d("DV", "handleButton, houseNumber " + address.houseNumber);
             Log.d("DV", "handleButton, city " + address.city);
-            Log.d("DV", "handleButton, zip " + address.zip);
+            Log.d("DV", "handleButton, zip " + address.zip);*/
 
             /*if (address.name.matches(".*\\d+.*")) {
                 if (address.zip.length() < 5) {

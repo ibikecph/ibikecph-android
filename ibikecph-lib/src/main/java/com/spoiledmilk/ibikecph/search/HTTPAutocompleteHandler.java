@@ -98,18 +98,18 @@ public class HTTPAutocompleteHandler {
 		String urlString;
 		List<JsonNode> list = null;
 		try {
-			String query = URLEncoder.encode(normalizeToAlphabet(address.street), "UTF-8");
+			String query = URLEncoder.encode(normalizeToAlphabet(address.getStreet()), "UTF-8");
 
 			String near = null;
-			if (address.zip != null && !address.zip.equals("")) {
-				if (address.city != null && !address.city.equals("")) {
-					near = address.zip + " " + address.city;
+			if (address.getZip() != null && !address.getZip().equals("")) {
+				if (address.getCity() != null && !address.getCity().equals("")) {
+					near = address.getPostCodeAndCity();
 				} else {
-					near = address.zip + ", Denmark";
+					near = address.getZip() + ", Denmark";
 				}
 			} else {
-				if (address.city != null && !address.city.equals("")) {
-					near = address.city;
+				if (address.getCity() != null && !address.getCity().equals("")) {
+					near = address.getCity();
 				}
 			}
 
@@ -178,32 +178,34 @@ public class HTTPAutocompleteHandler {
 
 			urlString = "http://kortforsyningen.kms.dk/?servicename=RestGeokeys_v2&method=";
 
-			if ((address.houseNumber == null || address.houseNumber.equals("")) && (address.zip == null || address.zip.equals(""))
-					&& (address.city == null || address.city.equals("") || address.city.equals(address.street))) {
+			if (
+					(address.hasHouseNumber()) &&
+					(address.hasZip()) &&
+					(address.getCity() == null || address.getCity().equals("") || address.getCity().equals(address.getStreet()))) {
 				urlString += "vej"; // street search
 			} else {
 				urlString += "adresse"; // address search
 			}
 
             // TODO: Removed a wildcard in the beginning of the search query.
-			urlString += "&vejnavn=" + URLEncoder.encode(address.street, "UTF-8") + "*";
+			urlString += "&vejnavn=" + URLEncoder.encode(address.getStreet(), "UTF-8") + "*";
 			// urlString = "http://kortforsyningen.kms.dk/?servicename=RestGeokeys_v2&method=adresse&vejnavn=*"
 			// + URLEncoder.encode(address.street, "UTF-8") + "*";
 
-			if (!(address.houseNumber == null || address.houseNumber.equals(""))) {
-				urlString += "&husnr=" + address.houseNumber;
+			if (address.hasHouseNumber()) {
+				urlString += "&husnr=" + address.getHouseNumber();
 			}
 
 			urlString += "&geop=" + Util.limitDecimalPlaces(currentLocation.getLongitude(), 6) + "" + ","
 					+ Util.limitDecimalPlaces(currentLocation.getLatitude(), 6) + ""
 					+ "&georef=EPSG:4326&outgeoref=EPSG:4326&login=ibikecph&password=Spoiledmilk123&hits=10";
 
-			if (address.zip != null && !address.zip.equals("")) {
-				urlString = urlString + "&postnr=" + address.zip;
+			if (address.hasZip()) {
+				urlString = urlString + "&postnr=" + address.getZip();
 			}
-			if (address.city != null && !address.city.equals("") && !address.city.equals(address.street)) {
+			if (address.hasCity() && !address.getCity().equals(address.getStreet())) {
 				// urlString = urlString + "&by=" + URLEncoder.encode(address.city.trim(), "UTF-8") + "*";
-				urlString = urlString + "&postdist=*" + URLEncoder.encode(address.city.trim(), "UTF-8") + "*";
+				urlString = urlString + "&postdist=*" + URLEncoder.encode(address.getCity().trim(), "UTF-8") + "*";
 			}
 
 			urlString += "&geometry=true";
@@ -227,21 +229,19 @@ public class HTTPAutocompleteHandler {
 	public static List<JsonNode> getKortforsyningenPlaces(Location currentLocation, Address address) {
 		String urlString;
 		List<JsonNode> list = new ArrayList<JsonNode>();
-		if (address.city == null || address.city.equals("")) {
-			address.city = address.street;
+		if (!address.hasCity()) {
+			// TODO: Seriously
+			address.setCity(address.getStreet());
 		}
 		try {
 
             // TODO: Removed a wildcard
 			urlString = "http://kortforsyningen.kms.dk/?servicename=RestGeokeys_v2&method=sted&stednavn="
-					+ URLEncoder.encode(address.street, "UTF-8") + "*&geop=" + ""
+					+ URLEncoder.encode(address.getStreet(), "UTF-8") + "*&geop=" + ""
 					+ Util.limitDecimalPlaces(currentLocation.getLongitude(), 6) + "," + ""
 					+ Util.limitDecimalPlaces(currentLocation.getLatitude(), 6)
 					+ "&georef=EPSG:4326&outgeoref=EPSG:4326&login=ibikecph&password=Spoiledmilk123&hits=10&distinct=true";
-			if (address.city != null & !address.city.equals("") && !address.street.equals(address.street)) {
-				// urlString = urlString + "&by=" + URLEncoder.encode(address.city.trim(), "UTF-8") + "*";
-				// urlString += "&postdist=" + URLEncoder.encode(address.city.trim(), "UTF-8");// + "*";
-			}
+
 			JsonNode rootNode = performGET(urlString);
 			if (rootNode.has("features")) {
 				JsonNode features = rootNode.get("features");

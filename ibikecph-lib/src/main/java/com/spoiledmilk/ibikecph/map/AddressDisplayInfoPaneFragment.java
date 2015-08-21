@@ -33,11 +33,11 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
 
         this.address = (Address) getArguments().getSerializable("address");
 
-        if (this.address.name != null && !this.address.name.equals("")) {
-            ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.street);
-            ((TextView) v.findViewById(R.id.addressLabel)).setText("");
+        if (this.address.hasSpecialName()) {
+            ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getDisplayName());
+            ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getStreetAddress() + "\n" + this.address.getPostCodeAndCity());
         } else {
-            ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getStreetAddress());
+            ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getDisplayName());
             ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
         }
 

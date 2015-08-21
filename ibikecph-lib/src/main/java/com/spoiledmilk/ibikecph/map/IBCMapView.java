@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.widget.Toast;
+
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Icon;
@@ -32,9 +33,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * This is the main class for maps in the I Bike CPH apps. It extends MapView from Mapbox but uses the tiles from the
  * City of Copenhagen tileservers. It serves some different purposes, including
- *   * Showing a regular map of the city
- *   * Helping in navigation
- *   * Showing past tracks
+ * * Showing a regular map of the city
+ * * Helping in navigation
+ * * Showing past tracks
  * These different contexts have different demands for the map, so to accomodate this without cluttering it all together
  * in the same class, we implement some different implementations of the MapViewListener, that are (re-)assigned on
  * every state change of the map.
@@ -58,12 +59,15 @@ public class IBCMapView extends MapView {
     protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase tileProvider, Handler tileRequestCompleteHandler, AttributeSet attrs) {
         super(aContext, tileSizePixels, tileProvider, tileRequestCompleteHandler, attrs);
     }
+
     public IBCMapView(Context aContext) {
         super(aContext);
     }
+
     public IBCMapView(Context aContext, AttributeSet attrs) {
         super(aContext, attrs);
     }
+
     protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase aTileProvider) {
         super(aContext, tileSizePixels, aTileProvider);
     }
@@ -125,6 +129,7 @@ public class IBCMapView extends MapView {
     /**
      * Starts routing. This is a two-stage process, in which we first show the route to the user. Then they press "Go"
      * and we zoom to the first instruction.
+     *
      * @param route
      */
     public void showRoute(SMRoute route) {
@@ -134,11 +139,7 @@ public class IBCMapView extends MapView {
     }
 
     public void showRoute(final FavoritesData fd) {
-        Address a = AddressParser.parseAddressRegex(fd.getStreet());
-        a.setLocation(new LatLng(fd.getLatitude(), fd.getLongitude()));
-
-        a.name = fd.getAdress();
-
+        Address a = Address.fromFavoritesData(fd);
         showRoute(a);
     }
 

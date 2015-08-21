@@ -26,20 +26,59 @@ import java.io.Serializable;
 
 public class Address implements Serializable {
     private boolean isCurrent = false;
-    public String street;
-    public String houseNumber;
-    public String zip;
-    public String city;
-    public String name;
-    public double lat;
-    public double lon;
+    private String street;
+    private String houseNumber;
+    private String zip;
+    private String city;
+    private String name;
+    private double lat;
+    private double lon;
     private ILatLng location;
 
+    public String getStreet() {
+        return street;
+    }
+
+    public String getZip() {
+        return zip;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getHouseNumber() {
+        return houseNumber;
+    }
+
+    public boolean hasHouseNumber() {
+        return this.houseNumber != null && !this.houseNumber.equals("");
+    }
+
+    public boolean hasZip() {
+        return this.zip != null && !this.zip.equals("");
+    }
+
+    public boolean hasCity() {
+        return this.city != null && !this.city.equals("");
+    }
+
+    public boolean hasStreet() {
+
+        return this.street != null && !this.street.equals("");
+
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public enum AddressSource {
-        SEARCH, HISTORYDATA
+        SEARCH, HISTORYDATA, FOURSQUARE, FAVORITE
     }
 
     private AddressSource addressSource;
+
 
     public ILatLng getLocation() {
 
@@ -116,11 +155,7 @@ public class Address implements Serializable {
     }
 
     public boolean isFoursquare() {
-        boolean ret = true;
-        if (houseNumber != null && !houseNumber.equals("")) {
-            ret = false;
-        }
-        return ret;
+        return this.addressSource == AddressSource.FOURSQUARE;
     }
 
     @Override
@@ -170,8 +205,32 @@ public class Address implements Serializable {
     }
 
     public static Address fromSearchListItem(SearchListItem searchListItem) {
-        
+
         Address address = new Address();
+
+        switch (searchListItem.getType()) {
+
+            case FOURSQUARE:
+                address.addressSource = AddressSource.FOURSQUARE;
+                break;
+
+            case HISTORY:
+                address.addressSource = AddressSource.HISTORYDATA;
+                break;
+
+            case CURRENT_POSITION:
+                address.isCurrent = true;
+                break;
+
+            case FAVORITE:
+                address.addressSource = AddressSource.FAVORITE;
+                break;
+
+            default:
+                break;
+
+
+        }
         Log.d("DV", "fromSearch");
 
         address.setLocation(new LatLng(searchListItem.getLatitude(), searchListItem.getLongitude()));
@@ -220,11 +279,11 @@ public class Address implements Serializable {
 
     public static Address fromFavoritesData(FavoritesData favoritesData) {
 
-        Address address = new Address();
+        Address address = AddressParser.parseAddressRegex(favoritesData.getStreet());
         Log.d("DV", "fromFavorites");
 
-        address.name = favoritesData.getName();
-        address.street = favoritesData.getStreet();
+        address.name = "";
+        address.setAddressSource(AddressSource.FAVORITE);
         address.setLocation(new LatLng(favoritesData.latitude, favoritesData.longitude));
 
         Log.d("DV", "Address-favorites, street == " + address.street);
@@ -242,7 +301,42 @@ public class Address implements Serializable {
         this.addressSource = addressSource;
     }
 
+    public String getDisplayName() {
+
+        if (hasSpecialName()) {
+            return this.name;
+        }
+
+        return getStreetAddress();
+
+    }
+
+    public boolean hasSpecialName() {
+
+        return this.name != null && !this.name.equals("");
+
+    }
+
+
+    public void setHouseNumber(String houseNumber) {
+        this.houseNumber = houseNumber;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
 }
+
+
 
 /*
 public class Address {

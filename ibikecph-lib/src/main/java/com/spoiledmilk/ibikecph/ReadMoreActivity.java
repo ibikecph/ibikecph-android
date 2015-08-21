@@ -13,7 +13,6 @@ public class ReadMoreActivity extends Activity {
 
     TextView readMoreText;
 
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
