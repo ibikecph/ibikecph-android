@@ -163,9 +163,17 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
             HistoryData hd = new HistoryData(-1, address.name, address.street, date, date, "", "", address.getLocation().getLatitude(), address.getLocation().getLongitude());
 
-            hd.setAddress(address.name  + " " + address.houseNumber + ", " + address.zip + " " + address.city);
+            Log.d("DV", "handleButton, name "+address.name);
+            Log.d("DV", "handleButton, street "+address.street);
+            Log.d("DV", "handleButton, houseNumber "+address.houseNumber);
+            Log.d("DV", "handleButton, city "+address.city);
+            Log.d("DV", "handleButton, zip "+address.zip);
+
+            hd.setName(address.name + ", " + address.zip);
+            hd.setAddress(address.name + ", " + address.zip);
             Log.d("DV", "SearchActivity, address.street = " + hd.getAdress());
             new DB(SearchActivity.this).saveSearchHistory(hd, hd, SearchActivity.this);
+            intent.putExtra("addressObject", address);
         }
 
         if (address.getAddressSource() == Address.AddressSource.HISTORYDATA) {
@@ -180,10 +188,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         setResult(Activity.RESULT_OK, intent);
         finish();
         overridePendingTransition(R.anim.slide_out_down, R.anim.fixed);
-    }
-
-    public void startButtonHandler() {
-        startButtonHandler(null);
     }
 
     @Override
