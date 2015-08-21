@@ -161,9 +161,9 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             Calendar cal = Calendar.getInstance();
             String date = cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR);
 
-            HistoryData hd = new HistoryData(-1, address.name + ", " + address.street, address.street, date, date, "", "", address.getLocation().getLatitude(), address.getLocation().getLongitude());
+            HistoryData hd = new HistoryData(-1, address.name, address.street, date, date, "", "", address.getLocation().getLatitude(), address.getLocation().getLongitude());
 
-            hd.setAddress(address.name + " " + address.street);
+            hd.setAddress(address.name  + " " + address.houseNumber + ", " + address.zip + " " + address.city);
             Log.d("DV", "SearchActivity, address.street = " + hd.getAdress());
             new DB(SearchActivity.this).saveSearchHistory(hd, hd, SearchActivity.this);
         }
@@ -294,12 +294,12 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
                     Address address = (Address) b.getSerializable("addressObject");
 
-                    Log.d("DV", "SearchActivity, city == " + address.city);
+                   /*Log.d("DV", "SearchActivity, city == " + address.city);
                     Log.d("DV", "SearchActivity, street == " + address.street);
                     Log.d("DV", "SearchActivity, name == " + address.name);
                     Log.d("DV", "SearchActivity, zip == " + address.zip);
                     Log.d("DV", "SearchActivity, lat == " + address.lat);
-                    Log.d("DV", "SearchActivity, lon == " + address.lon);
+                    Log.d("DV", "SearchActivity, lon == " + address.lon);*/
 
                     try {
                         BLatitude = b.getDouble("lat");

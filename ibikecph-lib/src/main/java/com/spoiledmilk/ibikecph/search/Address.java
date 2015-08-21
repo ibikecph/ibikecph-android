@@ -190,12 +190,12 @@ public class Address implements Serializable {
         address.name = searchListItem.getName();
         address.houseNumber = searchListItem.getNumber();
 
-        /*Log.d("DV", "Address, city == " + address.city);
-        Log.d("DV", "Address, street == " + address.street);
-        Log.d("DV", "Address, name == " + address.name);
-        Log.d("DV", "Address, zip == " + address.zip);
-        Log.d("DV", "Address, lat == " + address.lat);
-        Log.d("DV", "Address, lon == " + address.lon);*/
+        Log.d("DV", "Address-search, city == " + address.city);
+        Log.d("DV", "Address-search, street == " + address.street);
+        Log.d("DV", "Address-search, name == " + address.name);
+        Log.d("DV", "Address-search, zip == " + address.zip);
+        //Log.d("DV", "Address-search, lat == " + address.lat);
+        //Log.d("DV", "Address-search, lon == " + address.lon);
 
         address.setAddressSource(AddressSource.SEARCH);
         return address;
@@ -211,6 +211,9 @@ public class Address implements Serializable {
         address.street = historyData.getAdress();
         address.setLocation(new LatLng(historyData.latitude, historyData.longitude));
 
+        Log.d("DV", "Address-history, street == " + address.street);
+        Log.d("DV", "Address-history, name == " + address.name);
+
         address.setAddressSource(AddressSource.HISTORYDATA);
         return address;
 
@@ -224,6 +227,9 @@ public class Address implements Serializable {
         address.name = favoritesData.getName();
         address.street = favoritesData.getStreet();
         address.setLocation(new LatLng(favoritesData.latitude, favoritesData.longitude));
+
+        Log.d("DV", "Address-favorites, street == " + address.street);
+        Log.d("DV", "Address-favorites, name == " + address.name);
 
         return address;
     }
