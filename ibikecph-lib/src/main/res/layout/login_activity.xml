@@ -79,7 +79,7 @@
             android:layout_alignRight="@+id/btnLogin"
             android:layout_below="@+id/textOr"
             android:layout_marginTop="10dp"
-            android:background="@drawable/facebook_login_selector"
+            android:background="@drawable/com_facebook_button_blue"
             android:contentDescription="@string/app_name"
             android:textColor="@color/White"
             android:textSize="14sp" />
