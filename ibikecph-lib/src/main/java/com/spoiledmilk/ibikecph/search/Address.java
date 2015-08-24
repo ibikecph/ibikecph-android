@@ -248,6 +248,7 @@ public class Address implements Serializable {
         address.name = searchListItem.getName();
         address.houseNumber = searchListItem.getNumber();
 
+
         Log.d("DV", "Address-search, city == " + address.city);
         Log.d("DV", "Address-search, street == " + address.street);
         Log.d("DV", "Address-search, name == " + address.name);
@@ -262,17 +263,16 @@ public class Address implements Serializable {
 
     public static Address fromHistoryData(HistoryData historyData) {
 
-        Address address = new Address();
+        Address address = AddressParser.parseAddressRegex(historyData.getName());
         Log.d("DV", "fromHistory");
 
-        address.name = historyData.getName();
-        address.street = historyData.getAdress();
+        address.name = "";
+        address.setAddressSource(AddressSource.HISTORYDATA);
         address.setLocation(new LatLng(historyData.latitude, historyData.longitude));
 
-        Log.d("DV", "Address-history, street == " + address.street);
+        Log.d("DV", "Address-history, street(getAddress) == " + address.street);
         Log.d("DV", "Address-history, name == " + address.name);
 
-        address.setAddressSource(AddressSource.HISTORYDATA);
         return address;
 
     }

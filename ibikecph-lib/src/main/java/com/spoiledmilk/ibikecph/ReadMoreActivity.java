@@ -21,7 +21,7 @@ public class ReadMoreActivity extends Activity {
         this.findViewById(R.id.rootLayout).setBackgroundColor(getResources().getColor(IbikeApplication.getPrimaryColor()));
 
         readMoreText = (TextView) findViewById(R.id.readMoreText);
-        readMoreText.setText(IbikeApplication.getString("launch_activate_tracking_read_more_description")); //Doesnt' set the text ???
+        readMoreText.setText(IbikeApplication.getString("launch_activate_tracking_read_more_description"));
 
         this.getActionBar().setTitle(IbikeApplication.getString("launch_activate_tracking_read_more"));
     }
