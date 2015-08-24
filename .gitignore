@@ -36,3 +36,9 @@ local.properties
 
 #git
 *.orig
+IBike.iml
+cykelplanen/cykelplanen.iml
+ibikecph-app/ibikecph-app.iml
+ibikecph-lib/ibikecph-lib.iml
+libraries/libraries.iml
+libraries/osmdroid-lib/osmdroid-lib.iml
