@@ -119,13 +119,13 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
 	}
 
 	protected int getIconResourceId(FavoritesData fd) {
-		int ret = R.drawable.fav_star_red;
+		int ret = R.drawable.fav_star;
 		if (fd.getSubSource().equals(FavoritesData.favHome))
-			ret = R.drawable.fav_home_red;
+			ret = R.drawable.fav_home;
 		else if (fd.getSubSource().equals(FavoritesData.favWork))
-			ret = R.drawable.fav_work_red;
+			ret = R.drawable.fav_work;
 		else if (fd.getSubSource().equals(FavoritesData.favSchool))
-			ret = R.drawable.fav_school_red;
+			ret = R.drawable.fav_school;
 		return ret;
 	}
 

@@ -21,5 +21,5 @@ dependencies {
 android {
     compileSdkVersion 17
     buildToolsVersion "21.1.2"
-    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/fav_work_red'] } }
+    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/fav_work'] } }
 }

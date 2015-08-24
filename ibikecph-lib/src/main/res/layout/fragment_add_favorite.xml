@@ -89,28 +89,28 @@
                     android:id="@+id/radioButtonHome"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/fav_home_red"
+                    android:drawableRight="@drawable/fav_home"
                     android:text="home" />
 
                 <RadioButton
                     android:id="@+id/radioButtonWork"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/fav_work_red"
+                    android:drawableRight="@drawable/fav_work"
                     android:text="work" />
 
                 <RadioButton
                     android:id="@+id/radioButtonSchool"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/fav_school_red"
+                    android:drawableRight="@drawable/fav_school"
                     android:text="school" />
 
                 <RadioButton
                     android:id="@+id/radioButtonFavorite"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:drawableRight="@drawable/fav_star_red"
+                    android:drawableRight="@drawable/fav_star"
                     android:text="favorite" />
 
             </RadioGroup>
