@@ -221,11 +221,11 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 HistoryData hd = (HistoryData) ((HistoryAdapter) listHistory.getAdapter()).getItem(position);
                 Address address = Address.fromHistoryData(hd); // <- her går det galt
 
-                if (hd.getName() != null && !hd.getName().equals("")) {
+              /*  if (hd.getName() != null && !hd.getName().equals("")) {
                     textB.setText(hd.getName() + ", " + hd.getAdress());
                 } else {
                     textB.setText(hd.getAdress());
-                }
+                } */
 
                 bName = hd.getName();
                 toName = hd.getAdress();
@@ -251,7 +251,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 FavoritesData hd = (FavoritesData) ((HistoryAdapter) listFavorites.getAdapter()).getItem(position);
                 Address address = Address.fromFavoritesData(hd);
-                textB.setText(hd.getName().length() > 30 ? hd.getName().substring(0, 27) + "..." : hd.getName());
+                //textB.setText(hd.getName().length() > 30 ? hd.getName().substring(0, 27) + "..." : hd.getName());
                 bName = hd.getName();
                 BLatitude = hd.getLatitude();
                 BLongitude = hd.getLongitude();
@@ -312,7 +312,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                         BLongitude = b.getDouble("lon");
                         String txt = AddressParser.textFromBundle(b);
                         bName = txt;
-                        textB.setText(txt);
+                       // textB.setText(txt);
                         toName = b.getString("address");
                         if (toName.contains(",")) {
                             toName = toName.substring(0, toName.indexOf(','));
