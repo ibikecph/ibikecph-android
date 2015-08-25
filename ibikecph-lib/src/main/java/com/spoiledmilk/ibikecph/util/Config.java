@@ -10,6 +10,7 @@ public class Config {
 	//public static String API_URL = "https://www.ibikecph.dk/api";
 	public static final String API_SERVER_LOGIN = API_URL + "/login";
 	public static final String API_SERVER_REGISTER = API_URL + "/users";
+	public static final String API_UPLOAD_TRACKS = API_URL + "/tracks";
 
 	// routing
 	public static final String OSRM_SERVER_FAST = "http://routes.ibikecph.dk/v1.1/fast";

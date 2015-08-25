@@ -10,9 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.persist.Track;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
@@ -62,6 +64,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
     /**
      * Called for each Track. Establishes a View for that particular track to be put
      * into the list of tracks in the TrackingActivity.
+     *
      * @param position
      * @param convertView
      * @param parent
@@ -75,24 +78,26 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
 
         // SET THE DURATION LABEL
         TextView trackDurationView = (TextView) rowView.findViewById(R.id.trackDurationView);
-        trackDurationView.setText( durationToFormattedTime(track.getDuration()) );
+        trackDurationView.setText(durationToFormattedTime(track.getDuration()));
 
         // SET THE DISTANCE LABEL
         TextView lengthView = (TextView) rowView.findViewById(R.id.trackLengthView);
         try {
             double distance = track.getLength();
 
-            lengthView.setText( String.format("%.1f km", (distance / 1000)));
-        } catch(NullPointerException e) {
+            lengthView.setText(String.format("%.1f km", (distance / 1000)));
+        } catch (NullPointerException e) {
             lengthView.setText("-1");
         }
 
         // SET THE TIME LABELS
         TextView trackTimeSpanView = (TextView) rowView.findViewById(R.id.trackTimeSpanView);
-        Date start = track.getLocations().first().getTimestamp();
-        Date end = track.getLocations().last().getTimestamp();
 
-        trackTimeSpanView.setText(dt.format(start) + " – " + dt.format(end));
+        /*Date start = track.getLocations().first().getTimestamp();
+        Date end = track.getLocations().last().getTimestamp();
+        trackTimeSpanView.setText(dt.format(start) + " – " + dt.format(end));*/
+
+        trackTimeSpanView.setText("test-state");
 
         // Open the TrackMapView when clicking on a track
         rowView.setOnClickListener(new View.OnClickListener() {
@@ -112,20 +117,21 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
                 String[] options = {IbikeApplication.getString("Delete")};
 
                 builder.setTitle(IbikeApplication.getString("Delete"))
-                       .setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d("JC", "Deleted a track");
-                        Track t = tracks.get(position);
+                        .setItems(options, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Log.d("JC", "Deleted a track");
+                                Track t = tracks.get(position);
 
-                        Realm realm = Realm.getInstance(context);
-                        realm.beginTransaction();
-                        t.removeFromRealm();
-                        realm.commitTransaction();
+                                Realm realm = Realm.getInstance(context);
+                                realm.beginTransaction();
+                                //Kald DB-metode der sender ID til server her hvis ID > 0
+                                t.removeFromRealm();
+                                realm.commitTransaction();
 
-                        notifyDataSetInvalidated();
-                    }
-                });
+                                notifyDataSetInvalidated();
+                            }
+                        });
                 AlertDialog dialog = builder.create();
                 dialog.show();
 
@@ -149,7 +155,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
     }
 
     public static String durationToFormattedTime(double seconds) {
-        return String.format(IbikeApplication.getString("hour_minute_format"), (int)(seconds/60/60), (int)((seconds/60) % 60));
+        return String.format(IbikeApplication.getString("hour_minute_format"), (int) (seconds / 60 / 60), (int) ((seconds / 60) % 60));
     }
 
     @Override
@@ -164,7 +170,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
 
         // Don't show a header if the route was from today
         long today = getDayFromTimestamp(new Date());
-        long yesterday = today - 24*60*60*1000;
+        long yesterday = today - 24 * 60 * 60 * 1000;
 
         if (timestamp != today && timestamp != yesterday) {
             Calendar cal = Calendar.getInstance();

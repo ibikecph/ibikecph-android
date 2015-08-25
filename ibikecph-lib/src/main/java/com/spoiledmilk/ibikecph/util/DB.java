@@ -18,15 +18,23 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.persist.Track;
+import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import com.spoiledmilk.ibikecph.search.HistoryData;
 import com.spoiledmilk.ibikecph.search.SearchListItem;
+import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 
 public class DB extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
@@ -727,6 +735,71 @@ public class DB extends SQLiteOpenHelper {
             }
         }
 
+    }
+
+    public void uploadTracksToServer(RealmResults<Track> tracksToUpload, Realm realm) {
+        if (IbikeApplication.isUserLogedIn()) {
+            String authToken = IbikeApplication.getAuthToken();
+            try {
+                // Loop and pack JSON
+                //for (final Track t : tracksToUpload) {
+                final JSONObject postObject = new JSONObject();
+                JSONObject trackData = new JSONObject();
+                JSONObject locationsObject = new JSONObject();
+                JSONArray jsonArray = new JSONArray();
+
+                trackData.put("start_date", "2015-08-25");
+                trackData.put("from_name", "Vestergade 20C");
+                trackData.put("to_name", "Jagtvej 45");
+
+
+                //final RealmList<TrackLocation> tl = t.getLocations();
+                    /*for (int i = 0; i < tl.size(); i++) {
+
+                        locationsObject.put("timestamp", tl.get(i).getTimestamp());
+                        locationsObject.put("latitude", tl.get(i).getLatitude());
+                        locationsObject.put("longitude", tl.get(i).getLongitude());
+                        jsonArray.put(locationsObject);
+
+                    }*/
+
+                // Test-data
+                for (int i = 0; i < 3; i++) {
+                    locationsObject.put("timestamp", "2015-08-25 15:06:17 +0200");
+                    locationsObject.put("latitude", "55.1234");
+                    locationsObject.put("longitude", "12.1234");
+                    jsonArray.put(locationsObject);
+                }
+
+                trackData.put("coordinates_attributes", jsonArray);
+                postObject.put("auth_token", authToken);
+                postObject.put("track", trackData);
+                Log.d("DV", "postObject = " + postObject.toString());
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("DV", "Server request: " + Config.API_UPLOAD_TRACKS);
+                        JsonNode responseNode = HttpUtils.postToServer(Config.API_UPLOAD_TRACKS, postObject);
+                        if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
+                            int id = responseNode.get("data").get("id").asInt();
+                            Log.d("DV", "ID modtaget = " + id);
+                            Log.d("DV", "Count = " + responseNode.get("data").get("count").asInt());
+                            // Store the new ID and call save method.
+                            //t.setID(id);
+                            //TrackingManager.saveUploadedTrack(t);
+                        }
+                    }
+                }).start();
+
+                // }
+
+                //routeObject.put("is_finished", true); <- Behøves denne ?
+
+            } catch (JSONException e) {
+                LOG.e(e.getLocalizedMessage());
+            }
+        }
     }
 
     // public void updateApiIds(ArrayList<FavoritesData> favorites) {

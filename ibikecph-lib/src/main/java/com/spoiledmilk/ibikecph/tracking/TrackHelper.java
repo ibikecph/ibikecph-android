@@ -2,11 +2,13 @@ package com.spoiledmilk.ibikecph.tracking;
 
 import android.location.Location;
 import android.util.Log;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest;
 import com.spoiledmilk.ibikecph.map.SMHttpRequestListener;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
+
 import io.realm.Realm;
 
 import java.util.ArrayList;
@@ -26,9 +28,12 @@ public class TrackHelper implements SMHttpRequestListener {
     public void geocodeTrack() {
         Log.d("JC", "Geocoding Track " + this._track.hashCode());
 
-        // Get a geolocation for the start and end points.
-        new SMHttpRequest().findPlacesForLocation(_track.getLocations().first(), this);
-        new SMHttpRequest().findPlacesForLocation(_track.getLocations().last(), this);
+        try {
+            // Get a geolocation for the start and end points.
+            new SMHttpRequest().findPlacesForLocation(_track.getLocations().first(), this);
+            new SMHttpRequest().findPlacesForLocation(_track.getLocations().last(), this);
+        } catch (Exception ex) {
+        }
     }
 
     @Override
@@ -91,7 +96,7 @@ public class TrackHelper implements SMHttpRequestListener {
             // The current track has been geocoded if both the start and end have been set
             if (!_track.getStart().isEmpty() && !_track.getEnd().isEmpty()) {
                 _track.setHasBeenGeocoded(true);
-                Log.d("JC", "Track " + this._track.hashCode()+" geocoded.");
+                Log.d("JC", "Track " + this._track.hashCode() + " geocoded.");
                 realm.commitTransaction();
             } else {
                 realm.commitTransaction();
@@ -99,7 +104,7 @@ public class TrackHelper implements SMHttpRequestListener {
         }
     }
 
-    public static double getDistanceOfTrack(Track t)  {
+    public static double getDistanceOfTrack(Track t) {
         double result = 0;
 
         ArrayList<Location> locations = new ArrayList<Location>();
@@ -114,7 +119,7 @@ public class TrackHelper implements SMHttpRequestListener {
             locations.add(tmpl);
         }
 
-        for (int i = 0; i < locations.size()-1; i++) {
+        for (int i = 0; i < locations.size() - 1; i++) {
             result += locations.get(i).distanceTo(locations.get(i + 1));
         }
 

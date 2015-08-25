@@ -36,6 +36,7 @@ import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
+import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -174,6 +175,10 @@ public class MapActivity extends IBCMapActivity {
         int id = item.getItemId();
 
         if (id == R.id.ab_search) {
+            // Test-data
+            TrackingManager.uploadTracksToServer();
+            //TrackingManager.createFakeTrack();
+
             // to avoid too many not parcelable things, just set the map back to default state
             this.mapView.changeState(IBCMapView.MapState.DEFAULT);
 

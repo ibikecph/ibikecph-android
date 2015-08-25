@@ -4,11 +4,14 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.google.android.gms.location.DetectedActivity;
 import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
+import com.spoiledmilk.ibikecph.util.DB;
+
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -20,7 +23,7 @@ import java.util.List;
 /**
  * Created by jens on 2/25/15.
  */
-public class TrackingManager implements LocationListener  {
+public class TrackingManager implements LocationListener {
     private static final boolean DEBUG = false;
     private static final int MAX_INACCURACY = 20;
     private static final int TRACK_PAUSE_THRESHOLD = 120000; // 2 minutes in milliseconds
@@ -64,6 +67,7 @@ public class TrackingManager implements LocationListener  {
 
     /**
      * Deregisters for GPS updates and calls `makeAndSaveTrack` to create the track in the DB.
+     *
      * @param override
      */
     public void stopTracking(boolean override) {
@@ -129,7 +133,7 @@ public class TrackingManager implements LocationListener  {
                 Log.d("MF", "creating new");
                 track = realm.createObject(Track.class);
             }
-        } catch(ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             // There were no tracks in the first place!
             track = realm.createObject(Track.class);
         }
@@ -146,7 +150,7 @@ public class TrackingManager implements LocationListener  {
 
         Location lastLocation = null;
         double dist = track.getLength();
-        
+
         for (Location l : curLocationList) {
             TrackLocation trackLocation = realm.createObject(TrackLocation.class);
 
@@ -178,6 +182,9 @@ public class TrackingManager implements LocationListener  {
         // Set the distance
         track.setLength(dist);
 
+        // Set ID = 0 meaning that the track hasn't been uploaded yet
+        //track.setID(0);
+
         Log.d("MF", "last time: " + trackLocations.last().getTimestamp().getTime());
         Log.d("MF", "distance: " + dist);
 
@@ -191,7 +198,69 @@ public class TrackingManager implements LocationListener  {
         helper.geocodeTrack();
     }
 
-    public void stopTracking()   {
+    /**
+     * Called when makeAndSaveTrack() is called to upload tracks that haven't been uploaded yet.
+     */
+    public static void uploadTracksToServer() {
+
+        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        realm.beginTransaction();
+        RealmResults<Track> tracksToUpload = null;
+
+        try {
+            // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
+            tracksToUpload = realm.where(Track.class).greaterThan("ID", 0).findAll();
+            Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
+        } catch (Exception e) {
+            Log.d("DV", "uploadTracksToServer-exception: " + e.getMessage());
+        }
+
+        realm.commitTransaction();
+        realm.close();
+        //send realm object med og commit+close i saveUploadedTrack?
+        //if(tracksToUpload.size() > 0) {
+            new DB(IbikeApplication.getContext()).uploadTracksToServer(tracksToUpload, realm);
+        //}
+    }
+
+    public static void saveUploadedTrack(Track track, Realm realm) {
+
+        //Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        //realm.beginTransaction();
+
+        // Update realm-object somehow.
+
+        Log.d("DV", "Track ID = " + track.getID());
+        Log.d("DV", "Gemmer track med nyt ID!");
+
+        realm.commitTransaction();
+        realm.close();
+
+    }
+
+    public static void deleteTrack() {
+        //Kald DB
+    }
+
+    public static void createFakeTrack() {
+        Log.d("DV", "Creating fake track!");
+        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        realm.beginTransaction();
+
+        Track track;
+        track = realm.createObject(Track.class);
+
+        Date stamp = new Date();
+        Log.d("DV", "new time: " + stamp.getTime());
+        track.setTimestamp(stamp);
+        track.setDuration(5234 / 1000);
+        track.setLength(250);
+        track.setID(0);
+
+        realm.commitTransaction();
+    }
+
+    public void stopTracking() {
         stopTracking(false);
     }
 
@@ -203,6 +272,7 @@ public class TrackingManager implements LocationListener  {
     /***
      * Called when the GPS service has a new location ready. Adds the given location to the current track if we're
      * tracking locations.
+     *
      * @param givenLocation
      */
     @Override
@@ -217,10 +287,12 @@ public class TrackingManager implements LocationListener  {
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {}
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
 
     @Override
-    public void onProviderEnabled(String provider) {}
+    public void onProviderEnabled(String provider) {
+    }
 
     @Override
     public void onProviderDisabled(String provider) {
@@ -231,12 +303,12 @@ public class TrackingManager implements LocationListener  {
         //Log.d("JC", "TrackingManager new activity");
         if (
                 IbikeApplication.getSettings().getTrackingEnabled() &&
-                ((!this.isTracking            && activityType == DetectedActivity.ON_BICYCLE) ||
-                 (!this.isTracking() && DEBUG && activityType == DetectedActivity.TILTING))
-           ) {
+                        ((!this.isTracking && activityType == DetectedActivity.ON_BICYCLE) ||
+                                (!this.isTracking() && DEBUG && activityType == DetectedActivity.TILTING))
+                ) {
             Log.i("JC", "Activity changed to bicycle, starting track.");
             startTracking();
-        } else if(activityType != DetectedActivity.ON_BICYCLE && activityType != DetectedActivity.UNKNOWN && this.isTracking) {
+        } else if (activityType != DetectedActivity.ON_BICYCLE && activityType != DetectedActivity.UNKNOWN && this.isTracking) {
             Log.i("JC", "Activity changed away from bicycle, stopping track.");
             stopTracking();
         }
