@@ -248,7 +248,6 @@ public class Address implements Serializable {
         address.name = searchListItem.getName();
         address.houseNumber = searchListItem.getNumber();
 
-
         Log.d("DV", "Address-search, city == " + address.city);
         Log.d("DV", "Address-search, street == " + address.street);
         Log.d("DV", "Address-search, name == " + address.name);

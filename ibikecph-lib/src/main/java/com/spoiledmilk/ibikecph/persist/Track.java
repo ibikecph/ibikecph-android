@@ -15,6 +15,15 @@ public class Track extends RealmObject {
     private Date timestamp;
     private boolean hasBeenGeocoded;
     private boolean hasBeenSynced;
+    private int ID;
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
 
     public Date getTimestamp() {
         return timestamp;
@@ -23,7 +32,6 @@ public class Track extends RealmObject {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
-
 
     public RealmList<TrackLocation> getLocations() {
         return locations;
@@ -80,5 +88,6 @@ public class Track extends RealmObject {
     public void setHasBeenSynced(boolean hasBeenSynced) {
         this.hasBeenSynced = hasBeenSynced;
     }
+
 
 }

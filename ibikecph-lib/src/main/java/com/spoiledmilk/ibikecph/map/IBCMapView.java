@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderApi;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Icon;
@@ -25,7 +26,6 @@ import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.TrackDisplayHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
-import com.spoiledmilk.ibikecph.search.AddressParser;
 import com.spoiledmilk.ibikecph.util.Util;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -214,6 +214,7 @@ public class IBCMapView extends MapView {
      * Adds a GPS location dot.
      */
     public UserLocationOverlay addGPSOverlay() {
+
         GpsLocationProvider pr = new GpsLocationProvider(this.getContext());
         userLocationOverlay = new IBCUserLocationOverlay(pr, this);
 

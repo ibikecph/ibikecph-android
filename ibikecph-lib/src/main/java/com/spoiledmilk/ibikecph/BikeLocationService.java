@@ -45,7 +45,7 @@ public class BikeLocationService extends Service implements LocationListener, co
     protected LocationRequest mLocationRequest;
     protected Location lastValidLocation;
     protected Location prevLastValidLocation;
-    final static long INTERVAL = 2000;
+    final static long INTERVAL = 5000;
     final static long FASTEST_INTERVAL = 2000;
     boolean isBuild = false;
 
@@ -235,6 +235,7 @@ public class BikeLocationService extends Service implements LocationListener, co
         // Update the local cache
         prevLastValidLocation = lastValidLocation;
         lastValidLocation = location;
+        //Log.d("DV", "lastValiedLocation = " + lastValidLocation);
     }
 
     @Override

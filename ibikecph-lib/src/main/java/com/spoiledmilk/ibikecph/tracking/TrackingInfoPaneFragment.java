@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -52,13 +54,13 @@ public class TrackingInfoPaneFragment extends InfoPaneFragment {
         todayTextView.setText(IbikeApplication.getString("Today"));
 
         TextView totalDurationTextView = (TextView) v.findViewById(R.id.totalDurationTextView);
-        totalDurationTextView.setText(TrackListAdapter.durationToFormattedTime(totalDuration) );
+        totalDurationTextView.setText(TrackListAdapter.durationToFormattedTime(totalDuration));
 
         TextView totalDistanceTextView = (TextView) v.findViewById(R.id.totalDistanceTextView);
-        totalDistanceTextView.setText(String.format("%d km", Math.round(totalDistance/1000)));
+        totalDistanceTextView.setText(String.format("%d km", Math.round(totalDistance / 1000)));
 
         TextView totalCaloriesTextView = (TextView) v.findViewById(R.id.totalCaloriesTextView);
-        totalCaloriesTextView.setText( (int)((totalDistance/1000) * 11) + " Cal");
+        totalCaloriesTextView.setText((int) ((totalDistance / 1000) * 11) + " Cal");
 
         // When user clicks the statistics, open the Tracking Settings.
         v.setOnClickListener(new View.OnClickListener() {

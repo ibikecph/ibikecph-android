@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.overlay.Overlay;
@@ -113,6 +114,7 @@ public class OverviewMapHandler extends IBCMapHandler {
 
     /**
      * If the user presses the back button we should clean up and return the map in the default state.
+     *
      * @return
      */
     public boolean onBackPressed() {

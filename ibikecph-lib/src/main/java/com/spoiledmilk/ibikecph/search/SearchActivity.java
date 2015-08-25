@@ -162,6 +162,8 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
             HistoryData hd = new HistoryData(-1, address.getStreetAddress(), address.getPostCodeAndCity(), date, date, "", "", address.getLocation().getLatitude(), address.getLocation().getLongitude());
 
+
+
             Log.d("DV", "handleButton, streetAddress " + address.getStreetAddress());
             Log.d("DV", "handleButton, postAndCity " + address.getPostCodeAndCity());
 

@@ -2,11 +2,13 @@ package com.spoiledmilk.ibikecph.navigation;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
@@ -21,7 +23,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
     private TextView textDistance;
     private TextView textWayname;
 
-    public void onCreate (Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.parent = (NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler");
         this.parent.setTurnByTurnFragment(this);
@@ -32,7 +34,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
         this.parent.setTurnByTurnFragment(this);
     }
 
-    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.parent.setTurnByTurnFragment(this);
         super.onCreateView(inflater, container, savedInstanceState);
 
@@ -53,7 +55,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
     public void render() {
         // If the size=0, we've actually already arrived, but render() is called before NavigationMapHandler gets its
         // reachedDestination() callback from the SMRoute. Blame somebody else...
-        if (this.parent.getRoute().getTurnInstructions().size() == 0)  return;
+        if (this.parent.getRoute().getTurnInstructions().size() == 0) return;
 
         SMTurnInstruction turn = this.parent.getRoute().getTurnInstructions().get(0);
         this.textWayname.setText(turn.wayName);

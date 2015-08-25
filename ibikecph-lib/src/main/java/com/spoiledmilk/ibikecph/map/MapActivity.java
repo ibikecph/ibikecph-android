@@ -53,7 +53,7 @@ import java.util.ArrayList;
  * @author jens
  */
 @SuppressLint("NewApi")
-public class MapActivity extends IBCMapActivity  {
+public class MapActivity extends IBCMapActivity {
     public final static int REQUEST_SEARCH_ADDRESS = 2;
     public final static int REQUEST_CHANGE_SOURCE_ADDRESS = 250;
     public final static int REQUEST_CHANGE_DESTINATION_ADDRESS = 251;
@@ -328,8 +328,7 @@ public class MapActivity extends IBCMapActivity  {
             if (address != null) {
                 mapView.showAddress(address);
                 mapView.setCenter(address.getLocation());
-            }
-            else {
+            } else {
                 LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
 
                 Geocoder.getAddressForLocation(destination, new Geocoder.GeocoderCallback() {
