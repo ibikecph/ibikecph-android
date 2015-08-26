@@ -93,11 +93,11 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
         // SET THE TIME LABELS
         TextView trackTimeSpanView = (TextView) rowView.findViewById(R.id.trackTimeSpanView);
 
-        /*Date start = track.getLocations().first().getTimestamp();
+        Date start = track.getLocations().first().getTimestamp();
         Date end = track.getLocations().last().getTimestamp();
-        trackTimeSpanView.setText(dt.format(start) + " – " + dt.format(end));*/
+        trackTimeSpanView.setText(dt.format(start) + " – " + dt.format(end));
 
-        trackTimeSpanView.setText("test-state");
+        //trackTimeSpanView.setText("test-state");
 
         // Open the TrackMapView when clicking on a track
         rowView.setOnClickListener(new View.OnClickListener() {

@@ -176,7 +176,7 @@ public class MapActivity extends IBCMapActivity {
 
         if (id == R.id.ab_search) {
             // Test-data
-            TrackingManager.uploadTracksToServer();
+            //TrackingManager.uploadTracksToServer();
             //TrackingManager.createFakeTrack();
 
             // to avoid too many not parcelable things, just set the map back to default state

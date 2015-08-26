@@ -5,12 +5,20 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.android.gms.location.DetectedActivity;
 import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
+import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.DB;
+import com.spoiledmilk.ibikecph.util.HttpUtils;
+import com.spoiledmilk.ibikecph.util.LOG;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -183,7 +191,7 @@ public class TrackingManager implements LocationListener {
         track.setLength(dist);
 
         // Set ID = 0 meaning that the track hasn't been uploaded yet
-        //track.setID(0);
+        track.setID(0);
 
         Log.d("MF", "last time: " + trackLocations.last().getTimestamp().getTime());
         Log.d("MF", "distance: " + dist);
@@ -196,6 +204,7 @@ public class TrackingManager implements LocationListener {
         // Geocode the track. The TrackHelper will open a new Realm transaction.
         TrackHelper helper = new TrackHelper(track);
         helper.geocodeTrack();
+        uploadTracksToServer();
     }
 
     /**
@@ -203,43 +212,84 @@ public class TrackingManager implements LocationListener {
      */
     public static void uploadTracksToServer() {
 
-        Realm realm = Realm.getInstance(IbikeApplication.getContext());
-        realm.beginTransaction();
-        RealmResults<Track> tracksToUpload = null;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-        try {
-            // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
-            tracksToUpload = realm.where(Track.class).greaterThan("ID", 0).findAll();
-            Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
-        } catch (Exception e) {
-            Log.d("DV", "uploadTracksToServer-exception: " + e.getMessage());
-        }
+                Realm realm = Realm.getInstance(IbikeApplication.getContext());
+                realm.beginTransaction();
+                RealmResults<Track> tracksToUpload = null;
 
-        realm.commitTransaction();
-        realm.close();
-        //send realm object med og commit+close i saveUploadedTrack?
-        //if(tracksToUpload.size() > 0) {
-            new DB(IbikeApplication.getContext()).uploadTracksToServer(tracksToUpload, realm);
-        //}
-    }
+                try {
+                    // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
+                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).findAll();
+                    Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
+                } catch (Exception e) {
+                    Log.d("DV", "uploadTracksToServer-exception: " + e.getMessage());
+                }
 
-    public static void saveUploadedTrack(Track track, Realm realm) {
+                if (tracksToUpload.size() > 0) {
 
-        //Realm realm = Realm.getInstance(IbikeApplication.getContext());
-        //realm.beginTransaction();
+                    JSONObject postObject = null;
+                    if (IbikeApplication.isUserLogedIn()) {
+                        String authToken = IbikeApplication.getAuthToken();
+                        try {
+                            // Loop and pack JSON for each track we want to upload!
+                            for (int i = 0; i < tracksToUpload.size(); i++) {
+                                postObject = new JSONObject();
+                                JSONObject trackData = new JSONObject();
 
-        // Update realm-object somehow.
+                                JSONArray jsonArray = new JSONArray();
 
-        Log.d("DV", "Track ID = " + track.getID());
-        Log.d("DV", "Gemmer track med nyt ID!");
+                                Date start = tracksToUpload.get(i).getLocations().first().getTimestamp();
 
-        realm.commitTransaction();
-        realm.close();
+                                trackData.put("timestamp", start.getTime() / 1000); // /1000 for ms -> s
+                                trackData.put("from_name", tracksToUpload.get(i).getStart());
+                                trackData.put("to_name", tracksToUpload.get(i).getEnd());
+                                Log.d("DV", "timestamp = " + start.toString() + " / seconds : " + start.getTime() / 1000);
+                                Log.d("DV", "from_name = " + tracksToUpload.get(i).getStart());
+                                Log.d("DV", "to_name = " + tracksToUpload.get(i).getEnd());
 
+                                final RealmList<TrackLocation> tl = tracksToUpload.get(i).getLocations();
+                                for (int j = 0; j < tl.size(); j++) {
+                                    JSONObject locationsObject = new JSONObject();
+                                    locationsObject.put("seconds_passed", ((tl.get(j).getTimestamp().getTime() / 1000) - (start.getTime() / 1000))); // /1000 for ms -> s
+                                    locationsObject.put("latitude", tl.get(j).getLatitude());
+                                    locationsObject.put("longitude", tl.get(j).getLongitude());
+                                    jsonArray.put(locationsObject);
+                                    Log.d("DV", "seconds_past = " + tl.get(j).getTimestamp() + " / seconds : " + ((tl.get(j).getTimestamp().getTime() / 1000) - (start.getTime() / 1000)) + " (lat,lon): " + tl.get(j).getLatitude() + " , " + tl.get(j).getLongitude());
+                                }
+
+                                trackData.put("coordinates_attributes", jsonArray);
+                                postObject.put("auth_token", authToken);
+                                postObject.put("track", trackData);
+                                Log.d("DV", "postObject = " + postObject.toString());
+
+                                Log.d("DV", "Server request: " + Config.API_UPLOAD_TRACKS);
+                                JsonNode responseNode = HttpUtils.postToServer(Config.API_UPLOAD_TRACKS, postObject);
+                                if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
+                                    int id = responseNode.get("data").get("id").asInt();
+                                    Log.d("DV", "ID modtaget = " + id);
+                                    Log.d("DV", "Count = " + responseNode.get("data").get("count").asInt());
+                                    // Set the new ID received from the server
+                                    Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
+                                    tracksToUpload.get(i).setID(id);
+                                    Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
+                                }
+                            }
+                            Log.d("DV", "Saving changes to DB!");
+                            realm.commitTransaction();
+                            realm.close();
+                        } catch (JSONException e) {
+                            LOG.e(e.getLocalizedMessage());
+                        }
+                    }
+                }
+            }
+        }).start();
     }
 
     public static void deleteTrack() {
-        //Kald DB
     }
 
     public static void createFakeTrack() {
