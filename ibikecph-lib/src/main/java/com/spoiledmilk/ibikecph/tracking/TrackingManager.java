@@ -211,7 +211,6 @@ public class TrackingManager implements LocationListener {
      * Called when makeAndSaveTrack() is called to upload tracks that haven't been uploaded yet.
      */
     public static void uploadTracksToServer() {
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -243,7 +242,7 @@ public class TrackingManager implements LocationListener {
 
                                 Date start = tracksToUpload.get(i).getLocations().first().getTimestamp();
 
-                                trackData.put("timestamp", start.getTime() / 1000); // /1000 for ms -> s
+                                trackData.put("timestamp", start.getTime() / 1000); //Seconds
                                 trackData.put("from_name", tracksToUpload.get(i).getStart());
                                 trackData.put("to_name", tracksToUpload.get(i).getEnd());
                                 Log.d("DV", "timestamp = " + start.toString() + " / seconds : " + start.getTime() / 1000);
@@ -253,7 +252,7 @@ public class TrackingManager implements LocationListener {
                                 final RealmList<TrackLocation> tl = tracksToUpload.get(i).getLocations();
                                 for (int j = 0; j < tl.size(); j++) {
                                     JSONObject locationsObject = new JSONObject();
-                                    locationsObject.put("seconds_passed", ((tl.get(j).getTimestamp().getTime() / 1000) - (start.getTime() / 1000))); // /1000 for ms -> s
+                                    locationsObject.put("seconds_passed", ((tl.get(j).getTimestamp().getTime() / 1000) - (start.getTime() / 1000))); //Seconds
                                     locationsObject.put("latitude", tl.get(j).getLatitude());
                                     locationsObject.put("longitude", tl.get(j).getLongitude());
                                     jsonArray.put(locationsObject);
@@ -289,9 +288,26 @@ public class TrackingManager implements LocationListener {
         }).start();
     }
 
-    public static void deleteTrack() {
+    public static void deleteTrack(final int id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if (IbikeApplication.isUserLogedIn()) {
+                        String authToken = IbikeApplication.getAuthToken();
+                        JSONObject postObject = new JSONObject();
+                        postObject.put("auth_token", authToken);
+                        Log.d("DV", "Track ID to delete = " + id);
+                        HttpUtils.deleteFromServer(Config.API_UPLOAD_TRACKS + "/" + id, postObject);
+                    }
+                } catch (JSONException e) {
+                    LOG.e(e.getLocalizedMessage());
+                }
+            }
+        }).start();
     }
 
+    //Test method
     public static void createFakeTrack() {
         Log.d("DV", "Creating fake track!");
         Realm realm = Realm.getInstance(IbikeApplication.getContext());
@@ -308,6 +324,78 @@ public class TrackingManager implements LocationListener {
         track.setID(0);
 
         realm.commitTransaction();
+        uploadeFakeTrack();
+    }
+
+    //Test method
+    public static void uploadeFakeTrack() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                Realm realm = Realm.getInstance(IbikeApplication.getContext());
+                realm.beginTransaction();
+                RealmResults<Track> tracksToUpload = null;
+
+                try {
+                    // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
+                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).findAll();
+                    Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
+                } catch (Exception e) {
+                    Log.d("DV", "uploadTracksToServer-exception: " + e.getMessage());
+                }
+
+                if (tracksToUpload.size() > 0) {
+
+                    JSONObject postObject = null;
+                    if (IbikeApplication.isUserLogedIn()) {
+                        String authToken = IbikeApplication.getAuthToken();
+                        try {
+                            // Loop and pack JSON for each track we want to upload!
+                            for (int i = 0; i < tracksToUpload.size(); i++) {
+                                postObject = new JSONObject();
+                                JSONObject trackData = new JSONObject();
+                                JSONArray jsonArray = new JSONArray();
+
+                                trackData.put("timestamp", "133713371"); //Seconds
+                                trackData.put("from_name", "Borgergade 24");
+                                trackData.put("to_name", "Vestergade 20C");
+
+                                for (int j = 0; j < 3; j++) {
+                                    JSONObject locationsObject = new JSONObject();
+                                    locationsObject.put("seconds_passed", 20); //Seconds
+                                    locationsObject.put("latitude", 55.1337);
+                                    locationsObject.put("longitude", 12.1337);
+                                    jsonArray.put(locationsObject);
+                                }
+
+                                trackData.put("coordinates_attributes", jsonArray);
+                                postObject.put("auth_token", authToken);
+                                postObject.put("track", trackData);
+                                Log.d("DV", "postObject = " + postObject.toString());
+
+                                Log.d("DV", "Server request: " + Config.API_UPLOAD_TRACKS);
+                                JsonNode responseNode = HttpUtils.postToServer(Config.API_UPLOAD_TRACKS, postObject);
+                                if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
+                                    int id = responseNode.get("data").get("id").asInt();
+                                    Log.d("DV", "ID modtaget = " + id);
+                                    Log.d("DV", "Count = " + responseNode.get("data").get("count").asInt());
+                                    // Set the new ID received from the server
+                                    Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
+                                    tracksToUpload.get(i).setID(id);
+                                    //Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
+                                }
+                            }
+                            Log.d("DV", "Saving changes to DB!");
+                            realm.commitTransaction();
+                            realm.close();
+                        } catch (JSONException e) {
+                            LOG.e(e.getLocalizedMessage());
+                        }
+                    }
+                }
+            }
+        }).start();
     }
 
     public void stopTracking() {

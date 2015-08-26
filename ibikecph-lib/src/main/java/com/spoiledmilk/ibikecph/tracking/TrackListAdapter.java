@@ -125,7 +125,11 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
 
                                 Realm realm = Realm.getInstance(context);
                                 realm.beginTransaction();
-                                //Kald DB-metode der sender ID til server her hvis ID > 0
+                                Log.d("DV", "Calling delete-method with ID = " + t.getID());
+                                // Only send to the server, if ID > 0. Otherwise just delete, since it hasn't been uploaded to the server yet.
+                                if (t.getID() > 0) {
+                                    TrackingManager.deleteTrack(t.getID());
+                                }
                                 t.removeFromRealm();
                                 realm.commitTransaction();
 
