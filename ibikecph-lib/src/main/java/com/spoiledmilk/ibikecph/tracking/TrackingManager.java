@@ -220,7 +220,7 @@ public class TrackingManager implements LocationListener {
                 RealmResults<Track> tracksToUpload = null;
 
                 try {
-                    // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
+                    // If ID values are = 0, an ID from the server hasn't been set, therefore so we will upload the track.
                     tracksToUpload = realm.where(Track.class).equalTo("ID", 0).findAll();
                     Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
                 } catch (Exception e) {
@@ -324,7 +324,7 @@ public class TrackingManager implements LocationListener {
         track.setID(0);
 
         realm.commitTransaction();
-        uploadeFakeTrack();
+        //uploadeFakeTrack();
     }
 
     //Test method
