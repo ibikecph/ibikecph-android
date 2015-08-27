@@ -41,6 +41,7 @@ public class TrackingManager implements LocationListener {
 
     private List<Location> curLocationList;
     private Realm realm;
+    private static int attemptsToSend = 0;
 
     // Sometimes we want to start tracking, overriding the ActivityRecognition
     private boolean manualOverride = false;
@@ -237,17 +238,19 @@ public class TrackingManager implements LocationListener {
                             for (int i = 0; i < tracksToUpload.size(); i++) {
                                 postObject = new JSONObject();
                                 JSONObject trackData = new JSONObject();
-
                                 JSONArray jsonArray = new JSONArray();
+                                int amountToSend = 0;
 
                                 Date start = tracksToUpload.get(i).getLocations().first().getTimestamp();
 
                                 trackData.put("timestamp", start.getTime() / 1000); //Seconds
                                 trackData.put("from_name", tracksToUpload.get(i).getStart());
                                 trackData.put("to_name", tracksToUpload.get(i).getEnd());
+                                trackData.put("count", amountToSend);
                                 Log.d("DV", "timestamp = " + start.toString() + " / seconds : " + start.getTime() / 1000);
                                 Log.d("DV", "from_name = " + tracksToUpload.get(i).getStart());
                                 Log.d("DV", "to_name = " + tracksToUpload.get(i).getEnd());
+                                Log.d("DV", "count(amountToSend) = " + amountToSend);
 
                                 final RealmList<TrackLocation> tl = tracksToUpload.get(i).getLocations();
                                 for (int j = 0; j < tl.size(); j++) {
@@ -256,6 +259,7 @@ public class TrackingManager implements LocationListener {
                                     locationsObject.put("latitude", tl.get(j).getLatitude());
                                     locationsObject.put("longitude", tl.get(j).getLongitude());
                                     jsonArray.put(locationsObject);
+                                    amountToSend++;
                                     Log.d("DV", "seconds_past = " + tl.get(j).getTimestamp() + " / seconds : " + ((tl.get(j).getTimestamp().getTime() / 1000) - (start.getTime() / 1000)) + " (lat,lon): " + tl.get(j).getLatitude() + " , " + tl.get(j).getLongitude());
                                 }
 
@@ -263,17 +267,29 @@ public class TrackingManager implements LocationListener {
                                 postObject.put("auth_token", authToken);
                                 postObject.put("track", trackData);
                                 Log.d("DV", "postObject = " + postObject.toString());
+                                Log.d("DV", "Amount of sent coordinates = " + amountToSend);
 
                                 Log.d("DV", "Server request: " + Config.API_UPLOAD_TRACKS);
                                 JsonNode responseNode = HttpUtils.postToServer(Config.API_UPLOAD_TRACKS, postObject);
                                 if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
                                     int id = responseNode.get("data").get("id").asInt();
                                     Log.d("DV", "ID modtaget = " + id);
-                                    Log.d("DV", "Count = " + responseNode.get("data").get("count").asInt());
-                                    // Set the new ID received from the server
-                                    Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
-                                    tracksToUpload.get(i).setID(id);
-                                    Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
+                                    int count = responseNode.get("data").get("count").asInt();
+                                    Log.d("DV", "Count = " + count);
+
+                                    // Set the new ID received from the server if the server received all data
+                                    if (count == amountToSend) {
+                                        Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
+                                        tracksToUpload.get(i).setID(id);
+                                        Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
+                                        attemptsToSend = 0;
+                                    } // Try to resend maximum 3 times.
+                                    else {
+                                        attemptsToSend++;
+                                        if (attemptsToSend < 4) {
+                                            uploadTracksToServer();
+                                        }
+                                    }
                                 }
                             }
                             Log.d("DV", "Saving changes to DB!");
