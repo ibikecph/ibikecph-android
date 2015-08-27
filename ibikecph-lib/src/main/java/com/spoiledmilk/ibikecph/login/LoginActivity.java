@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.facebook.*;
 import com.facebook.Session.NewPermissionsRequest;
 import com.facebook.model.GraphUser;
@@ -86,7 +87,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                             handler.sendMessage(message);
 
                             dismissProgressDialog();
-                            
+
                         }
                     }).start();
                 }
@@ -118,7 +119,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                             PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).edit().putString("auth_token", auth_token).commit();
                             PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).edit().putInt("id", id).commit();
                             LOG.d("Loged in token = " + auth_token + ", id = " + id);
-                            
+
                             setResult(RESULT_OK);
                             finish();
                             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -191,7 +192,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                 Message message = HTTPAccountHandler.performFacebookLogin(Session.getActiveSession().getAccessToken());
                 handler.sendMessage(message);
                 dismissProgressDialog();
-                
+
             }
         }).start();
     }
@@ -276,6 +277,8 @@ public class LoginActivity extends Activity implements FBLoginListener {
             });
             AlertDialog dialog = builder.create();
             dialog.show();
+        } else if (resultCode == RegisterActivity.RESULT_FACEBOOK_REGISTERED) {
+            finish();
         } else if (resultCode == RegisterActivity.RESULT_NO_ACTION) {
             // do nothing
         } else if (Session.getActiveSession() != null && data != null && data.getExtras() != null) {

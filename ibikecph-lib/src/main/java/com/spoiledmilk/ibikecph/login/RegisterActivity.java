@@ -5,6 +5,7 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.login;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -14,36 +15,55 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.*;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.*;
+import com.facebook.Session.NewPermissionsRequest;
+import com.facebook.model.GraphUser;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.AsyncImageFetcher;
 import com.spoiledmilk.ibikecph.util.ImageData;
 import com.spoiledmilk.ibikecph.util.ImagerPrefetcherListener;
+import com.spoiledmilk.ibikecph.util.LOG;
 
-public class RegisterActivity extends Activity implements ImagerPrefetcherListener {
-    Button btnLogout;
+import java.util.Arrays;
+
+public class RegisterActivity extends Activity implements ImagerPrefetcherListener, FBLoginListener {
     EditText textName;
     EditText textEmail;
     EditText textNewPassword;
     EditText textPasswordConfirm;
     Button btnRegister;
+    Button btnFacebookLogin;
     CheckBox termsAcceptanceCheckbox;
     TextView termsAcceptanceLabel;
     TextView termsAcceptanceLink;
 
-    Handler handler;
+    Handler handler, facebookHandler;
 
     UserData userData;
 
     ProgressBar progressBar;
+    private Session.StatusCallback statusCallback = new SessionStatusCallback();
 
+    boolean isRunning = true;
+    String fbToken;
     String validationMessage;
     String base64Image = "";
     private static final int IMAGE_REQUEST = 1888;
@@ -51,6 +71,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     public static final int RESULT_USER_DELETED = 101;
     public static final int RESULT_ACCOUNT_REGISTERED = 102;
     public static final int RESULT_NO_ACTION = 103;
+    public static final int RESULT_FACEBOOK_REGISTERED = 104;
 
     boolean inProgress = false;
 
@@ -115,6 +136,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             }
         });
 
+
         if (handler == null) {
             handler = new Handler(new Handler.Callback() {
 
@@ -145,6 +167,55 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             });
         }
 
+        if (facebookHandler == null) {
+            facebookHandler = new Handler(new Handler.Callback() {
+                @Override
+                public boolean handleMessage(Message msg) {
+                    Log.d("JC", "Received Facebook handler callback");
+
+                    Bundle data = msg.getData();
+                    Boolean success = data.getBoolean("success");
+                    if (success) {
+                        LOG.d("fbdebug apitoken = " + data.getString("auth_token"));
+                        String auth_token = data.getString("auth_token");
+                        int id = data.getInt("id");
+                        progressBar.setVisibility(View.GONE);
+                        if (id < 0) {
+                            launchErrorDialog("", "Login failed : " + data.toString());
+                        } else {
+                            if (auth_token == null || auth_token.equals("") || auth_token.equals("null")) {
+                                auth_token = "";
+                            }
+                            PreferenceManager.getDefaultSharedPreferences(RegisterActivity.this).edit().putString("auth_token", auth_token).commit();
+                            PreferenceManager.getDefaultSharedPreferences(RegisterActivity.this).edit().putInt("id", id).commit();
+                            LOG.d("Loged in token = " + auth_token + ", id = " + id);
+
+                            setResult(RESULT_FACEBOOK_REGISTERED);
+                            finish();
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        }
+                    } else {
+                        final String message = data.containsKey("errors") ? data.getString("errors") : data.getString("info");
+                        String title = "";
+                        if (data.containsKey("info_title")) {
+                            title = data.getString("info_title");
+                        }
+                        launchErrorDialog(title, message);
+                    }
+                    return true;
+                }
+            });
+        }
+
+        btnFacebookLogin = (Button) findViewById(R.id.btnFacebookLogin);
+        btnFacebookLogin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Log.d("DV", "facebook btn clicked!");
+                performFBLogin(savedInstanceState);
+            }
+        });
+
     }
 
     @Override
@@ -166,8 +237,28 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         String pickTitle = "";
         Intent chooserIntent = Intent.createChooser(pickIntent, pickTitle);
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] { takePhotoIntent });
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
         startActivityForResult(chooserIntent, IMAGE_REQUEST);
+    }
+
+    private void performFBLogin(Bundle savedInstanceState) {
+        Session session = Session.getActiveSession();
+        if (session == null) {
+            if (savedInstanceState != null) {
+                session = Session.restoreSession(RegisterActivity.this, null, statusCallback, savedInstanceState);
+            }
+            if (session == null) {
+                session = new Session(RegisterActivity.this);
+            }
+        }
+        Session.setActiveSession(session);
+        if (session.getState().equals(SessionState.CREATED_TOKEN_LOADED) || (!session.isOpened() && !session.isClosed())) {
+            session.openForRead(new Session.OpenRequest(RegisterActivity.this).setCallback(statusCallback).setPermissions(Arrays.asList("email")));
+        } else if (session.isOpened() && !session.getPermissions().contains("email")) {
+            session.requestNewPublishPermissions(new NewPermissionsRequest(RegisterActivity.this, Arrays.asList("email")).setCallback(statusCallback));
+        } else {
+            Session.openActiveSession(RegisterActivity.this, true, statusCallback);
+        }
     }
 
     private void initStrings() {
@@ -177,7 +268,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         this.termsAcceptanceLabel.setText(IbikeApplication.getString("accept_user_terms").replace(IbikeApplication.getString("accept_user_terms_link_highlight"), ""));
 
         // Construct a link in HTML and make it clickable
-        this.termsAcceptanceLink.setText(Html.fromHtml("<a href='" + IbikeApplication.getString("accept_user_terms_link") + "'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>") );
+        this.termsAcceptanceLink.setText(Html.fromHtml("<a href='" + IbikeApplication.getString("accept_user_terms_link") + "'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>"));
         this.termsAcceptanceLink.setMovementMethod(LinkMovementMethod.getInstance());
 
         textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
@@ -189,6 +280,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         textName.setHintTextColor(getResources().getColor(R.color.HintColor));
         textEmail.setHint(IbikeApplication.getString("register_email_placeholder"));
         textEmail.setHintTextColor(getResources().getColor(R.color.HintColor));
+        btnFacebookLogin.setText(IbikeApplication.getString("create_with_fb"));
     }
 
     private void launchAlertDialog(String msg) {
@@ -249,23 +341,48 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         return ret;
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
             progressBar.setVisibility(View.VISIBLE);
             AsyncImageFetcher aif = new AsyncImageFetcher(this, this);
             aif.execute(data);
+        }
+        if (resultCode == RegisterActivity.RESULT_ACCOUNT_REGISTERED) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(IbikeApplication.getString("register_successful"));
+            builder.setPositiveButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } else if (resultCode == RegisterActivity.RESULT_NO_ACTION) {
+            // do nothing
+        } else if (Session.getActiveSession() != null && data != null && data.getExtras() != null) {
+            Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
         }
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        isRunning = true;
+        if (Session.getActiveSession() != null) {
+            Session.getActiveSession().addCallback(statusCallback);
+        }
         EasyTracker.getInstance().activityStart(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        isRunning = false;
+        if (Session.getActiveSession() != null) {
+            Session.getActiveSession().removeCallback(statusCallback);
+        }
         EasyTracker.getInstance().activityStop(this);
     }
 
@@ -283,7 +400,114 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     public void onTermsAcceptanceCheckboxClick(View v) {
         boolean isChecked = this.termsAcceptanceCheckbox.isChecked();
         btnRegister.setEnabled(isChecked);
-        btnRegister.setBackgroundColor(isChecked?getResources().getColor(IbikeApplication.getPrimaryColor()):Color.LTGRAY);
+        btnRegister.setBackgroundColor(isChecked ? getResources().getColor(IbikeApplication.getPrimaryColor()) : Color.LTGRAY);
+    }
+
+    private void launchErrorDialog(String title, String info) {
+        if (!isFinishing() && isRunning) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            if (!title.equals("")) {
+                builder.setTitle(title);
+            } else {
+                builder.setTitle(IbikeApplication.getString("Error"));
+            }
+            builder.setMessage(info);
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+    }
+
+    @Override
+    public void onFBLoginSuccess(String token) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                IbikeApplication.setIsFacebookLogin(true);
+                login();
+            }
+        });
+    }
+
+    int numOfRetries = 0;
+
+    @Override
+    public void onFBLoginError() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (numOfRetries == 0) {
+                    Session session = Session.getActiveSession();
+                    if (session != null) {
+                        session.closeAndClearTokenInformation();
+                    }
+                    performFBLogin(null);
+                    numOfRetries++;
+                } else {
+                    launchErrorDialog("", "Facebook login failed");
+                }
+            }
+        });
+    }
+
+    private void login() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Looper.myLooper();
+                Looper.prepare();
+                showProgressDialog();
+                LOG.d("fbdebug fbtoken = " + Session.getActiveSession().getAccessToken());
+                Message message = HTTPAccountHandler.performFacebookLogin(Session.getActiveSession().getAccessToken());
+                facebookHandler.sendMessage(message);
+                dismissProgressDialog();
+
+            }
+        }).start();
+    }
+
+    public void showProgressDialog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void dismissProgressDialog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private class SessionStatusCallback implements Session.StatusCallback {
+        @Override
+        public void call(Session session, SessionState state, Exception exception) {
+            if (session.isOpened()) {
+                fbToken = session.getAccessToken();
+                if (!session.isOpened())
+                    session = Session.getActiveSession();
+                // make request to the /me API
+                Request.executeMeRequestAsync(session, new Request.GraphUserCallback() {
+                    // callback after Graph API
+                    // response with user object
+                    @Override
+                    public void onCompleted(GraphUser user, Response response) {
+                        if (user != null) {
+                            HTTPAccountHandler.checkIsFbTokenValid(Session.getActiveSession().getAccessToken(), RegisterActivity.this);
+                        }
+                    }
+                });
+            }
+        }
     }
 
 }

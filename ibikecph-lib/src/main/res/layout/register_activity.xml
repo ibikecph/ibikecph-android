@@ -1,53 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="fill_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:background="@null" >
 
-        <ImageView
-            android:id="@+id/pictureContainer"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_centerHorizontal="true"
+        <Button
+            android:id="@+id/btnFacebookLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignLeft="@+id/textName"
+            android:layout_alignRight="@+id/textName"
             android:layout_marginTop="10dp"
-            android:background="@drawable/profile_default_image"
-            android:clickable="true"
+            android:background="@drawable/com_facebook_button_blue"
             android:contentDescription="@string/app_name"
-            android:onClick="onImageContainerClick"
-            android:scaleType="centerCrop" >
-        </ImageView>
+            android:textColor="@color/White"
+            android:textSize="14sp" />
 
-        <ImageView
+
+        <TextView
+            android:id="@+id/textOr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/pictureContainer"
-            android:layout_alignLeft="@+id/pictureContainer"
-            android:layout_alignRight="@+id/pictureContainer"
-            android:layout_alignTop="@+id/pictureContainer"
-            android:background="@drawable/rounded_image_frame"
-            android:contentDescription="@string/app_name" >
-        </ImageView>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/pictureContainer"
-            android:layout_alignLeft="@+id/pictureContainer"
-            android:layout_alignRight="@+id/pictureContainer"
-            android:layout_alignTop="@+id/pictureContainer"
-            android:background="@drawable/image_frame"
-            android:contentDescription="@string/app_name" >
-        </ImageView>
+            android:layout_below="@+id/btnFacebookLogin"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:text="eller"
+            android:textStyle="italic" />
 
         <EditText
             android:id="@+id/textName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/pictureContainer"
+            android:layout_below="@+id/textOr"
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
@@ -130,16 +118,55 @@
                 />
 
 
+        <ImageView
+            android:id="@+id/pictureContainer"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/profile_default_image"
+            android:clickable="true"
+            android:contentDescription="@string/app_name"
+            android:onClick="onImageContainerClick"
+            android:scaleType="centerCrop"
+            android:layout_below="@id/termsAcceptanceCheckbox">
+        </ImageView>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/pictureContainer"
+            android:layout_alignLeft="@+id/pictureContainer"
+            android:layout_alignRight="@+id/pictureContainer"
+            android:layout_alignTop="@+id/pictureContainer"
+            android:background="@drawable/rounded_image_frame"
+            android:contentDescription="@string/app_name"
+            android:layout_below="@id/termsAcceptanceCheckbox">
+        </ImageView>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/pictureContainer"
+            android:layout_alignLeft="@+id/pictureContainer"
+            android:layout_alignRight="@+id/pictureContainer"
+            android:layout_alignTop="@+id/pictureContainer"
+            android:background="@drawable/image_frame"
+            android:contentDescription="@string/app_name"
+            android:layout_below="@id/termsAcceptanceCheckbox">
+        </ImageView>
+
+
         <Button
             android:id="@+id/btnRegister"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_alignLeft="@+id/textName"
             android:layout_alignRight="@+id/textName"
-            android:layout_below="@+id/termsAcceptanceCheckbox"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentBottom="true"
             android:background="@color/app_primary_color"
             android:textColor="@color/White"
             android:textSize="16sp"
@@ -154,4 +181,4 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-</ScrollView>
+</RelativeLayout>
