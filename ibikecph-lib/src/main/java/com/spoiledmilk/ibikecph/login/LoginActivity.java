@@ -278,7 +278,8 @@ public class LoginActivity extends Activity implements FBLoginListener {
             AlertDialog dialog = builder.create();
             dialog.show();
         } else if (resultCode == RegisterActivity.RESULT_FACEBOOK_REGISTERED) {
-            finish();
+            performFBLogin(null);
+            //finish();
         } else if (resultCode == RegisterActivity.RESULT_NO_ACTION) {
             // do nothing
         } else if (Session.getActiveSession() != null && data != null && data.getExtras() != null) {

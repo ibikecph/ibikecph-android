@@ -33,6 +33,7 @@ public class LoginSplashActivity extends Activity {
 
     private static boolean DEBUG = false;
     public static final int LOGIN_REQUEST = 80;
+    public static final int RESULT_FACEBOOK_REGISTERED = 104;
     private Button logInButton, enableTrackingButton;
 
     @Override
@@ -110,10 +111,8 @@ public class LoginSplashActivity extends Activity {
             Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
         } else if (requestCode == LOGIN_REQUEST && resultCode == RESULT_OK) {
             // launchMainMapActivity();
-
             changeLoginButtonToEnableTrackingButton();
         }
-
     }
 
     private void changeLoginButtonToEnableTrackingButton() {
