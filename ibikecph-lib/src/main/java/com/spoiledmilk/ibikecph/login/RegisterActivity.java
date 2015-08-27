@@ -35,6 +35,7 @@ import com.facebook.*;
 import com.facebook.Session.NewPermissionsRequest;
 import com.facebook.model.GraphUser;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.AsyncImageFetcher;
@@ -390,8 +391,13 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     public void onImagePrefetched(ImageData imageData) {
         if (imageData != null && imageData.bmp != null && imageData.base64 != null) {
             base64Image = imageData.base64;
-            ((ImageView) findViewById(R.id.pictureContainer)).setImageDrawable(imageData.bmp);
-            findViewById(R.id.frame).setVisibility(View.VISIBLE);
+            RoundedImageView riv;
+            riv = (RoundedImageView) findViewById(R.id.pictureContainer);
+            riv.findViewById(R.id.pictureContainer);
+            riv.setImageDrawable(imageData.bmp);
+            riv.setScaleType(ImageView.ScaleType.CENTER);
+            //((RoundedImageView) findViewById(R.id.pictureContainer)).setImageDrawable(imageData.bmp);
+            //findViewById(R.id.frame).setVisibility(View.VISIBLE);
         } else {
             Toast.makeText(this, "Error fetching the image", Toast.LENGTH_SHORT).show();
         }

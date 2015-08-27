@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="fill_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:background="@null" >
+        android:background="@null">
 
         <Button
             android:id="@+id/btnFacebookLogin"
@@ -43,7 +44,7 @@
             android:inputType="text"
             android:paddingLeft="10dp"
             android:paddingRight="25dp"
-            android:textSize="14sp" >
+            android:textSize="14sp">
 
             <requestFocus />
         </EditText>
@@ -75,62 +76,67 @@
             android:textSize="14sp" />
 
         <EditText
-                android:id="@+id/textPasswordConfirm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textName"
-                android:layout_alignRight="@+id/textName"
-                android:layout_below="@+id/textNewPassword"
-                android:layout_marginTop="10dp"
-                android:inputType="textPassword"
-                android:paddingLeft="10dp"
-                android:paddingRight="25dp"
-                android:textSize="14sp" />
+            android:id="@+id/textPasswordConfirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textName"
+            android:layout_alignRight="@+id/textName"
+            android:layout_below="@+id/textNewPassword"
+            android:layout_marginTop="10dp"
+            android:inputType="textPassword"
+            android:paddingLeft="10dp"
+            android:paddingRight="25dp"
+            android:textSize="14sp" />
 
         <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textName"
-                android:layout_below="@+id/textPasswordConfirm"
-                android:paddingLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:id="@+id/termsAcceptanceCheckbox"
-                android:onClick="onTermsAcceptanceCheckboxClick"
-                />
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_below="@+id/textPasswordConfirm"
-                  android:layout_toRightOf="@+id/termsAcceptanceCheckbox"
-                  android:layout_alignBaseline="@+id/termsAcceptanceCheckbox"
-                  android:textColor="@color/black"
-                  android:text="accept_user_terms"
-                  android:id="@+id/termsAcceptanceLabel"
-                />
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_below="@+id/textPasswordConfirm"
-                  android:layout_toRightOf="@+id/termsAcceptanceLabel"
-                  android:layout_alignBaseline="@+id/termsAcceptanceLabel"
-                  android:textColor="@color/white"
-                  android:text="link"
-                  android:id="@+id/termsAcceptanceLink"
-                  android:onClick="onTermsAcceptanceCheckboxClick"
-                />
+            android:id="@+id/termsAcceptanceCheckbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textName"
+            android:layout_below="@+id/textPasswordConfirm"
+            android:layout_marginTop="10dp"
+            android:onClick="onTermsAcceptanceCheckboxClick"
+            android:paddingLeft="10dp" />
+
+        <TextView
+            android:id="@+id/termsAcceptanceLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/termsAcceptanceCheckbox"
+            android:layout_below="@+id/textPasswordConfirm"
+            android:layout_toRightOf="@+id/termsAcceptanceCheckbox"
+            android:text="accept_user_terms"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/termsAcceptanceLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/termsAcceptanceLabel"
+            android:layout_below="@+id/textPasswordConfirm"
+            android:layout_toRightOf="@+id/termsAcceptanceLabel"
+            android:onClick="onTermsAcceptanceCheckboxClick"
+            android:text="link"
+            android:textColor="@color/white" />
 
 
-        <ImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/pictureContainer"
             android:layout_width="70dp"
             android:layout_height="70dp"
+            android:layout_below="@id/termsAcceptanceCheckbox"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:background="@drawable/camera_profile"
+            android:src="@drawable/camera_profile"
             android:clickable="true"
             android:contentDescription="@string/app_name"
             android:onClick="onImageContainerClick"
-            android:scaleType="centerCrop"
-            android:layout_below="@id/termsAcceptanceCheckbox">
-        </ImageView>
+            app:riv_corner_radius="8dip"
+            app:riv_border_width="1dip"
+            app:riv_border_color="@color/Grey"
+            app:riv_mutate_background="true"
+            app:riv_tile_mode="repeat"
+            app:riv_oval="false"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -139,11 +145,10 @@
             android:layout_alignLeft="@+id/pictureContainer"
             android:layout_alignRight="@+id/pictureContainer"
             android:layout_alignTop="@+id/pictureContainer"
+            android:layout_below="@id/termsAcceptanceCheckbox"
             android:background="@drawable/rounded_image_frame"
             android:contentDescription="@string/app_name"
-            android:layout_below="@id/termsAcceptanceCheckbox"
-            android:visibility="visible">
-        </ImageView>
+            android:visibility="gone"></ImageView>
 
         <ImageView
             android:id="@+id/frame"
@@ -153,11 +158,10 @@
             android:layout_alignLeft="@+id/pictureContainer"
             android:layout_alignRight="@+id/pictureContainer"
             android:layout_alignTop="@+id/pictureContainer"
+            android:layout_below="@id/termsAcceptanceCheckbox"
             android:background="@drawable/image_frame"
             android:contentDescription="@string/app_name"
-            android:layout_below="@id/termsAcceptanceCheckbox"
-            android:visibility="invisible">
-        </ImageView>
+            android:visibility="gone"></ImageView>
 
 
         <Button
@@ -165,15 +169,14 @@
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_alignLeft="@+id/textName"
+            android:layout_alignParentBottom="true"
             android:layout_alignRight="@+id/textName"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="1dp"
             android:layout_marginRight="1dp"
-            android:layout_marginBottom="10dp"
-            android:layout_alignParentBottom="true"
             android:background="@color/app_primary_color"
             android:textColor="@color/White"
-            android:textSize="16sp"
-            />
+            android:textSize="16sp" />
 
         <ProgressBar
             android:id="@+id/progressBar"

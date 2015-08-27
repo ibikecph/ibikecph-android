@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" android:id="@+id/scrollView2">
+        android:layout_marginTop="10dp">
 
         <RelativeLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-                >
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/textLogedIn"
@@ -23,19 +24,23 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp"
                 android:gravity="center"
-                android:text=""
-                    />
+                android:text="" />
 
-            <ImageView
+            <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/pictureContainer"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_below="@+id/textLogedIn"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/rounded_imageview"
-                android:contentDescription="@string/app_name" >
-            </ImageView>
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/rounded_imageview"
+                app:riv_border_color="@color/Grey"
+                app:riv_border_width="1dip"
+                app:riv_corner_radius="8dip"
+                app:riv_mutate_background="true"
+                app:riv_oval="false"
+                app:riv_tile_mode="repeat" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -45,8 +50,8 @@
                 android:layout_alignRight="@+id/pictureContainer"
                 android:layout_alignTop="@+id/pictureContainer"
                 android:background="@drawable/rounded_image_frame"
-                android:contentDescription="@string/app_name" >
-            </ImageView>
+                android:contentDescription="@string/app_name"
+                android:visibility="gone"></ImageView>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -56,8 +61,8 @@
                 android:layout_alignRight="@+id/pictureContainer"
                 android:layout_alignTop="@+id/pictureContainer"
                 android:background="@drawable/image_frame"
-                android:contentDescription="@string/app_name" >
-            </ImageView>
+                android:contentDescription="@string/app_name"
+                android:visibility="gone"></ImageView>
 
             <TextView
                 android:id="@+id/textName"
@@ -66,8 +71,7 @@
                 android:layout_below="@+id/pictureContainer"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:gravity="center"
-                    />
+                android:gravity="center" />
 
             <ImageView
                 android:id="@+id/imgLinked"
@@ -89,8 +93,7 @@
                 android:layout_marginTop="15dp"
                 android:gravity="center"
                 android:paddingLeft="40dp"
-                android:paddingRight="40dp"
-                    />
+                android:paddingRight="40dp" />
 
             <Button
                 android:id="@+id/btnDelete"
@@ -104,19 +107,20 @@
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:text="Delete account"
-                android:textColor="@color/White"/>
+                android:textColor="@color/White" />
 
             <Button
-                    android:id="@+id/btnLogout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_below="@+id/btnDelete"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="1dp"
-                    android:layout_marginRight="1dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/btn_delete_selector"
-                    android:textColor="@color/White" android:text="Log out"/>
+                android:id="@+id/btnLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_below="@+id/btnDelete"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/btn_delete_selector"
+                android:text="Log out"
+                android:textColor="@color/White" />
         </RelativeLayout>
     </ScrollView>
 
@@ -126,6 +130,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone" >
-    </ProgressBar>
+        android:visibility="gone"></ProgressBar>
 </RelativeLayout>

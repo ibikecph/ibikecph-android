@@ -9,6 +9,8 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,8 +23,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.facebook.Session;
+import com.facebook.widget.ProfilePictureView;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.DB;
@@ -42,7 +47,7 @@ public class FacebookProfileActivity extends Activity {
     private Button btnDelete;
     private Handler handler;
     private ProgressBar progressBar;
-    private ImageView pictureContainer;
+    private RoundedImageView pictureContainer;
     private String username = "";
     public static final int RESULT_USER_DELETED = 101;
 
@@ -54,7 +59,7 @@ public class FacebookProfileActivity extends Activity {
         setContentView(R.layout.activity_facebook_profile);
 
         actionBar = getActionBar();
-        pictureContainer = (ImageView) findViewById(R.id.pictureContainer);
+        pictureContainer = (RoundedImageView) findViewById(R.id.pictureContainer);
         textLogedIn = (TextView) findViewById(R.id.textLogedIn);
         textName = (TextView) findViewById(R.id.textName);
         textLinked = (TextView) findViewById(R.id.textLinked);
@@ -66,7 +71,7 @@ public class FacebookProfileActivity extends Activity {
             @Override
             public void onClick(View v) {
                 logout();
-                
+
                 setResult(RESULT_OK);
                 finish();
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -236,10 +241,14 @@ public class FacebookProfileActivity extends Activity {
                 try {
                     InputStream is = (InputStream) new URL(url).getContent();
                     final Drawable d = Drawable.createFromStream(is, "src name");
+                    String httpsUrl = url.replace("http", "https");
+                    URL img_value = new URL(httpsUrl);
+                    final Bitmap profilePic = BitmapFactory.decodeStream(img_value.openConnection().getInputStream());
                     FacebookProfileActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            pictureContainer.setImageDrawable(d);
+                            pictureContainer.setImageBitmap(profilePic);
+                            pictureContainer.setScaleType(ImageView.ScaleType.CENTER);
                             pictureContainer.invalidate();
                         }
                     });
