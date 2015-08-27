@@ -391,6 +391,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         if (imageData != null && imageData.bmp != null && imageData.base64 != null) {
             base64Image = imageData.base64;
             ((ImageView) findViewById(R.id.pictureContainer)).setImageDrawable(imageData.bmp);
+            findViewById(R.id.frame).setVisibility(View.VISIBLE);
         } else {
             Toast.makeText(this, "Error fetching the image", Toast.LENGTH_SHORT).show();
         }

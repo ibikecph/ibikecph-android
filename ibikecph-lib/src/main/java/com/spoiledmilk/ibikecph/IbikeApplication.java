@@ -15,6 +15,7 @@ import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.text.Spanned;
 import android.util.Log;
+
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
@@ -26,6 +27,7 @@ import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.SMDictionary;
+
 import io.realm.Realm;
 import io.realm.exceptions.RealmMigrationNeededException;
 
@@ -65,7 +67,7 @@ public class IbikeApplication extends Application {
         // Ensure all tracks have been geocoded.
         try {
             TrackHelper.ensureAllTracksGeocoded();
-        } catch(RealmMigrationNeededException e) {
+        } catch (RealmMigrationNeededException e) {
             // If we need to migrate Realm, just delete the file
             /* FIXME: This should clearly not go into production. We should decide on a proper DB schema, and make proper
                migrations if we need to change it. */
@@ -73,7 +75,6 @@ public class IbikeApplication extends Application {
             Realm.deleteRealmFile(this);
         }
     }
-
 
 
     public static Spanned getSpanned(String key) {
@@ -88,8 +89,8 @@ public class IbikeApplication extends Application {
         return instance.getApplicationContext();
     }
 
-    public static BikeLocationService getService() {	
-    	return BikeLocationService.getInstance();
+    public static BikeLocationService getService() {
+        return BikeLocationService.getInstance();
     }
 
     public static TrackingManager getTrackingManager() {
@@ -198,7 +199,7 @@ public class IbikeApplication extends Application {
      */
     public static void registerWeeklyNotification() {
         Context ctx = IbikeApplication.getContext();
-        AlarmManager alarmMgr =  (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmMgr = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(ctx, MilestoneManager.class);
         intent.putExtra("weekly", true);
         PendingIntent alarmIntent = PendingIntent.getService(ctx, 0, intent, 0);
@@ -207,7 +208,7 @@ public class IbikeApplication extends Application {
 
         // Without resorting to third party libraries, there's no real elegant way of doing this...
         // Add a day
-        while ( !(nextSunday.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && nextSunday.get(Calendar.HOUR_OF_DAY) < 18) ) {
+        while (!(nextSunday.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && nextSunday.get(Calendar.HOUR_OF_DAY) < 18)) {
             nextSunday.add(Calendar.DAY_OF_WEEK, 1);
 
             // If today is Sunday but it's after 8, make sure to at least trigger on the *next* Sunday! :)

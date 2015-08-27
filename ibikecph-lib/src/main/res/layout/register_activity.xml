@@ -124,7 +124,7 @@
             android:layout_height="70dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:background="@drawable/profile_default_image"
+            android:background="@drawable/camera_profile"
             android:clickable="true"
             android:contentDescription="@string/app_name"
             android:onClick="onImageContainerClick"
@@ -141,10 +141,12 @@
             android:layout_alignTop="@+id/pictureContainer"
             android:background="@drawable/rounded_image_frame"
             android:contentDescription="@string/app_name"
-            android:layout_below="@id/termsAcceptanceCheckbox">
+            android:layout_below="@id/termsAcceptanceCheckbox"
+            android:visibility="visible">
         </ImageView>
 
         <ImageView
+            android:id="@+id/frame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/pictureContainer"
@@ -153,7 +155,8 @@
             android:layout_alignTop="@+id/pictureContainer"
             android:background="@drawable/image_frame"
             android:contentDescription="@string/app_name"
-            android:layout_below="@id/termsAcceptanceCheckbox">
+            android:layout_below="@id/termsAcceptanceCheckbox"
+            android:visibility="invisible">
         </ImageView>
 
 
