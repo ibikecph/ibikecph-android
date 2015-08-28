@@ -39,20 +39,25 @@
             android:text="Indsaml dine cykeldata og se hvor og hvor meget du cykler til dagligt. Få ugentlige beskeder og opnå milepæle når du cykler.\n\nDine cykeldata blever delt anonymt med Københavns Kommune og Regions Hovedstaden og er med til skabe ny viden om cykeladfærd. Viden som gør at vi kan skabe bedre cykelforhold i og omkring København."
             android:textColor="@color/white" />
 
-        <Button
-            android:id="@+id/readMoreButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/stroke_button"
-            android:onClick="onReadMoreClick"
-            android:padding="16dp"
-            android:text="Read more"
-            android:textColor="@color/white" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/readMoreButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/stroke_button"
+        android:onClick="onReadMoreClick"
+        android:padding="16dp"
+        android:text="Read more"
+        android:textColor="@color/white"
+        android:layout_above="@+id/buttonLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"/>
+
     <LinearLayout
+        android:id="@+id/buttonLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
