@@ -240,6 +240,8 @@ public class TrackingManager implements LocationListener {
                                 JSONObject trackData = new JSONObject();
                                 JSONArray jsonArray = new JSONArray();
                                 int amountToSend = 0;
+                                int count = 0;
+                                Log.d("DV", "Track ID = " + tracksToUpload.get(i).getID());
 
                                 Date start = tracksToUpload.get(i).getLocations().first().getTimestamp();
 
@@ -274,22 +276,29 @@ public class TrackingManager implements LocationListener {
                                 if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
                                     int id = responseNode.get("data").get("id").asInt();
                                     Log.d("DV", "ID modtaget = " + id);
-                                    int count = responseNode.get("data").get("count").asInt();
+                                    count = responseNode.get("data").get("count").asInt();
                                     Log.d("DV", "Count = " + count);
-                                    //Log.d("DV", "responseNode = " + responseNode.toString());
-
+                                    Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
                                     // Set the new ID received from the server if the server received all data
                                     if (count == amountToSend) {
                                         Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
                                         tracksToUpload.get(i).setID(id);
                                         Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
                                         attemptsToSend = 0;
-                                    } // Try to resend maximum 3 times.
-                                    else {
-                                        attemptsToSend++;
-                                        if (attemptsToSend < 4) {
-                                            uploadTracksToServer();
-                                        }
+                                    }
+                                } else {
+                                    // Try to resend maximum 3 times.
+                                    attemptsToSend++;
+                                    if (attemptsToSend < 4) {
+                                        Log.d("DV", "Resending track.. attempt " + attemptsToSend);
+                                        i--;
+                                        //uploadeFakeTrack();
+                                    } else {
+                                        attemptsToSend = 0;
+                                        //Delete track?
+                                        //tracksToUpload.get(i).removeFromRealm();
+                                        //realm.commitTransaction();
+                                        //realm.close();
                                     }
                                 }
                             }
@@ -338,10 +347,11 @@ public class TrackingManager implements LocationListener {
         track.setTimestamp(stamp);
         track.setDuration(5234 / 1000);
         track.setLength(250);
-        track.setID(0);
+        track.setID(1);
 
         realm.commitTransaction();
-        uploadeFakeTrack();
+        realm.close();
+        //uploadeFakeTrack();
     }
 
     //Test method
@@ -356,7 +366,7 @@ public class TrackingManager implements LocationListener {
 
                 try {
                     // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
-                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).findAll();
+                    tracksToUpload = realm.where(Track.class).greaterThanOrEqualTo("ID", 0).findAll();
                     Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
                 } catch (Exception e) {
                     Log.d("DV", "uploadTracksToServer-exception: " + e.getMessage());
@@ -373,6 +383,9 @@ public class TrackingManager implements LocationListener {
                                 postObject = new JSONObject();
                                 JSONObject trackData = new JSONObject();
                                 JSONArray jsonArray = new JSONArray();
+                                int amountToSend = 0;
+                                int count = 0;
+                                Log.d("DV", "Track ID = " + tracksToUpload.get(i).getID());
 
                                 trackData.put("count", 1);
                                 trackData.put("timestamp", "133713371"); //Seconds
@@ -384,6 +397,7 @@ public class TrackingManager implements LocationListener {
                                     locationsObject.put("seconds_passed", 20); //Seconds
                                     locationsObject.put("latitude", 55.1337);
                                     locationsObject.put("longitude", 12.1337);
+                                    amountToSend++;
                                     jsonArray.put(locationsObject);
                                 }
 
@@ -397,12 +411,29 @@ public class TrackingManager implements LocationListener {
                                 if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
                                     int id = responseNode.get("data").get("id").asInt();
                                     Log.d("DV", "ID modtaget = " + id);
-                                    Log.d("DV", "Count = " + responseNode.get("data").get("count").asInt());
-                                    Log.d("DV", "responseNode = " + responseNode.toString());
-                                    // Set the new ID received from the server
-                                    Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
-                                    tracksToUpload.get(i).setID(id);
-                                    //Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
+                                    count = responseNode.get("data").get("count").asInt();
+                                    Log.d("DV", "Count = " + count);
+                                    // Set the new ID received from the server if the server received all data
+                                    if (count == amountToSend) {
+                                        Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
+                                        tracksToUpload.get(i).setID(id);
+                                        Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
+                                        attemptsToSend = 0;
+                                    }
+                                } else {
+                                    // Try to resend maximum 3 times.
+                                    attemptsToSend++;
+                                    if (attemptsToSend < 4) {
+                                        Log.d("DV", "Resending track.. attempt " + attemptsToSend);
+                                        i--;
+                                        //uploadeFakeTrack();
+                                    } else {
+                                        attemptsToSend = 0;
+                                        //Delete track?
+                                        //tracksToUpload.get(i).removeFromRealm();
+                                        //realm.commitTransaction();
+                                        //realm.close();
+                                    }
                                 }
                             }
                             Log.d("DV", "Saving changes to DB!");
