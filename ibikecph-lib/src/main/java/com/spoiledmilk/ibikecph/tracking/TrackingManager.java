@@ -276,6 +276,7 @@ public class TrackingManager implements LocationListener {
                                     Log.d("DV", "ID modtaget = " + id);
                                     int count = responseNode.get("data").get("count").asInt();
                                     Log.d("DV", "Count = " + count);
+                                    //Log.d("DV", "responseNode = " + responseNode.toString());
 
                                     // Set the new ID received from the server if the server received all data
                                     if (count == amountToSend) {
@@ -340,7 +341,7 @@ public class TrackingManager implements LocationListener {
         track.setID(0);
 
         realm.commitTransaction();
-        //uploadeFakeTrack();
+        uploadeFakeTrack();
     }
 
     //Test method
@@ -373,6 +374,7 @@ public class TrackingManager implements LocationListener {
                                 JSONObject trackData = new JSONObject();
                                 JSONArray jsonArray = new JSONArray();
 
+                                trackData.put("count", 1);
                                 trackData.put("timestamp", "133713371"); //Seconds
                                 trackData.put("from_name", "Borgergade 24");
                                 trackData.put("to_name", "Vestergade 20C");
@@ -396,6 +398,7 @@ public class TrackingManager implements LocationListener {
                                     int id = responseNode.get("data").get("id").asInt();
                                     Log.d("DV", "ID modtaget = " + id);
                                     Log.d("DV", "Count = " + responseNode.get("data").get("count").asInt());
+                                    Log.d("DV", "responseNode = " + responseNode.toString());
                                     // Set the new ID received from the server
                                     Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
                                     tracksToUpload.get(i).setID(id);

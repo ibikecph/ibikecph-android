@@ -99,8 +99,12 @@ public class BikeLocationService extends Service implements LocationListener, co
     }
 
     protected void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, this);
+        try {
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    mGoogleApiClient, mLocationRequest, this);
+        }catch(Exception ex){
+            Log.d("DV", "startLocationUpdates-Exception: " + ex.getMessage());
+        }
         Log.d("DV", "startLocationUpdates - location updates started!");
     }
 

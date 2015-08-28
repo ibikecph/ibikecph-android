@@ -149,7 +149,7 @@ public class MapActivity extends IBCMapActivity {
         this.mapView.getUserLocationOverlay().enableFollowLocation();
         this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
-        TrackingManager.uploadTracksToServer();
+        //TrackingManager.uploadTracksToServer();
     }
 
     /**
@@ -178,7 +178,7 @@ public class MapActivity extends IBCMapActivity {
         if (id == R.id.ab_search) {
             // Test-data
             //TrackingManager.uploadTracksToServer();
-            //TrackingManager.createFakeTrack();
+            TrackingManager.createFakeTrack();
 
             // to avoid too many not parcelable things, just set the map back to default state
             this.mapView.changeState(IBCMapView.MapState.DEFAULT);
