@@ -241,7 +241,7 @@ public class TrackingManager implements LocationListener {
                                 JSONArray jsonArray = new JSONArray();
                                 int amountToSend = 0;
                                 int count = 0;
-                                Log.d("DV", "Track ID = " + tracksToUpload.get(i).getID());
+                                Log.d("DV", "Track ID to be uploaded = " + tracksToUpload.get(i).getID());
 
                                 Date start = tracksToUpload.get(i).getLocations().first().getTimestamp();
 
@@ -302,14 +302,14 @@ public class TrackingManager implements LocationListener {
                                     }
                                 }
                             }
-                            Log.d("DV", "Saving changes to DB!");
-                            realm.commitTransaction();
-                            realm.close();
                         } catch (JSONException e) {
                             LOG.e(e.getLocalizedMessage());
                         }
                     }
                 }
+                Log.d("DV", "Saving changes to DB!");
+                realm.commitTransaction();
+                realm.close();
             }
         }).start();
     }
@@ -385,9 +385,9 @@ public class TrackingManager implements LocationListener {
                                 JSONArray jsonArray = new JSONArray();
                                 int amountToSend = 0;
                                 int count = 0;
-                                Log.d("DV", "Track ID = " + tracksToUpload.get(i).getID());
+                                Log.d("DV", "Track ID to be uploaded = " + tracksToUpload.get(i).getID());
 
-                                trackData.put("count", 1);
+                                trackData.put("count", 3);
                                 trackData.put("timestamp", "133713371"); //Seconds
                                 trackData.put("from_name", "Borgergade 24");
                                 trackData.put("to_name", "Vestergade 20C");
@@ -436,14 +436,14 @@ public class TrackingManager implements LocationListener {
                                     }
                                 }
                             }
-                            Log.d("DV", "Saving changes to DB!");
-                            realm.commitTransaction();
-                            realm.close();
                         } catch (JSONException e) {
                             LOG.e(e.getLocalizedMessage());
                         }
                     }
                 }
+                Log.d("DV", "Saving changes to DB!");
+                realm.commitTransaction();
+                realm.close();
             }
         }).start();
     }
