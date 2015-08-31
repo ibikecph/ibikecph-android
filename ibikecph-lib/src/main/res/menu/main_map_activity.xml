@@ -1,13 +1,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
-      tools:context="com.spoiledmilk.ibikecph.map.MapActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.spoiledmilk.ibikecph.map.MapActivity">
 
-    <item android:id="@+id/ab_search" android:title=""
-          android:icon="@drawable/ab_search"
-          android:orderInCategory="100" android:showAsAction="always" />
+    <item
+        android:id="@+id/createFakeTrack"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="create"
+        android:visible="true" />
 
-    <item android:id="@+id/ab_problem" android:title="Problem"
-          android:text="Problem"
-          android:orderInCategory="100" android:showAsAction="always"
-            android:visible="false" />
+    <item
+        android:id="@+id/uploadFakeTrack"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="upload"
+        android:visible="true" />
+
+    <item
+        android:id="@+id/ab_search"
+        android:icon="@drawable/ab_search"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="" />
+
+    <item
+        android:id="@+id/ab_problem"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:text="Problem"
+        android:title="Problem"
+        android:visible="false" />
 </menu>

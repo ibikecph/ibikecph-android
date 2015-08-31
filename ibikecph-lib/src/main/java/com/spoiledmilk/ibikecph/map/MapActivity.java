@@ -149,7 +149,7 @@ public class MapActivity extends IBCMapActivity {
         this.mapView.getUserLocationOverlay().enableFollowLocation();
         this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
-        TrackingManager.uploadTracksToServer();
+        //TrackingManager.uploadTracksToServer();
         //TrackingManager.uploadeFakeTrack();
     }
 
@@ -177,11 +177,6 @@ public class MapActivity extends IBCMapActivity {
         int id = item.getItemId();
 
         if (id == R.id.ab_search) {
-            // Test-data
-            //TrackingManager.uploadTracksToServer();
-            //TrackingManager.createFakeTrack();
-            //TrackingManager.uploadeFakeTrack();
-
             // to avoid too many not parcelable things, just set the map back to default state
             this.mapView.changeState(IBCMapView.MapState.DEFAULT);
 
@@ -201,6 +196,10 @@ public class MapActivity extends IBCMapActivity {
                 materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
 
             }
+        } else if (id == R.id.uploadFakeTrack) {
+            TrackingManager.uploadeFakeTrack();
+        } else if (id == R.id.createFakeTrack) {
+            TrackingManager.createFakeTrack();
         }
 
         return super.onOptionsItemSelected(item);
