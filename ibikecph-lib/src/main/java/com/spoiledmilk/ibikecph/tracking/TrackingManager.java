@@ -265,7 +265,7 @@ public class TrackingManager implements LocationListener {
                                     Log.d("DV", "seconds_past = " + tl.get(j).getTimestamp() + " / seconds : " + ((tl.get(j).getTimestamp().getTime() / 1000) - (start.getTime() / 1000)) + " (lat,lon): " + tl.get(j).getLatitude() + " , " + tl.get(j).getLongitude());
                                 }
 
-                                trackData.put("coordinates_attributes", jsonArray);
+                                trackData.put("coordinates", jsonArray);
                                 postObject.put("auth_token", authToken);
                                 postObject.put("track", trackData);
                                 Log.d("DV", "postObject = " + postObject.toString());
@@ -401,7 +401,7 @@ public class TrackingManager implements LocationListener {
                                     jsonArray.put(locationsObject);
                                 }
 
-                                trackData.put("coordinates_attributes", jsonArray);
+                                trackData.put("coordinates", jsonArray);
                                 postObject.put("auth_token", authToken);
                                 postObject.put("track", trackData);
                                 Log.d("DV", "postObject = " + postObject.toString());
