@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -55,6 +56,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     CheckBox termsAcceptanceCheckbox;
     TextView termsAcceptanceLabel;
     TextView termsAcceptanceLink;
+    TextView textOr;
 
     Handler handler, facebookHandler;
 
@@ -83,6 +85,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         setContentView(R.layout.register_activity);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
+        textOr = (TextView) findViewById(R.id.textOr);
         textName = (EditText) findViewById(R.id.textName);
         textEmail = (EditText) findViewById(R.id.textEmail);
         textNewPassword = (EditText) findViewById(R.id.textNewPassword);
@@ -217,6 +220,51 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             }
         });
 
+
+        textName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    textName.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    textName.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        });
+
+        textEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    textEmail.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    textEmail.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        });
+
+        textNewPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        });
+
+        textPasswordConfirm.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -272,6 +320,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         this.termsAcceptanceLink.setText(Html.fromHtml("<a href='" + IbikeApplication.getString("accept_user_terms_link") + "'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>"));
         this.termsAcceptanceLink.setMovementMethod(LinkMovementMethod.getInstance());
 
+        textOr.setText(IbikeApplication.getString("or"));
         textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
         textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
         textPasswordConfirm.setHint(IbikeApplication.getString("register_password_repeat_placeholder"));

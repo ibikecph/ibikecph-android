@@ -29,8 +29,7 @@
             android:layout_below="@+id/btnFacebookLogin"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="25dp"
-            android:text="eller"
-            android:textStyle="italic" />
+            android:text="" />
 
         <EditText
             android:id="@+id/textName"
@@ -44,7 +43,7 @@
             android:inputType="text"
             android:paddingLeft="10dp"
             android:paddingRight="25dp"
-            android:textSize="14sp">
+            android:textSize="16sp">
 
             <requestFocus />
         </EditText>
@@ -60,7 +59,7 @@
             android:inputType="textEmailAddress"
             android:paddingLeft="10dp"
             android:paddingRight="25dp"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
         <EditText
             android:id="@+id/textNewPassword"
@@ -127,16 +126,16 @@
             android:layout_below="@id/termsAcceptanceCheckbox"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:src="@drawable/camera_profile"
             android:clickable="true"
             android:contentDescription="@string/app_name"
             android:onClick="onImageContainerClick"
-            app:riv_corner_radius="8dip"
-            app:riv_border_width="1dip"
+            android:src="@drawable/camera_profile"
             app:riv_border_color="@color/Grey"
+            app:riv_border_width="1dip"
+            app:riv_corner_radius="8dip"
             app:riv_mutate_background="true"
-            app:riv_tile_mode="repeat"
-            app:riv_oval="false"/>
+            app:riv_oval="false"
+            app:riv_tile_mode="repeat" />
 
         <ImageView
             android:layout_width="wrap_content"

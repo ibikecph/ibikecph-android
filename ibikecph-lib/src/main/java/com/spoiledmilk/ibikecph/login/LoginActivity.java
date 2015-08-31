@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -159,6 +160,30 @@ public class LoginActivity extends Activity implements FBLoginListener {
         textEmail.setText(IbikeApplication.getEmail());
         textPassword.setText(IbikeApplication.getPassword());
         Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
+
+        textEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b){
+                    textEmail.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                }
+                else{
+                    textEmail.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        });
+
+        textPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b){
+                    textPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                }
+                else{
+                    textPassword.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        });
     }
 
     private void performFBLogin(Bundle savedInstanceState) {
@@ -214,7 +239,6 @@ public class LoginActivity extends Activity implements FBLoginListener {
         textLoginTitle.setText(IbikeApplication.getString("please_login"));
         textLoginTitle.setTypeface(IbikeApplication.getItalicFont());
         textOr.setText(IbikeApplication.getString("or"));
-        textOr.setTypeface(IbikeApplication.getItalicFont());
         textEmail.setHint(IbikeApplication.getString("register_email_placeholder"));
         textEmail.setHintTextColor(getResources().getColor(R.color.HintColor));
         textPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
