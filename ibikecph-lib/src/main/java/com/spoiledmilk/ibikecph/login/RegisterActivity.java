@@ -220,6 +220,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             }
         });
 
+        textName.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
 
         textName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
