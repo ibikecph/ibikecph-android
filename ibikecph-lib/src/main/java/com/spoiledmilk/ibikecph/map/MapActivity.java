@@ -150,7 +150,6 @@ public class MapActivity extends IBCMapActivity {
         this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
         //TrackingManager.uploadTracksToServer();
-        //TrackingManager.uploadeFakeTrack();
     }
 
     /**

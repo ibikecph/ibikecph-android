@@ -351,7 +351,6 @@ public class TrackingManager implements LocationListener {
 
         realm.commitTransaction();
         realm.close();
-        //uploadeFakeTrack();
     }
 
     //Test method
