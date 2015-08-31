@@ -20,8 +20,10 @@ import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.AddressParser;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.util.DB;
@@ -29,57 +31,56 @@ import com.spoiledmilk.ibikecph.util.Util;
 
 /**
  * A Fragment used inside the LeftMenu for adding a favorite address.
- * @author jens
  *
+ * @author jens
  */
 public class AddFavoriteFragment extends Fragment implements RadioGroup.OnCheckedChangeListener {
 
-	protected EditText textAddress;
-	protected EditText textFavoriteName;
-	private Button btnSave;
-	private FavoritesData favoritesData = null;
-	protected String currentFavoriteType = "";
-	private AlertDialog dialog;
-	boolean isTextChanged = false;
+    protected EditText textAddress;
+    protected EditText textFavoriteName;
+    private Button btnSave;
+    private FavoritesData favoritesData = null;
+    protected String currentFavoriteType = "";
+    private AlertDialog dialog;
+    boolean isTextChanged = false;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		super.onCreateView(inflater, container, savedInstanceState);
-		View ret = inflater.inflate(R.layout.fragment_add_favorite, container, false);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View ret = inflater.inflate(R.layout.fragment_add_favorite, container, false);
 
-		textAddress = (EditText) ret.findViewById(R.id.textAddress);
-		textAddress.setClickable(true);
-		textAddress.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				Intent i = new Intent(getActivity(), SearchAutocompleteActivity.class);
-				i.putExtra("isA", true);
-				getActivity().startActivityForResult(i, 2);
-			}
-		});
+        textAddress = (EditText) ret.findViewById(R.id.textAddress);
+        textAddress.setClickable(true);
+        textAddress.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Intent i = new Intent(getActivity(), SearchAutocompleteActivity.class);
+                i.putExtra("isA", true);
+                getActivity().startActivityForResult(i, 2);
+            }
+        });
 
-		textFavoriteName = (EditText) ret.findViewById(R.id.textFavoriteName);
-		textFavoriteName.setOnFocusChangeListener(new OnFocusChangeListener() {
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				if (hasFocus && !isTextChanged) {
+        textFavoriteName = (EditText) ret.findViewById(R.id.textFavoriteName);
+        textFavoriteName.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus && !isTextChanged) {
 
-					isTextChanged = true;
-					//textFavoriteName.setText("");
-				}
-			}
-		});
+                    isTextChanged = true;
+                    //textFavoriteName.setText("");
+                }
+            }
+        });
 
 
-
-		btnSave = (Button) ret.findViewById(R.id.btnSave);
-		btnSave.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
+        btnSave = (Button) ret.findViewById(R.id.btnSave);
+        btnSave.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
                 saveFavorite();
-			}
-		});
+            }
+        });
 
-		textFavoriteName.setText(IbikeApplication.getString("Favorite"));
+        textFavoriteName.setText(IbikeApplication.getString("Favorite"));
 
         ((TextView) ret.findViewById(R.id.labelName)).setText(IbikeApplication.getString("Name"));
         ((TextView) ret.findViewById(R.id.labelAddress)).setText(IbikeApplication.getString("Address"));
@@ -95,7 +96,7 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
         onCheckedChanged((RadioGroup) ret.findViewById(R.id.favoriteTypeRadioGroup), R.id.radioButtonFavorite);
 
         return ret;
-	}
+    }
 
     public final void saveFavorite(boolean finish) {
         if (Util.isNetworkConnected(getActivity())) {
@@ -154,67 +155,79 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
         saveFavorite(true);
     }
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		initStrings();
-	}
+    @Override
+    public void onResume() {
+        super.onResume();
+        initStrings();
+    }
 
-	private void initStrings() {
-		textAddress.setHint(IbikeApplication.getString("add_favorite_address_placeholder"));
-		btnSave.setText(IbikeApplication.getString("save_favorite"));
-		if (currentFavoriteType.equals(""))
-			currentFavoriteType = IbikeApplication.getString("Favorite");
-	}
+    private void initStrings() {
+        textAddress.setHint(IbikeApplication.getString("add_favorite_address_placeholder"));
+        btnSave.setText(IbikeApplication.getString("save_favorite"));
+        if (currentFavoriteType.equals(""))
+            currentFavoriteType = IbikeApplication.getString("Favorite");
+    }
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-		Log.i("JC", "AddFavoriteFragment on address result");
-		
-		if (data != null) {
-			Bundle b = data.getExtras();
-			if (b.containsKey("address") && b.containsKey("lat") && b.containsKey("lon")) {
-				String address = AddressParser.textFromBundle(b).replace("\n", "");
-				favoritesData = new FavoritesData(textFavoriteName.getText().toString(), address, currentFavoriteType, b.getDouble("lat"),
-						b.getDouble("lon"), -1);
-				textAddress.setText(address);
-				if (b.containsKey("poi")) {
-					textFavoriteName.setText(b.getString("poi"));
-				}
-			}
+        Log.i("JC", "AddFavoriteFragment on address result");
 
-		}
+        if (data != null) {
+            Bundle b = data.getExtras();
+            String address = "";
+            if (b.containsKey("address") && b.containsKey("lat") && b.containsKey("lon")) {
+                try {
+                    address = AddressParser.textFromBundle(b).replace("\n", "");
+                } catch (Exception ex) {
+                }
 
-	}
+                if (address.equals("")) {
+                    address = Address.street_s + " " + Address.houseNumber_s + ", " + Address.zip_s + " " + Address.city_s;
+                    favoritesData = new FavoritesData(textFavoriteName.getText().toString(), address, currentFavoriteType, Address.lat_s,
+                            Address.lon_s, -1);
+                } else {
+                    favoritesData = new FavoritesData(textFavoriteName.getText().toString(), address, currentFavoriteType, b.getDouble("lat"),
+                            b.getDouble("lon"), -1);
+                }
 
-	@Override
-	public void onPause() {
-		super.onPause();
-		if (dialog != null && dialog.isShowing())
-			dialog.dismiss();
-		hideKeyboard();
-	}
+                textAddress.setText(address);
+                if (b.containsKey("poi")) {
+                    textFavoriteName.setText(b.getString("poi"));
+                }
+            }
 
-	private static boolean isPredefinedName(final String name) {
-		if (
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (dialog != null && dialog.isShowing())
+            dialog.dismiss();
+        hideKeyboard();
+    }
+
+    private static boolean isPredefinedName(final String name) {
+        if (
                 name.equals(IbikeApplication.getString("Favorite")) ||
-                name.equals(IbikeApplication.getString("School"))  ||
-				name.equals(IbikeApplication.getString("Work")) ||
-                name.equals(IbikeApplication.getString("Home")) ||
-                name.equals(""))
-			return true;
-		else
-			return false;
-	}
+                        name.equals(IbikeApplication.getString("School")) ||
+                        name.equals(IbikeApplication.getString("Work")) ||
+                        name.equals(IbikeApplication.getString("Home")) ||
+                        name.equals(""))
+            return true;
+        else
+            return false;
+    }
 
-	public void hideKeyboard() {
-		if (textFavoriteName != null) {
-			InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-			inputManager.hideSoftInputFromWindow(textFavoriteName.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-		}
-	}
+    public void hideKeyboard() {
+        if (textFavoriteName != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(textFavoriteName.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {

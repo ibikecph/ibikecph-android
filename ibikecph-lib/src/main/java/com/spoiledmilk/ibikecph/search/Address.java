@@ -35,6 +35,15 @@ public class Address implements Serializable {
     private double lon;
     private ILatLng location;
 
+    //Shitty solution!
+    public static String street_s = "";
+    public static String name_s = "";
+    public static String houseNumber_s = "";
+    public static String zip_s = "";
+    public static String city_s = "";
+    public static double lat_s = -1;
+    public static double lon_s = -1;
+
     public String getStreet() {
         return street;
     }
@@ -100,7 +109,6 @@ public class Address implements Serializable {
             this.lon = loc.getLongitude();
         }
     }
-
 
     public Address() {
 
@@ -228,25 +236,47 @@ public class Address implements Serializable {
 
             default:
                 break;
-
-
         }
+
         Log.d("DV", "fromSearch");
 
-        address.setLocation(new LatLng(searchListItem.getLatitude(), searchListItem.getLongitude()));
+        if (address.isCurrent) {
+            Log.d("DV", "jsonNode = " + searchListItem.getJsonNode().toString());
 
-        if (searchListItem.getZip() != null && !searchListItem.getZip().trim().equals("")) {
-            address.zip = searchListItem.getZip();
-        }
-        if (searchListItem.getCity() != null && !searchListItem.getCity().trim().equals("")) {
-            address.city = searchListItem.getCity();
+            double lat = Double.parseDouble(searchListItem.getJsonNode().get("wgs84koordinat").get("bredde").asText());
+            double lon = Double.parseDouble(searchListItem.getJsonNode().get("wgs84koordinat").get("længde").asText());
+
+            address.street = searchListItem.getJsonNode().get("vejnavn").get("navn").asText();
+            address.name = searchListItem.getJsonNode().get("vejnavn").get("navn").asText();
+            address.houseNumber = searchListItem.getJsonNode().get("husnr").asText();
+            address.zip = searchListItem.getJsonNode().get("postnummer").get("nr").asText();
+            address.city = searchListItem.getJsonNode().get("postnummer").get("navn").asText();
+            address.lat = lat;
+            address.lon = lon;
+
+            street_s = searchListItem.getJsonNode().get("vejnavn").get("navn").asText();
+            name_s = searchListItem.getJsonNode().get("vejnavn").get("navn").asText();
+            houseNumber_s = searchListItem.getJsonNode().get("husnr").asText();
+            zip_s = searchListItem.getJsonNode().get("postnummer").get("nr").asText();
+            city_s = searchListItem.getJsonNode().get("postnummer").get("navn").asText();
+            lat_s = lat;
+            lon_s = lon;
         } else {
-            address.city = searchListItem.getAdress();
-        }
+            address.setLocation(new LatLng(searchListItem.getLatitude(), searchListItem.getLongitude()));
 
-        address.street = searchListItem.getStreet();
-        address.name = searchListItem.getName();
-        address.houseNumber = searchListItem.getNumber();
+            if (searchListItem.getZip() != null && !searchListItem.getZip().trim().equals("")) {
+                address.zip = searchListItem.getZip();
+            }
+            if (searchListItem.getCity() != null && !searchListItem.getCity().trim().equals("")) {
+                address.city = searchListItem.getCity();
+            } else {
+                address.city = searchListItem.getAdress();
+            }
+
+            address.street = searchListItem.getStreet();
+            address.name = searchListItem.getName();
+            address.houseNumber = searchListItem.getNumber();
+        }
 
         Log.d("DV", "Address-search, city == " + address.city);
         Log.d("DV", "Address-search, street == " + address.street);
