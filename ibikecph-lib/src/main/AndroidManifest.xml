@@ -85,7 +85,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".login.RegisterActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible"/>
         <activity
             android:name=".search.SearchActivity"
             android:screenOrientation="portrait" />
