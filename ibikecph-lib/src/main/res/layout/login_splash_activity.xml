@@ -58,7 +58,8 @@
             android:onClick="onReadMoreClick"
             android:padding="16dp"
             android:text="Read more"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="18sp"/>
 
     </LinearLayout>
 

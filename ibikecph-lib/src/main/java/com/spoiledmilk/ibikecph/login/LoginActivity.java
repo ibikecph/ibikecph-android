@@ -244,11 +244,8 @@ public class LoginActivity extends Activity implements FBLoginListener {
         textPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
         textPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
         btnLogin.setText(IbikeApplication.getString("log_in"));
-        btnLogin.setTypeface(IbikeApplication.getBoldFont());
         btnFacebookLogin.setText(IbikeApplication.getString("login_with_fb"));
-        btnFacebookLogin.setTypeface(IbikeApplication.getBoldFont());
         btnRegister.setText(IbikeApplication.getString("register_with_mail"));
-        btnRegister.setTypeface(IbikeApplication.getBoldFont());
     }
 
     public void showProgressDialog() {

@@ -5,7 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.login;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,7 +22,6 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -99,7 +97,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         btnRegister = (Button) findViewById(R.id.btnRegister);
 
         btnRegister.setEnabled(false);
-        btnRegister.setBackgroundColor(Color.LTGRAY);
+        btnRegister.setBackground(getResources().getDrawable(R.drawable.stroke_button_inverted_ltgray));
 
         btnRegister.setOnClickListener(new OnClickListener() {
             @Override
@@ -457,7 +455,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     public void onTermsAcceptanceCheckboxClick(View v) {
         boolean isChecked = this.termsAcceptanceCheckbox.isChecked();
         btnRegister.setEnabled(isChecked);
-        btnRegister.setBackgroundColor(isChecked ? getResources().getColor(IbikeApplication.getPrimaryColor()) : Color.LTGRAY);
+        btnRegister.setBackground(isChecked ? getResources().getDrawable(R.drawable.stroke_button_inverted_red) : getResources().getDrawable(R.drawable.stroke_button_inverted_ltgray));
     }
 
     private void launchErrorDialog(String title, String info) {
