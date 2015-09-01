@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -18,7 +19,7 @@ import com.google.android.gms.location.ActivityRecognition;
  * A class for keeping track of the ActivityRecognitionApi subscription. The actual data handling is taken care of by
  * BikeActivityService.
  */
-public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
+public class ActivityRecognitionClient implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
 
     private GoogleApiClient mGoogleApiClient;
     private PendingIntent mActivityDetectionPendingIntent;
@@ -112,7 +113,11 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
     public void releaseActivityUpdates() {
         Log.d("JC", "Releasing activity updates");
         if (tracking) {
-            ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(mGoogleApiClient, getActivityDetectionPendingIntent());
+            try {
+                ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(mGoogleApiClient, getActivityDetectionPendingIntent());
+            } catch (Exception ex) {
+                Log.d("DV", "releaseActivityUpdates-exception = " + ex.getMessage());
+            }
         }
         this.tracking = false;
     }
@@ -124,7 +129,7 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
 
     public void onConnectionFailed(ConnectionResult connectionResult) {
         // http://developer.android.com/reference/com/google/android/gms/common/ConnectionResult.html
-        Log.d("JC", "Failed to connect to the Google API: "+connectionResult.toString());
+        Log.d("JC", "Failed to connect to the Google API: " + connectionResult.toString());
 
         // Check if the connection failed because of Google Play Services being too old
         if (connectionResult.getErrorCode() == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED) {
@@ -139,7 +144,7 @@ public class ActivityRecognitionClient  implements GoogleApiClient.ConnectionCal
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gms&hl=en"));
         PendingIntent googlePlayStoreIntent = PendingIntent.getActivity(IbikeApplication.getContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification.Builder  builder = new Notification.Builder(IbikeApplication.getContext());
+        Notification.Builder builder = new Notification.Builder(IbikeApplication.getContext());
         builder.setContentText(IbikeApplication.getString("play_services_version_error")).setContentTitle(IbikeApplication.getAppName());
         builder.setContentIntent(googlePlayStoreIntent);
         builder.setSmallIcon(R.drawable.logo);
