@@ -7,14 +7,14 @@
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="create"
-        android:visible="gone" />
+        android:visible="false" />
 
     <item
         android:id="@+id/uploadFakeTrack"
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="upload"
-        android:visible="gone" />
+        android:visible="false" />
 
     <item
         android:id="@+id/ab_search"

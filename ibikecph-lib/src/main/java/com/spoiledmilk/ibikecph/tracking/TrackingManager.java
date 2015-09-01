@@ -205,7 +205,7 @@ public class TrackingManager implements LocationListener {
         // Geocode the track. The TrackHelper will open a new Realm transaction.
         TrackHelper helper = new TrackHelper(track);
         helper.geocodeTrack();
-        uploadTracksToServer();
+        //uploadTracksToServer();
     }
 
     /**
@@ -318,13 +318,34 @@ public class TrackingManager implements LocationListener {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Realm realm = Realm.getInstance(IbikeApplication.getContext());
+                realm.beginTransaction();
+                RealmResults<Track> trackToDelete = null;
+
+                try {
+                    trackToDelete = realm.where(Track.class).equalTo("ID", id).findAll();
+                } catch (Exception e) {
+                    Log.d("DV", "deleteTrack-exception: " + e.getMessage());
+                }
+
                 try {
                     if (IbikeApplication.isUserLogedIn()) {
                         String authToken = IbikeApplication.getAuthToken();
                         JSONObject postObject = new JSONObject();
                         postObject.put("auth_token", authToken);
                         Log.d("DV", "Track ID to delete = " + id);
-                        HttpUtils.deleteFromServer(Config.API_UPLOAD_TRACKS + "/" + id, postObject);
+                        JsonNode responseNode = HttpUtils.deleteFromServer(Config.API_UPLOAD_TRACKS + "/" + id, postObject);
+                        if (responseNode != null) {
+                            Log.d("DV", "responseNode = " + responseNode.toString());
+                            if (responseNode.get("success").asBoolean()) {
+                                Log.d("DV", "Track deleted from server, deleting from APP now!");
+                                trackToDelete.get(0).removeFromRealm();
+                                realm.commitTransaction();
+                                realm.close();
+                            } else {
+                                Log.d("DV", "Track not deleted - something went wrong on the server");
+                            }
+                        }
                     }
                 } catch (JSONException e) {
                     LOG.e(e.getLocalizedMessage());
@@ -347,7 +368,7 @@ public class TrackingManager implements LocationListener {
         track.setTimestamp(stamp);
         track.setDuration(5234 / 1000);
         track.setLength(250);
-        track.setID(1);
+        track.setID(0);
 
         realm.commitTransaction();
         realm.close();
