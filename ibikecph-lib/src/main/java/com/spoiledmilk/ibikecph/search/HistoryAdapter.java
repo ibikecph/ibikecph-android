@@ -43,8 +43,8 @@ public class HistoryAdapter extends ArrayAdapter<SearchListItem> {
         final SearchListItem item = getItem(position);
 
         String text = item.getName();
-        if (item.getName().length() > 30) {
-            text = item.getName().substring(0, 27) + "...";
+        if (item.getName().length() > 40) {
+            text = item.getName().substring(0, 37) + "...";
         }
         holder.textLocation.setText(text);
 
