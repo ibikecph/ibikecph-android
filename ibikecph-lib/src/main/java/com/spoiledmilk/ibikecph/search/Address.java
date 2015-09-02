@@ -141,13 +141,21 @@ public class Address implements Serializable {
     public String getStreetAddress() {
         if (isCurrent) {
             return IbikeApplication.getString("current_position");
+            //Checks and trims and returns name + housenumber if != null, otherwise just the name
         } else if (this.name != null && this.houseNumber != null && !this.name.trim().equals("") && !this.houseNumber.trim().equals("")) {
             return this.name + " " + this.houseNumber;
         } else if (this.name != null && !this.name.trim().equals("")) {
             return this.name;
         } else if (this.street != null && this.houseNumber != null && !this.street.trim().equals("") && !this.houseNumber.trim().equals("")) {
+            //Remove "null" from the strings received from Foursquare (occurs often if you search for Tivoli)
+            if (this.street.contains("null")) {
+                this.street = this.street.replace("null", "");
+            }
             return this.street + " " + this.houseNumber;
         } else if (this.street != null && !this.street.trim().equals("")) {
+            if (this.street.contains("null")) {
+                this.street = this.street.replace("null", "");
+            }
             return this.street;
         } else return "";
     }
@@ -155,6 +163,7 @@ public class Address implements Serializable {
     public String getPostCodeAndCity() {
 
         if (this.zip != null & this.city != null && !this.zip.trim().equals("") && !this.city.trim().equals("")) {
+            //Sometimes both zip and city contains zip AND city.. if so, only return city.
             if (this.zip.equals(this.city)) {
                 return this.city;
             } else {
@@ -347,11 +356,6 @@ public class Address implements Serializable {
             } else {
                 address.houseNumber = "";
             }
-
-            //if zip
-
-            //if city
-
         }
 
         Log.d("DV", "Address-search, city == " + address.city);
