@@ -472,7 +472,7 @@ public class SearchAutocompleteActivity extends Activity {
 
             });
             kmsThread.start();
-            if (textSrch.getText().toString().length() >= 3 && addr.isFoursquare()) {
+            if (textSrch.getText().toString().length() >= 3) { // && addr.isFoursquare() <- was = null...
                 // fetch the Foursquare autocomplete
                 foursquareThread = new Thread(new Runnable() {
                     @Override

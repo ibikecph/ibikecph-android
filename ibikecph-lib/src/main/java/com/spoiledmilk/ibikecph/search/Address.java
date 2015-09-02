@@ -141,13 +141,29 @@ public class Address implements Serializable {
     public String getStreetAddress() {
         if (isCurrent) {
             return IbikeApplication.getString("current_position");
-        } else {
+        } else if (this.name != null && this.houseNumber != null && !this.name.trim().equals("") && !this.houseNumber.trim().equals("")) {
+            return this.name + " " + this.houseNumber;
+        } else if (this.name != null && !this.name.trim().equals("")) {
+            return this.name;
+        } else if (this.street != null && this.houseNumber != null && !this.street.trim().equals("") && !this.houseNumber.trim().equals("")) {
             return this.street + " " + this.houseNumber;
-        }
+        } else if (this.street != null && !this.street.trim().equals("")) {
+            return this.street;
+        } else return "";
     }
 
     public String getPostCodeAndCity() {
-        return this.zip + " " + this.city;
+
+        if (this.zip != null & this.city != null && !this.zip.trim().equals("") && !this.city.trim().equals("")) {
+            if (this.zip.equals(this.city)) {
+                return this.city;
+            } else {
+                return this.zip + " " + this.city;
+            }
+        } else if (this.city != null && !this.city.trim().equals("")) {
+            return this.city;
+        }
+        return "";
     }
 
     public boolean isAddress() {
@@ -261,27 +277,88 @@ public class Address implements Serializable {
             city_s = searchListItem.getJsonNode().get("postnummer").get("navn").asText();
             lat_s = lat;
             lon_s = lon;
+
+        } else if (address.addressSource == AddressSource.FOURSQUARE) {
+            address.setLocation(new LatLng(searchListItem.getLatitude(), searchListItem.getLongitude()));
+
+            if (searchListItem.getZip() != null && !searchListItem.getZip().trim().equals("")) {
+                address.zip = searchListItem.getZip();
+            } else {
+                address.zip = "";
+            }
+
+            if (searchListItem.getCity() != null && !searchListItem.getCity().trim().equals("")) {
+                address.city = searchListItem.getCity();
+            } else if (searchListItem.getAdress() != null && !searchListItem.getAdress().trim().equals("")) {
+                address.city = searchListItem.getAdress();
+            } else {
+                address.city = "";
+            }
+
+            if (searchListItem.getStreet() != null && !searchListItem.getStreet().trim().equals("")) {
+                address.street = searchListItem.getStreet();
+            } else {
+                address.street = "";
+            }
+
+            if (searchListItem.getName() != null && !searchListItem.getName().trim().equals("")) {
+                address.name = searchListItem.getName();
+            } else {
+                address.name = "";
+            }
+
+            if (searchListItem.getNumber() != null && !searchListItem.getNumber().trim().equals("")) {
+                address.houseNumber = searchListItem.getNumber();
+            } else {
+                address.houseNumber = "";
+            }
+
         } else {
             address.setLocation(new LatLng(searchListItem.getLatitude(), searchListItem.getLongitude()));
 
             if (searchListItem.getZip() != null && !searchListItem.getZip().trim().equals("")) {
                 address.zip = searchListItem.getZip();
-            }
-            if (searchListItem.getCity() != null && !searchListItem.getCity().trim().equals("")) {
-                address.city = searchListItem.getCity();
             } else {
-                address.city = searchListItem.getAdress();
+                address.zip = "";
             }
 
-            address.street = searchListItem.getStreet();
-            address.name = searchListItem.getName();
-            address.houseNumber = searchListItem.getNumber();
+            if (searchListItem.getCity() != null && !searchListItem.getCity().trim().equals("")) {
+                address.city = searchListItem.getCity();
+            } else if (searchListItem.getAdress() != null && !searchListItem.getAdress().trim().equals("")) {
+                address.city = searchListItem.getAdress();
+            } else {
+                address.city = "";
+            }
+
+            if (searchListItem.getStreet() != null && !searchListItem.getStreet().trim().equals("")) {
+                address.street = searchListItem.getStreet();
+            } else {
+                address.street = "";
+            }
+
+            if (searchListItem.getName() != null && !searchListItem.getName().trim().equals("")) {
+                address.name = searchListItem.getName();
+            } else {
+                address.name = "";
+            }
+
+            if (searchListItem.getNumber() != null && !searchListItem.getNumber().trim().equals("")) {
+                address.houseNumber = searchListItem.getNumber();
+            } else {
+                address.houseNumber = "";
+            }
+
+            //if zip
+
+            //if city
+
         }
 
         Log.d("DV", "Address-search, city == " + address.city);
         Log.d("DV", "Address-search, street == " + address.street);
         Log.d("DV", "Address-search, name == " + address.name);
         Log.d("DV", "Address-search, zip == " + address.zip);
+        Log.d("DV", "Address-search, houseNumber == " + address.houseNumber);
         //Log.d("DV", "Address-search, lat == " + address.lat);
         //Log.d("DV", "Address-search, lon == " + address.lon);
 
