@@ -163,12 +163,15 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             HistoryData hd = new HistoryData(-1, address.getStreetAddress(), address.getPostCodeAndCity(), date, date, "", "", address.getLocation().getLatitude(), address.getLocation().getLongitude());
 
 
-
             Log.d("DV", "handleButton, streetAddress " + address.getStreetAddress());
             Log.d("DV", "handleButton, postAndCity " + address.getPostCodeAndCity());
 
-            //Is this ok?
-            hd.setName(address.getStreetAddress() + ", " + address.getPostCodeAndCity());
+            //Only set " , " if PostCodeAndCity has any data.
+            if (!address.getPostCodeAndCity().trim().equals("")) {
+                hd.setName(address.getStreetAddress() + ", " + address.getPostCodeAndCity());
+            } else {
+                hd.setName(address.getStreetAddress());
+            }
 
             new DB(SearchActivity.this).saveSearchHistory(hd, hd, SearchActivity.this);
             intent.putExtra("addressObject", address);
@@ -314,7 +317,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                         BLongitude = b.getDouble("lon");
                         String txt = AddressParser.textFromBundle(b);
                         bName = txt;
-                       // textB.setText(txt);
+                        // textB.setText(txt);
                         toName = b.getString("address");
                         if (toName.contains(",")) {
                             toName = toName.substring(0, toName.indexOf(','));

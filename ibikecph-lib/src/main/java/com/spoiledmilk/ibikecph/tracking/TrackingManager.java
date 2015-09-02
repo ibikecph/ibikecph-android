@@ -344,6 +344,7 @@ public class TrackingManager implements LocationListener {
                                 realm.close();
                             } else {
                                 Log.d("DV", "Track not deleted - something went wrong on the server");
+                                //Should we delete the track from the APP anyway?
                             }
                         }
                     }

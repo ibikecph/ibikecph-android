@@ -356,6 +356,11 @@ public class Address implements Serializable {
             } else {
                 address.houseNumber = "";
             }
+
+            //Sometimes city = name -> set city "" instead.
+            if (address.city.equals(address.name)) {
+                address.city = "";
+            }
         }
 
         Log.d("DV", "Address-search, city == " + address.city);
