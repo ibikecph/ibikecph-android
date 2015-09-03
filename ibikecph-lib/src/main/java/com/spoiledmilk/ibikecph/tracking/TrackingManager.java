@@ -12,7 +12,6 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.LOG;
 
@@ -20,13 +19,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmResults;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 
 /**
  * Created by jens on 2/25/15.
@@ -267,6 +266,7 @@ public class TrackingManager implements LocationListener {
 
                                 trackData.put("coordinates", jsonArray);
                                 postObject.put("auth_token", authToken);
+                                postObject.put("signature", "$2a$10$2P0pOzG9DbwSBD1FSHjuYuAmmTt74AVtgAniOurejcXybnG4vFBHu"); //skal være real token
                                 postObject.put("track", trackData);
                                 Log.d("DV", "postObject = " + postObject.toString());
                                 Log.d("DV", "Amount of sent coordinates = " + amountToSend);
@@ -283,8 +283,9 @@ public class TrackingManager implements LocationListener {
                                     if (count == amountToSend) {
                                         Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
                                         tracksToUpload.get(i).setID(id);
-                                        Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
+                                        //Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
                                         attemptsToSend = 0;
+                                        i--;
                                     }
                                 } else {
                                     // Try to resend maximum 3 times.
@@ -333,6 +334,7 @@ public class TrackingManager implements LocationListener {
                         String authToken = IbikeApplication.getAuthToken();
                         JSONObject postObject = new JSONObject();
                         postObject.put("auth_token", authToken);
+                        postObject.put("signature", "$2a$10$2P0pOzG9DbwSBD1FSHjuYuAmmTt74AVtgAniOurejcXybnG4vFBHu"); //skal være real token
                         Log.d("DV", "Track ID to delete = " + id);
                         JsonNode responseNode = HttpUtils.deleteFromServer(Config.API_UPLOAD_TRACKS + "/" + id, postObject);
                         if (responseNode != null) {
@@ -387,7 +389,7 @@ public class TrackingManager implements LocationListener {
 
                 try {
                     // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
-                    tracksToUpload = realm.where(Track.class).greaterThanOrEqualTo("ID", 0).findAll();
+                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).findAll();
                     Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
                 } catch (Exception e) {
                     Log.d("DV", "uploadTracksToServer-exception: " + e.getMessage());
@@ -399,6 +401,7 @@ public class TrackingManager implements LocationListener {
                     if (IbikeApplication.isUserLogedIn()) {
                         String authToken = IbikeApplication.getAuthToken();
                         try {
+
                             // Loop and pack JSON for each track we want to upload!
                             for (int i = 0; i < tracksToUpload.size(); i++) {
                                 postObject = new JSONObject();
@@ -424,6 +427,7 @@ public class TrackingManager implements LocationListener {
 
                                 trackData.put("coordinates", jsonArray);
                                 postObject.put("auth_token", authToken);
+                                postObject.put("signature", "$2a$10$2P0pOzG9DbwSBD1FSHjuYuAmmTt74AVtgAniOurejcXybnG4vFBHu");
                                 postObject.put("track", trackData);
                                 Log.d("DV", "postObject = " + postObject.toString());
 
@@ -438,8 +442,9 @@ public class TrackingManager implements LocationListener {
                                     if (count == amountToSend) {
                                         Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
                                         tracksToUpload.get(i).setID(id);
-                                        Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
+                                        //Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
                                         attemptsToSend = 0;
+                                        i--;
                                     }
                                 } else {
                                     // Try to resend maximum 3 times.
@@ -467,6 +472,21 @@ public class TrackingManager implements LocationListener {
                 realm.close();
             }
         }).start();
+    }
+
+    public static void printAllTracks() {
+        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        realm.beginTransaction();
+        RealmResults<Track> tracksToUpload = null;
+        try {
+            // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
+            tracksToUpload = realm.where(Track.class).greaterThanOrEqualTo("ID", 1).findAll();
+        } catch (Exception ex) {
+
+            for (int i = 0; i < tracksToUpload.size(); i++) {
+                Log.d("DV", "Track ID = " + tracksToUpload.get(i).getID());
+            }
+        }
     }
 
     public void stopTracking() {

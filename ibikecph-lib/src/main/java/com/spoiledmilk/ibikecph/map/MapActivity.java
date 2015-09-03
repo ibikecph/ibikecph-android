@@ -197,6 +197,7 @@ public class MapActivity extends IBCMapActivity {
             }
         } else if (id == R.id.uploadFakeTrack) {
             TrackingManager.uploadeFakeTrack();
+            //TrackingManager.printAllTracks();
         } else if (id == R.id.createFakeTrack) {
             TrackingManager.createFakeTrack();
         }
