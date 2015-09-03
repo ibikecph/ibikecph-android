@@ -9,10 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
@@ -44,12 +46,12 @@ public class TrackingActivity extends Activity {
         this.tripListView.addHeaderView(this.getLayoutInflater().inflate(R.layout.track_list_header, null, false));
 
         this.activityText = (TextView) findViewById(R.id.tracking_activity_text);
-        this.sinceText    = (TextView) findViewById(R.id.tracking_activity_since);
+        this.sinceText = (TextView) findViewById(R.id.tracking_activity_since);
 
-        this.distanceTextView    = (TextView) findViewById(R.id.distanceTextView);
-        this.speedTextView    = (TextView) findViewById(R.id.speedTextView);
+        this.distanceTextView = (TextView) findViewById(R.id.distanceTextView);
+        this.speedTextView = (TextView) findViewById(R.id.speedTextView);
         this.calText = (TextView) findViewById(R.id.calText);
-        this.timeTextView    = (TextView) findViewById(R.id.timeTextView);
+        this.timeTextView = (TextView) findViewById(R.id.timeTextView);
         this.trackingStatusTextView = (TextView) findViewById(R.id.trackingStatusTextView);
 
         this.kmText = (TextView) findViewById(R.id.kmText);
@@ -62,7 +64,7 @@ public class TrackingActivity extends Activity {
         try {
             this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
             this.getActionBar().setDisplayHomeAsUpEnabled(false);
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             // There was no ActionBar. Oh well...
         }
 
@@ -78,7 +80,6 @@ public class TrackingActivity extends Activity {
         TrackListAdapter trackListAdapter = new TrackListAdapter(this);
         this.tripListView.setAdapter(trackListAdapter);
     }
-
 
     @Override
     public void onResume() {
@@ -121,7 +122,7 @@ public class TrackingActivity extends Activity {
     }
 
     public void updateStrings() {
-        this.trackingStatusTextView.setText("Tracking: "+trackingManager.isTracking());
+        this.trackingStatusTextView.setText("Tracking: " + trackingManager.isTracking());
 
         this.kmText.setText(IbikeApplication.getString("unit_km"));
         this.kmtText.setText(IbikeApplication.getString("unit_km_pr_h"));
@@ -133,13 +134,13 @@ public class TrackingActivity extends Activity {
 
         // Get the timestamp of the first recorded TrackLocation
         Realm realm = Realm.getInstance(this);
-        RealmResults<TrackLocation> results  = realm.allObjects(TrackLocation.class);
+        RealmResults<TrackLocation> results = realm.allObjects(TrackLocation.class);
 
         try {
             Date firstActivity = results.first().getTimestamp();
             String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(firstActivity);
             this.sinceText.setText(IbikeApplication.getString("Since") + " " + formattedDate);
-        } catch(ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             this.sinceText.setText("");
         }
         // Done
@@ -173,7 +174,7 @@ public class TrackingActivity extends Activity {
      */
     public void updateSummaryStatistics() {
         Realm realm = Realm.getInstance(this);
-        RealmResults<Track> results  = realm.allObjects(Track.class);
+        RealmResults<Track> results = realm.allObjects(Track.class);
 
         double totalDistance = 0;
         double totalSeconds = 0;
@@ -186,11 +187,11 @@ public class TrackingActivity extends Activity {
             totalSeconds += t.getDuration();
         }
 
-        distanceTextView.setText(String.format("%d", Math.round(totalDistance/1000)));
+        distanceTextView.setText(String.format("%d", Math.round(totalDistance / 1000)));
 
-        calText.setText(String.format("%d", (int) ((totalDistance / 1000 / totalDays) * 11)) );
+        calText.setText(String.format("%d", (int) ((totalDistance / 1000 / totalDays) * 11)));
 
-        if (totalSeconds > 0 ) {
+        if (totalSeconds > 0) {
             // The speedAggregate is in meters/sec, we multiply with 3.6 to get km/h
             speedTextView.setText(String.format("%.1f", (totalDistance / totalSeconds) * 3.6));
         } else {
@@ -211,7 +212,7 @@ public class TrackingActivity extends Activity {
     }
 
     public void onReactivateButtonClick(View v) {
-        if (IbikeApplication.isUserLogedIn()||IbikeApplication.isFacebookLogin()) {
+        if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
             // Enable the tracking
             IbikeApplication.getSettings().setTrackingEnabled(true);
 

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,7 +73,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
      */
     public View getView(final int position, final View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) IbikeApplication.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.track_list_row_view, parent, false);
+        final View rowView = inflater.inflate(R.layout.track_list_row_view, parent, false);
 
         final Track track = this.getItem(position);
 
@@ -124,24 +125,39 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Log.d("JC", "Deleted a track");
-                                Track t = tracks.get(position);
+                                final Track t = tracks.get(position);
 
                                 Realm realm = Realm.getInstance(context);
                                 realm.beginTransaction();
                                 Log.d("DV", "Calling delete-method with ID = " + t.getID());
-                                int id = t.getID();
+                                final int id = t.getID();
                                 // Only send to the server, if ID > 0. Otherwise just delete, since it hasn't been uploaded to the server yet.
                                 if (t.getID() > 0) {
                                     realm.commitTransaction();
                                     realm.close();
-                                    TrackingManager.deleteTrack(id);
+                                    new AsyncTask<String, Integer, String>() {
+                                        @Override
+                                        protected String doInBackground(String... strings) {
+
+                                            TrackingManager.deleteTrack(id);
+
+                                            return null;
+                                        }
+
+                                        @Override
+                                        protected void onPostExecute(String result) {
+                                            super.onPostExecute(result);
+                                            notifyDataSetInvalidated();
+                                        }
+                                    }.execute();
                                 } else {
                                     t.removeFromRealm();
                                     realm.commitTransaction();
                                     realm.close();
+                                    notifyDataSetInvalidated();
                                     Log.d("DV", "Track deleted from APP!");
                                 }
-                                notifyDataSetInvalidated();
+
                             }
                         });
                 AlertDialog dialog = builder.create();
