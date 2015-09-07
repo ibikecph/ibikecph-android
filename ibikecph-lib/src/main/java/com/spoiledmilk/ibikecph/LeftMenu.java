@@ -96,7 +96,7 @@ public class LeftMenu extends Fragment {
     public void populateMenu() {
         this.menuItems = new ArrayList<LeftMenuItem>();
 
-        menuItems.add(new LeftMenuItem("favorites", R.drawable.ic_menu_favorite, "spawnFavoritesListActivity"));
+        menuItems.add(new LeftMenuItem("favorites", R.drawable.fav_star, "spawnFavoritesListActivity"));
         //menuItems.add(new LeftMenuItem("voice", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
         // Kortlag
         // Rutetype
