@@ -99,6 +99,9 @@ public class LeftMenu extends Fragment {
         menuItems.add(new LeftMenuItem("favorites", R.drawable.fav_star, "spawnFavoritesListActivity"));
         //menuItems.add(new LeftMenuItem("voice", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
         // Kortlag
+        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+            menuItems.add(new LeftMenuItem("map_overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
+        }
         // Rutetype
         // Fartguide
         menuItems.add(new LeftMenuItem("tracking", R.drawable.ic_menu_tracking, "spawnTrackingActivity"));

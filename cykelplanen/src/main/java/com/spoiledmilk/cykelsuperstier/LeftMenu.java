@@ -41,7 +41,7 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
         for (int i = 0; i<this.cpMenuItems.size(); i++) {
             if (this.cpMenuItems.get(i).getLabelID().equals("favorites")) {
                 Log.d("JC", "Adding overlays menu");
-                this.cpMenuItems.add(i+1, new LeftMenuItem("map_overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
+               // this.cpMenuItems.add(i+1, new LeftMenuItem("map_overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
             }
 
             if (this.cpMenuItems.get(i).getLabelID().equals("about_app_ibc")) {
