@@ -48,6 +48,11 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
         v.findViewById(R.id.btnAddFavorite).setOnClickListener(this);
 
         ((TextView) v.findViewById(R.id.newRouteText)).setText(IbikeApplication.getString("new_route"));
+        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+            ((TextView) v.findViewById(R.id.newRouteText)).setTextColor(getResources().getColor(R.color.CPActionBar));
+
+        }
+
 
         return v;
     }

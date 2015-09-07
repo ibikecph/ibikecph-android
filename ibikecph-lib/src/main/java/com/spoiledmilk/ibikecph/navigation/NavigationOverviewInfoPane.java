@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
@@ -33,7 +34,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         this.parent = (NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler");
     }
 
-    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         SMRoute route = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).getRoute();
 
         View v = inflater.inflate(R.layout.infopane_navigation_overview, container, false);
@@ -119,6 +120,10 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         destinationText.setOnClickListener(this);
 
         ((TextView) v.findViewById(R.id.newRouteText)).setText(IbikeApplication.getString("new_route"));
+        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+            ((TextView) v.findViewById(R.id.newRouteText)).setTextColor(getResources().getColor(R.color.CPActionBar));
+
+        }
 
         return v;
     }
@@ -129,12 +134,13 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
 
     /**
      * This is the click handler for the fast/cargo/green route buttons
+     *
      * @param v
      */
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.navigationOverviewFastButton)  {
+        if (v.getId() == R.id.navigationOverviewFastButton) {
             disableAllRouteButtons();
             fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
 
