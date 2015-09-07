@@ -233,7 +233,7 @@ public class IssuesActivity extends Activity {
 									LOG.d("issues response message = " + message);
 								}
 								AlertDialog.Builder builder = new AlertDialog.Builder(IssuesActivity.this);
-								builder.setMessage(message);
+								builder.setMessage("Besked modtaget");
 								builder.setPositiveButton("OK", new OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog, int which) {
