@@ -106,8 +106,8 @@
             android:layout_marginRight="1dp"
             android:layout_marginBottom="10dp"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/stroke_button_inverted"
-            android:textColor="@color/app_primary_color"
+            android:background="@drawable/stroke_button_inverted_red"
+            android:textColor="@color/White"
             android:textSize="18sp" />
 
         <ProgressBar

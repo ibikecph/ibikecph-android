@@ -370,7 +370,7 @@ public class TrackingManager implements LocationListener {
         track.setDuration(5234 / 1000);
         double length = Math.random() * 1000;
         track.setLength(length);
-        track.setID(1);
+        track.setID(0);
 
         realm.commitTransaction();
         realm.close();
@@ -388,7 +388,7 @@ public class TrackingManager implements LocationListener {
 
                 try {
                     // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
-                    tracksToUpload = realm.where(Track.class).equalTo("ID", 1).findAll();
+                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).findAll();
                     Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
                 } catch (Exception e) {
                     Log.d("DV", "uploadTracksToServer-exception: " + e.getMessage());
