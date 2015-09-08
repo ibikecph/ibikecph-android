@@ -64,7 +64,7 @@
           android:background="@color/IBCActionBar"
           android:layout_marginLeft="12dp"
           android:layout_marginRight="12dp"
-
+            android:id="@+id/line"
             />
 
     <com.spoiledmilk.ibikecph.controls.ObservableScrollView
