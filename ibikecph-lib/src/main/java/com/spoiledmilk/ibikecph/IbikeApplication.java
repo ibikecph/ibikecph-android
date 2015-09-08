@@ -121,6 +121,10 @@ public class IbikeApplication extends Application {
         return PreferenceManager.getDefaultSharedPreferences(getContext()).getString("auth_token", "");
     }
 
+    public static String getSignature() {
+        return PreferenceManager.getDefaultSharedPreferences(getContext()).getString("signature", "");
+    }
+
     public static boolean areFavoritesFetched() {
         return PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("favorites_fetched", false);
     }
@@ -188,6 +192,7 @@ public class IbikeApplication extends Application {
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("password").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("signature").commit();
 
         // TODO: Move this somewhere more natural
         BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
