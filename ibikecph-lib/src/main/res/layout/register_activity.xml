@@ -11,18 +11,49 @@
         android:background="@null"
         android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/lockIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/headLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="aaa"
+            android:textSize="22sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/explainingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="aaa"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/btnFacebookLogin"
             android:layout_width="fill_parent"
             android:layout_height="45dp"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/com_facebook_button_blue"
             android:contentDescription="@string/app_name"
             android:textColor="@color/White"
             android:textSize="18sp" />
-
 
         <TextView
             android:id="@+id/textOr"
@@ -55,9 +86,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textName"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
+            android:layout_marginTop="10dp"
             android:inputType="textEmailAddress"
             android:paddingLeft="10dp"
             android:paddingRight="25dp"
@@ -130,6 +161,19 @@
                 android:text="link"
                 android:textColor="@color/white" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/savePassword"
+            android:layout_width="fill_parent"
+            android:layout_height="45sp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/stroke_button_inverted_red"
+            android:textColor="@color/White"
+            android:textSize="18sp"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -181,8 +225,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnRegister"
@@ -195,6 +239,19 @@
             android:background="@drawable/stroke_button_inverted_ltgray"
             android:textColor="@color/White"
             android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="fill_parent"
+            android:layout_height="45sp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/stroke_button_inverted_red"
+            android:textColor="@color/White"
+            android:textSize="18sp"
+            android:visibility="gone" />
 
         <ProgressBar
             android:id="@+id/progressBar"

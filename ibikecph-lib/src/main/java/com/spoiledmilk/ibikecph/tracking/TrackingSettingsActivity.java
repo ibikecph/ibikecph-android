@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.login.RegisterActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
@@ -62,10 +64,19 @@ public class TrackingSettingsActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (loggedIn) {
-                    if (!PreferenceManager.getDefaultSharedPreferences(TrackingSettingsActivity.this).getString("signature", "").equals("")) {
-                        onEnableTrackingClick(isChecked);
+
+                    if (IbikeApplication.getSignature().equals("")) {
+                        if (IbikeApplication.isFacebookLogin()) {
+                            Log.d("DV", "Prompting Facebookuser to create a password!");
+                            startActivity(new Intent(TrackingSettingsActivity.this, RegisterActivity.class).putExtra("fromTracking", true));
+                        } else if (IbikeApplication.isUserLogedIn()) {
+                            Log.d("DV", "Prompting login for user!");
+                            //loginToGetSignatureBox();
+                            //login skærm el noget
+                        }
                     } else {
-                        loginToGetSignatureBox();
+                        Log.d("DV", "We got a signature, enabling tracking!");
+                        onEnableTrackingClick(isChecked);
                     }
                 } else {
                     spawnLoginBox();

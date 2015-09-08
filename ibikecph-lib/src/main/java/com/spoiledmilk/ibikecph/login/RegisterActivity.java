@@ -56,6 +56,13 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     TextView termsAcceptanceLink;
     TextView textOr;
 
+
+    ImageView lockIcon;
+    TextView headLine;
+    TextView explainingText;
+    Button savePassword;
+    Button cancelButton;
+
     Handler handler, facebookHandler;
 
     UserData userData;
@@ -64,6 +71,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     private Session.StatusCallback statusCallback = new SessionStatusCallback();
 
     boolean isRunning = true;
+    boolean fromTracking = false;
     String fbToken;
     String validationMessage;
     String base64Image = "";
@@ -79,6 +87,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
 
         setContentView(R.layout.register_activity);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -93,177 +102,246 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         termsAcceptanceLabel = (TextView) findViewById(R.id.termsAcceptanceLabel);
         termsAcceptanceLink = (TextView) findViewById(R.id.termsAcceptanceLink);
 
-
+        btnFacebookLogin = (Button) findViewById(R.id.btnFacebookLogin);
         btnRegister = (Button) findViewById(R.id.btnRegister);
 
-        btnRegister.setEnabled(false);
-        btnRegister.setBackground(getResources().getDrawable(R.drawable.stroke_button_inverted_ltgray));
+        fromTracking = intent.getBooleanExtra("fromTracking", false);
+        if (fromTracking) {
+            Log.d("DV", "Kommer fra tracking!");
+            //Make views gone!
+            btnFacebookLogin.setVisibility(View.GONE);
+            textOr.setVisibility(View.GONE);
+            textName.setVisibility(View.GONE);
+            textEmail.setVisibility(View.GONE);
+            termsAcceptanceCheckbox.setVisibility(View.GONE);
+            termsAcceptanceLabel.setVisibility(View.GONE);
+            termsAcceptanceLink.setVisibility(View.GONE);
+            btnRegister.setVisibility(View.GONE);
+            RoundedImageView riv;
+            riv = (RoundedImageView) findViewById(R.id.pictureContainer);
+            riv.setVisibility(View.GONE);
 
-        btnRegister.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateInput() && !inProgress) {
-                    inProgress = true;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Looper.myLooper();
-                            Looper.prepare();
-                            RegisterActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    progressBar.setVisibility(View.VISIBLE);
-                                }
-                            });
-                            Message message = HTTPAccountHandler.performRegister(userData, RegisterActivity.this);
-                            Boolean success = message.getData().getBoolean("success", false);
-                            if (success) {
-                                IbikeApplication.saveEmail(userData.getEmail());
-                                //IbikeApplication.savePassword(userData.getPassword());
-                            }
-                            handler.sendMessage(message);
-                            IbikeApplication.getTracker().sendEvent("Register", "Completed", userData.getEmail(), (long) 0);
-                            RegisterActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    progressBar.setVisibility(View.GONE);
-                                }
-                            });
+            //Make views visible!
+            lockIcon = (ImageView) findViewById(R.id.lockIcon);
+            headLine = (TextView) findViewById(R.id.headLine);
+            explainingText = (TextView) findViewById(R.id.explainingText);
+            savePassword = (Button) findViewById(R.id.savePassword);
+            cancelButton = (Button) findViewById(R.id.cancelButton);
 
-                        }
-                    }).start();
-                } else if (!inProgress) {
-                    launchAlertDialog(validationMessage);
-                }
-            }
-        });
+            lockIcon.setVisibility(View.VISIBLE);
+            headLine.setVisibility(View.VISIBLE);
+            explainingText.setVisibility(View.VISIBLE);
+            savePassword.setVisibility(View.VISIBLE);
+            cancelButton.setVisibility(View.VISIBLE);
 
-
-        if (handler == null) {
-            handler = new Handler(new Handler.Callback() {
-
+            //Styling/Listeners
+            textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+            textNewPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
-                public boolean handleMessage(Message msg) {
+                public void onFocusChange(View view, boolean b) {
+                    if (b) {
+                        textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    } else {
+                        textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+            });
 
-                    Bundle data = msg.getData();
-                    int msgType = data.getInt("type");
-                    Boolean success = false;
-                    inProgress = false;
-                    switch (msgType) {
-                        case HTTPAccountHandler.REGISTER_USER:
-                            success = data.getBoolean("success");
-                            if (!success) {
-                                launchAlertDialog(data.getString("info"));
+            textPasswordConfirm.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (b) {
+                        textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    } else {
+                        textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+            });
+
+            savePassword.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (validatePasswords() && !inProgress) {
+                        inProgress = true;
+                        //Kald metode der kalder API
+                    } else if (!inProgress) {
+                        //Pop-up der siger missmatch i passwords
+                        launchAlertDialog(validationMessage);
+                    }
+                }
+            });
+
+            //Make orange stuff if APP = Cykelplanen
+            
+        } else {
+
+            btnRegister.setEnabled(false);
+            btnRegister.setBackground(getResources().getDrawable(R.drawable.stroke_button_inverted_ltgray));
+
+            btnRegister.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (validateInput() && !inProgress) {
+                        inProgress = true;
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Looper.myLooper();
+                                Looper.prepare();
+                                RegisterActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progressBar.setVisibility(View.VISIBLE);
+                                    }
+                                });
+                                Message message = HTTPAccountHandler.performRegister(userData, RegisterActivity.this);
+                                Boolean success = message.getData().getBoolean("success", false);
+                                if (success) {
+                                    IbikeApplication.saveEmail(userData.getEmail());
+                                    //IbikeApplication.savePassword(userData.getPassword());
+                                }
+                                handler.sendMessage(message);
+                                IbikeApplication.getTracker().sendEvent("Register", "Completed", userData.getEmail(), (long) 0);
+                                RegisterActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                });
+
+                            }
+                        }).start();
+                    } else if (!inProgress) {
+                        launchAlertDialog(validationMessage);
+                    }
+                }
+            });
+
+
+            if (handler == null) {
+                handler = new Handler(new Handler.Callback() {
+
+                    @Override
+                    public boolean handleMessage(Message msg) {
+
+                        Bundle data = msg.getData();
+                        int msgType = data.getInt("type");
+                        Boolean success = false;
+                        inProgress = false;
+                        switch (msgType) {
+                            case HTTPAccountHandler.REGISTER_USER:
+                                success = data.getBoolean("success");
+                                if (!success) {
+                                    launchAlertDialog(data.getString("info"));
+                                } else {
+                                    setResult(RESULT_ACCOUNT_REGISTERED);
+                                    finish();
+                                    overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                }
+                                break;
+                            case HTTPAccountHandler.ERROR:
+                                launchAlertDialog(IbikeApplication.getString("Error"));
+                                break;
+                        }
+                        return true;
+                    }
+                });
+            }
+
+            if (facebookHandler == null) {
+                facebookHandler = new Handler(new Handler.Callback() {
+                    @Override
+                    public boolean handleMessage(Message msg) {
+                        Log.d("JC", "Received Facebook handler callback");
+
+                        Bundle data = msg.getData();
+                        Boolean success = data.getBoolean("success");
+                        if (success) {
+                            LOG.d("fbdebug apitoken = " + data.getString("auth_token"));
+                            String auth_token = data.getString("auth_token");
+                            int id = data.getInt("id");
+                            progressBar.setVisibility(View.GONE);
+                            if (id < 0) {
+                                launchErrorDialog("", "Login failed : " + data.toString());
                             } else {
-                                setResult(RESULT_ACCOUNT_REGISTERED);
+                                if (auth_token == null || auth_token.equals("") || auth_token.equals("null")) {
+                                    auth_token = "";
+                                }
+                                PreferenceManager.getDefaultSharedPreferences(RegisterActivity.this).edit().putString("auth_token", auth_token).commit();
+                                PreferenceManager.getDefaultSharedPreferences(RegisterActivity.this).edit().putInt("id", id).commit();
+                                LOG.d("Loged in token = " + auth_token + ", id = " + id);
+
+                                setResult(RESULT_FACEBOOK_REGISTERED);
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             }
-                            break;
-                        case HTTPAccountHandler.ERROR:
-                            launchAlertDialog(IbikeApplication.getString("Error"));
-                            break;
-                    }
-                    return true;
-                }
-            });
-        }
-
-        if (facebookHandler == null) {
-            facebookHandler = new Handler(new Handler.Callback() {
-                @Override
-                public boolean handleMessage(Message msg) {
-                    Log.d("JC", "Received Facebook handler callback");
-
-                    Bundle data = msg.getData();
-                    Boolean success = data.getBoolean("success");
-                    if (success) {
-                        LOG.d("fbdebug apitoken = " + data.getString("auth_token"));
-                        String auth_token = data.getString("auth_token");
-                        int id = data.getInt("id");
-                        progressBar.setVisibility(View.GONE);
-                        if (id < 0) {
-                            launchErrorDialog("", "Login failed : " + data.toString());
                         } else {
-                            if (auth_token == null || auth_token.equals("") || auth_token.equals("null")) {
-                                auth_token = "";
+                            final String message = data.containsKey("errors") ? data.getString("errors") : data.getString("info");
+                            String title = "";
+                            if (data.containsKey("info_title")) {
+                                title = data.getString("info_title");
                             }
-                            PreferenceManager.getDefaultSharedPreferences(RegisterActivity.this).edit().putString("auth_token", auth_token).commit();
-                            PreferenceManager.getDefaultSharedPreferences(RegisterActivity.this).edit().putInt("id", id).commit();
-                            LOG.d("Loged in token = " + auth_token + ", id = " + id);
-
-                            setResult(RESULT_FACEBOOK_REGISTERED);
-                            finish();
-                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                            launchErrorDialog(title, message);
                         }
-                    } else {
-                        final String message = data.containsKey("errors") ? data.getString("errors") : data.getString("info");
-                        String title = "";
-                        if (data.containsKey("info_title")) {
-                            title = data.getString("info_title");
-                        }
-                        launchErrorDialog(title, message);
+                        return true;
                     }
-                    return true;
+                });
+            }
+
+            btnFacebookLogin.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    Log.d("DV", "facebook btn clicked!");
+                    performFBLogin(savedInstanceState);
+                }
+            });
+
+            textName.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+
+            textName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (b) {
+                        textName.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    } else {
+                        textName.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+            });
+
+            textEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (b) {
+                        textEmail.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    } else {
+                        textEmail.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+            });
+
+            textNewPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (b) {
+                        textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    } else {
+                        textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                    }
+                }
+            });
+
+            textPasswordConfirm.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean b) {
+                    if (b) {
+                        textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    } else {
+                        textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                    }
                 }
             });
         }
-
-        btnFacebookLogin = (Button) findViewById(R.id.btnFacebookLogin);
-        btnFacebookLogin.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                Log.d("DV", "facebook btn clicked!");
-                performFBLogin(savedInstanceState);
-            }
-        });
-
-        textName.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
-
-        textName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    textName.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
-                } else {
-                    textName.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
-                }
-            }
-        });
-
-        textEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    textEmail.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
-                } else {
-                    textEmail.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
-                }
-            }
-        });
-
-        textNewPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
-                } else {
-                    textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
-                }
-            }
-        });
-
-        textPasswordConfirm.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
-                    textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
-                } else {
-                    textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
-                }
-            }
-        });
-
     }
 
     @Override
@@ -310,26 +388,43 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     }
 
     private void initStrings() {
-        this.getActionBar().setTitle(IbikeApplication.getString("create_account"));
+        if (fromTracking) {
+            //this.getActionBar().setTitle(IbikeApplication.getString("create_account"));
 
-        // Pick out the "Terms of Service" part of the "Accept the ..." string
-        this.termsAcceptanceLabel.setText(IbikeApplication.getString("accept_user_terms").replace(IbikeApplication.getString("accept_user_terms_link_highlight"), ""));
+            //Load resources and text
+            lockIcon.setBackground(getResources().getDrawable(R.drawable.tracking_from_to));
+            headLine.setText("Vi går op i at dine data er anonyme!");
+            explainingText.setText("For at sikre at dine data kan deles med Københavns Kommune og Region Hovedstaden, uden at vi kan kæde dem sammen med dig, har vi brug for at du opretter er kodeord kun du kender.");
+            savePassword.setText("Gem kodeord");
+            cancelButton.setText("Annuller");
 
-        // Construct a link in HTML and make it clickable
-        this.termsAcceptanceLink.setText(Html.fromHtml("<a href='" + IbikeApplication.getString("accept_user_terms_link") + "'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>"));
-        this.termsAcceptanceLink.setMovementMethod(LinkMovementMethod.getInstance());
 
-        textOr.setText(IbikeApplication.getString("or"));
-        textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
-        textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textPasswordConfirm.setHint(IbikeApplication.getString("register_password_repeat_placeholder"));
-        textPasswordConfirm.setHintTextColor(getResources().getColor(R.color.HintColor));
-        btnRegister.setText(IbikeApplication.getString("register_save"));
-        textName.setHint(IbikeApplication.getString("register_name_placeholder"));
-        textName.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textEmail.setHint(IbikeApplication.getString("register_email_placeholder"));
-        textEmail.setHintTextColor(getResources().getColor(R.color.HintColor));
-        btnFacebookLogin.setText(IbikeApplication.getString("create_with_fb"));
+            textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder")); //ny der skriver kodeord?
+            textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
+            textPasswordConfirm.setHint(IbikeApplication.getString("register_password_repeat_placeholder")); //ny der skrive gentag kodeord?
+            textPasswordConfirm.setHintTextColor(getResources().getColor(R.color.HintColor));
+        } else {
+            this.getActionBar().setTitle(IbikeApplication.getString("create_account"));
+
+            // Pick out the "Terms of Service" part of the "Accept the ..." string
+            this.termsAcceptanceLabel.setText(IbikeApplication.getString("accept_user_terms").replace(IbikeApplication.getString("accept_user_terms_link_highlight"), ""));
+
+            // Construct a link in HTML and make it clickable
+            this.termsAcceptanceLink.setText(Html.fromHtml("<a href='" + IbikeApplication.getString("accept_user_terms_link") + "'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>"));
+            this.termsAcceptanceLink.setMovementMethod(LinkMovementMethod.getInstance());
+
+            textOr.setText(IbikeApplication.getString("or"));
+            textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
+            textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
+            textPasswordConfirm.setHint(IbikeApplication.getString("register_password_repeat_placeholder"));
+            textPasswordConfirm.setHintTextColor(getResources().getColor(R.color.HintColor));
+            btnRegister.setText(IbikeApplication.getString("register_save"));
+            textName.setHint(IbikeApplication.getString("register_name_placeholder"));
+            textName.setHintTextColor(getResources().getColor(R.color.HintColor));
+            textEmail.setHint(IbikeApplication.getString("register_email_placeholder"));
+            textEmail.setHintTextColor(getResources().getColor(R.color.HintColor));
+            btnFacebookLogin.setText(IbikeApplication.getString("create_with_fb"));
+        }
     }
 
     private void launchAlertDialog(String msg) {
@@ -387,6 +482,27 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         }
         userData = new UserData(textName.getText().toString(), textEmail.getText().toString(), textNewPassword.getText().toString(),
                 textPasswordConfirm.getText().toString(), base64Image, "image.png");
+        return ret;
+    }
+
+    private boolean validatePasswords() {
+        boolean ret = true;
+        if (textNewPassword.getText().toString().length() == 0) {
+            validationMessage = IbikeApplication.getString("register_error_fields");
+            ret = false;
+        } else if (textPasswordConfirm.getText().toString().length() == 0) {
+            validationMessage = IbikeApplication.getString("register_error_fields");
+            ret = false;
+        } else if (textPasswordConfirm.getText().toString().length() < 3) {
+            validationMessage = IbikeApplication.getString("register_error_passwords_short");
+            ret = false;
+        } else if (!textNewPassword.getText().toString().equals(textPasswordConfirm.getText().toString())) {
+            validationMessage = IbikeApplication.getString("register_error_passwords");
+            ret = false;
+        } else if (textNewPassword.getText().toString().length() < 3) {
+            validationMessage = IbikeApplication.getString("register_error_passwords_short");
+            ret = false;
+        }
         return ret;
     }
 
