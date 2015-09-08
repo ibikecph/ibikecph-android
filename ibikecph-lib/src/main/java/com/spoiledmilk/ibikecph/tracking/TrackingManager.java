@@ -249,7 +249,7 @@ public class TrackingManager implements LocationListener {
                                 trackData.put("timestamp", start.getTime() / 1000); //Seconds
                                 trackData.put("from_name", tracksToUpload.get(i).getStart());
                                 trackData.put("to_name", tracksToUpload.get(i).getEnd());
-                                trackData.put("count", amountToSend);
+                                trackData.put("coord_count", amountToSend);
                                 Log.d("DV", "timestamp = " + start.toString() + " / seconds : " + start.getTime() / 1000);
                                 Log.d("DV", "from_name = " + tracksToUpload.get(i).getStart());
                                 Log.d("DV", "to_name = " + tracksToUpload.get(i).getEnd());
@@ -414,7 +414,7 @@ public class TrackingManager implements LocationListener {
                                 int count = 0;
                                 Log.d("DV", "Track ID to be uploaded = " + tracksToUpload.get(i).getID());
 
-                                trackData.put("count", 3);
+                                trackData.put("coord_count", 3);
                                 trackData.put("timestamp", "133713371"); //Seconds
                                 trackData.put("from_name", "Borgergade 24");
                                 trackData.put("to_name", "Vestergade 20C");
