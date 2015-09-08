@@ -111,6 +111,28 @@ public class TrackingWelcomeActivity extends Activity {
         }
     }
 
+    public static class MustLogInToGetSignatureDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Du bedes logge ind igen for at få en signature-token")//IbikeApplication.getString("log_in_to_track_prompt")) - sæt real tekst!
+                    .setPositiveButton(IbikeApplication.getString("OK"), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent i = new Intent(getActivity(), LoginActivity.class);
+                            getActivity().startActivityForResult(i, LeftMenu.LAUNCH_LOGIN);
+                        }
+                    })
+                    .setNegativeButton(IbikeApplication.getString("account_cancel"), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
+        }
+    }
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         // If we got back from a login box AND the used successfully logged in, go on.

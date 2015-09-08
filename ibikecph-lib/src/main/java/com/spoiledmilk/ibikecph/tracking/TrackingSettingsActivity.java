@@ -3,10 +3,12 @@ package com.spoiledmilk.ibikecph.tracking;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
@@ -25,7 +27,7 @@ public class TrackingSettingsActivity extends Activity {
     private Switch notifyWeeklyCheckbox;
 
     private TextView shareDataText;
-    private Switch   shareDataSwitch;
+    private Switch shareDataSwitch;
     private TextView shareDataInfoText;
     private TextView shareDataUsageText;
     private TextView shareDataTermsText;
@@ -39,13 +41,13 @@ public class TrackingSettingsActivity extends Activity {
         setContentView(R.layout.activity_tracking_settings);
 
         this.settings = IbikeApplication.getSettings();
-        this.trackingEnableText      = (TextView) findViewById(R.id.tracking_enable_text);
-        this.trackingEnableSwitch    = (Switch)   findViewById(R.id.tracking_enable_switch);
-        this.notifyMilestoneText     = (TextView) findViewById(R.id.notify_milestone_text);
+        this.trackingEnableText = (TextView) findViewById(R.id.tracking_enable_text);
+        this.trackingEnableSwitch = (Switch) findViewById(R.id.tracking_enable_switch);
+        this.notifyMilestoneText = (TextView) findViewById(R.id.notify_milestone_text);
         this.notifyMilestoneCheckbox = (Switch) findViewById(R.id.notify_milestone_checkbox);
 
-        this.notifyWeeklyText        = (TextView) findViewById(R.id.notify_weekly_text);
-        this.notifyWeeklyCheckbox    = (Switch) findViewById(R.id.notify_weekly_checkbox);
+        this.notifyWeeklyText = (TextView) findViewById(R.id.notify_weekly_text);
+        this.notifyWeeklyCheckbox = (Switch) findViewById(R.id.notify_weekly_checkbox);
         /*
         this.shareDataText           = (TextView) findViewById(R.id.share_data_text);
         this.shareDataSwitch         = (Switch)   findViewById(R.id.share_data_switch);
@@ -54,13 +56,17 @@ public class TrackingSettingsActivity extends Activity {
         this.shareDataTermsText      = (TextView) findViewById(R.id.share_data_terms_text);
         */
 
-        loggedIn = IbikeApplication.isUserLogedIn()||IbikeApplication.isFacebookLogin();
+        loggedIn = IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin();
 
         this.trackingEnableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (loggedIn) {
-                    onEnableTrackingClick(isChecked);
+                    if (!PreferenceManager.getDefaultSharedPreferences(TrackingSettingsActivity.this).getString("signature", "").equals("")) {
+                        onEnableTrackingClick(isChecked);
+                    } else {
+                        loginToGetSignatureBox();
+                    }
                 } else {
                     spawnLoginBox();
                 }
@@ -100,7 +106,7 @@ public class TrackingSettingsActivity extends Activity {
 
         } else {
             this.settings.setTrackingEnabled(this.trackingEnableSwitch.isChecked());
-            
+
             updateEnablednessOfMilestoneSwitches();
         }
     }
@@ -135,6 +141,16 @@ public class TrackingSettingsActivity extends Activity {
         notifyWeeklyCheckbox.setChecked(false);
 
         TrackingWelcomeActivity.MustLogInDialogFragment mustLogInDialogFragment = new TrackingWelcomeActivity.MustLogInDialogFragment();
+        mustLogInDialogFragment.show(getFragmentManager(), "MustLoginDialog");
+    }
+
+    public void loginToGetSignatureBox() {
+        // TODO: This should be enumerated somehow
+        trackingEnableSwitch.setChecked(false);
+        notifyMilestoneCheckbox.setChecked(false);
+        notifyWeeklyCheckbox.setChecked(false);
+
+        TrackingWelcomeActivity.MustLogInToGetSignatureDialogFragment mustLogInDialogFragment = new TrackingWelcomeActivity.MustLogInToGetSignatureDialogFragment();
         mustLogInDialogFragment.show(getFragmentManager(), "MustLoginDialog");
     }
 
@@ -175,7 +191,7 @@ public class TrackingSettingsActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // If we got back from a login box AND the used successfully logged in, go on.
         if (requestCode == LeftMenu.LAUNCH_LOGIN && resultCode == RESULT_OK) {
-            this.loggedIn = IbikeApplication.isUserLogedIn()||IbikeApplication.isFacebookLogin();
+            this.loggedIn = IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin();
         }
     }
 }

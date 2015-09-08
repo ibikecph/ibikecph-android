@@ -109,6 +109,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                         IbikeApplication.savePassword(textPassword.getText().toString());
                         LOG.d("fbdebug apitoken = " + data.getString("auth_token"));
                         String auth_token = data.getString("auth_token");
+                        String signature = data.getString("signature");
                         int id = data.getInt("id");
                         progressBar.setVisibility(View.GONE);
                         if (id < 0) {
@@ -117,9 +118,13 @@ public class LoginActivity extends Activity implements FBLoginListener {
                             if (auth_token == null || auth_token.equals("") || auth_token.equals("null")) {
                                 auth_token = "";
                             }
+                            if (signature == null || signature.equals("") || signature.equals("null")) {
+                                signature = "";
+                            }
                             PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).edit().putString("auth_token", auth_token).commit();
+                            PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).edit().putString("signature", signature).commit();
                             PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).edit().putInt("id", id).commit();
-                            LOG.d("Loged in token = " + auth_token + ", id = " + id);
+                            LOG.d("Loged in token = " + auth_token + ", Signature = " + signature + ", id = " + id);
 
                             setResult(RESULT_OK);
                             finish();
@@ -164,10 +169,9 @@ public class LoginActivity extends Activity implements FBLoginListener {
         textEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(b){
+                if (b) {
                     textEmail.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
-                }
-                else{
+                } else {
                     textEmail.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
                 }
             }
@@ -176,10 +180,9 @@ public class LoginActivity extends Activity implements FBLoginListener {
         textPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(b){
+                if (b) {
                     textPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
-                }
-                else{
+                } else {
                     textPassword.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
                 }
             }
