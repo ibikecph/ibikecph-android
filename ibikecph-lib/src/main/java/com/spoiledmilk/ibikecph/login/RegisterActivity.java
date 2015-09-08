@@ -119,7 +119,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
                             Boolean success = message.getData().getBoolean("success", false);
                             if (success) {
                                 IbikeApplication.saveEmail(userData.getEmail());
-                                IbikeApplication.savePassword(userData.getPassword());
+                                //IbikeApplication.savePassword(userData.getPassword());
                             }
                             handler.sendMessage(message);
                             IbikeApplication.getTracker().sendEvent("Register", "Completed", userData.getEmail(), (long) 0);

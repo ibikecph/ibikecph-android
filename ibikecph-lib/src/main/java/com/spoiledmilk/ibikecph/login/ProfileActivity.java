@@ -297,8 +297,8 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
             validationMessage = IbikeApplication.getString("register_error_passwords");
             ret = false;
         }
-        if (textOldPassword.getText() != null && !IbikeApplication.getPassword().equals(textOldPassword.getText().toString())
-                && !IbikeApplication.getPassword().equals(textOldPassword.getText().toString())) {
+        if (textOldPassword.getText() != null){ //&& !IbikeApplication.getPassword().equals(textOldPassword.getText().toString())
+                //&& !IbikeApplication.getPassword().equals(textOldPassword.getText().toString())) {
             validationMessage = IbikeApplication.getString("register_error_passwords");
             ret = false;
         }

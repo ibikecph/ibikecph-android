@@ -179,17 +179,8 @@ public class IbikeApplication extends Application {
         return PreferenceManager.getDefaultSharedPreferences(getContext()).getString("email", "");
     }
 
-    public static void savePassword(String password) {
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("password", password).commit();
-    }
-
-    public static String getPassword() {
-        return PreferenceManager.getDefaultSharedPreferences(getContext()).getString("password", "");
-    }
-
     public static void logout() {
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("email").commit();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("password").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("signature").commit();

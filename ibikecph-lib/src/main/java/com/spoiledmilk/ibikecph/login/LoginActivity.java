@@ -106,7 +106,6 @@ public class LoginActivity extends Activity implements FBLoginListener {
                     Bundle data = msg.getData();
                     Boolean success = data.getBoolean("success");
                     if (success) {
-                        IbikeApplication.savePassword(textPassword.getText().toString());
                         LOG.d("fbdebug apitoken = " + data.getString("auth_token"));
                         String auth_token = data.getString("auth_token");
                         String signature = data.getString("signature");
@@ -163,7 +162,6 @@ public class LoginActivity extends Activity implements FBLoginListener {
             }
         });
         textEmail.setText(IbikeApplication.getEmail());
-        textPassword.setText(IbikeApplication.getPassword());
         Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
 
         textEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
