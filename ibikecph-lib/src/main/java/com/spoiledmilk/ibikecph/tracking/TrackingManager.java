@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.channels.spi.AbstractSelectionKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -232,6 +233,7 @@ public class TrackingManager implements LocationListener {
                     JSONObject postObject = null;
                     if (IbikeApplication.isUserLogedIn()) {
                         String authToken = IbikeApplication.getAuthToken();
+                        String signature = IbikeApplication.getSignature();
                         try {
                             // Loop and pack JSON for each track we want to upload!
                             for (int i = 0; i < tracksToUpload.size(); i++) {
@@ -265,8 +267,8 @@ public class TrackingManager implements LocationListener {
                                 }
 
                                 trackData.put("coordinates", jsonArray);
+                                trackData.put("signature", signature);
                                 postObject.put("auth_token", authToken);
-                                postObject.put("signature", "$2a$10$2P0pOzG9DbwSBD1FSHjuYuAmmTt74AVtgAniOurejcXybnG4vFBHu"); //skal være real token
                                 postObject.put("track", trackData);
                                 Log.d("DV", "postObject = " + postObject.toString());
                                 Log.d("DV", "Amount of sent coordinates = " + amountToSend);
@@ -330,9 +332,10 @@ public class TrackingManager implements LocationListener {
         try {
             if (IbikeApplication.isUserLogedIn()) {
                 String authToken = IbikeApplication.getAuthToken();
+                String signature = IbikeApplication.getSignature();
                 JSONObject postObject = new JSONObject();
                 postObject.put("auth_token", authToken);
-                postObject.put("signature", "$2a$10$2P0pOzG9DbwSBD1FSHjuYuAmmTt74AVtgAniOurejcXybnG4vFBHu"); //skal være real token
+                postObject.put("signature", signature);
                 Log.d("DV", "Track ID to delete = " + id);
                 JsonNode responseNode = HttpUtils.deleteFromServer(Config.API_UPLOAD_TRACKS + "/" + id, postObject);
                 if (responseNode != null) {
@@ -399,6 +402,7 @@ public class TrackingManager implements LocationListener {
                     JSONObject postObject = null;
                     if (IbikeApplication.isUserLogedIn()) {
                         String authToken = IbikeApplication.getAuthToken();
+                        String signature = IbikeApplication.getSignature();
                         try {
 
                             // Loop and pack JSON for each track we want to upload!
@@ -425,8 +429,8 @@ public class TrackingManager implements LocationListener {
                                 }
 
                                 trackData.put("coordinates", jsonArray);
+                                trackData.put("signature", signature);
                                 postObject.put("auth_token", authToken);
-                                postObject.put("signature", "$2a$10$2P0pOzG9DbwSBD1FSHjuYuAmmTt74AVtgAniOurejcXybnG4vFBHu");
                                 postObject.put("track", trackData);
                                 Log.d("DV", "postObject = " + postObject.toString());
 
