@@ -37,7 +37,9 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
 import com.spoiledmilk.ibikecph.util.AsyncImageFetcher;
+import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.ImageData;
 import com.spoiledmilk.ibikecph.util.ImagerPrefetcherListener;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -162,10 +164,43 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
                 public void onClick(View view) {
                     if (validatePasswords() && !inProgress) {
                         inProgress = true;
-                        setResult(100);
-                        //Kald metode der kalder API
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Looper.myLooper();
+                                Looper.prepare();
+                                RegisterActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progressBar.setVisibility(View.VISIBLE);
+                                    }
+                                });
+                                Message message = HTTPAccountHandler.performAddPassword(userData, RegisterActivity.this);
+                                Bundle data = message.getData();
+                                Boolean success = data.getBoolean("success", false);
+                                if (success) {
+                                    //Save signature token
+                                    String signature = data.getString("signature");
+                                    PreferenceManager.getDefaultSharedPreferences(RegisterActivity.this).edit().putString("signature", signature).commit();
+                                    Log.d("DV", "We got a signature, enabling tracking!");
+                                    IbikePreferences settings = IbikeApplication.getSettings();
+                                    settings.setTrackingEnabled(true);
+                                    settings.setNotifyMilestone(true);
+                                    settings.setNotifyWeekly(true);
+                                    startActivity(new Intent(RegisterActivity.this, TrackingActivity.class));
+                                    finish();
+                                }
+                                RegisterActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                });
+
+                            }
+                        }).start();
                     } else if (!inProgress) {
-                        //Pop-up der siger missmatch i passwords
                         launchAlertDialog(validationMessage);
                     }
                 }
@@ -174,7 +209,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             cancelButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.d("DV", "Kode sat til 99");
+                    Log.d("DV", "result code set to 99");
                     setResult(99);
                     finish();
                 }
@@ -512,6 +547,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             validationMessage = IbikeApplication.getString("register_error_passwords_short");
             ret = false;
         }
+        userData = new UserData(textNewPassword.getText().toString(), textPasswordConfirm.getText().toString());
         return ret;
     }
 

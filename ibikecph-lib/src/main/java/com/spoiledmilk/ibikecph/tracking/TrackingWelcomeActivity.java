@@ -65,7 +65,7 @@ public class TrackingWelcomeActivity extends Activity {
                 if (IbikeApplication.isFacebookLogin()) {
                     Log.d("DV", "Prompting Facebookuser to create a password!");
                     Intent i = new Intent(TrackingWelcomeActivity.this, RegisterActivity.class).putExtra("fromTracking", true);
-                    Log.d("DV", "Starter activity med resultcode = 99");
+                    Log.d("DV", "Starting activity with resultcode = 99");
                     startActivityForResult(i, 99);
                 } else if (IbikeApplication.isUserLogedIn()) {
                     Log.d("DV", "Prompting login for user!");
@@ -126,19 +126,20 @@ public class TrackingWelcomeActivity extends Activity {
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
-        if(IbikeApplication.getSettings().getTrackingEnabled()){
+        if (IbikeApplication.getSettings().getTrackingEnabled()) {
             finish();
         }
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
     }
 
-    @Override protected void onStop(){
+    @Override
+    protected void onStop() {
         super.onStop();
     }
 
@@ -150,8 +151,8 @@ public class TrackingWelcomeActivity extends Activity {
             onTrackingEnableClick(null);
         }
 
-        if(requestCode == 99){
-            Log.d("DV", "Kode = 99");
+        if (requestCode == 99) {
+            Log.d("DV", "Result code = 99");
         }
     }
 }

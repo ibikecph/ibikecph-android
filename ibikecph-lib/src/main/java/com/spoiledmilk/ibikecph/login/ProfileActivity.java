@@ -187,6 +187,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                             if (success) {
                                 PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("email").commit();
                                 PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("auth_token").commit();
+                                PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("signature").commit();
                                 PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("id").commit();
                                 setResult(RESULT_USER_DELETED);
                                 IbikeApplication.setIsFacebookLogin(false);
