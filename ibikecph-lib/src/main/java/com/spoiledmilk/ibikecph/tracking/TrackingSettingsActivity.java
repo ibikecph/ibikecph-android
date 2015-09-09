@@ -68,7 +68,8 @@ public class TrackingSettingsActivity extends Activity {
                     if (IbikeApplication.getSignature().equals("")) {
                         if (IbikeApplication.isFacebookLogin()) {
                             Log.d("DV", "Prompting Facebookuser to create a password!");
-                            startActivity(new Intent(TrackingSettingsActivity.this, RegisterActivity.class).putExtra("fromTracking", true));
+                            Intent i = new Intent(TrackingSettingsActivity.this, RegisterActivity.class).putExtra("fromTracking", true);
+                            startActivityForResult(i, 10);
                         } else if (IbikeApplication.isUserLogedIn()) {
                             Log.d("DV", "Prompting login for user!");
                             //loginToGetSignatureBox();
@@ -155,17 +156,6 @@ public class TrackingSettingsActivity extends Activity {
         mustLogInDialogFragment.show(getFragmentManager(), "MustLoginDialog");
     }
 
-    public void loginToGetSignatureBox() {
-        // TODO: This should be enumerated somehow
-        trackingEnableSwitch.setChecked(false);
-        notifyMilestoneCheckbox.setChecked(false);
-        notifyWeeklyCheckbox.setChecked(false);
-
-        TrackingWelcomeActivity.MustLogInToGetSignatureDialogFragment mustLogInDialogFragment = new TrackingWelcomeActivity.MustLogInToGetSignatureDialogFragment();
-        mustLogInDialogFragment.show(getFragmentManager(), "MustLoginDialog");
-    }
-
-
     public void onShareData(View v) {
         this.settings.setShareData(this.shareDataSwitch.isChecked());
     }
@@ -203,6 +193,13 @@ public class TrackingSettingsActivity extends Activity {
         // If we got back from a login box AND the used successfully logged in, go on.
         if (requestCode == LeftMenu.LAUNCH_LOGIN && resultCode == RESULT_OK) {
             this.loggedIn = IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin();
+        }
+
+        if (requestCode == 10) {
+            Log.d("DV", "Vi kom fra Register via annuller!, SettingsAct. kode = 10");
+            trackingEnableSwitch.setChecked(false);
+            notifyMilestoneCheckbox.setChecked(false);
+            notifyWeeklyCheckbox.setChecked(false);
         }
     }
 }

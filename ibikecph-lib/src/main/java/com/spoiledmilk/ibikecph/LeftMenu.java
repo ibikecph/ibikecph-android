@@ -170,7 +170,7 @@ public class LeftMenu extends Fragment {
             i = new Intent(getActivity(), TrackingWelcomeActivity.class);
 
             // We don't want this pushed to the back stack.
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            //i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         } else {
             i = new Intent(getActivity(), TrackingActivity.class);
         }

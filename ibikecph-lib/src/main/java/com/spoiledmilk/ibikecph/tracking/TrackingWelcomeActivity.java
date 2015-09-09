@@ -64,10 +64,12 @@ public class TrackingWelcomeActivity extends Activity {
             if (IbikeApplication.getSignature().equals("")) {
                 if (IbikeApplication.isFacebookLogin()) {
                     Log.d("DV", "Prompting Facebookuser to create a password!");
-                    startActivity(new Intent(this, RegisterActivity.class).putExtra("fromTracking", true));
+                    Intent i = new Intent(TrackingWelcomeActivity.this, RegisterActivity.class).putExtra("fromTracking", true);
+                    Log.d("DV", "Starter activity med resultcode = 99");
+                    startActivityForResult(i, 99);
                 } else if (IbikeApplication.isUserLogedIn()) {
                     Log.d("DV", "Prompting login for user!");
-                    //login skærm el noget
+                    //login skærm el noget ??
                 }
             } else {
                 Log.d("DV", "We got a signature, enabling tracking!");
@@ -123,26 +125,21 @@ public class TrackingWelcomeActivity extends Activity {
         }
     }
 
-    public static class MustLogInToGetSignatureDialogFragment extends DialogFragment {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("Du bedes logge ind igen for at få en signature-token")//IbikeApplication.getString("log_in_to_track_prompt")) - sæt real tekst!
-                    .setPositiveButton(IbikeApplication.getString("OK"), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Intent i = new Intent(getActivity(), LoginActivity.class);
-                            getActivity().startActivityForResult(i, LeftMenu.LAUNCH_LOGIN);
-                        }
-                    })
-                    .setNegativeButton(IbikeApplication.getString("account_cancel"), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-            // Create the AlertDialog object and return it
-            return builder.create();
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(IbikeApplication.getSettings().getTrackingEnabled()){
+            finish();
         }
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+    }
+
+    @Override protected void onStop(){
+        super.onStop();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -153,6 +150,9 @@ public class TrackingWelcomeActivity extends Activity {
             onTrackingEnableClick(null);
         }
 
+        if(requestCode == 99){
+            Log.d("DV", "Kode = 99");
+        }
     }
 }
 

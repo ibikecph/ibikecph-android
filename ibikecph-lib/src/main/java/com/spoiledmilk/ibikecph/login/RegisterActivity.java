@@ -56,7 +56,6 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     TextView termsAcceptanceLink;
     TextView textOr;
 
-
     ImageView lockIcon;
     TextView headLine;
     TextView explainingText;
@@ -163,6 +162,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
                 public void onClick(View view) {
                     if (validatePasswords() && !inProgress) {
                         inProgress = true;
+                        setResult(100);
                         //Kald metode der kalder API
                     } else if (!inProgress) {
                         //Pop-up der siger missmatch i passwords
@@ -171,8 +171,17 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
                 }
             });
 
+            cancelButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("DV", "Kode sat til 99");
+                    setResult(99);
+                    finish();
+                }
+            });
+
             //Make orange stuff if APP = Cykelplanen
-            
+
         } else {
 
             btnRegister.setEnabled(false);

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -160,7 +161,22 @@ public class LoginSplashActivity extends Activity {
     }
 
     public void onEnableTrackingClick(View v) {
-        IbikeApplication.getSettings().setTrackingEnabled(true);
-        launchMainMapActivity();
+
+        if (IbikeApplication.getSignature().equals("")) {
+            if (IbikeApplication.isFacebookLogin()) {
+                Log.d("DV", "Prompting Facebookuser to create a password!");
+                Intent i = new Intent(LoginSplashActivity.this, RegisterActivity.class).putExtra("fromTracking", true);
+                startActivityForResult(i, 10);
+            } else if (IbikeApplication.isUserLogedIn()) {
+                Log.d("DV", "Prompting login for user!");
+                //loginToGetSignatureBox();
+                //login skærm el noget ??
+            }
+        } else {
+            Log.d("DV", "We got a signature, enabling tracking!");
+            IbikeApplication.getSettings().setTrackingEnabled(true);
+            launchMainMapActivity();
+        }
+
     }
 }
