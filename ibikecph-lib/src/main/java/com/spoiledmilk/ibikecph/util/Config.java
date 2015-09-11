@@ -10,7 +10,9 @@ public class Config {
     //public static String API_URL = "https://www.ibikecph.dk/api";
     public static final String API_SERVER_LOGIN = API_URL + "/login";
     public static final String API_SERVER_REGISTER = API_URL + "/users";
-    public static final String API_SERVER_ADD_PASSWORD = API_SERVER_REGISTER + "/addpassword";
+    public static final String API_SERVER_ADD_PASSWORD = API_SERVER_REGISTER + "/add_password";
+    public static final String API_SERVER_HAS_PASSWORD = API_SERVER_REGISTER + "/has_password";
+    public static final String API_SERVER_CHANGE_PASSWORD = API_SERVER_REGISTER + "/change_password";
     public static final String API_UPLOAD_TRACKS = API_URL + "/tracks";
 
 

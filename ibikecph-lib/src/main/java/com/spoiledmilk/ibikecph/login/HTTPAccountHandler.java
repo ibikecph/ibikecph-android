@@ -103,10 +103,47 @@ public class HTTPAccountHandler {
         try {
             jsonPOST.put("auth_token", IbikeApplication.getAuthToken());
             jsonUser.put("password", userData.getPassword());
-            jsonUser.put("password_confirmation", userData.getPassword());
             jsonPOST.put("user", jsonUser);
 
             result = HttpUtils.postToServer(Config.API_SERVER_ADD_PASSWORD, jsonPOST);
+            message = HttpUtils.JSONtoMessage(result);
+        } catch (JSONException e) {
+            LOG.e(e.getLocalizedMessage());
+            message.getData().putInt("type", ERROR);
+        }
+        return message;
+    }
+
+    public static Message performHasPassword(final UserData userData, Context context) {
+        Message message = new Message();
+        JsonNode result = null;
+        JSONObject jsonPOST = new JSONObject();
+
+        try {
+            jsonPOST.put("auth_token", IbikeApplication.getAuthToken());
+
+            result = HttpUtils.postToServer(Config.API_SERVER_HAS_PASSWORD, jsonPOST);
+            message = HttpUtils.JSONtoMessage(result);
+        } catch (JSONException e) {
+            LOG.e(e.getLocalizedMessage());
+            message.getData().putInt("type", ERROR);
+        }
+        return message;
+    }
+
+    public static Message performChangePassword(final UserData userData, Context context) {
+        Message message = new Message();
+        JsonNode result = null;
+        JSONObject jsonPOST = new JSONObject();
+        JSONObject jsonUser = new JSONObject();
+
+        try {
+            jsonPOST.put("auth_token", IbikeApplication.getAuthToken());
+            jsonUser.put("current_password", userData.getPassword());
+            jsonUser.put("password", userData.getPassword());
+            jsonPOST.put("user", jsonUser);
+
+            result = HttpUtils.postToServer(Config.API_SERVER_CHANGE_PASSWORD, jsonPOST);
             message = HttpUtils.JSONtoMessage(result);
         } catch (JSONException e) {
             LOG.e(e.getLocalizedMessage());
