@@ -20,7 +20,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="15dp" />
+                android:layout_marginTop="15dp"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/headLine"
@@ -32,7 +33,8 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:text="headline"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/textLogedIn"
@@ -41,7 +43,8 @@
                 android:layout_below="@id/headLine"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:text="" />
+                android:text=""
+                android:visibility="gone"/>
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/pictureContainer"
@@ -57,7 +60,8 @@
                 app:riv_corner_radius="8dip"
                 app:riv_mutate_background="true"
                 app:riv_oval="false"
-                app:riv_tile_mode="repeat" />
+                app:riv_tile_mode="repeat"
+                android:visibility="gone"/>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -88,7 +92,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
                 android:gravity="center"
-                android:text="" />
+                android:text=""
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/explainingText"
@@ -100,7 +105,8 @@
                 android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:text="aaa"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:visibility="gone"/>
 
 
             <LinearLayout
@@ -123,7 +129,8 @@
                     android:inputType="textPassword"
                     android:paddingLeft="10dp"
                     android:paddingRight="25dp"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
 
                 <EditText
                     android:id="@+id/textPasswordConfirm"
@@ -138,7 +145,8 @@
                     android:inputType="textPassword"
                     android:paddingLeft="10dp"
                     android:paddingRight="25dp"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:visibility="gone"/>
 
                 <Button
                     android:id="@+id/savePassword"
@@ -149,7 +157,8 @@
                     android:layout_marginTop="10dp"
                     android:background="@drawable/stroke_button_inverted_red"
                     android:textColor="@color/White"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

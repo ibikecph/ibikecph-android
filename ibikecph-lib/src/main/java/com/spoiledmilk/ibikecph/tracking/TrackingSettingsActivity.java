@@ -73,8 +73,8 @@ public class TrackingSettingsActivity extends Activity {
                             startActivityForResult(i, 10);
                         } else if (IbikeApplication.isUserLogedIn()) {
                             Log.d("DV", "Prompting login for user!");
-                            //loginToGetSignatureBox();
-                            //login skærm el noget
+                            Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class).putExtra("normalUser", true);
+                            startActivityForResult(i, 10);
                         }
                     } else {
                         Log.d("DV", "We got a signature, enabling tracking!");
