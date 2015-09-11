@@ -471,13 +471,13 @@ public class SignatureActivity extends Activity {
         if (hasPassword) {
             explainingText.setText(IbikeApplication.getString("track_token_description_facebook_has_token"));
             savePassword.setText(IbikeApplication.getString("use_password"));
-            textLogedIn.setText(IbikeApplication.getString("you_are_logged_in_as"));
+            textLogedIn.setText(IbikeApplication.getString("track_token_subtitle_facebook"));
             textLogedIn.setTypeface(IbikeApplication.getItalicFont());
             textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
             textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
         } else if (!hasPassword && !normalUser) {
             this.getActionBar().setTitle(IbikeApplication.getString("track_token_title"));
-            textLogedIn.setText(IbikeApplication.getString("you_are_logged_in_as"));
+            textLogedIn.setText(IbikeApplication.getString("track_token_subtitle_facebook"));
             textLogedIn.setTypeface(IbikeApplication.getItalicFont());
             headLine.setText(IbikeApplication.getString("track_token_headline"));
             explainingText.setText(IbikeApplication.getString("track_token_description_facebook_new"));
@@ -488,7 +488,7 @@ public class SignatureActivity extends Activity {
             textPasswordConfirm.setHintTextColor(getResources().getColor(R.color.HintColor));
         } else if (normalUser) {
             headLine.setText(IbikeApplication.getString("track_token_headline"));
-            textLogedIn.setText(IbikeApplication.getString("you_are_logged_in_as"));
+            textLogedIn.setText(IbikeApplication.getString("track_token_subtitle_native"));
             textLogedIn.setTypeface(IbikeApplication.getItalicFont());
             explainingText.setText(IbikeApplication.getString("track_token_description_native"));
             textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
