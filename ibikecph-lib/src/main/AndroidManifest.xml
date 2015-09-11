@@ -131,6 +131,10 @@
             android:name=".tracking.TrackMapView"
             android:label="@string/title_activity_track_map_view"></activity>
 
+        <activity
+            android:name=".login.SignatureActivity"
+            android:label="@string/track_token_title" />
+
         <receiver
             android:name=".BootReceiver"
             android:exported="true">

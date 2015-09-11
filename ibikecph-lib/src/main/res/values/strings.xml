@@ -24,5 +24,7 @@
     <string name="title_activity_track_map_view">TrackMapView</string>
     <string name="title_activity_accept_new_terms">AcceptNewTermsActivity</string>
     <string name="title_activity_read_more">ReadMoreActivity</string>
+    <string name="track_token_title">Security Code</string>
+
 
 </resources>
