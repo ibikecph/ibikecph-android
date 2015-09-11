@@ -466,7 +466,7 @@ public class SignatureActivity extends Activity {
     }
 
     private void initStrings() {
-        lockIcon.setBackground(getResources().getDrawable(R.drawable.tracking_from_to));
+        lockIcon.setBackground(getResources().getDrawable(R.drawable.hanglock));
         //Load resources and text in relation to the server response
         if (hasPassword) {
             explainingText.setText(IbikeApplication.getString("track_token_description_facebook_has_token"));
