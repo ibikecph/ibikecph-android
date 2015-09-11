@@ -133,7 +133,8 @@
 
         <activity
             android:name=".login.SignatureActivity"
-            android:label="@string/track_token_title" />
+            android:label="@string/track_token_title"
+            android:windowSoftInputMode="stateHidden"/>
 
         <receiver
             android:name=".BootReceiver"

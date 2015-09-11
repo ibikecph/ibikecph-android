@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -37,7 +40,10 @@ import com.spoiledmilk.ibikecph.util.AsyncImageFetcher;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.ImageData;
 import com.spoiledmilk.ibikecph.util.LOG;
+import com.spoiledmilk.ibikecph.util.Util;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 
 /**
@@ -50,127 +56,230 @@ public class SignatureActivity extends Activity {
     ImageView lockIcon;
     TextView headLine;
     TextView explainingText;
+    TextView textName;
+    TextView textLogedIn;
     Button savePassword;
-    Button cancelButton;
+    RoundedImageView pictureContainer;
 
     UserData userData;
     ProgressBar progressBar;
 
     boolean isRunning = true;
-    boolean fromTracking = false;
+    boolean hasPassword = false;
     String validationMessage;
-    String base64Image = "";
+    String username;
 
     boolean inProgress = false;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-
         setContentView(R.layout.signature_activity);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        pictureContainer = (RoundedImageView) findViewById(R.id.pictureContainer);
+        textName = (TextView) findViewById(R.id.textName);
+        textLogedIn = (TextView) findViewById(R.id.textLogedIn);
         textNewPassword = (EditText) findViewById(R.id.textNewPassword);
         textPasswordConfirm = (EditText) findViewById(R.id.textPasswordConfirm);
+        lockIcon = (ImageView) findViewById(R.id.lockIcon);
+        headLine = (TextView) findViewById(R.id.headLine);
+        explainingText = (TextView) findViewById(R.id.explainingText);
+        savePassword = (Button) findViewById(R.id.savePassword);
 
-        fromTracking = intent.getBooleanExtra("fromTracking", false);
-        if (fromTracking) {
-            Log.d("DV", "SignatureActivity: Kommer fra tracking!");
-            //Make views gone!
-            //Maybe remove.
-            RoundedImageView riv;
-            riv = (RoundedImageView) findViewById(R.id.pictureContainer);
-            riv.setVisibility(View.GONE);
-
-            //Make views visible!
-            lockIcon = (ImageView) findViewById(R.id.lockIcon);
-            headLine = (TextView) findViewById(R.id.headLine);
-            explainingText = (TextView) findViewById(R.id.explainingText);
-            savePassword = (Button) findViewById(R.id.savePassword);
-            cancelButton = (Button) findViewById(R.id.cancelButton);
-
-            lockIcon.setVisibility(View.VISIBLE);
-            headLine.setVisibility(View.VISIBLE);
-            explainingText.setVisibility(View.VISIBLE);
-            savePassword.setVisibility(View.VISIBLE);
-
-            headLine.setText(IbikeApplication.getString("track_token_headline"));
-            explainingText.setText(IbikeApplication.getString("track_token_description_facebook_new"));
-            savePassword.setText(IbikeApplication.getString("save_password"));
-
-            //Styling/Listeners
-            textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
-            textNewPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        Log.d("DV", "In signatureActivity!");
+        //Check if the FB-user already has a signature on the server
+        if (!inProgress) {
+            inProgress = true;
+            SignatureActivity.this.runOnUiThread(new Runnable() {
                 @Override
-                public void onFocusChange(View view, boolean b) {
-                    if (b) {
-                        textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                public void run() {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+            });
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Looper.myLooper();
+                    Looper.prepare();
+
+                    Message message = HTTPAccountHandler.performHasPassword(userData, SignatureActivity.this);
+                    Bundle data = message.getData();
+                    hasPassword = data.getBoolean("has_password", false);
+                    if (hasPassword) {
+                        Log.d("DV", "FB-user already has a signature on the server!");
+                        //Save signature token?
+                        //PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).edit().putString("signature", signature).commit();
+                        /*IbikePreferences settings = IbikeApplication.getSettings();
+                        settings.setTrackingEnabled(true);
+                        settings.setNotifyMilestone(true);
+                        settings.setNotifyWeekly(true);*/
+                        //startActivity(new Intent(SignatureActivity.this, TrackingActivity.class));
+                        //finish();
+                        hasPassword();
                     } else {
-                        textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                        hasNoPassword();
                     }
+                    SignatureActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.GONE);
+                            inProgress = false;
+                        }
+                    });
+
                 }
-            });
-
-            textPasswordConfirm.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View view, boolean b) {
-                    if (b) {
-                        textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
-                    } else {
-                        textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
-                    }
-                }
-            });
-
-            savePassword.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (validatePasswords() && !inProgress) {
-                        inProgress = true;
-
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Looper.myLooper();
-                                Looper.prepare();
-                                SignatureActivity.this.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        progressBar.setVisibility(View.VISIBLE);
-                                    }
-                                });
-                                Message message = HTTPAccountHandler.performAddPassword(userData, SignatureActivity.this);
-                                Bundle data = message.getData();
-                                Boolean success = data.getBoolean("success", false);
-                                if (success) {
-                                    //Save signature token
-                                    String signature = data.getString("signature");
-                                    PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).edit().putString("signature", signature).commit();
-                                    Log.d("DV", "We got a signature, enabling tracking!");
-                                    IbikePreferences settings = IbikeApplication.getSettings();
-                                    settings.setTrackingEnabled(true);
-                                    settings.setNotifyMilestone(true);
-                                    settings.setNotifyWeekly(true);
-                                    startActivity(new Intent(SignatureActivity.this, TrackingActivity.class));
-                                    finish();
-                                }
-                                SignatureActivity.this.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                });
-
-                            }
-                        }).start();
-                    } else if (!inProgress) {
-                        launchAlertDialog(validationMessage);
-                    }
-                }
-            });
-
+            }).start();
         }
+
+        //Handle views etc. in relation to the server response
+    }
+
+    public void hasPassword() {
+        Log.d("DV", "Running hasPassword stuff!");
+        progressBar.setVisibility(View.VISIBLE);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Message message = HTTPAccountHandler.performGetUser(new UserData(IbikeApplication.getAuthToken(), PreferenceManager
+                        .getDefaultSharedPreferences(SignatureActivity.this).getInt("id", -1)));
+                final Bundle data = message.getData();
+                Boolean success = false;
+                success = data.getBoolean("success");
+                if (success) {
+                    username = data.getString("name");
+                    LoadImageFromWebOperations(data.getString("image_url"));
+                } else
+                    SignatureActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //logout();
+                            Util.showSimpleMessageDlg(SignatureActivity.this, "Error fetching the user id = "
+                                    + PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).getInt("id", -1) + " auth token = "
+                                    + IbikeApplication.getAuthToken() + (message != null ? message.toString() : ""));
+                            progressBar.setVisibility(View.GONE);
+                            inProgress = false;
+                        }
+                    });
+            }
+        }).start();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textPasswordConfirm.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    public void hasNoPassword() {
+        Log.d("DV", "Running has no password stuff!");
+
+        progressBar.setVisibility(View.VISIBLE);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final Message message = HTTPAccountHandler.performGetUser(new UserData(IbikeApplication.getAuthToken(), PreferenceManager
+                        .getDefaultSharedPreferences(SignatureActivity.this).getInt("id", -1)));
+                final Bundle data = message.getData();
+                Boolean success = false;
+                success = data.getBoolean("success");
+                if (success) {
+                    username = data.getString("name");
+                    LoadImageFromWebOperations(data.getString("image_url"));
+                } else
+                    SignatureActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //logout();
+                            Util.showSimpleMessageDlg(SignatureActivity.this, "Error fetching the user id = "
+                                    + PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).getInt("id", -1) + " auth token = "
+                                    + IbikeApplication.getAuthToken() + (message != null ? message.toString() : ""));
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
+            }
+        }).start();
+
+
+        //Styling/Listeners
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+            }
+        });
+
+        textNewPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        });
+
+        textPasswordConfirm.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+        });
+
+        savePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (validatePasswords() && !inProgress) {
+                    inProgress = true;
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Looper.myLooper();
+                            Looper.prepare();
+                            SignatureActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressBar.setVisibility(View.VISIBLE);
+                                }
+                            });
+                            Message message = HTTPAccountHandler.performAddPassword(userData, SignatureActivity.this);
+                            Bundle data = message.getData();
+                            Boolean success = data.getBoolean("success", false);
+                            if (success) {
+                                //Save signature token
+                                String signature = data.getString("signature");
+                                PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).edit().putString("signature", signature).commit();
+                                Log.d("DV", "We got a signature, enabling tracking!");
+                                IbikePreferences settings = IbikeApplication.getSettings();
+                                settings.setTrackingEnabled(true);
+                                settings.setNotifyMilestone(true);
+                                settings.setNotifyWeekly(true);
+                                startActivity(new Intent(SignatureActivity.this, TrackingActivity.class));
+                                finish();
+                            }
+                            SignatureActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            });
+
+                        }
+                    }).start();
+                } else if (!inProgress) {
+                    launchAlertDialog(validationMessage);
+                }
+            }
+        });
+    }
+
+    public void normalUser() {
     }
 
     @Override
@@ -186,20 +295,28 @@ public class SignatureActivity extends Activity {
     }
 
     private void initStrings() {
-        if (fromTracking) {
+        lockIcon.setBackground(getResources().getDrawable(R.drawable.tracking_from_to));
+        //Load resources and text in relation to the server response
+        if (hasPassword) {
+            explainingText.setText(IbikeApplication.getString("track_token_description_facebook_has_token"));
+            savePassword.setText(IbikeApplication.getString("use_password"));
+            textLogedIn.setText(IbikeApplication.getString("you_are_logged_in_as"));
+            textLogedIn.setTypeface(IbikeApplication.getItalicFont());
+        } else if (!hasPassword) {
             this.getActionBar().setTitle(IbikeApplication.getString("track_token_title"));
-
-            //Load resources and text
-            lockIcon.setBackground(getResources().getDrawable(R.drawable.tracking_from_to));
-            headLine.setText("Vi går op i at dine data er anonyme!");
-            explainingText.setText("For at sikre at dine data kan deles med Københavns Kommune og Region Hovedstaden, uden at vi kan kæde dem sammen med dig, har vi brug for at du opretter er kodeord kun du kender.");
-            savePassword.setText("Gem kodeord");
-
-            textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder")); //ny der skriver kodeord?
+            textLogedIn.setText(IbikeApplication.getString("you_are_logged_in_as"));
+            textLogedIn.setTypeface(IbikeApplication.getItalicFont());
+            headLine.setText(IbikeApplication.getString("track_token_headline"));
+            explainingText.setText(IbikeApplication.getString("track_token_description_facebook_new"));
+            savePassword.setText(IbikeApplication.getString("save_password"));
+            textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
             textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
-            textPasswordConfirm.setHint(IbikeApplication.getString("register_password_repeat_placeholder")); //ny der skrive gentag kodeord?
+            textPasswordConfirm.setHint(IbikeApplication.getString("register_password_repeat_placeholder"));
             textPasswordConfirm.setHintTextColor(getResources().getColor(R.color.HintColor));
         }
+
+        //else if(){}normal user?
+
     }
 
     private void launchAlertDialog(String msg) {
@@ -246,25 +363,6 @@ public class SignatureActivity extends Activity {
         super.onStop();
     }
 
-    /*
-    @Override
-    public void onImagePrefetched(ImageData imageData) {
-        if (imageData != null && imageData.bmp != null && imageData.base64 != null) {
-            base64Image = imageData.base64;
-            RoundedImageView riv;
-            riv = (RoundedImageView) findViewById(R.id.pictureContainer);
-            riv.findViewById(R.id.pictureContainer);
-            riv.setImageDrawable(imageData.bmp);
-            riv.setScaleType(ImageView.ScaleType.CENTER);
-            //((RoundedImageView) findViewById(R.id.pictureContainer)).setImageDrawable(imageData.bmp);
-            //findViewById(R.id.frame).setVisibility(View.VISIBLE);
-        } else {
-            Toast.makeText(this, "Error fetching the image", Toast.LENGTH_SHORT).show();
-        }
-        progressBar.setVisibility(View.GONE);
-    }*/
-
-
     private void launchErrorDialog(String title, String info) {
         if (!isFinishing() && isRunning) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -300,6 +398,41 @@ public class SignatureActivity extends Activity {
                 progressBar.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void LoadImageFromWebOperations(final String url) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    InputStream is = (InputStream) new URL(url).getContent();
+                    final Drawable d = Drawable.createFromStream(is, "src name");
+                    String httpsUrl = url.replace("http", "https");
+                    URL img_value = new URL(httpsUrl);
+                    final Bitmap profilePic = BitmapFactory.decodeStream(img_value.openConnection().getInputStream());
+                    SignatureActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            pictureContainer.setImageBitmap(profilePic);
+                            pictureContainer.setScaleType(ImageView.ScaleType.CENTER);
+                            pictureContainer.invalidate();
+                            inProgress = false;
+                        }
+                    });
+                } catch (Exception e) {
+                    LOG.e(e.getLocalizedMessage());
+                } finally {
+                    SignatureActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.GONE);
+                            textName.setTypeface(IbikeApplication.getItalicFont());
+                            textName.setText(username);
+                        }
+                    });
+                }
+            }
+        }).start();
     }
 
 }

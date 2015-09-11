@@ -1,150 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:orientation="vertical">
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/lockIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:id="@+id/headLine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="aaa"
-            android:textSize="22sp" />
-
-        <TextView
-            android:id="@+id/explainingText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="aaa"
-            android:textSize="16sp" />
-
-        <requestFocus />
-
-        <EditText
-            android:id="@+id/textNewPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textName"
-            android:layout_alignRight="@+id/textName"
-            android:layout_below="@+id/textEmail"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="10dp"
-            android:inputType="textPassword"
-            android:paddingLeft="10dp"
-            android:paddingRight="25dp"
-            android:textSize="16sp" />
-
-        <EditText
-            android:id="@+id/textPasswordConfirm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textName"
-            android:layout_alignRight="@+id/textName"
-            android:layout_below="@+id/textNewPassword"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="10dp"
-            android:inputType="textPassword"
-            android:paddingLeft="10dp"
-            android:paddingRight="25dp"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/savePassword"
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="45sp"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/stroke_button_inverted_red"
-            android:textColor="@color/White"
-            android:textSize="18sp"
-            android:visibility="gone" />
+            android:layout_height="wrap_content"
+            android:gravity="center">
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/lockIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp" />
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+            <TextView
+                android:id="@+id/headLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lockIcon"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="headline"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/textLogedIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/headLine"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/pictureContainer"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_below="@id/textLogedIn"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/rounded_imageview"
+                app:riv_border_color="@color/Grey"
+                app:riv_border_width="1dip"
+                app:riv_corner_radius="8dip"
+                app:riv_mutate_background="true"
+                app:riv_oval="false"
+                app:riv_tile_mode="repeat" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/pictureContainer"
+                android:layout_alignLeft="@+id/pictureContainer"
+                android:layout_alignRight="@+id/pictureContainer"
+                android:layout_alignTop="@+id/pictureContainer"
+                android:background="@drawable/rounded_image_frame"
+                android:contentDescription="@string/app_name"></ImageView>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/pictureContainer"
+                android:layout_alignLeft="@+id/pictureContainer"
+                android:layout_alignRight="@+id/pictureContainer"
+                android:layout_alignTop="@+id/pictureContainer"
+                android:background="@drawable/image_frame"
+                android:contentDescription="@string/app_name"
+                android:visibility="gone"></ImageView>
+
+            <TextView
+                android:id="@+id/textName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pictureContainer"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/explainingText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textName"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="aaa"
+                android:textSize="16sp" />
+
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/explainingText"
+                android:background="@null"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/textNewPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/textName"
+                    android:layout_alignRight="@+id/textName"
+                    android:layout_below="@+id/textEmail"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="10dp"
+                    android:inputType="textPassword"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="25dp"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/textPasswordConfirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/textName"
+                    android:layout_alignRight="@+id/textName"
+                    android:layout_below="@+id/textNewPassword"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="10dp"
+                    android:inputType="textPassword"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="25dp"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/savePassword"
+                    android:layout_width="fill_parent"
+                    android:layout_height="45sp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/stroke_button_inverted_red"
+                    android:textColor="@color/White"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center">
+        android:layout_centerInParent="true"
+        android:visibility="gone"></ProgressBar>
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:id="@+id/pictureContainer"
-            android:layout_width="70sp"
-            android:layout_height="70sp"
-            android:clickable="true"
-            android:contentDescription="@string/app_name"
-            android:onClick="onImageContainerClick"
-            android:src="@drawable/camera_profile"
-            app:riv_border_color="@color/Grey"
-            app:riv_border_width="1dip"
-            app:riv_corner_radius="8dip"
-            app:riv_mutate_background="true"
-            app:riv_oval="false"
-            app:riv_tile_mode="repeat" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/pictureContainer"
-            android:layout_alignLeft="@+id/pictureContainer"
-            android:layout_alignRight="@+id/pictureContainer"
-            android:layout_alignTop="@+id/pictureContainer"
-            android:background="@drawable/rounded_image_frame"
-            android:contentDescription="@string/app_name"
-            android:visibility="gone"></ImageView>
-
-        <ImageView
-            android:id="@+id/frame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/pictureContainer"
-            android:layout_alignLeft="@+id/pictureContainer"
-            android:layout_alignRight="@+id/pictureContainer"
-            android:layout_alignTop="@+id/pictureContainer"
-            android:background="@drawable/image_frame"
-            android:contentDescription="@string/app_name"
-            android:visibility="gone"></ImageView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="gone" />
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

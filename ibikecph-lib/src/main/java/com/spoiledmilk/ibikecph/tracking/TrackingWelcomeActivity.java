@@ -18,6 +18,7 @@ import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.RegisterActivity;
+import com.spoiledmilk.ibikecph.login.SignatureActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
@@ -64,7 +65,7 @@ public class TrackingWelcomeActivity extends Activity {
             if (IbikeApplication.getSignature().equals("")) {
                 if (IbikeApplication.isFacebookLogin()) {
                     Log.d("DV", "Prompting Facebookuser to create a password!");
-                    Intent i = new Intent(TrackingWelcomeActivity.this, RegisterActivity.class).putExtra("fromTracking", true);
+                    Intent i = new Intent(TrackingWelcomeActivity.this, SignatureActivity.class);
                     Log.d("DV", "Starting activity with resultcode = 99");
                     startActivityForResult(i, 99);
                 } else if (IbikeApplication.isUserLogedIn()) {

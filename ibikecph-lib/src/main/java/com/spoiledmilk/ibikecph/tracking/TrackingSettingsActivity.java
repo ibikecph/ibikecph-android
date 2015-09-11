@@ -14,6 +14,7 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.login.RegisterActivity;
+import com.spoiledmilk.ibikecph.login.SignatureActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
@@ -68,7 +69,7 @@ public class TrackingSettingsActivity extends Activity {
                     if (IbikeApplication.getSignature().equals("")) {
                         if (IbikeApplication.isFacebookLogin()) {
                             Log.d("DV", "Prompting Facebookuser to create a password!");
-                            Intent i = new Intent(TrackingSettingsActivity.this, RegisterActivity.class).putExtra("fromTracking", true);
+                            Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class);
                             startActivityForResult(i, 10);
                         } else if (IbikeApplication.isUserLogedIn()) {
                             Log.d("DV", "Prompting login for user!");
@@ -200,6 +201,7 @@ public class TrackingSettingsActivity extends Activity {
             trackingEnableSwitch.setChecked(false);
             notifyMilestoneCheckbox.setChecked(false);
             notifyWeeklyCheckbox.setChecked(false);
+            finish();
         }
     }
 }

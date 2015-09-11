@@ -165,7 +165,7 @@ public class LoginSplashActivity extends Activity {
         if (IbikeApplication.getSignature().equals("")) {
             if (IbikeApplication.isFacebookLogin()) {
                 Log.d("DV", "Prompting Facebookuser to create a password!");
-                Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class).putExtra("fromTracking", true);
+                Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class);
                 startActivityForResult(i, 10);
             } else if (IbikeApplication.isUserLogedIn()) {
                 Log.d("DV", "Prompting login for user!");

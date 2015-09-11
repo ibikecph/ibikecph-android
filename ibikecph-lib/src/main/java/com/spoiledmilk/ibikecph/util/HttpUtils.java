@@ -243,20 +243,25 @@ public class HttpUtils {
         Message ret = new Message();
         Bundle data = new Bundle();
         if (result != null) {
-            data.putBoolean("success", result.get("success").asBoolean());
-            data.putString("info", result.get("info").asText());
+            if (result.has("success"))
+                data.putBoolean("success", result.get("success").asBoolean());
+            if (result.has("info"))
+                data.putString("info", result.get("info").asText());
+            if (result.has("has_password"))
+                data.putBoolean("has_password", result.get("has_password").asBoolean());
             if (result.has("errors"))
                 data.putString("errors", result.get("errors").asText());
-            JsonNode dataNode = result.get("data");
-            if (dataNode != null) {
-                if (dataNode.has("id"))
-                    data.putInt("id", dataNode.get("id").asInt());
-                if (dataNode.has("auth_token"))
-                    data.putString("auth_token", dataNode.get("auth_token").asText());
-                if (dataNode.has("signature"))
-                    data.putString("signature", dataNode.get("signature").asText());
-            }
         }
+        JsonNode dataNode = result.get("data");
+        if (dataNode != null) {
+            if (dataNode.has("id"))
+                data.putInt("id", dataNode.get("id").asInt());
+            if (dataNode.has("auth_token"))
+                data.putString("auth_token", dataNode.get("auth_token").asText());
+            if (dataNode.has("signature"))
+                data.putString("signature", dataNode.get("signature").asText());
+        }
+
         ret.setData(data);
         return ret;
     }
