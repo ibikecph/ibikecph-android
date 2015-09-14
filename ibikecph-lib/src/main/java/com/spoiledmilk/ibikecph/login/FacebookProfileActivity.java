@@ -131,9 +131,9 @@ public class FacebookProfileActivity extends Activity {
                         @Override
                         public void run() {
                             logout();
-                            Util.showSimpleMessageDlg(FacebookProfileActivity.this, "Error fetching the user id = "
+                            /*Util.showSimpleMessageDlg(FacebookProfileActivity.this, "Error fetching the user id = "
                                     + PreferenceManager.getDefaultSharedPreferences(FacebookProfileActivity.this).getInt("id", -1) + " auth token = "
-                                    + IbikeApplication.getAuthToken() + (message != null ? message.toString() : ""));
+                                    + IbikeApplication.getAuthToken() + (message != null ? message.toString() : ""));*/
                             progressBar.setVisibility(View.GONE);
                         }
                     });
