@@ -17,6 +17,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -185,6 +186,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                         case HTTPAccountHandler.DELETE_USER:
                             success = data.getBoolean("success");
                             if (success) {
+                                Log.d("DV", "User Deleted!");
                                 PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("email").commit();
                                 PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("auth_token").commit();
                                 PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("signature").commit();

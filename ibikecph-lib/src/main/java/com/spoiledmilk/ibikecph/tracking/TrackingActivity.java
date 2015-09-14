@@ -12,8 +12,10 @@ import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.login.SignatureActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
+import com.spoiledmilk.ibikecph.util.IbikePreferences;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -212,17 +214,37 @@ public class TrackingActivity extends Activity {
     }
 
     public void onReactivateButtonClick(View v) {
-        if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
-            // Enable the tracking
-            IbikeApplication.getSettings().setTrackingEnabled(true);
+        // IF the user is not logged in, spawn a dialog saying so.
+        if (!IbikeApplication.isUserLogedIn() && !IbikeApplication.isFacebookLogin()) {
+            TrackingWelcomeActivity.MustLogInDialogFragment loginDialog = new TrackingWelcomeActivity.MustLogInDialogFragment();
+            loginDialog.show(getFragmentManager(), "MustLoginDialog");
 
-            // Remove the button and spacer
-            findViewById(R.id.reactivateButton).setVisibility(View.GONE);
-            findViewById(R.id.reactivateButtonSpacer).setVisibility(View.GONE);
         } else {
-            TrackingWelcomeActivity.MustLogInDialogFragment mustLogInDialogFragment = new TrackingWelcomeActivity.MustLogInDialogFragment();
-            mustLogInDialogFragment.show(getFragmentManager(), "MustLoginDialog");
+            if (IbikeApplication.getSignature().equals("")) {
+                if (IbikeApplication.isFacebookLogin()) {
+                    Log.d("DV", "Prompting Facebookuser to create a password!");
+                    Intent i = new Intent(TrackingActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    Log.d("DV", "Starting activity with resultcode = 99");
+                    startActivityForResult(i, 99);
+                } else if (IbikeApplication.isUserLogedIn()) {
+                    Log.d("DV", "Prompting login for user!");
+                    Intent i = new Intent(TrackingActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivityForResult(i, 10);
+                }
+            } else {
+                Log.d("DV", "We got a signature, enabling tracking!");
+                Log.d("DV", "Tracking signature = " + IbikeApplication.getSignature());
+                // Remove the button and spacer
+                findViewById(R.id.reactivateButton).setVisibility(View.GONE);
+                findViewById(R.id.reactivateButtonSpacer).setVisibility(View.GONE);
+                IbikePreferences settings = IbikeApplication.getSettings();
+                settings.setTrackingEnabled(true);
+                settings.setNotifyMilestone(true);
+                settings.setNotifyWeekly(true);
+                startActivity(new Intent(this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            }
         }
+
     }
 
 

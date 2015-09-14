@@ -158,8 +158,7 @@ public class SignatureActivity extends Activity {
                                     settings.setNotifyMilestone(true);
                                     settings.setNotifyWeekly(true);
                                     dismissProgressDialog();
-                                    startActivity(new Intent(SignatureActivity.this, TrackingActivity.class));
-                                    finish();
+                                    startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 } else {
                                     dismissProgressDialog();
                                     final String msg = data.containsKey("errors") ? data.getString("errors") : data.getString("info");
@@ -296,7 +295,7 @@ public class SignatureActivity extends Activity {
                                 settings.setNotifyMilestone(true);
                                 settings.setNotifyWeekly(true);
                                 dismissProgressDialog();
-                                startActivity(new Intent(SignatureActivity.this, TrackingActivity.class));
+                                startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 finish();
                             } else {
                                 dismissProgressDialog();
@@ -423,7 +422,7 @@ public class SignatureActivity extends Activity {
                                 settings.setTrackingEnabled(true);
                                 settings.setNotifyMilestone(true);
                                 settings.setNotifyWeekly(true);
-                                startActivity(new Intent(SignatureActivity.this, TrackingActivity.class));
+                                startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 finish();
                             }
                             SignatureActivity.this.runOnUiThread(new Runnable() {

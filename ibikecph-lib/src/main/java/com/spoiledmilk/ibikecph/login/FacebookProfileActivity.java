@@ -95,6 +95,7 @@ public class FacebookProfileActivity extends Activity {
                                 PreferenceManager.getDefaultSharedPreferences(FacebookProfileActivity.this).edit().remove("email").commit();
                                 PreferenceManager.getDefaultSharedPreferences(FacebookProfileActivity.this).edit().remove("auth_token").commit();
                                 PreferenceManager.getDefaultSharedPreferences(FacebookProfileActivity.this).edit().remove("id").commit();
+                                PreferenceManager.getDefaultSharedPreferences(FacebookProfileActivity.this).edit().remove("signature").commit();
                                 IbikeApplication.setIsFacebookLogin(false);
                                 setResult(RESULT_USER_DELETED);
                                 (new DB(FacebookProfileActivity.this)).deleteFavorites();

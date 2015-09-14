@@ -69,12 +69,12 @@ public class TrackingSettingsActivity extends Activity {
                     if (IbikeApplication.getSignature().equals("")) {
                         if (IbikeApplication.isFacebookLogin()) {
                             Log.d("DV", "Prompting Facebookuser to create a password!");
-                            Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class);
-                            startActivityForResult(i, 10);
+                            Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
                         } else if (IbikeApplication.isUserLogedIn()) {
                             Log.d("DV", "Prompting login for user!");
-                            Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class).putExtra("normalUser", true);
-                            startActivityForResult(i, 10);
+                            Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
                         }
                     } else {
                         Log.d("DV", "We got a signature, enabling tracking!");

@@ -65,12 +65,12 @@ public class TrackingWelcomeActivity extends Activity {
             if (IbikeApplication.getSignature().equals("")) {
                 if (IbikeApplication.isFacebookLogin()) {
                     Log.d("DV", "Prompting Facebookuser to create a password!");
-                    Intent i = new Intent(TrackingWelcomeActivity.this, SignatureActivity.class);
+                    Intent i = new Intent(TrackingWelcomeActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     Log.d("DV", "Starting activity with resultcode = 99");
                     startActivityForResult(i, 99);
                 } else if (IbikeApplication.isUserLogedIn()) {
                     Log.d("DV", "Prompting login for user!");
-                    Intent i = new Intent(TrackingWelcomeActivity.this, SignatureActivity.class).putExtra("normalUser", true);
+                    Intent i = new Intent(TrackingWelcomeActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivityForResult(i, 10);
                 }
             } else {
@@ -79,7 +79,7 @@ public class TrackingWelcomeActivity extends Activity {
                 settings.setTrackingEnabled(true);
                 settings.setNotifyMilestone(true);
                 settings.setNotifyWeekly(true);
-                startActivity(new Intent(this, TrackingActivity.class));
+                startActivity(new Intent(this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         }
     }

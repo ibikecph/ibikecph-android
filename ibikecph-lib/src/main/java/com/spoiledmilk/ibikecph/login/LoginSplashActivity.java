@@ -165,11 +165,11 @@ public class LoginSplashActivity extends Activity {
         if (IbikeApplication.getSignature().equals("")) {
             if (IbikeApplication.isFacebookLogin()) {
                 Log.d("DV", "Prompting Facebookuser to create a password!");
-                Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class);
+                Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(i, 10);
             } else if (IbikeApplication.isUserLogedIn()) {
                 Log.d("DV", "Prompting login for user!");
-                Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class).putExtra("normalUser", true);
+                Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(i, 10);
             }
         } else {
