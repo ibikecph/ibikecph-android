@@ -342,7 +342,7 @@ public class SignatureActivity extends Activity {
                 progressBar.setVisibility(View.VISIBLE);
             }
         });
-        progressBar.setVisibility(View.VISIBLE);
+
         new Thread(new Runnable() {
             @Override
             public void run() {

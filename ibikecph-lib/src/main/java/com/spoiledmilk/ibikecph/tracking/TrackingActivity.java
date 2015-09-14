@@ -241,7 +241,7 @@ public class TrackingActivity extends Activity {
                 settings.setTrackingEnabled(true);
                 settings.setNotifyMilestone(true);
                 settings.setNotifyWeekly(true);
-                startActivity(new Intent(this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                //startActivity(new Intent(this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         }
 

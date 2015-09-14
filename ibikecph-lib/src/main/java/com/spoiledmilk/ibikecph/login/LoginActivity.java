@@ -121,7 +121,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                                 signature = "";
                             }
                             PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).edit().putString("auth_token", auth_token).commit();
-                            //PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).edit().putString("signature", signature).commit();
+                            PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).edit().putString("signature", signature).commit();
                             PreferenceManager.getDefaultSharedPreferences(LoginActivity.this).edit().putInt("id", id).commit();
                             LOG.d("Loged in token = " + auth_token + ", Signature = " + signature + ", id = " + id);
 

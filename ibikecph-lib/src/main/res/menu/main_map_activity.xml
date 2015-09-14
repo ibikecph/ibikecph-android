@@ -3,6 +3,13 @@
     tools:context="com.spoiledmilk.ibikecph.map.MapActivity">
 
     <item
+        android:id="@+id/resetSignature"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="sig"
+        android:visible="true" />
+
+    <item
         android:id="@+id/createFakeTrack"
         android:orderInCategory="100"
         android:showAsAction="always"

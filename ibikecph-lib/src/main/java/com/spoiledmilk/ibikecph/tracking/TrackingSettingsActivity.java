@@ -37,6 +37,7 @@ public class TrackingSettingsActivity extends Activity {
 
     private IbikePreferences settings;
     private boolean loggedIn;
+    private boolean checkedFromResume = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class TrackingSettingsActivity extends Activity {
         this.trackingEnableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (loggedIn) {
+                if (loggedIn && !checkedFromResume) {
 
                     if (IbikeApplication.getSignature().equals("")) {
                         if (IbikeApplication.isFacebookLogin()) {
@@ -109,6 +110,21 @@ public class TrackingSettingsActivity extends Activity {
         initStrings();
 
         updateEnablednessOfMilestoneSwitches();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (trackingEnableSwitch.isChecked()) {
+            if (IbikeApplication.getSignature().equals("")) {
+                checkedFromResume = true;
+                trackingEnableSwitch.setChecked(false);
+                notifyMilestoneCheckbox.setChecked(false);
+                notifyWeeklyCheckbox.setChecked(false);
+                finish();
+            }
+        }
+
     }
 
     public void onEnableTrackingClick(boolean isChecked) {
