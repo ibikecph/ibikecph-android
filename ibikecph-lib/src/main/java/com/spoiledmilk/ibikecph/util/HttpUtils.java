@@ -260,6 +260,8 @@ public class HttpUtils {
                 data.putString("auth_token", dataNode.get("auth_token").asText());
             if (dataNode.has("signature"))
                 data.putString("signature", dataNode.get("signature").asText());
+            if (dataNode.has("provider"))
+                data.putString("provider", dataNode.get("provider").asText());
         }
 
         ret.setData(data);

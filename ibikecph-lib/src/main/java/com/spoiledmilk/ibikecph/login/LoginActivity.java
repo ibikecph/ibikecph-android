@@ -109,6 +109,13 @@ public class LoginActivity extends Activity implements FBLoginListener {
                         LOG.d("fbdebug apitoken = " + data.getString("auth_token"));
                         String auth_token = data.getString("auth_token");
                         String signature = data.getString("signature");
+                        String isFacebookUser = data.getString("provider");
+                        if (isFacebookUser.equals("facebook")) {
+                            Log.d("DV", "Bruger markeret som Facebook-user!");
+                            IbikeApplication.setIsFacebookLogin(true);
+                        } else{
+                            Log.d("DV", "Bruger ikke markeret som Facebook-user!");
+                        }
                         int id = data.getInt("id");
                         progressBar.setVisibility(View.GONE);
                         if (id < 0) {

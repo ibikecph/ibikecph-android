@@ -82,6 +82,9 @@ public class LoginSplashActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        if (IbikeApplication.isWelcomeScreenSeen() && !DEBUG) {
+            launchMainMapActivity();
+        }
     }
 
     public void onBtnSkipClick(View v) {
@@ -166,11 +169,13 @@ public class LoginSplashActivity extends Activity {
             if (IbikeApplication.isFacebookLogin()) {
                 Log.d("DV", "Prompting Facebookuser to create a password!");
                 Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivityForResult(i, 10);
+                IbikeApplication.setWelcomeScreenSeen(true);
+                startActivity(i);
             } else if (IbikeApplication.isUserLogedIn()) {
                 Log.d("DV", "Prompting login for user!");
                 Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivityForResult(i, 10);
+                IbikeApplication.setWelcomeScreenSeen(true);
+                startActivity(i);
             }
         } else {
             Log.d("DV", "We got a signature, enabling tracking!");
