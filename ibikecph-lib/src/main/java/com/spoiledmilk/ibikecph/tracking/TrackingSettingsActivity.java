@@ -65,20 +65,24 @@ public class TrackingSettingsActivity extends Activity {
         this.trackingEnableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d("DV", "isChecked = " + isChecked);
                 if (loggedIn && !checkedFromResume) {
-
-                    if (IbikeApplication.getSignature().equals("")) {
-                        if (IbikeApplication.isFacebookLogin()) {
-                            Log.d("DV", "Prompting Facebookuser to create a password!");
-                            Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(i);
-                        } else if (IbikeApplication.isUserLogedIn()) {
-                            Log.d("DV", "Prompting login for user!");
-                            Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(i);
+                    if (isChecked) {
+                        if (IbikeApplication.getSignature().equals("")) {
+                            if (IbikeApplication.isFacebookLogin()) {
+                                Log.d("DV", "Prompting Facebookuser to create a password!");
+                                Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                            } else if (IbikeApplication.isUserLogedIn()) {
+                                Log.d("DV", "Prompting login for user!");
+                                Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(i);
+                            }
+                        } else {
+                            Log.d("DV", "We got a signature, enabling tracking!");
+                            onEnableTrackingClick(isChecked);
                         }
-                    } else {
-                        Log.d("DV", "We got a signature, enabling tracking!");
+                    } else if(!isChecked){
                         onEnableTrackingClick(isChecked);
                     }
                 } else {
