@@ -22,6 +22,7 @@ import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
+import com.spoiledmilk.ibikecph.map.OverlaysActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity;
@@ -138,6 +139,14 @@ public class LeftMenu extends Fragment {
             Log.e("JC", "Handler " + name + " not found");
             e.printStackTrace();
         }
+    }
+
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void spawnOverlaysActivity() {
+        Intent i = new Intent(getActivity(), OverlaysActivity.class);
+        getActivity().startActivity(i);
+        getActivity().overridePendingTransition(com.spoiledmilk.ibikecph.R.anim.slide_in_right, com.spoiledmilk.ibikecph.R.anim.slide_out_left);
     }
 
     @SuppressWarnings("UnusedDeclaration")

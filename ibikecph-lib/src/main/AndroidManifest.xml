@@ -135,6 +135,9 @@
             android:name=".login.SignatureActivity"
             android:label="@string/track_token_title"
             android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".map.OverlaysActivity"
+            android:screenOrientation="portrait"/>
 
         <receiver
             android:name=".BootReceiver"
