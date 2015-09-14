@@ -10,6 +10,8 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.Message;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -234,6 +236,10 @@ public class HTTPAccountHandler {
                         if (response.has("error")) {
                             ret = false;
                         } else if (response.has("id")) {
+                            try {
+                                IbikeApplication.saveEmail(response.get("email").asText());
+                            } catch (Exception ex) {
+                            }
                             ret = true;
                         }
                     }

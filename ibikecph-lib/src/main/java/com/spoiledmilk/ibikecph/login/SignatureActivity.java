@@ -132,7 +132,6 @@ public class SignatureActivity extends Activity {
                 }
             }).start();
 
-
             savePassword.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -275,32 +274,28 @@ public class SignatureActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (textNewPassword.getText().toString().length() > 0 && !inProgress) {
-                    inProgress = true;
-                    userData = new UserData(textNewPassword.getText().toString());
-
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             Looper.myLooper();
                             Looper.prepare();
-                            SignatureActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    progressBar.setVisibility(View.VISIBLE);
-                                }
-                            });
-                            Message message = HTTPAccountHandler.performAddPassword(userData, SignatureActivity.this);
+                            showProgressDialog();
+                            userData = new UserData(IbikeApplication.getEmail(), textNewPassword.getText().toString());
+                            Message message = HTTPAccountHandler.performLogin(userData);
                             Bundle data = message.getData();
-                            Boolean success = data.getBoolean("success", false);
+                            boolean success = data.getBoolean("success");
                             if (success) {
-                                //Save signature token
                                 String signature = data.getString("signature");
+                                if (signature == null || signature.equals("") || signature.equals("null")) {
+                                    signature = "";
+                                }
+                                Log.d("DV", "Vi har modtaget signature = " + signature);
                                 PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).edit().putString("signature", signature).commit();
-                                Log.d("DV", "We got a signature, enabling tracking!");
                                 IbikePreferences settings = IbikeApplication.getSettings();
                                 settings.setTrackingEnabled(true);
                                 settings.setNotifyMilestone(true);
                                 settings.setNotifyWeekly(true);
+                                dismissProgressDialog();
                                 startActivity(new Intent(SignatureActivity.this, TrackingActivity.class));
                                 finish();
                             } else {
@@ -319,12 +314,6 @@ public class SignatureActivity extends Activity {
                                 });
 
                             }
-                            SignatureActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    progressBar.setVisibility(View.GONE);
-                                }
-                            });
 
                         }
                     }).start();
