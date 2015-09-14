@@ -148,10 +148,17 @@ public class SearchAutocompleteActivity extends Activity {
 
                 @Override
                 public void run() {
-                    JsonNode node = HTTPAutocompleteHandler.getOiorestAddress(IbikeApplication.getService().getLastValidLocation().getLatitude(),
-                            IbikeApplication.getService().getLastValidLocation().getLongitude());
+                    JsonNode node = null;
+                    try {
+                        node = HTTPAutocompleteHandler.getOiorestAddress(IbikeApplication.getService().getLastValidLocation().getLatitude(),
+                                IbikeApplication.getService().getLastValidLocation().getLongitude());
+                    } catch (Exception ex) {
+                    }
                     if (node != null) {
                         currentSelection.jsonNode = node;
+                    } else {
+                        //Dialog der siger slå GPS-til?
+                        return;
                     }
 
                     runOnUiThread(new Runnable() {
