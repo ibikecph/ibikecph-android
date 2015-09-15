@@ -68,10 +68,12 @@ public class TrackingWelcomeActivity extends Activity {
                     Intent i = new Intent(TrackingWelcomeActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     Log.d("DV", "Starting activity with resultcode = 99");
                     startActivityForResult(i, 99);
+                    finish();
                 } else if (IbikeApplication.isUserLogedIn()) {
                     Log.d("DV", "Prompting login for user!");
                     Intent i = new Intent(TrackingWelcomeActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivityForResult(i, 10);
+                    finish();
                 }
             } else {
                 Log.d("DV", "We got a signature, enabling tracking!");
@@ -80,6 +82,7 @@ public class TrackingWelcomeActivity extends Activity {
                 settings.setNotifyMilestone(true);
                 settings.setNotifyWeekly(true);
                 startActivity(new Intent(this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                finish();
             }
         }
     }
