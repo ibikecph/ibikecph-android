@@ -82,7 +82,7 @@ public class TrackingSettingsActivity extends Activity {
                             Log.d("DV", "We got a signature, enabling tracking!");
                             onEnableTrackingClick(isChecked);
                         }
-                    } else if(!isChecked){
+                    } else {
                         onEnableTrackingClick(isChecked);
                     }
                 } else {
