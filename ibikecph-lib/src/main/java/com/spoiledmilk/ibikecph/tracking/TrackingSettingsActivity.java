@@ -43,6 +43,7 @@ public class TrackingSettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking_settings);
+        setTitle(IbikeApplication.getString("settings"));
 
         this.settings = IbikeApplication.getSettings();
         this.trackingEnableText = (TextView) findViewById(R.id.tracking_enable_text);
