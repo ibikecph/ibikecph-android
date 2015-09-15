@@ -10,6 +10,7 @@ public class UserData {
     private String email;
     private String password;
     private String passwordConfirmed;
+    private String newPassword;
     private String auth_token;
     private int id;
     private String base64Image = "";
@@ -22,6 +23,12 @@ public class UserData {
         this.passwordConfirmed = "";
         this.base64Image = "";
         this.imageName = "";
+    }
+
+    public UserData(String email, String password, String newPassword) {
+        this.email = email;
+        this.password = password;
+        this.newPassword = newPassword;
     }
 
     public UserData(String name, String email, String password,
@@ -66,6 +73,14 @@ public class UserData {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 
     public String getPasswordConfirmed() {
