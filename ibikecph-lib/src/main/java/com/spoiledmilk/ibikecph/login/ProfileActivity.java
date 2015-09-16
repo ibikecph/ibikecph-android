@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.*;
+
 import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -49,12 +50,13 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
     Thread tfetchUser;
     long lastAPIRequestTimestamp = 0;
     ActionBar actionbar;
-    
+    boolean inProgress = false;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
-    	actionbar = getActionBar();
-    	
+        actionbar = getActionBar();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile_activity);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -81,8 +83,8 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
             }
 
         });
-        
-        
+
+
         textName = (EditText) findViewById(R.id.textName);
         textEmail = (EditText) findViewById(R.id.textEmail);
         textNewPassword = (EditText) findViewById(R.id.textNewPassword);
@@ -93,10 +95,69 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (System.currentTimeMillis() - lastAPIRequestTimestamp < API_REQUESTS_TIMEOUT) {
+
+                /*if (System.currentTimeMillis() - lastAPIRequestTimestamp < API_REQUESTS_TIMEOUT) {
                     return;
+                }*/
+
+                if(validateInput()){
+                    Log.d("DV", "Email = " + textEmail.getText().toString());
+                    Log.d("DV", "oldPW = " + textOldPassword.getText().toString());
+                    Log.d("DV", "newPW = " + textNewPassword.getText().toString());
+                } else{
+                    launchAlertDialog(validationMessage);
                 }
-                if (userData != null && validateInput()) {
+
+
+               /* if (!inProgress) {
+                    inProgress = true;
+                    ProfileActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+                    if (userData != null && validateInput()) {
+                        userData = new UserData(textEmail.getText().toString(), textOldPassword.getText().toString(), textNewPassword.getText().toString());
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Looper.myLooper();
+                                Looper.prepare();
+
+                                //lastAPIRequestTimestamp = System.currentTimeMillis();
+                                Message message = HTTPAccountHandler.performChangePassword(userData, ProfileActivity.this);
+                                Bundle data = message.getData();
+                                if (data.getBoolean("success")) {
+                                    String signature = data.getString("signature");
+                                    if (signature == null || signature.equals("") || signature.equals("null")) {
+                                        signature = "";
+                                    }
+                                    PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().putString("signature", signature).commit();
+                                } else {
+                                    launchAlertDialog(data.getString("info"));
+                                }
+                                ProfileActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        progressBar.setVisibility(View.GONE);
+                                        inProgress = false;
+                                        finish();
+                                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                                        enableButtons();
+                                    }
+                                });
+                            }
+                        }).start();
+                    } else {
+                        launchAlertDialog(validationMessage);
+                    }
+                }*/
+
+
+               /* if (userData != null && validateInput()) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -116,7 +177,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                     }).start();
                 } else {
                     launchAlertDialog(validationMessage);
-                }
+                }*/
             }
         });
 
@@ -214,12 +275,12 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
 
     @Override
     public void onResume() {
-    	//actionbar.show();
-    	
+        //actionbar.show();
+
         super.onResume();
         initStrings();
         disableButtons();
-        
+
     }
 
     public void onImageContainerClick(View v) {
@@ -229,7 +290,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         String pickTitle = "";
         Intent chooserIntent = Intent.createChooser(pickIntent, pickTitle);
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] { takePhotoIntent });
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{takePhotoIntent});
         startActivityForResult(chooserIntent, IMAGE_REQUEST);
     }
 
@@ -281,7 +342,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                 && !textNewPassword.getText().toString().equals(textPasswordConfirm.getText().toString())) {
             validationMessage = IbikeApplication.getString("register_error_passwords");
             ret = false;
-        } else if (textNewPassword.getText().toString().length() < 3 && textNewPassword.getText().toString().length() > 0) {
+        } else if (textNewPassword.getText().toString().length() < 3) {
             validationMessage = IbikeApplication.getString("register_error_passwords_short");
             ret = false;
         } else {
@@ -296,20 +357,15 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                 ret = false;
             }
         }
-        if (textOldPassword.getText() == null) {
-            validationMessage = IbikeApplication.getString("register_error_passwords");
-            ret = false;
-        }
-        if (textOldPassword.getText() != null){ //&& !IbikeApplication.getPassword().equals(textOldPassword.getText().toString())
-                //&& !IbikeApplication.getPassword().equals(textOldPassword.getText().toString())) {
+        if (textOldPassword.getText().length() == 0) {
             validationMessage = IbikeApplication.getString("register_error_passwords");
             ret = false;
         }
         userData.setName(textName.getText().toString());
         userData.setEmail(textEmail.getText().toString());
         if (!textNewPassword.getText().toString().trim().equals("")) {
-            userData.setPassword(textNewPassword.getText().toString());
-            userData.setPasswordConfirmed(textPasswordConfirm.getText().toString());
+            userData.setPassword(textOldPassword.getText().toString());
+            userData.setNewPassword(textNewPassword.getText().toString());
         }
         userData.setBase64Image(base64Image);
         userData.setImageName("image.png");

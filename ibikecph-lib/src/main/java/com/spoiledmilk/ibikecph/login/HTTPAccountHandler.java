@@ -141,8 +141,9 @@ public class HTTPAccountHandler {
 
         try {
             jsonPOST.put("auth_token", IbikeApplication.getAuthToken());
+            jsonUser.put("email", userData.getEmail());
             jsonUser.put("current_password", userData.getPassword());
-            jsonUser.put("password", userData.getPassword());
+            jsonUser.put("password", userData.getNewPassword());
             jsonPOST.put("user", jsonUser);
 
             result = HttpUtils.postToServer(Config.API_SERVER_CHANGE_PASSWORD, jsonPOST);
