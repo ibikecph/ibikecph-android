@@ -73,12 +73,15 @@ public class MapActivity extends IBCMapActivity {
     protected IBCMapView mapView;
     private ArrayList<InfoPaneFragment> fragments = new ArrayList<InfoPaneFragment>();
     private IbikePreferences settings;
+    public static View frag;
+    static boolean fromSearch = false;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.main_map_activity);
         this.settings = IbikeApplication.getSettings();
+        frag = findViewById(R.id.infoPaneContainer);
 
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.init(IBCMapView.MapState.DEFAULT, this);
@@ -230,11 +233,14 @@ public class MapActivity extends IBCMapActivity {
         super.onResume();
         LOG.d("Map activity onResume");
 
-        if (settings.getTrackingEnabled()) {
+        if (settings.getTrackingEnabled() && !fromSearch) {
             showStatisticsInfoPane();
         } else {
-            disableStatisticsInfoPane();
+            if (!fromSearch) {
+                disableStatisticsInfoPane();
+            }
         }
+        fromSearch = false;
 
         if (!Util.isNetworkConnected(this)) {
             Util.launchNoConnectionDialog(this);
@@ -350,8 +356,10 @@ public class MapActivity extends IBCMapActivity {
             final Bundle extras = data.getExtras();
             Address address = (Address) extras.getSerializable("addressObject");
             if (address != null) {
+                MapActivity.frag.setVisibility(View.VISIBLE);
                 mapView.showAddress(address);
                 mapView.setCenter(address.getLocation());
+                fromSearch = true;
             } else {
                 LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
 
@@ -393,9 +401,10 @@ public class MapActivity extends IBCMapActivity {
 
 
     private void showStatisticsInfoPane() {
+        frag.setVisibility(View.VISIBLE);
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment(), "infopane");
+        ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
         ft.commit();
         Log.d("DV", "Infopanefragment added!");
 
@@ -403,11 +412,14 @@ public class MapActivity extends IBCMapActivity {
     }
 
     private void disableStatisticsInfoPane() {
-        Fragment fragment = mapView.getParentActivity().getFragmentManager().findFragmentByTag("infopane");
+
+        frag.setVisibility(View.GONE);
+
+        /*Fragment fragment = mapView.getParentActivity().getFragmentManager().findFragmentByTag("infopane");
         if (fragment != null)
-            fragment.getFragmentManager().beginTransaction().remove(fragment).commit();
-        Log.d("DV", "Infopanefragment removed!");
-        OverviewMapHandler.isWatchingAddress = false;
+            fragment.getFragmentManager().beginTransaction().hide(fragment).commit();
+        Log.d("DV", "Infopanefragment removed!");*/
+        //OverviewMapHandler.isWatchingAddress = false;
     }
 
     public void registerFragment(InfoPaneFragment fragment) {

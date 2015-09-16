@@ -8,6 +8,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -24,6 +26,8 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 import com.spoiledmilk.ibikecph.search.Address;
+import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
+import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.bearing.BearingToNorthProvider;
 
 import java.io.Serializable;
@@ -40,6 +44,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient RouteETAFragment routeETAFragment;
     private transient IBCMarker beginMarker, endMarker;
     private boolean isRouting;
+    private IbikePreferences settings;
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -157,6 +162,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     /**
      * Brings up the whole route for the user, shows the address in the info pane. The idea is that the user should
      * start the route from this view.
+     *
      * @param route
      */
     public void showRouteOverview(SMRoute route) {
@@ -188,12 +194,12 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // We also want a grey line if the user is expected to walk somewhere we cannot route directly to.
         PathOverlay endWalkingPath = new PathOverlay(Color.GRAY, 10);
-        LatLng lastPoint = new LatLng(route.waypoints.get(route.waypoints.size()-1));
+        LatLng lastPoint = new LatLng(route.waypoints.get(route.waypoints.size() - 1));
         LatLng realLastPoint = route.getRealEndLocation();
         endWalkingPath.addPoint(lastPoint);
         endWalkingPath.addPoint(realLastPoint);
 
-        Log.d("JC", "distance: "+ lastPoint.distanceTo(realLastPoint));
+        Log.d("JC", "distance: " + lastPoint.distanceTo(realLastPoint));
 
         // Show the whole route, zooming to make it fit
         this.mapView.getOverlays().add(beginWalkingPath);
@@ -254,7 +260,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         bearingToNorthProvider.setChangeEventListener(new BearingToNorthProvider.ChangeEventListener() {
             @Override
             public void onBearingChanged(double bearing) {
-                finalMapView.setMapOrientation( 360 - ((float) bearing) - 90);
+                finalMapView.setMapOrientation(360 - ((float) bearing) - 90);
             }
         });
 
@@ -301,11 +307,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     /**
      * Tells the MapView to stop routing, i.e. instantiate an OverviewMapHandler, calling the destructor of this one.
+     *
      * @return false because we need the user to
      */
     public boolean onBackPressed() {
         if (!cleanedUp) {
 
+            settings = IbikeApplication.getSettings();
             // Navigation happens in two steps. First is showing the route, second is actually following it turn-by-turn
             // If we're in turn-by-turn mode, go back to showing the route. If we're seeing the route, go back to
             // showing the overview.
@@ -313,10 +321,21 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 this.showRouteOverview(this.route);
                 isRouting = false;
             } else {
+
+                if (settings.getTrackingEnabled()) {
+                    FragmentManager fm = mapView.getParentActivity().getFragmentManager();
+                    FragmentTransaction ft = fm.beginTransaction();
+                    ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
+                    ft.commit();
+                    MapActivity.frag.setVisibility(View.VISIBLE);
+                } else {
+                    MapActivity.frag.setVisibility(View.GONE);
+                }
                 this.mapView.changeState(IBCMapView.MapState.DEFAULT);
             }
             return false;
         }
+
 
         return true;
     }
@@ -324,9 +343,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private void removeAnyPathOverlays() {
         // remove any path overlays. Mapbox bug: Why do we need this spin lock?
         boolean foundPathOverlay = true;
-        while(foundPathOverlay) {
+        while (foundPathOverlay) {
             foundPathOverlay = false;
-            for (Overlay overlay: this.mapView.getOverlays()) {
+            for (Overlay overlay : this.mapView.getOverlays()) {
                 if (overlay instanceof com.mapbox.mapboxsdk.overlay.PathOverlay) {
                     this.mapView.removeOverlay(overlay);
                     foundPathOverlay = true;
@@ -407,6 +426,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     /**
      * Calculates a new route from either a new source point, a new destination point,  or both. If null supplied, then
      * we assume the user to leave the other field unchanged.
+     *
      * @param givenSrc
      * @param givenDst
      */

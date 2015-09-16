@@ -1,5 +1,6 @@
 package com.spoiledmilk.ibikecph.map.handlers;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.util.Log;
@@ -13,6 +14,7 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
+import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
@@ -29,7 +31,7 @@ public class OverviewMapHandler extends IBCMapHandler {
     public OverviewMapHandler(IBCMapView mapView) {
         super(mapView);
         this.mapView = mapView;
-        this.settings = IbikeApplication.getSettings();
+        settings = IbikeApplication.getSettings();
 
         Log.d("JC", "Instantiating OverviewMapHandler");
 
@@ -46,12 +48,20 @@ public class OverviewMapHandler extends IBCMapHandler {
     }
 
     private void showStatisticsInfoPane() {
+        MapActivity.frag.setVisibility(View.VISIBLE);
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment(), "infopane");
+        ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
         ft.commit();
 
         isWatchingAddress = false;
+    }
+
+
+    private void disableStatisticsInfoPane() {
+        MapActivity.frag.setVisibility(View.GONE);
+        Log.d("DV", "Infopanefragment removed!");
+        //OverviewMapHandler.isWatchingAddress = false;
     }
 
     @Override
@@ -102,6 +112,7 @@ public class OverviewMapHandler extends IBCMapHandler {
             public void onSuccess(Address address) {
                 // This refers to the FIELD, not the argument to the method (which I renamed to _mapView). This is
                 // because we want it to be an IBCMapView.
+                MapActivity.frag.setVisibility(View.VISIBLE);
                 mapView.showAddress(address);
                 isWatchingAddress = true;
             }
@@ -122,7 +133,11 @@ public class OverviewMapHandler extends IBCMapHandler {
      */
     public boolean onBackPressed() {
         if (isWatchingAddress) {
-            showStatisticsInfoPane();
+            if (settings.getTrackingEnabled()) {
+                showStatisticsInfoPane();
+            } else {
+                disableStatisticsInfoPane();
+            }
             this.mapView.removeAddressMarker();
 
             isWatchingAddress = false;
