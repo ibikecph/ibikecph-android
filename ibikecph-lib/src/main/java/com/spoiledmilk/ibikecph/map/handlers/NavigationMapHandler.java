@@ -217,17 +217,27 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.mapView.addMarker(beginMarker);
         this.mapView.addMarker(endMarker);
 
-        this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(waypoints), true, false, true, true);
+        BoundingBox boundingBox = BoundingBox.fromLatLngs(waypoints);
+
+        double north = boundingBox.getLatNorth();
+        double east = boundingBox.getLonEast();
+        double west = boundingBox.getLonWest();
+        double south = boundingBox.getLatSouth();
+
+        double latitudeDiff = Math.abs(north - south) * 0.2;
+
+        double longitudeDiff = Math.abs(east - west) * 0.2;
 
 
-        /**
-         * Sometimes the route is displayed such that it JUST fits, but not the markers. That's too tight, so in that
-         * case we'll have to zoom out a notch. First, though, we have to figure out if the begin and end markers are
-         * within the bounds of the MapView.
-         */
-        if (beginMarker.getPositionOnMap().y == 0.0 || endMarker.getPositionOnMap().y == 0.0) {
-            this.mapView.zoomOut();
-        }
+        //Add 20% padding
+        ArrayList<LatLng> paddedWaypoints = new ArrayList<LatLng>();
+        LatLng ne = new LatLng(north + latitudeDiff, east + longitudeDiff);
+        LatLng sw = new LatLng(south - latitudeDiff, west - longitudeDiff);
+        paddedWaypoints.add(ne);
+        paddedWaypoints.add(sw);
+
+        this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(paddedWaypoints), true, true, false, true);
+
         cleanedUp = false;
     }
 
