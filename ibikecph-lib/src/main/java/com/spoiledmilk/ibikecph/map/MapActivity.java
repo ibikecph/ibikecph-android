@@ -7,6 +7,8 @@ package com.spoiledmilk.ibikecph.map;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,11 +36,14 @@ import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
+import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
+import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 import com.spoiledmilk.ibikecph.util.Config;
+import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -67,11 +72,13 @@ public class MapActivity extends IBCMapActivity {
     private MaterialMenuIcon materialMenu;
     protected IBCMapView mapView;
     private ArrayList<InfoPaneFragment> fragments = new ArrayList<InfoPaneFragment>();
+    private IbikePreferences settings;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.main_map_activity);
+        this.settings = IbikeApplication.getSettings();
 
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.init(IBCMapView.MapState.DEFAULT, this);
@@ -151,6 +158,7 @@ public class MapActivity extends IBCMapActivity {
         this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
         //TrackingManager.uploadTracksToServer();
+        //TrackingManager.uploadeFakeTrack();
     }
 
     /**
@@ -221,6 +229,12 @@ public class MapActivity extends IBCMapActivity {
     public void onResume() {
         super.onResume();
         LOG.d("Map activity onResume");
+
+        if (settings.getTrackingEnabled()) {
+            showStatisticsInfoPane();
+        } else {
+            disableStatisticsInfoPane();
+        }
 
         if (!Util.isNetworkConnected(this)) {
             Util.launchNoConnectionDialog(this);
@@ -375,6 +389,25 @@ public class MapActivity extends IBCMapActivity {
             drawerLayout.closeDrawer(Gravity.LEFT);
             mapView.showRoute(fd);
         }
+    }
+
+
+    private void showStatisticsInfoPane() {
+        FragmentManager fm = mapView.getParentActivity().getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment(), "infopane");
+        ft.commit();
+        Log.d("DV", "Infopanefragment added!");
+
+        OverviewMapHandler.isWatchingAddress = false;
+    }
+
+    private void disableStatisticsInfoPane() {
+        Fragment fragment = mapView.getParentActivity().getFragmentManager().findFragmentByTag("infopane");
+        if (fragment != null)
+            fragment.getFragmentManager().beginTransaction().remove(fragment).commit();
+        Log.d("DV", "Infopanefragment removed!");
+        OverviewMapHandler.isWatchingAddress = false;
     }
 
     public void registerFragment(InfoPaneFragment fragment) {

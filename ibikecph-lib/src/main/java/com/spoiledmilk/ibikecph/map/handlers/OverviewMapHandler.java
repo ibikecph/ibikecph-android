@@ -9,28 +9,31 @@ import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.views.MapView;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
+import com.spoiledmilk.ibikecph.util.IbikePreferences;
 
 /**
  * Created by jens on 5/29/15.
  */
 public class OverviewMapHandler extends IBCMapHandler {
     private Marker curMarker;
-    boolean isWatchingAddress = false;
+    public static boolean isWatchingAddress = false;
     private IBCMapView mapView;
+    private IbikePreferences settings;
 
     public OverviewMapHandler(IBCMapView mapView) {
         super(mapView);
         this.mapView = mapView;
+        this.settings = IbikeApplication.getSettings();
 
         Log.d("JC", "Instantiating OverviewMapHandler");
 
         mapView.addGPSOverlay();
-        showStatisticsInfoPane();
 
         View userTrackingButton = mapView.getParentActivity().findViewById(R.id.userTrackingButton);
         if (userTrackingButton != null) {
@@ -45,7 +48,7 @@ public class OverviewMapHandler extends IBCMapHandler {
     private void showStatisticsInfoPane() {
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
+        ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment(), "infopane");
         ft.commit();
 
         isWatchingAddress = false;
