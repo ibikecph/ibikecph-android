@@ -42,6 +42,7 @@ public class TrackingManager implements LocationListener {
     private List<Location> curLocationList;
     private Realm realm;
     private static int attemptsToSend = 0;
+    public static int statusCode = 0;
 
     // Sometimes we want to start tracking, overriding the ActivityRecognition
     private boolean manualOverride = false;
@@ -340,15 +341,14 @@ public class TrackingManager implements LocationListener {
                 JsonNode responseNode = HttpUtils.deleteFromServer(Config.API_UPLOAD_TRACKS + "/" + id, postObject);
                 if (responseNode != null) {
                     Log.d("DV", "responseNode = " + responseNode.toString());
-                    if (responseNode.get("success").asBoolean()) {
+                    if (responseNode.get("success").asBoolean() || statusCode == 404) {
                         Log.d("DV", "Track deleted from the server!");
                         trackToDelete.get(0).removeFromRealm();
                         realm.commitTransaction();
                         realm.close();
                         Log.d("DV", "Track deleted from the APP!");
                     } else {
-                        Log.d("DV", "Track not deleted - something went wrong on the server");
-                        //Should we delete the track from the APP anyway?
+                        //??
                     }
                 }
             }

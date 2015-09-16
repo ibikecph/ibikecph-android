@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.login.HTTPDeleteWithBody;
 import com.spoiledmilk.ibikecph.login.UserData;
+import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 
 public class HttpUtils {
 
@@ -229,6 +230,7 @@ public class HttpUtils {
             se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
             httpdelete.setEntity(se);
             HttpResponse response = httpclient.execute(httpdelete);
+            TrackingManager.statusCode = response.getStatusLine().getStatusCode();
             String serverResponse = EntityUtils.toString(response.getEntity());
             LOG.d("API response = " + serverResponse);
             ret = Util.stringToJsonNode(serverResponse);
