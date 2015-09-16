@@ -36,6 +36,7 @@ public class TrackingActivity extends Activity {
     private TextView timeTextView;
     private TextView trackingStatusTextView;
     private StickyListHeadersListView tripListView;
+    TrackListAdapter trackListAdapter;
 
     private TextView kmText, kmtText, calUnitText, hoursText;
 
@@ -79,8 +80,8 @@ public class TrackingActivity extends Activity {
     }
 
     private void updateListOfTracks() {
-        TrackListAdapter trackListAdapter = new TrackListAdapter(this);
-        this.tripListView.setAdapter(trackListAdapter);
+        trackListAdapter = new TrackListAdapter(this);
+        this.tripListView.setAdapter(trackListAdapter);;
     }
 
     @Override
@@ -89,6 +90,9 @@ public class TrackingActivity extends Activity {
         updateSummaryStatistics();
         updateStrings();
         updateListOfTracks();
+        if(!IbikeApplication.getSettings().getTrackingEnabled() && trackListAdapter.getCount() == 0){
+            finish();
+        }
         updateReactivateButtonVisibility();
     }
 
