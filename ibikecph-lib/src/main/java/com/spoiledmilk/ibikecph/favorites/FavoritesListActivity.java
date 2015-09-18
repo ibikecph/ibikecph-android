@@ -43,6 +43,7 @@ public class FavoritesListActivity extends Activity {
     protected ArrayList<FavoritesData> favorites = new ArrayList<FavoritesData>();
     private tFetchFavorites fetchFavorites;
     public ProgressBar progressBar;
+    TextView textLogin;
 
     public boolean favoritesEnabled = true;
     private AlertDialog dialog;
@@ -53,7 +54,7 @@ public class FavoritesListActivity extends Activity {
         setContentView(R.layout.activity_favorites_list);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        TextView textLogin = (TextView) findViewById(R.id.textLogin);
+        textLogin = (TextView) findViewById(R.id.textLogin);
         textLogin.setText(IbikeApplication.getString("favorites_login"));
 
         try {
@@ -78,31 +79,34 @@ public class FavoritesListActivity extends Activity {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(FavoritesListActivity.this);
                 String[] options = {IbikeApplication.getString("Delete")};
-
                 builder.setTitle(IbikeApplication.getString("Delete"))
                         .setItems(options, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                progressBar.setVisibility(View.VISIBLE);
-                                final FavoritesData fd = (FavoritesData) (favoritesList.getAdapter().getItem(i));
-                                new AsyncTask<String, Integer, String>() {
-                                    @Override
-                                    protected String doInBackground(String... strings) {
-                                        try {
-                                            new DB(FavoritesListActivity.this).deleteFavorite(fd, FavoritesListActivity.this);
-                                        } catch (Exception ex) {
+                                if (!Util.isNetworkConnected(FavoritesListActivity.this)) {
+                                    favoritesEnabled = true;
+                                    Util.launchNoConnectionDialog(FavoritesListActivity.this);
+                                } else {
+                                    progressBar.setVisibility(View.VISIBLE);
+                                    final FavoritesData fd = (FavoritesData) (favoritesList.getAdapter().getItem(i));
+                                    new AsyncTask<String, Integer, String>() {
+                                        @Override
+                                        protected String doInBackground(String... strings) {
+                                            try {
+                                                new DB(FavoritesListActivity.this).deleteFavorite(fd, FavoritesListActivity.this);
+                                            } catch (Exception ex) {
+                                            }
+                                            return null;
                                         }
-                                        return null;
-                                    }
 
-                                    @Override
-                                    protected void onPostExecute(String result) {
-                                        super.onPostExecute(result);
-                                        reloadFavorites();
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                }.execute();
-
+                                        @Override
+                                        protected void onPostExecute(String result) {
+                                            super.onPostExecute(result);
+                                            reloadFavorites();
+                                            progressBar.setVisibility(View.GONE);
+                                        }
+                                    }.execute();
+                                }
 
                             }
                         });
@@ -111,6 +115,12 @@ public class FavoritesListActivity extends Activity {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("DV", "Onresume Favorites!");
 
         if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
             reloadFavorites();
@@ -119,10 +129,6 @@ public class FavoritesListActivity extends Activity {
         } else {
             textLogin.setVisibility(View.VISIBLE);
         }
-    }
-
-    public void onResume(View v) {
-        reloadFavorites();
     }
 
     public void reloadFavorites() {

@@ -691,7 +691,7 @@ public class DB extends SQLiteOpenHelper {
             try {
                 postObject.put("auth_token", authToken);
 
-                HttpUtils.deleteFromServer(Config.API_URL + "/favourites/" + fd.getApiId(), postObject);
+                        HttpUtils.deleteFromServer(Config.API_URL + "/favourites/" + fd.getApiId(), postObject);
 
             } catch (JSONException e) {
                 LOG.e(e.getLocalizedMessage());
