@@ -116,7 +116,7 @@ public class HTTPAccountHandler {
         return message;
     }
 
-    public static Message performHasPassword(final UserData userData, Context context) {
+    public static Message performHasPassword() {
         Message message = new Message();
         JsonNode result = null;
         JSONObject jsonPOST = new JSONObject();

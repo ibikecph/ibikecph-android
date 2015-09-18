@@ -17,14 +17,18 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.Session;
+import com.facebook.android.Facebook;
 import com.facebook.widget.ProfilePictureView;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -50,6 +54,7 @@ public class FacebookProfileActivity extends Activity {
     private RoundedImageView pictureContainer;
     private String username = "";
     public static final int RESULT_USER_DELETED = 101;
+    private boolean inProgress = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +107,7 @@ public class FacebookProfileActivity extends Activity {
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             } else {
-                                launchAlertDialog(data.getString("info"));
+                                launchAlertDialog(data.getString("errors"));
                             }
                             break;
                         case HTTPAccountHandler.ERROR:
@@ -175,10 +180,44 @@ public class FacebookProfileActivity extends Activity {
     }
 
     public void onBtnDelete(View v) {
-        launchDeleteDialog();
+        /*
+        Check wether the Facebook-user has a created a password or not.
+        If yes, prompt for it, else don't.
+        */
+        if (!inProgress) {
+            inProgress = true;
+            FacebookProfileActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+            });
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Looper.myLooper();
+                    Looper.prepare();
+                    Message message = HTTPAccountHandler.performHasPassword();
+                    final Bundle data = message.getData();
+                    FacebookProfileActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.GONE);
+                            inProgress = false;
+                            if (data.getBoolean("has_password", false)) {
+                                launchDeleteDialogWithPassword();
+                            } else {
+                                launchDeleteDialogWithoutPassword();
+                            }
+                        }
+                    });
+
+                }
+            }).start();
+        }
     }
 
-    private void launchDeleteDialog() {
+    private void launchDeleteDialogWithoutPassword() {
         AlertDialog.Builder builder = new AlertDialog.Builder(FacebookProfileActivity.this);
         builder.setMessage(IbikeApplication.getString("delete_account_text")).setTitle(IbikeApplication.getString("delete_account_title"));
         builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
@@ -218,9 +257,57 @@ public class FacebookProfileActivity extends Activity {
                 dialog.dismiss();
             }
         });
-        AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.show();
+        builder.setCancelable(false);
+        builder.show();
+    }
+
+    private void launchDeleteDialogWithPassword() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(IbikeApplication.getString("delete_account_text")).setTitle(IbikeApplication.getString("delete_account_title"));
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(input);
+
+        builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                IbikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Looper.myLooper();
+                        Looper.prepare();
+                        FacebookProfileActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setVisibility(View.VISIBLE);
+                            }
+                        });
+
+                        Message message = HTTPAccountHandler.performDeleteUser(new UserData(IbikeApplication.getAuthToken(), PreferenceManager
+                                .getDefaultSharedPreferences(FacebookProfileActivity.this).getInt("id", 0), input.getText().toString()));
+                        handler.sendMessage(message);
+                        FacebookProfileActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+                }).start();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.setCancelable(false);
+        builder.show();
     }
 
     private void launchAlertDialog(String msg) {

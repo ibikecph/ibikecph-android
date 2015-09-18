@@ -51,6 +51,12 @@ public class UserData {
         this.id = id;
     }
 
+    public UserData(String auth_token, int id, String password) {
+        this.auth_token = auth_token;
+        this.id = id;
+        this.password = password;
+    }
+
     public String getName() {
         return name;
     }

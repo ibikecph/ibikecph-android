@@ -200,7 +200,7 @@ public class SignatureActivity extends Activity {
                         Looper.myLooper();
                         Looper.prepare();
 
-                        Message message = HTTPAccountHandler.performHasPassword(userData, SignatureActivity.this);
+                        Message message = HTTPAccountHandler.performHasPassword();
                         Bundle data = message.getData();
                         hasPassword = data.getBoolean("has_password", false);
                         if (hasPassword) {
