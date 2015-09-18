@@ -231,7 +231,7 @@ public class FavoritesListActivity extends Activity {
 
         } else {
             if (requestCode == ADD_FAVORITE) {
-                this.reloadFavorites();
+                //reloadFavorites();
             }
         }
     }
@@ -252,6 +252,7 @@ public class FavoritesListActivity extends Activity {
                         ((FavoritesAdapter) listAdapter).notifyDataSetChanged();
 
                         favoritesList.setAdapter(listAdapter);
+                        Log.d("DV", "FavoriteAdapter opdateret!");
                     }
                 });
 

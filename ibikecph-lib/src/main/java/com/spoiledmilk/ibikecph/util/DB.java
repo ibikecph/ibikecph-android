@@ -664,9 +664,7 @@ public class DB extends SQLiteOpenHelper {
                 favouriteObject.put("sub_source", fd.getSubSource());
                 postObject.put("favourite", favouriteObject);
                 postObject.put("auth_token", authToken);
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+
                         JsonNode node = HttpUtils.putToServer(Config.API_URL + "/favourites/" + fd.getApiId(), postObject);
                         if (listener != null) {
                             boolean success = false;
@@ -674,10 +672,10 @@ public class DB extends SQLiteOpenHelper {
                                 success = true;
                             }
                             listener.onRequestCompleted(success);
+                            Log.d("DV", "Favorite opdateret på serveren!");
                         }
-                    }
-                });
-                thread.start();
+
+
             } catch (JSONException e) {
                 LOG.e(e.getLocalizedMessage());
             }
