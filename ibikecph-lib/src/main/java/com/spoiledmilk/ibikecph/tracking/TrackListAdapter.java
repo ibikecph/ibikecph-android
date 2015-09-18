@@ -132,31 +132,41 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
                                 Log.d("DV", "Calling delete-method with ID = " + t.getID());
                                 final int id = t.getID();
                                 // Only send to the server, if ID > 0. Otherwise just delete, since it hasn't been uploaded to the server yet.
-                                if (t.getID() > 0) {
-                                    realm.commitTransaction();
-                                    realm.close();
-                                    new AsyncTask<String, Integer, String>() {
-                                        @Override
-                                        protected String doInBackground(String... strings) {
+                                try {
+                                    if (t.getID() > 0) {
+                                        realm.commitTransaction();
+                                        realm.close();
+                                        new AsyncTask<String, Integer, String>() {
+                                            @Override
+                                            protected String doInBackground(String... strings) {
 
-                                            TrackingManager.deleteTrack(id);
+                                                TrackingManager.deleteTrack(id);
 
-                                            return null;
-                                        }
+                                                return null;
+                                            }
 
-                                        @Override
-                                        protected void onPostExecute(String result) {
-                                            super.onPostExecute(result);
-                                            notifyDataSetInvalidated();
-                                        }
-                                    }.execute();
-                                } else {
+                                            @Override
+                                            protected void onPostExecute(String result) {
+                                                super.onPostExecute(result);
+                                                notifyDataSetInvalidated();
+                                            }
+                                        }.execute();
+                                    } else {
+                                        t.removeFromRealm();
+                                        realm.commitTransaction();
+                                        realm.close();
+                                        notifyDataSetInvalidated();
+                                        Log.d("DV", "Track deleted from APP!");
+                                    }
+                                } catch (Exception ex) {
+                                    Log.d("DV", "Tracket havde ikke noget ID grundet oprettelse med gammel Track-model... Fjerner track!");
                                     t.removeFromRealm();
                                     realm.commitTransaction();
                                     realm.close();
                                     notifyDataSetInvalidated();
                                     Log.d("DV", "Track deleted from APP!");
                                 }
+
 
                             }
                         });
