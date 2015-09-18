@@ -17,6 +17,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -36,8 +37,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
     static final long API_REQUESTS_TIMEOUT = 2000;
 
     Button btnLogout;
-    EditText textName, textEmail, textOldPassword, textNewPassword, textPasswordConfirm;
-    Button btnSave;
+    TextView textName, textEmail;
     Button btnDelete;
     ImageView pictureContainer;
     Handler handler;
@@ -50,7 +50,6 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
     Thread tfetchUser;
     long lastAPIRequestTimestamp = 0;
     ActionBar actionbar;
-    boolean inProgress = false;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -85,101 +84,8 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         });
 
 
-        textName = (EditText) findViewById(R.id.textName);
-        textEmail = (EditText) findViewById(R.id.textEmail);
-        textNewPassword = (EditText) findViewById(R.id.textNewPassword);
-        textPasswordConfirm = (EditText) findViewById(R.id.textPasswordConfirm);
-        textOldPassword = (EditText) findViewById(R.id.textOldPassword);
-        btnSave = (Button) findViewById(R.id.btnSave);
-
-        btnSave.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /*if (System.currentTimeMillis() - lastAPIRequestTimestamp < API_REQUESTS_TIMEOUT) {
-                    return;
-                }*/
-
-                if(validateInput()){
-                    Log.d("DV", "Email = " + textEmail.getText().toString());
-                    Log.d("DV", "oldPW = " + textOldPassword.getText().toString());
-                    Log.d("DV", "newPW = " + textNewPassword.getText().toString());
-                } else{
-                    launchAlertDialog(validationMessage);
-                }
-
-
-               /* if (!inProgress) {
-                    inProgress = true;
-                    ProfileActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressBar.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-                    if (userData != null && validateInput()) {
-                        userData = new UserData(textEmail.getText().toString(), textOldPassword.getText().toString(), textNewPassword.getText().toString());
-
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Looper.myLooper();
-                                Looper.prepare();
-
-                                //lastAPIRequestTimestamp = System.currentTimeMillis();
-                                Message message = HTTPAccountHandler.performChangePassword(userData, ProfileActivity.this);
-                                Bundle data = message.getData();
-                                if (data.getBoolean("success")) {
-                                    String signature = data.getString("signature");
-                                    if (signature == null || signature.equals("") || signature.equals("null")) {
-                                        signature = "";
-                                    }
-                                    PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().putString("signature", signature).commit();
-                                } else {
-                                    launchAlertDialog(data.getString("info"));
-                                }
-                                ProfileActivity.this.runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        progressBar.setVisibility(View.GONE);
-                                        inProgress = false;
-                                        finish();
-                                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                                        enableButtons();
-                                    }
-                                });
-                            }
-                        }).start();
-                    } else {
-                        launchAlertDialog(validationMessage);
-                    }
-                }*/
-
-
-               /* if (userData != null && validateInput()) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Looper.myLooper();
-                            Looper.prepare();
-                            ProfileActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    progressBar.setVisibility(View.VISIBLE);
-                                }
-                            });
-                            lastAPIRequestTimestamp = System.currentTimeMillis();
-                            Message message = HTTPAccountHandler.performPutUser(userData);
-                            handler.sendMessage(message);
-
-                        }
-                    }).start();
-                } else {
-                    launchAlertDialog(validationMessage);
-                }*/
-            }
-        });
+        textName = (TextView) findViewById(R.id.textName);
+        textEmail = (TextView) findViewById(R.id.textEmail);
 
         btnDelete = (Button) findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(new OnClickListener() {
@@ -258,7 +164,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             } else {
-                                launchAlertDialog(data.getString("info"));
+                                launchAlertDialog(data.getString("errors"));
                             }
                             break;
                         case HTTPAccountHandler.ERROR:
@@ -305,20 +211,14 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
     private void initStrings() {
         //textTitle.setText(IbikeApplication.getString("account"));
         //textTitle.setTypeface(IbikeApplication.getNormalFont());
+        //textLogedIn.setText();
         btnLogout.setText(IbikeApplication.getString("logout"));
-        textOldPassword.setHint(IbikeApplication.getString("old_password"));
-        textOldPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textNewPassword.setHint(IbikeApplication.getString("account_password_placeholder"));
-        textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textPasswordConfirm.setHint(IbikeApplication.getString("account_repeat_placeholder"));
-        textPasswordConfirm.setHintTextColor(getResources().getColor(R.color.HintColor));
-        btnSave.setText(IbikeApplication.getString("save_changes"));
         btnDelete.setText(IbikeApplication.getString("delete_my_account"));
     }
 
     private void updateControls() {
         textName.setText(userData.getName());
-        textEmail.setText(userData.getEmail());
+        textEmail.setText(IbikeApplication.getString("track_token_subtitle_native") + " " + userData.getEmail());
     }
 
     private void launchAlertDialog(String msg) {
@@ -333,54 +233,17 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         dialog.show();
     }
 
-    private boolean validateInput() {
-        boolean ret = true;
-        if (textName.getText().toString().length() == 0 || textEmail.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("register_error_fields");
-            ret = false;
-        } else if (!textNewPassword.getText().toString().trim().equals("")
-                && !textNewPassword.getText().toString().equals(textPasswordConfirm.getText().toString())) {
-            validationMessage = IbikeApplication.getString("register_error_passwords");
-            ret = false;
-        } else if (textNewPassword.getText().toString().length() < 3) {
-            validationMessage = IbikeApplication.getString("register_error_passwords_short");
-            ret = false;
-        } else {
-            int atIndex = textEmail.getText().toString().indexOf('@');
-            if (atIndex < 1) {
-                validationMessage = IbikeApplication.getString("register_error_invalid_email");
-                ret = false;
-            }
-            int pointIndex = textEmail.getText().toString().indexOf('.', atIndex);
-            if (pointIndex < atIndex || pointIndex == textEmail.getText().toString().length() - 1) {
-                validationMessage = IbikeApplication.getString("register_error_invalid_email");
-                ret = false;
-            }
-        }
-        if (textOldPassword.getText().length() == 0) {
-            validationMessage = IbikeApplication.getString("register_error_passwords");
-            ret = false;
-        }
-        userData.setName(textName.getText().toString());
-        userData.setEmail(textEmail.getText().toString());
-        if (!textNewPassword.getText().toString().trim().equals("")) {
-            userData.setPassword(textOldPassword.getText().toString());
-            userData.setNewPassword(textNewPassword.getText().toString());
-        }
-        userData.setBase64Image(base64Image);
-        userData.setImageName("image.png");
-
-        IbikeApplication.getTracker().sendEvent("Account", "Save", "Data", Long.valueOf(0));
-        if (textNewPassword.getText().toString().length() != 0)
-            IbikeApplication.getTracker().sendEvent("Account", "Save", "Password", Long.valueOf(0));
-        return ret;
-    }
-
     private void launchDeleteDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(IbikeApplication.getString("delete_account_text")).setTitle(IbikeApplication.getString("delete_account_title"));
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        builder.setView(input);
+
         builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
                 if (System.currentTimeMillis() - lastAPIRequestTimestamp < API_REQUESTS_TIMEOUT) {
                     return;
                 }
@@ -397,6 +260,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                             }
                         });
                         lastAPIRequestTimestamp = System.currentTimeMillis();
+                        userData.setPassword(input.getText().toString());
                         Message message = HTTPAccountHandler.performDeleteUser(userData);
                         handler.sendMessage(message);
                         ProfileActivity.this.runOnUiThread(new Runnable() {
@@ -411,33 +275,13 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
             }
         });
         builder.setNegativeButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
             }
         });
-        AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.show();
-    }
-
-    private void launchBackDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
-        builder.setMessage(IbikeApplication.getString("account_not_saved"));
-        builder.setPositiveButton(IbikeApplication.getString("account_dont_save"), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-                finish();
-                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-            }
-        });
-        builder.setNegativeButton(IbikeApplication.getString("account_cancel"), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.show();
+        builder.setCancelable(false);
+        builder.show();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -504,12 +348,10 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
     }
 
     private void enableButtons() {
-        btnSave.setEnabled(true);
         btnDelete.setEnabled(true);
     }
 
     private void disableButtons() {
-        btnSave.setEnabled(false);
         btnDelete.setEnabled(false);
     }
 }

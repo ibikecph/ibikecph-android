@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-        >
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="10dp">
 
         <RelativeLayout
             android:id="@+id/container"
@@ -15,7 +14,7 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:focusable="true"
-            android:focusableInTouchMode="true" >
+            android:focusableInTouchMode="true">
 
             <ImageView
                 android:id="@+id/pictureContainer"
@@ -27,8 +26,7 @@
                 android:clickable="true"
                 android:contentDescription="@string/app_name"
                 android:onClick="onImageContainerClick"
-                android:scaleType="centerCrop" >
-            </ImageView>
+                android:scaleType="centerCrop"></ImageView>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -38,8 +36,7 @@
                 android:layout_alignRight="@+id/pictureContainer"
                 android:layout_alignTop="@+id/pictureContainer"
                 android:background="@drawable/rounded_image_frame"
-                android:contentDescription="@string/app_name" >
-            </ImageView>
+                android:contentDescription="@string/app_name"></ImageView>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -49,10 +46,9 @@
                 android:layout_alignRight="@+id/pictureContainer"
                 android:layout_alignTop="@+id/pictureContainer"
                 android:background="@drawable/image_frame"
-                android:contentDescription="@string/app_name" >
-            </ImageView>
+                android:contentDescription="@string/app_name"></ImageView>
 
-            <EditText
+            <TextView
                 android:id="@+id/textName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,14 +57,13 @@
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"
                 android:layout_marginTop="20dp"
-                android:inputType="text"
+                android:gravity="center_horizontal"
                 android:paddingLeft="10dp"
                 android:paddingRight="25dp"
-                android:textSize="14sp"
-                android:textColor="#000" android:autoText="false">
-            </EditText>
+                android:textColor="#000"
+                android:textSize="14sp"></TextView>
 
-            <EditText
+            <TextView
                 android:id="@+id/textEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,82 +71,28 @@
                 android:layout_alignRight="@+id/textName"
                 android:layout_below="@+id/textName"
                 android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
                 android:inputType="textEmailAddress"
                 android:paddingLeft="10dp"
                 android:paddingRight="30dp"
-                android:textSize="14sp" 
                 android:textColor="#000"
-                />
+                android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/textOldPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textName"
-                android:layout_alignRight="@+id/textName"
-                android:layout_below="@+id/textEmail"
-                android:layout_marginTop="10dp"
-                android:inputType="textPassword"
-                android:paddingLeft="10dp"
-                android:paddingRight="25dp"
-                android:textSize="14sp"
-                android:textColor="#000" />
-
-            <EditText
-                android:id="@+id/textNewPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textName"
-                android:layout_alignRight="@+id/textName"
-                android:layout_below="@+id/textOldPassword"
-                android:layout_marginTop="10dp"
-                android:inputType="textPassword"
-                android:paddingLeft="10dp"
-                android:paddingRight="25dp"
-                android:textSize="14sp" 
-                android:textColor="#000"/>
-
-            <EditText
-                android:id="@+id/textPasswordConfirm"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textName"
-                android:layout_alignRight="@+id/textName"
-                android:layout_below="@+id/textNewPassword"
-                android:layout_marginTop="10dp"
-                android:inputType="textPassword"
-                android:paddingLeft="10dp"
-                android:paddingRight="25dp"
-                android:textSize="14sp" 
-                android:textColor="#000"/>
-
-            <Button
-                android:id="@+id/btnSave"
-                android:layout_width="170dp"
-                android:layout_height="45dp"
-                android:layout_alignLeft="@+id/textName"
-                android:layout_alignRight="@+id/textName"
-                android:layout_below="@+id/textPasswordConfirm"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/stroke_button"
-                android:textColor="@color/White"
-                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/btnDelete"
                 android:layout_width="170dp"
                 android:layout_height="45dp"
-                android:layout_below="@+id/btnSave"
+                android:layout_below="@+id/textEmail"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/stroke_button"
+                android:text="delete"
                 android:textColor="@color/White"
-                android:textSize="14sp" android:text="delete"/>
-            
+                android:textSize="14sp" />
+
             <Button
                 android:id="@+id/btnLogout"
                 android:layout_width="170dp"
@@ -162,8 +103,9 @@
                 android:layout_marginRight="1dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/stroke_button"
+                android:text="logout"
                 android:textColor="@color/White"
-                android:textSize="14sp" android:text="logout"/>
+                android:textSize="14sp" />
         </RelativeLayout>
     </ScrollView>
 
@@ -173,7 +115,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone" >
-    </ProgressBar>
+        android:visibility="gone"></ProgressBar>
 
 </RelativeLayout>

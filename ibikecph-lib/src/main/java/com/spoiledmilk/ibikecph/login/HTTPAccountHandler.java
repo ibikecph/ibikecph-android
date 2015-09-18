@@ -210,9 +210,12 @@ public class HTTPAccountHandler {
         Message message = new Message();
         JsonNode result = null;
         JSONObject jsonPOST = new JSONObject();
+        JSONObject jsonUser = new JSONObject();
         try {
 
             jsonPOST.put("auth_token", userData.getAuth_token());
+            jsonUser.put("password", userData.getPassword());
+            jsonPOST.put("user", jsonUser);
             LOG.d("fb auth token = " + userData.getAuth_token());
             result = HttpUtils.deleteFromServer(Config.API_SERVER_REGISTER + "/" + userData.getId(), jsonPOST);
             message = HttpUtils.JSONtoMessage(result);
