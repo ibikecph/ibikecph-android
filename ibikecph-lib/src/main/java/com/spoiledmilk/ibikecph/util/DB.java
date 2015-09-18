@@ -690,13 +690,9 @@ public class DB extends SQLiteOpenHelper {
             final JSONObject postObject = new JSONObject();
             try {
                 postObject.put("auth_token", authToken);
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        HttpUtils.deleteFromServer(Config.API_URL + "/favourites/" + fd.getApiId(), postObject);
-                    }
-                });
-                thread.start();
+
+                HttpUtils.deleteFromServer(Config.API_URL + "/favourites/" + fd.getApiId(), postObject);
+
             } catch (JSONException e) {
                 LOG.e(e.getLocalizedMessage());
             }

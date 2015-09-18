@@ -22,4 +22,12 @@
             android:visibility="gone"
             android:id="@+id/textLogin"
             />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"></ProgressBar>
 </RelativeLayout>
