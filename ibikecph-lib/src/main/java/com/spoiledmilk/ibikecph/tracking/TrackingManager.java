@@ -113,6 +113,7 @@ public class TrackingManager implements LocationListener {
         Log.d("MF", "############## makeAndSaveTrack ##############");
         Log.d("MF", "threshold: " + TRACK_PAUSE_THRESHOLD);
 
+        /*
         // If the track is too short, just disregard it. We have nothing more to do, so just return.
         if (curLocationList.size() < 3) {
             Log.d("MF", "track too short");
@@ -120,6 +121,18 @@ public class TrackingManager implements LocationListener {
             realm.cancelTransaction();
             return;
         }
+        */
+
+
+        //Possible logic to check if a track is < 100 meters
+        float distance = curLocationList.get(0).distanceTo(curLocationList.get(curLocationList.size()));
+        if (distance < 100) {
+            Log.d("MF", "track too short");
+            Log.d("MF", "##############################################");
+            realm.cancelTransaction();
+            return;
+        }
+
 
         Track track;
         // last track
