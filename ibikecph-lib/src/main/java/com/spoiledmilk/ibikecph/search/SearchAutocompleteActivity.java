@@ -30,6 +30,7 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.search.SearchListItem.nodeType;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -129,6 +130,7 @@ public class SearchAutocompleteActivity extends Activity {
             textSrch.setText(reuseName);
             textSrch.setSelection(reuseName.length());
         }
+        MapActivity.fromSearch = true;
     }
 
 

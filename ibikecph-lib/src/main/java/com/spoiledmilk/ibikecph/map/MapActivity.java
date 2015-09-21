@@ -74,7 +74,7 @@ public class MapActivity extends IBCMapActivity {
     private ArrayList<InfoPaneFragment> fragments = new ArrayList<InfoPaneFragment>();
     private IbikePreferences settings;
     public static View frag;
-    static boolean fromSearch = false;
+    public static boolean fromSearch = false;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -379,15 +379,59 @@ public class MapActivity extends IBCMapActivity {
             }
 
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
+            this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+            Log.d("JC", "Got back from address search, spawning");
             final Bundle extras = data.getExtras();
-            Address a = (Address) extras.getSerializable("addressObject");
+            Address address = (Address) extras.getSerializable("addressObject");
+            if (address != null) {
+                MapActivity.frag.setVisibility(View.VISIBLE);
+                mapView.showAddress(address);
+                mapView.setCenter(address.getLocation());
+                fromSearch = true;
+            } else {
+                LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
 
-            ((NavigationMapHandler) this.mapView.getMapHandler()).changeSourceAddress(a);
+                Geocoder.getAddressForLocation(destination, new Geocoder.GeocoderCallback() {
+                    @Override
+                    public void onSuccess(Address address) {
+                        mapView.showAddress(address);
+                    }
+
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
+                // Center the map around the search result.
+                this.mapView.setCenter(destination, true);
+            }
         } else if (requestCode == REQUEST_CHANGE_DESTINATION_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
+            this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+            Log.d("JC", "Got back from address search, spawning");
             final Bundle extras = data.getExtras();
-            Address a = (Address) extras.getSerializable("addressObject");
+            Address address = (Address) extras.getSerializable("addressObject");
+            if (address != null) {
+                MapActivity.frag.setVisibility(View.VISIBLE);
+                mapView.showAddress(address);
+                mapView.setCenter(address.getLocation());
+                fromSearch = true;
+            } else {
+                LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
 
-            ((NavigationMapHandler) this.mapView.getMapHandler()).changeDestinationAddress(a);
+                Geocoder.getAddressForLocation(destination, new Geocoder.GeocoderCallback() {
+                    @Override
+                    public void onSuccess(Address address) {
+                        mapView.showAddress(address);
+                    }
+
+                    @Override
+                    public void onFailure() {
+
+                    }
+                });
+                // Center the map around the search result.
+                this.mapView.setCenter(destination, true);
+            }
         }
         // We got a favorite to navigate to
         else if (requestCode == LeftMenu.LAUNCH_FAVORITE && resultCode == RESULT_OK) {
