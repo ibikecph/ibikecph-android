@@ -252,7 +252,7 @@ public class HttpUtils {
             if (result.has("has_password"))
                 data.putBoolean("has_password", result.get("has_password").asBoolean());
             if (result.has("errors"))
-                data.putString("errors", result.get("errors").asText());
+                data.putString("errors", result.get("errors").get(0).asText());
         }
         JsonNode dataNode = result.get("data");
         if (dataNode != null) {
@@ -265,8 +265,7 @@ public class HttpUtils {
             if (dataNode.has("provider"))
                 data.putString("provider", dataNode.get("provider").asText());
             if (dataNode.has("errors"))
-                if(dataNode.get("errors").has("password"))
-                data.putString("errors", "Password "+dataNode.get("errors").get("password").get(0).asText());
+                data.putString("errors", dataNode.get("errors").get(0).asText());
         }
 
         ret.setData(data);
