@@ -3,120 +3,140 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:background="@null"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/textLoginTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp"
-            android:text=""
-            android:textStyle="italic"
-            android:visibility="gone"/>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnFacebookLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_alignLeft="@+id/btnLogin"
-            android:layout_alignRight="@+id/btnLogin"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/com_facebook_button_blue"
-            android:contentDescription="@string/app_name"
-            android:textColor="@color/White"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/textLoginTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="25dp"
+                android:text=""
+                android:textStyle="italic"
+                android:visibility="gone" />
 
-
-        <TextView
-            android:id="@+id/textOr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnFacebookLogin"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp"
-            android:text="" />
-
-        <EditText
-            android:id="@+id/textEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/textOr"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="25dp"
-            android:inputType="textEmailAddress"
-            android:paddingLeft="10dp"
-            android:paddingRight="25dp"
-            android:textSize="16sp"
-                android:textColor="#000000" />
-
-        <EditText
-            android:id="@+id/textPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/textEmail"
-            android:layout_alignRight="@+id/textEmail"
-            android:layout_below="@+id/textEmail"
-            android:layout_marginTop="10dp"
-            android:inputType="textPassword"
-            android:paddingLeft="10dp"
-            android:paddingRight="25dp"
-            android:textSize="16sp"
-                android:textColor="#000000"/>
-
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_alignLeft="@+id/textEmail"
-            android:layout_alignRight="@+id/textEmail"
-            android:layout_below="@+id/textPassword"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/stroke_button_inverted_red"
-            android:textColor="@color/White"
-            android:textSize="18sp"/>
+            <Button
+                android:id="@+id/btnFacebookLogin"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_alignLeft="@+id/btnLogin"
+                android:layout_alignRight="@+id/btnLogin"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/com_facebook_button_blue"
+                android:contentDescription="@string/app_name"
+                android:textColor="@color/White"
+                android:textSize="18sp" />
 
 
+            <TextView
+                android:id="@+id/textOr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btnFacebookLogin"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="25dp"
+                android:gravity="center_horizontal"
+                android:text="" />
 
-        <!-- <TextView -->
-        <!-- android:id="@+id/textFacebookLogin" -->
-        <!-- android:layout_width="wrap_content" -->
-        <!-- android:layout_height="wrap_content" -->
-        <!-- android:layout_alignTop="@+id/btnFacebookLogin" -->
-        <!-- android:layout_centerHorizontal="true" -->
-        <!-- android:paddingBottom="15dp" -->
-        <!-- android:text="" -->
-        <!-- android:textColor="@color/White" -->
-        <!-- android:textSize="12sp" /> -->
+            <EditText
+                android:id="@+id/textEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textOr"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="25dp"
+                android:inputType="textEmailAddress"
+                android:paddingLeft="10dp"
+                android:paddingRight="25dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_alignLeft="@+id/textEmail"
-            android:layout_alignRight="@+id/textEmail"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
-            android:layout_marginBottom="10dp"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/stroke_button_inverted_red"
-            android:textColor="@color/White"
-            android:textSize="18sp" />
+            <EditText
+                android:id="@+id/textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textEmail"
+                android:layout_alignRight="@+id/textEmail"
+                android:layout_below="@+id/textEmail"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="10dp"
+                android:inputType="textPassword"
+                android:paddingLeft="10dp"
+                android:paddingRight="25dp"
+                android:textColor="#000000"
+                android:textSize="16sp" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="gone" />
-    </RelativeLayout>
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_alignLeft="@+id/textEmail"
+                android:layout_alignRight="@+id/textEmail"
+                android:layout_below="@+id/textPassword"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/stroke_button_inverted_red"
+                android:textColor="@color/White"
+                android:textSize="18sp" />
+
+
+            <!-- <TextView -->
+            <!-- android:id="@+id/textFacebookLogin" -->
+            <!-- android:layout_width="wrap_content" -->
+            <!-- android:layout_height="wrap_content" -->
+            <!-- android:layout_alignTop="@+id/btnFacebookLogin" -->
+            <!-- android:layout_centerHorizontal="true" -->
+            <!-- android:paddingBottom="15dp" -->
+            <!-- android:text="" -->
+            <!-- android:textColor="@color/White" -->
+            <!-- android:textSize="12sp" /> -->
+            <FrameLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"></FrameLayout>
+
+                <Button
+                    android:id="@+id/btnRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_alignLeft="@+id/textEmail"
+                    android:layout_alignRight="@+id/textEmail"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/stroke_button_inverted_red"
+                    android:textColor="@color/White"
+                    android:textSize="18sp" />
+
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
