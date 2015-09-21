@@ -125,7 +125,7 @@ public class TrackingManager implements LocationListener {
 
 
         //Possible logic to check if a track is < 100 meters
-        float distance = curLocationList.get(0).distanceTo(curLocationList.get(curLocationList.size()));
+        float distance = curLocationList.get(0).distanceTo(curLocationList.get(curLocationList.size() - 1));
         if (distance < 100) {
             Log.d("MF", "track too short");
             Log.d("MF", "##############################################");
