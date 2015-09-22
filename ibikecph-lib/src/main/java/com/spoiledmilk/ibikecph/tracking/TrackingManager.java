@@ -187,6 +187,7 @@ public class TrackingManager implements LocationListener {
             lastLocation = l;
         }
 
+        // If the track is too short, just disregard it. We have nothing more to do, so just return.
         //Possible logic to check if a track is < 50 meters
         //float distance = curLocationList.get(0).distanceTo(curLocationList.get(curLocationList.size() - 1));
         if (dist < 50) {
@@ -217,7 +218,7 @@ public class TrackingManager implements LocationListener {
         // Geocode the track. The TrackHelper will open a new Realm transaction.
         TrackHelper helper = new TrackHelper(track);
         helper.geocodeTrack();
-        //uploadTracksToServer();
+        uploadTracksToServer();
     }
 
     /**
