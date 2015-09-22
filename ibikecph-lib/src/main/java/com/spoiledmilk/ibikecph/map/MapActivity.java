@@ -233,13 +233,15 @@ public class MapActivity extends IBCMapActivity {
         super.onResume();
         LOG.d("Map activity onResume");
 
-        if (settings.getTrackingEnabled() && !fromSearch) {
+        if (settings.getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
             showStatisticsInfoPane();
-        } else {
-            if (!fromSearch) {
-                disableStatisticsInfoPane();
-            }
+        } else if (!fromSearch && OverviewMapHandler.isWatchingAddress) {
+            MapActivity.frag.setVisibility(View.VISIBLE);
+            mapView.showAddress(OverviewMapHandler.addressBeingWatched);
+        } else if (!fromSearch && !OverviewMapHandler.isWatchingAddress) {
+            disableStatisticsInfoPane();
         }
+
         fromSearch = false;
 
         if (!Util.isNetworkConnected(this)) {
@@ -331,7 +333,6 @@ public class MapActivity extends IBCMapActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("JC", "onActivityResult, requestCode " + requestCode + " resultCode " + resultCode);
 
-
         if (requestCode == LeftMenu.LAUNCH_LOGIN) {
             Log.d("JC", "Got back from LAUNCH_LOGIN");
             leftMenu.populateMenu();
@@ -378,6 +379,11 @@ public class MapActivity extends IBCMapActivity {
                 this.mapView.setCenter(destination, true);
             }
 
+        } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_CANCELED && OverviewMapHandler.isWatchingAddress) {
+            Log.d("JC", "Got back from address search with RESULT_CANCELED!");
+            fromSearch = true;
+            MapActivity.frag.setVisibility(View.VISIBLE);
+            mapView.showAddress(OverviewMapHandler.addressBeingWatched);
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             this.mapView.changeState(IBCMapView.MapState.DEFAULT);
             Log.d("JC", "Got back from address search, spawning");

@@ -25,6 +25,7 @@ import com.spoiledmilk.ibikecph.util.IbikePreferences;
 public class OverviewMapHandler extends IBCMapHandler {
     private Marker curMarker;
     public static boolean isWatchingAddress = false;
+    public static Address addressBeingWatched = null;
     private IBCMapView mapView;
     private IbikePreferences settings;
 
@@ -89,8 +90,13 @@ public class OverviewMapHandler extends IBCMapHandler {
 
     @Override
     public void onTapMarker(MapView mapView, Marker marker) {
+        if (settings.getTrackingEnabled()) {
+            showStatisticsInfoPane();
+        } else{
+            disableStatisticsInfoPane();
+            isWatchingAddress = false;
+        }
         this.mapView.removeAddressMarker();
-        showStatisticsInfoPane();
     }
 
     @Override
@@ -112,6 +118,7 @@ public class OverviewMapHandler extends IBCMapHandler {
             public void onSuccess(Address address) {
                 // This refers to the FIELD, not the argument to the method (which I renamed to _mapView). This is
                 // because we want it to be an IBCMapView.
+                addressBeingWatched = address;
                 MapActivity.frag.setVisibility(View.VISIBLE);
                 mapView.showAddress(address);
                 isWatchingAddress = true;
