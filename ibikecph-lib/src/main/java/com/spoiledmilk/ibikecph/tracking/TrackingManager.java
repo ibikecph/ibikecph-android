@@ -123,17 +123,6 @@ public class TrackingManager implements LocationListener {
         }
         */
 
-
-        //Possible logic to check if a track is < 100 meters
-        float distance = curLocationList.get(0).distanceTo(curLocationList.get(curLocationList.size() - 1));
-        if (distance < 100) {
-            Log.d("MF", "track too short");
-            Log.d("MF", "##############################################");
-            realm.cancelTransaction();
-            return;
-        }
-
-
         Track track;
         // last track
         try {
@@ -196,6 +185,15 @@ public class TrackingManager implements LocationListener {
                 dist += lastLocation.distanceTo(l);
             }
             lastLocation = l;
+        }
+
+        //Possible logic to check if a track is < 50 meters
+        //float distance = curLocationList.get(0).distanceTo(curLocationList.get(curLocationList.size() - 1));
+        if (dist < 50) {
+            Log.d("DV", "track too short");
+            Log.d("DV", "##############################################");
+            realm.cancelTransaction();
+            return;
         }
 
         // Set the duration. We say it's the duration of time from the first to the last timestamp. We're dividing by
