@@ -592,6 +592,41 @@ public class DB extends SQLiteOpenHelper {
         return ret;
     }
 
+    public FavoritesData getFavoriteByNameForInfoPane(String name) {
+        FavoritesData ret = null;
+
+        SQLiteDatabase db = getReadableDatabase();
+        if (db == null)
+            return null;
+
+        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID};
+
+        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " = ? ", new String[]{name.trim()}, null, null, null, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            while (cursor != null && !cursor.isAfterLast()) {
+                int colId = cursor.getColumnIndex(KEY_ID);
+                int colName = cursor.getColumnIndex(KEY_NAME);
+                int colAddress = cursor.getColumnIndex(KEY_ADDRESS);
+                int colSubSource = cursor.getColumnIndex(KEY_SUBSOURCE);
+                int colLat = cursor.getColumnIndex(KEY_LAT);
+                int colLong = cursor.getColumnIndex(KEY_LONG);
+                int colApiId = cursor.getColumnIndex(KEY_API_ID);
+
+                ret = new FavoritesData(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
+                        cursor.getString(colSubSource), cursor.getDouble(colLat), cursor.getDouble(colLong), cursor.getInt(colApiId));
+                break;
+            }
+        }
+
+        if (cursor != null)
+            cursor.close();
+
+        db.close();
+
+        return ret;
+    }
+
     public void updateFavorite(FavoritesData fd, Context context, APIListener listener) {
         SQLiteDatabase db = this.getWritableDatabase();
         if (db == null)

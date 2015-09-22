@@ -13,6 +13,7 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.search.Address;
+import com.spoiledmilk.ibikecph.search.SearchListItem;
 import com.spoiledmilk.ibikecph.util.DB;
 
 /**
@@ -46,6 +47,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
         // Set click listeners
         v.findViewById(R.id.btnStartRoute).setOnClickListener(this);
         v.findViewById(R.id.btnAddFavorite).setOnClickListener(this);
+        v.findViewById(R.id.btnAddFavorite).setTag("notFilled");
 
         ((TextView) v.findViewById(R.id.newRouteText)).setText(IbikeApplication.getString("new_route"));
         if (IbikeApplication.getAppName().equals("Cykelplanen")) {
@@ -76,25 +78,60 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
         } else if (i == R.id.btnAddFavorite) {
             Log.d("JC", "Saving favorite");
 
-            final FavoritesData favoritesData = FavoritesData.fromAddress(this.address);
+            if (v.findViewById(R.id.btnAddFavorite).getTag().toString().equals("filled")) {
+                Log.d("DV", "notFilled!");
 
-            // Start a thread that saves the favorite to the db.
-            Thread saveThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    (new DB(getActivity())).saveFavorite(favoritesData, getActivity(), false);
+                //Fjern fra DB
+                final FavoritesData favoritesData = FavoritesData.fromAddress(this.address);
 
+
+                FavoritesData a = (new DB(getActivity()).getFavoriteByNameForInfoPane(favoritesData.getName()));
+
+                favoritesData.setApiId(a.getApiId());
+
+                // Start a thread that saves the favorite to the db.
+                Thread saveThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        (new DB(getActivity())).deleteFavorite(favoritesData, getActivity());
+
+                    }
+                });
+                saveThread.start();
+
+                try {
+                    saveThread.join();
+                    ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite);
+                    v.findViewById(R.id.btnAddFavorite).setTag("notFilled");
+                } catch (Exception e) {
+                    e.getLocalizedMessage();
                 }
-            });
-            saveThread.start();
 
-            try {
-                saveThread.join();
-                ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite_filled);
-                ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setOnClickListener(null);
 
-            } catch (Exception e) {
-                e.getLocalizedMessage();
+            } else {
+                Log.d("DV", "Filled!");
+                final FavoritesData favoritesData = FavoritesData.fromAddress(this.address);
+
+                // Start a thread that saves the favorite to the db.
+                Thread saveThread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        (new DB(getActivity())).saveFavorite(favoritesData, getActivity(), false);
+
+                    }
+                });
+                saveThread.start();
+
+                try {
+                    saveThread.join();
+                    ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite_filled);
+                    v.findViewById(R.id.btnAddFavorite).setTag("filled");
+                    //((ImageButton) v.findViewById(R.id.btnAddFavorite)).setOnClickListener(null);
+
+                } catch (Exception e) {
+                    e.getLocalizedMessage();
+                }
+
             }
 
         }
