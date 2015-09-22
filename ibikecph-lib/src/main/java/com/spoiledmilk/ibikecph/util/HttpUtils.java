@@ -251,8 +251,8 @@ public class HttpUtils {
                 data.putString("info", result.get("info").asText());
             if (result.has("has_password"))
                 data.putBoolean("has_password", result.get("has_password").asBoolean());
-            if (result.has("errors"))
-                data.putString("errors", result.get("errors").get(0).asText());
+            /*if (result.has("errors"))
+                data.putString("errors", result.get("errors").get(0).asText());*/
         }
         JsonNode dataNode = result.get("data");
         if (dataNode != null) {
@@ -264,8 +264,8 @@ public class HttpUtils {
                 data.putString("signature", dataNode.get("signature").asText());
             if (dataNode.has("provider"))
                 data.putString("provider", dataNode.get("provider").asText());
-            if (dataNode.has("errors"))
-                data.putString("errors", dataNode.get("errors").get(0).asText());
+            /*if (dataNode.has("errors"))
+                data.putString("errors", dataNode.get("errors").get(0).asText());*/
         }
 
         ret.setData(data);

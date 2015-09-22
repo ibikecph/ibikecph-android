@@ -161,7 +161,7 @@ public class SignatureActivity extends Activity {
                                     startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 } else {
                                     dismissProgressDialog();
-                                    final String msg = data.containsKey("errors") ? data.getString("errors") : data.getString("info");
+                                    final String msg = data.getString("info");//data.containsKey("errors") ? data.getString("errors") : data.getString("info");
                                     String title = "";
                                     if (data.containsKey("info_title")) {
                                         title = data.getString("info_title");
@@ -299,7 +299,7 @@ public class SignatureActivity extends Activity {
                                 finish();
                             } else {
                                 dismissProgressDialog();
-                                final String msg = data.containsKey("errors") ? data.getString("errors") : data.getString("info");
+                                final String msg = data.getString("info");//data.containsKey("errors") ? data.getString("errors") : data.getString("info");
                                 String title = "";
                                 if (data.containsKey("info_title")) {
                                     title = data.getString("info_title");
