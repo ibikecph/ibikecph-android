@@ -13,7 +13,6 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.search.Address;
-import com.spoiledmilk.ibikecph.search.SearchListItem;
 import com.spoiledmilk.ibikecph.util.DB;
 
 /**
@@ -24,6 +23,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
 
     private TextView addressView;
     private Address address;
+    private String name = "";
 
     public AddressDisplayInfoPaneFragment() {
         super();
@@ -38,16 +38,27 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
             Log.d("DV", "Special name!");
             ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getStreetAddress());
             ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
+            name = this.address.getStreetAddress();
         } else {
             Log.d("DV", "Ikke special name!");
             ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getDisplayName());
             ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
+            name = this.address.getDisplayName();
         }
 
         // Set click listeners
         v.findViewById(R.id.btnStartRoute).setOnClickListener(this);
         v.findViewById(R.id.btnAddFavorite).setOnClickListener(this);
-        v.findViewById(R.id.btnAddFavorite).setTag("notFilled");
+
+        FavoritesData a = (new DB(getActivity()).getFavoriteByNameForInfoPane(name));
+
+        if (a != null) {
+            v.findViewById(R.id.btnAddFavorite).setTag("filled");
+            ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite_filled);
+        } else {
+            v.findViewById(R.id.btnAddFavorite).setTag("notFilled");
+            ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite);
+        }
 
         ((TextView) v.findViewById(R.id.newRouteText)).setText(IbikeApplication.getString("new_route"));
         if (IbikeApplication.getAppName().equals("Cykelplanen")) {
@@ -81,15 +92,11 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
             if (v.findViewById(R.id.btnAddFavorite).getTag().toString().equals("filled")) {
                 Log.d("DV", "notFilled!");
 
-                //Fjern fra DB
                 final FavoritesData favoritesData = FavoritesData.fromAddress(this.address);
-
-
                 FavoritesData a = (new DB(getActivity()).getFavoriteByNameForInfoPane(favoritesData.getName()));
-
                 favoritesData.setApiId(a.getApiId());
 
-                // Start a thread that saves the favorite to the db.
+                // Start a thread that removes the favorite from the db.
                 Thread saveThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -106,8 +113,6 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
                 } catch (Exception e) {
                     e.getLocalizedMessage();
                 }
-
-
             } else {
                 Log.d("DV", "Filled!");
                 final FavoritesData favoritesData = FavoritesData.fromAddress(this.address);
