@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
@@ -15,6 +16,7 @@ import com.spoiledmilk.ibikecph.map.IBCMapActivity;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -22,13 +24,14 @@ import java.util.ArrayList;
 
 
 public class TrackMapView extends IBCMapActivity {
-    IBCMapView mapView ;
-    BoundingBox bbox ;
+    IBCMapView mapView;
+    BoundingBox bbox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_track_map_view);
+        Log.d("DV", "Viewing track!");
 
         int track_position = this.getIntent().getIntExtra("track_position", -1);
 
@@ -50,11 +53,29 @@ public class TrackMapView extends IBCMapActivity {
          * Convert the list of points to a list of LatLng objects. This is used for drawing the path and creating the
          * bounding box.
          */
+
         ArrayList<LatLng> route = new ArrayList<LatLng>();
         for (TrackLocation loc : track.getLocations()) {
             LatLng ll = new LatLng(loc.getLatitude(), loc.getLongitude());
             route.add(ll);
         }
+
+
+        /*ArrayList<LatLng> route = new ArrayList<LatLng>();
+        LatLng a = new LatLng(55.6774085,12.5696799);
+        route.add(a);
+        LatLng b = new LatLng(55.6574319,12.6121303);
+        route.add(b);
+        LatLng c = new LatLng(55.7079739,12.5692061);
+        route.add(c);
+        LatLng d = new LatLng(55.7180839,12.5692061);
+        route.add(d);
+        LatLng f = new LatLng(55.7281939,12.5692061);
+        route.add(f);*/
+
+        //float xx = a.distanceTo(b);
+        //Log.d("DV", "XX DISTANCE = " + xx);
+
 
         // Add the points to a route
         path.addPoints(route);
@@ -63,10 +84,32 @@ public class TrackMapView extends IBCMapActivity {
         final BoundingBox bbox = BoundingBox.fromLatLngs(route);
         this.bbox = bbox;
 
+        ////
+
+        //Add 20% padding
+        double north = this.bbox.getLatNorth();
+        double east = this.bbox.getLonEast();
+        double west = this.bbox.getLonWest();
+        double south = this.bbox.getLatSouth();
+
+        double latitudeDiff = Math.abs(north - south) * 0.2;
+
+        double longitudeDiff = Math.abs(east - west) * 0.2;
+
+
+
+        ArrayList<LatLng> paddedWaypoints = new ArrayList<LatLng>();
+        LatLng ne = new LatLng(north + latitudeDiff, east + longitudeDiff);
+        LatLng sw = new LatLng(south - latitudeDiff, west - longitudeDiff);
+        paddedWaypoints.add(ne);
+        paddedWaypoints.add(sw);
+
+        ////
+
         /**
          * Center and zoom the map according to the bounding box of the route.
          */
-        mapView.zoomToBoundingBox(bbox, true, false, true, false);
+        mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(paddedWaypoints), true, true, false, true);//(bbox, true, false, true, false);
 
         // If the route is really short, it doesn't look good to fit that into the window. Zoom out a bit.
         if (mapView.getZoomLevel() > 18.0f) {
@@ -76,14 +119,14 @@ public class TrackMapView extends IBCMapActivity {
         // Set the ActionBar
         try {
             this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             // There was no ActionBar. Oh well...
         }
     }
 
     public void btnZoomCenterClick(View v) {
         Log.d("JC", "Bounding box center: " + this.bbox.getCenter().toString());
-        Log.d("JC", "Mapbox bounding box:"  + this.mapView.getBoundingBox().toString());
+        Log.d("JC", "Mapbox bounding box:" + this.mapView.getBoundingBox().toString());
         mapView.zoomToBoundingBox(this.bbox);
 
     }
