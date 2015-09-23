@@ -107,7 +107,7 @@ public class FacebookProfileActivity extends Activity {
                                 finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             } else {
-                                launchAlertDialog(data.getString("errors"));
+                                launchAlertDialog(data.getString("info"));
                             }
                             break;
                         case HTTPAccountHandler.ERROR:
