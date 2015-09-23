@@ -27,7 +27,8 @@
                 android:background="@drawable/rounded_imageview"
                 android:clickable="false"
                 android:contentDescription="@string/app_name"
-                android:scaleType="centerCrop"></ImageView>
+                android:scaleType="centerCrop"
+                android:visibility="gone"></ImageView>
 
             <ImageView
                 android:layout_width="wrap_content"

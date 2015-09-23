@@ -11,6 +11,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -36,14 +37,12 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
 
     static final long API_REQUESTS_TIMEOUT = 2000;
 
-    Button btnLogout;
+    Button btnLogout, btnEdit, btnDelete;
     TextView textName, textEmail, textLoggedInAs;
-    Button btnDelete;
     ImageView pictureContainer;
     Handler handler;
     UserData userData;
     ProgressBar progressBar;
-    String validationMessage;
     String base64Image = "";
     public static final int RESULT_USER_DELETED = 101;
     private static final int IMAGE_REQUEST = 1888;
@@ -93,6 +92,16 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
             @Override
             public void onClick(View v) {
                 launchDeleteDialog();
+            }
+        });
+
+        btnEdit = (Button) findViewById(R.id.btnEdit);
+        btnEdit.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("https://www.ibikecph.dk/account");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
             }
         });
 
@@ -305,6 +314,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                     ProfileActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            pictureContainer.setVisibility(View.VISIBLE);
                             pictureContainer.setImageDrawable(d);
                             pictureContainer.invalidate();
                         }
