@@ -77,7 +77,7 @@ public class TrackingWelcomeActivity extends Activity {
     }
 
     private void initStrings() {
-        welcomeTextView.setText(IbikeApplication.getString("launch_activate_tracking_title"));
+        welcomeTextView.setText(IbikeApplication.getString("launch_activate_tracking_title_no_welcome"));
         welcomeExplanationTextView.setText(IbikeApplication.getString("launch_activate_tracking_description"));
         readMoreButton.setText(IbikeApplication.getString("launch_activate_tracking_read_more"));
         enableButton.setText(IbikeApplication.getString("enable_tracking"));
