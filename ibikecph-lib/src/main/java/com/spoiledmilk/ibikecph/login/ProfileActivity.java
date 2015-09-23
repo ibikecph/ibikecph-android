@@ -37,7 +37,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
     static final long API_REQUESTS_TIMEOUT = 2000;
 
     Button btnLogout;
-    TextView textName, textEmail;
+    TextView textName, textEmail, textLoggedInAs;
     Button btnDelete;
     ImageView pictureContainer;
     Handler handler;
@@ -86,6 +86,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
 
         textName = (TextView) findViewById(R.id.textName);
         textEmail = (TextView) findViewById(R.id.textEmail);
+        textLoggedInAs = (TextView) findViewById(R.id.textLoggedInAs);
 
         btnDelete = (Button) findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(new OnClickListener() {
@@ -218,7 +219,8 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
 
     private void updateControls() {
         textName.setText(userData.getName());
-        textEmail.setText(IbikeApplication.getString("track_token_subtitle_native") + " " + userData.getEmail());
+        textLoggedInAs.setText(IbikeApplication.getString("track_token_subtitle_native"));
+        textEmail.setText(userData.getEmail());
     }
 
     private void launchAlertDialog(String msg) {
