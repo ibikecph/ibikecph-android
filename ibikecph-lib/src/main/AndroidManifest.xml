@@ -121,9 +121,10 @@
         <activity
             android:name=".tracking.TrackingActivity"
             android:label="@string/title_activity_tracking" />
+
         <activity
             android:name=".tracking.TrackingWelcomeActivity"
-            android:label="@string/title_activity_tracking" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".tracking.TrackingSettingsActivity"
             android:label="@string/title_activity_tracking_settings" />
@@ -134,10 +135,10 @@
         <activity
             android:name=".login.SignatureActivity"
             android:label="@string/track_token_title"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".map.OverlaysActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name=".BootReceiver"

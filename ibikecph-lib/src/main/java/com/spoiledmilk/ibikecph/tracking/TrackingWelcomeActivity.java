@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,42 +15,27 @@ import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.ReadMoreActivity;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
-import com.spoiledmilk.ibikecph.login.RegisterActivity;
 import com.spoiledmilk.ibikecph.login.SignatureActivity;
-import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 
 public class TrackingWelcomeActivity extends Activity {
 
-    private TextView introText, enableText, termsText, termsLinkText, kmText, kmtText, kmPrTripText, hoursText;
-    private Button enableButton;
+    private TextView welcomeExplanationTextView, welcomeTextView;
+    private Button enableButton, readMoreButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking_welcome);
 
-        this.introText = (TextView) findViewById(R.id.tracking_intro);
-        this.enableText = (TextView) findViewById(R.id.tracking_enable_text);
-        this.termsText = (TextView) findViewById(R.id.tracking_terms);
-        this.termsLinkText = (TextView) findViewById(R.id.tracking_terms_link);
-        this.enableButton = (Button) findViewById(R.id.tracking_enable);
+        enableButton = (Button) findViewById(R.id.tracking_enable);
+        readMoreButton = (Button) findViewById(R.id.readMoreButton);
+        welcomeExplanationTextView = (TextView) findViewById(R.id.welcomeExplanationTextView);
+        welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
 
-        this.kmText = (TextView) findViewById(R.id.kmText);
-        this.kmtText = (TextView) findViewById(R.id.kmtText);
-        this.kmPrTripText = (TextView) findViewById(R.id.kmPrTripText);
-        this.hoursText = (TextView) findViewById(R.id.hoursText);
-
-        try {
-            this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
-        } catch (NullPointerException e) {
-            // There was no ActionBar. Oh well...
-        }
-
-        //this.enableButton.setEnabled();
-
+        this.getActionBar().hide();
         initStrings();
     }
 
@@ -87,47 +71,16 @@ public class TrackingWelcomeActivity extends Activity {
         }
     }
 
-    public void onTermsClick(View v) {
-        HttpUtils.openLinkInBrowser(this, Config.TRACKING_TERMS_URL);
+    public void onReadMoreClick(View v) {
+        Intent i = new Intent(TrackingWelcomeActivity.this, ReadMoreActivity.class);
+        TrackingWelcomeActivity.this.startActivity(i);
     }
 
     private void initStrings() {
-        this.introText.setText(IbikeApplication.getString("enable_tracking_description"));
-        this.enableText.setText(IbikeApplication.getString("enable_tracking_explanation"));
-
-        this.termsText.setText(IbikeApplication.getString("tracking_terms"));
-        this.termsLinkText.setText(IbikeApplication.getString("tracking_terms_link"));
-
-        this.termsLinkText.setPaintFlags(this.termsLinkText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        this.enableButton.setText(IbikeApplication.getString("enable_tracking"));
-
-        this.kmText.setText(IbikeApplication.getString("unit_km").toUpperCase());
-        this.kmtText.setText(IbikeApplication.getString("unit_km_pr_h").toUpperCase());
-        this.kmPrTripText.setText(IbikeApplication.getString("unit_km_pr_trip").toUpperCase());
-        this.hoursText.setText(IbikeApplication.getString("unit_h_long").toUpperCase());
-    }
-
-
-    public static class MustLogInDialogFragment extends DialogFragment {
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            // Use the Builder class for convenient dialog construction
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(IbikeApplication.getString("log_in_to_track_prompt"))
-                    .setPositiveButton(IbikeApplication.getString("OK"), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            Intent i = new Intent(getActivity(), LoginActivity.class);
-                            getActivity().startActivityForResult(i, LeftMenu.LAUNCH_LOGIN);
-                        }
-                    })
-                    .setNegativeButton(IbikeApplication.getString("account_cancel"), new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // User cancelled the dialog
-                        }
-                    });
-            // Create the AlertDialog object and return it
-            return builder.create();
-        }
+        welcomeTextView.setText(IbikeApplication.getString("launch_activate_tracking_title"));
+        welcomeExplanationTextView.setText(IbikeApplication.getString("launch_activate_tracking_description"));
+        readMoreButton.setText(IbikeApplication.getString("launch_activate_tracking_read_more"));
+        enableButton.setText(IbikeApplication.getString("enable_tracking"));
     }
 
     @Override
@@ -158,6 +111,29 @@ public class TrackingWelcomeActivity extends Activity {
 
         if (requestCode == 99) {
             Log.d("DV", "Result code = 99");
+        }
+    }
+
+
+    public static class MustLogInDialogFragment extends DialogFragment {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(IbikeApplication.getString("log_in_to_track_prompt"))
+                    .setPositiveButton(IbikeApplication.getString("OK"), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent i = new Intent(getActivity(), LoginActivity.class);
+                            getActivity().startActivityForResult(i, LeftMenu.LAUNCH_LOGIN);
+                        }
+                    })
+                    .setNegativeButton(IbikeApplication.getString("account_cancel"), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            return builder.create();
         }
     }
 }

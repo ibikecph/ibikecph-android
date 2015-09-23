@@ -140,9 +140,7 @@
                 android:label="@string/title_activity_tracking"
                 android:theme="@style/iBikeCPHTheme.ActionBar"/>
         <activity
-                android:name="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity"
-                android:label="@string/title_activity_tracking"
-                android:theme="@style/iBikeCPHTheme.ActionBar"/>
+                android:name="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity" />
         <activity
                 android:name="com.spoiledmilk.ibikecph.tracking.TrackingSettingsActivity"
                 android:label="@string/title_activity_tracking_settings"

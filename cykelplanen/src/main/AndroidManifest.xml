@@ -20,8 +20,8 @@
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
-            android:name="android.permission.READ_EXTERNAL_STORAGE"
-            android:maxSdkVersion="18" />
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -40,13 +40,13 @@
         android:required="false" />
 
     <application
-        tools:replace="android:name"
         android:name="com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:theme="@style/CykelsuperstierTheme.ActionBar" >
+        android:theme="@style/CykelsuperstierTheme.ActionBar"
+        tools:replace="android:name">
 
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity
@@ -74,10 +74,10 @@
             android:theme="@style/CykelsuperstierTheme.ActionBar" />
         <activity
             android:name="com.spoiledmilk.cykelsuperstier.map.OverlaysActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.login.LoginActivity"
             android:screenOrientation="portrait" />
@@ -94,7 +94,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.search.SearchActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity"
             android:screenOrientation="portrait" />
@@ -106,21 +106,21 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.ibikecph.login.FacebookProfileActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.spoiledmilk.cykelsuperstier.BreakRouteSplashActivity"
             android:screenOrientation="portrait" />
 
         <receiver
             android:name="com.spoiledmilk.cykelsuperstier.reminders.AlarmReceiver"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.spoiledmilk.cykelsuperstier.ALARM_ACTION" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.spoiledmilk.cykelsuperstier.reminders.BootReceiver"
-            android:enabled="true" >
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
@@ -144,8 +144,7 @@
         <activity
             android:name="com.spoiledmilk.ibikecph.favorites.FavoritesListActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/CykelsuperstierTheme.ActionBar"
-                />
+            android:theme="@style/CykelsuperstierTheme.ActionBar" />
         <activity
             android:name="com.spoiledmilk.ibikecph.favorites.AddFavoriteActivity"
             android:label="@string/title_activity_add_favorite" />
@@ -154,21 +153,18 @@
             android:label="@string/title_activity_edit_favorite" />
 
         <service android:name="com.spoiledmilk.ibikecph.BikeLocationService"></service>
-        <service android:name="com.spoiledmilk.ibikecph.BikeActivityService" > </service>
+        <service android:name="com.spoiledmilk.ibikecph.BikeActivityService"></service>
 
         <activity
-                android:name="com.spoiledmilk.ibikecph.tracking.TrackingActivity"
-                android:label="@string/title_activity_tracking"/>
+            android:name="com.spoiledmilk.ibikecph.tracking.TrackingActivity"
+            android:label="@string/title_activity_tracking" />
+        <activity android:name="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity" />
         <activity
-                android:name="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity"
-                android:label="@string/title_activity_tracking"/>
+            android:name="com.spoiledmilk.ibikecph.tracking.TrackingSettingsActivity"
+            android:label="@string/title_activity_tracking_settings" />
         <activity
-                android:name="com.spoiledmilk.ibikecph.tracking.TrackingSettingsActivity"
-                android:label="@string/title_activity_tracking_settings" />
-        <activity
-                android:name="com.spoiledmilk.ibikecph.tracking.TrackMapView"
-                android:label="@string/title_activity_track_map_view">
-        </activity>
+            android:name="com.spoiledmilk.ibikecph.tracking.TrackMapView"
+            android:label="@string/title_activity_track_map_view"></activity>
 
         <receiver android:name="com.spoiledmilk.ibikecph.BootReceiver">
             <intent-filter>
@@ -180,7 +176,6 @@
     </application>
 
     <activity
-            android:name="com.spoiledmilk.cykelsuperstier.AcceptNewTermsActivity"
-            android:label="@string/title_activity_accept_new_terms" >
-    </activity>
+        android:name="com.spoiledmilk.cykelsuperstier.AcceptNewTermsActivity"
+        android:label="@string/title_activity_accept_new_terms"></activity>
 </manifest>
