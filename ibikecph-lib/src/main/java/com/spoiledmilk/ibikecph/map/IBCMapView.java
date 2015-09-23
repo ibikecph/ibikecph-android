@@ -314,7 +314,10 @@ public class IBCMapView extends MapView {
 
     public void removeMarker(IBCMarker m) {
         markers.remove(m);
-        super.removeMarker(m);
+        try {
+            super.removeMarker(m);
+        } catch (Exception ex) {
+        }
     }
 
     public void removeAllMarkers() {

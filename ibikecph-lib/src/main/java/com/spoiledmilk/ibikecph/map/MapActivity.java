@@ -46,6 +46,7 @@ import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+import com.vividsolutions.jts.operation.overlay.validate.OverlayResultValidator;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -360,6 +361,7 @@ public class MapActivity extends IBCMapActivity {
                 mapView.showAddress(address);
                 mapView.setCenter(address.getLocation());
                 fromSearch = true;
+                OverviewMapHandler.isWatchingAddress = true;
             } else {
                 LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
 
@@ -485,7 +487,9 @@ public class MapActivity extends IBCMapActivity {
      */
     public void onBackPressed() {
         if (mapView.getMapHandler().onBackPressed()) {
-            super.onBackPressed();
+            if(!OverviewMapHandler.isWatchingAddress){
+                super.onBackPressed();
+            }
         }
     }
 
