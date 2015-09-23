@@ -3,12 +3,20 @@ package com.spoiledmilk.ibikecph.map.handlers;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.mapbox.mapboxsdk.api.ILatLng;
+import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.overlay.Overlay;
+import com.mapbox.mapboxsdk.views.InfoWindow;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -90,23 +98,32 @@ public class OverviewMapHandler extends IBCMapHandler {
 
     @Override
     public void onTapMarker(MapView mapView, Marker marker) {
+        /*
+        There is a bug so that the marker can't be removed on click. Check out this gitissue
+        https://github.com/mapbox/mapbox-android-sdk/issues/567
+         */
+    }
+
+    public void removeMarker() {
+        if (IBCMapView.curAddressMarker != null) {
+            mapView.removeAddressMarker();
+            IBCMapView.curAddressMarker = null;
+        }
         if (settings.getTrackingEnabled()) {
             showStatisticsInfoPane();
-        } else{
+        } else {
             disableStatisticsInfoPane();
             isWatchingAddress = false;
         }
-        this.mapView.removeAddressMarker();
     }
 
     @Override
     public void onLongPressMarker(MapView mapView, Marker marker) {
-
     }
 
     @Override
     public void onTapMap(MapView mapView, ILatLng iLatLng) {
-
+        removeMarker();
     }
 
     @Override

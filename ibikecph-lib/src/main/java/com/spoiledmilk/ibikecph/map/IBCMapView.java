@@ -4,6 +4,8 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -14,6 +16,7 @@ import com.google.android.gms.location.FusedLocationProviderApi;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Icon;
+import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
@@ -44,7 +47,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class IBCMapView extends MapView {
 
     private UserLocationOverlay userLocationOverlay;
-    private IBCMarker curAddressMarker;
+    public static IBCMarker curAddressMarker;
     private CopyOnWriteArrayList<IBCMarker> markers = new CopyOnWriteArrayList<IBCMarker>();
 
     public enum MapState {
@@ -279,6 +282,7 @@ public class IBCMapView extends MapView {
         IBCMarker m = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation(), MarkerType.ADDRESS);
         Icon markerIcon = new Icon(this.getResources().getDrawable(R.drawable.marker));
         m.setIcon(markerIcon);
+
         this.addMarker(m);
 
         this.curAddressMarker = m;
@@ -287,6 +291,11 @@ public class IBCMapView extends MapView {
         this.invalidate();
     }
 
+    @Override
+    public void selectMarker(Marker marker) {
+        //curHandler.onTapMarker(this, marker);
+        return;
+    }
 
     public void removeAddressMarker() {
         if (curAddressMarker != null) {
