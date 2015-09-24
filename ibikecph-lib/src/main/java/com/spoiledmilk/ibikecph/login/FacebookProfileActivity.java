@@ -177,6 +177,7 @@ public class FacebookProfileActivity extends Activity {
         textLinked.setText(IbikeApplication.getString("account_is_linked_to_facebook"));
         textLinked.setTypeface(IbikeApplication.getItalicFont());
         btnDelete.setText(IbikeApplication.getString("delete_my_account"));
+
     }
 
     public void onBtnDelete(View v) {
@@ -223,7 +224,7 @@ public class FacebookProfileActivity extends Activity {
 
     private void launchDeleteDialogWithoutPassword() {
         AlertDialog.Builder builder = new AlertDialog.Builder(FacebookProfileActivity.this);
-        builder.setMessage(IbikeApplication.getString("delete_account_text")).setTitle(IbikeApplication.getString("delete_account_title"));
+        builder.setMessage(IbikeApplication.getString("delete_account_text_facebook_tracking")).setTitle(IbikeApplication.getString("delete_account_title"));
         builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 if (!Util.isNetworkConnected(FacebookProfileActivity.this)) {

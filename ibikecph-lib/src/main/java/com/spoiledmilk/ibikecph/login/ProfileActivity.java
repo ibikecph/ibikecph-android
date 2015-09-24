@@ -228,6 +228,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         //textLogedIn.setText();
         btnLogout.setText(IbikeApplication.getString("logout"));
         btnDelete.setText(IbikeApplication.getString("delete_my_account"));
+        btnEdit.setText(IbikeApplication.getString("edit_account"));
     }
 
     private void updateControls() {
