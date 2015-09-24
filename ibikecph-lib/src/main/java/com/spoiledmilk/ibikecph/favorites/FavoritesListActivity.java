@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -240,6 +241,9 @@ public class FavoritesListActivity extends Activity {
 
         @Override
         public void run() {
+            Looper.myLooper();
+            Looper.prepare();
+            showProgressDialog();
             Log.d("JC", "FavFetcher started");
             while (!interrupted()) {
                 LOG.d("fetching the favorites");
@@ -253,6 +257,7 @@ public class FavoritesListActivity extends Activity {
 
                         favoritesList.setAdapter(listAdapter);
                         Log.d("DV", "FavoriteAdapter opdateret!");
+                        dismissProgressDialog();
                     }
                 });
 
@@ -266,8 +271,27 @@ public class FavoritesListActivity extends Activity {
                     break;
                 }
             }
-
+            dismissProgressDialog();
         }
     }
+
+    public void showProgressDialog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void dismissProgressDialog() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
 
 }
