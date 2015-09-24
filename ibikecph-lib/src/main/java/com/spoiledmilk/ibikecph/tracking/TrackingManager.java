@@ -3,6 +3,7 @@ package com.spoiledmilk.ibikecph.tracking;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,7 +21,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.channels.spi.AbstractSelectionKey;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -143,6 +147,7 @@ public class TrackingManager implements LocationListener {
                 track = lastTrack;
             } else {
                 Log.d("MF", "creating new");
+                uploadTracksToServer();
                 track = realm.createObject(Track.class);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -218,7 +223,6 @@ public class TrackingManager implements LocationListener {
         // Geocode the track. The TrackHelper will open a new Realm transaction.
         TrackHelper helper = new TrackHelper(track);
         helper.geocodeTrack();
-        uploadTracksToServer();
     }
 
     /**
@@ -233,9 +237,15 @@ public class TrackingManager implements LocationListener {
                 realm.beginTransaction();
                 RealmResults<Track> tracksToUpload = null;
 
+                Date stamp = new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(stamp);
+                cal.add(Calendar.MINUTE, -15);
+                Date newDate = cal.getTime();
+
                 try {
-                    // If ID values are = 0, an ID from the server hasn't been set, therefore so we will upload the track.
-                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).findAll();
+                    // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
+                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).lessThanOrEqualTo("timestamp", newDate).findAll();
                     Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
                 } catch (Exception e) {
                     Log.d("DV", "uploadTracksToServer-exception: " + e.getMessage());
@@ -381,7 +391,15 @@ public class TrackingManager implements LocationListener {
 
         Date stamp = new Date();
         Log.d("DV", "new time: " + stamp.getTime());
-        track.setTimestamp(stamp);
+        Log.d("DV", "new time: " + stamp);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(stamp);
+        cal.add(Calendar.MINUTE, -14);
+        Date newDate = cal.getTime();
+        Log.d("DV", "new time = " + newDate);
+
+        track.setTimestamp(newDate);
         track.setDuration(5234 / 1000);
         double length = Math.random() * 1000;
         track.setLength(length);
@@ -390,6 +408,7 @@ public class TrackingManager implements LocationListener {
         realm.commitTransaction();
         realm.close();
     }
+
 
     //Test method
     public static void uploadeFakeTrack() {
@@ -401,9 +420,15 @@ public class TrackingManager implements LocationListener {
                 realm.beginTransaction();
                 RealmResults<Track> tracksToUpload = null;
 
+                Date stamp = new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(stamp);
+                cal.add(Calendar.MINUTE, -15);
+                Date newDate = cal.getTime();
+
                 try {
                     // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
-                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).findAll();
+                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).lessThanOrEqualTo("timestamp", newDate).findAll();
                     Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
                 } catch (Exception e) {
                     Log.d("DV", "uploadTracksToServer-exception: " + e.getMessage());
