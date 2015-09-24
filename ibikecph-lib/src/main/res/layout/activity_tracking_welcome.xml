@@ -51,15 +51,14 @@
 
             <Button
                 android:id="@+id/readMoreButton"
-                android:layout_width="wrap_content"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/stroke_button"
                 android:onClick="onReadMoreClick"
-                android:padding="16dp"
                 android:text="Read more"
                 android:textColor="@color/white"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <FrameLayout
                 android:layout_width="fill_parent"
