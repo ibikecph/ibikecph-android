@@ -254,18 +254,20 @@ public class HttpUtils {
             /*if (result.has("errors"))
                 data.putString("errors", result.get("errors").get(0).asText());*/
         }
-        JsonNode dataNode = result.get("data");
-        if (dataNode != null) {
-            if (dataNode.has("id"))
-                data.putInt("id", dataNode.get("id").asInt());
-            if (dataNode.has("auth_token"))
-                data.putString("auth_token", dataNode.get("auth_token").asText());
-            if (dataNode.has("signature"))
-                data.putString("signature", dataNode.get("signature").asText());
-            if (dataNode.has("provider"))
-                data.putString("provider", dataNode.get("provider").asText());
+        if (result != null && result.has("data")) {
+            JsonNode dataNode = result.get("data");
+            if (dataNode != null) {
+                if (dataNode.has("id"))
+                    data.putInt("id", dataNode.get("id").asInt());
+                if (dataNode.has("auth_token"))
+                    data.putString("auth_token", dataNode.get("auth_token").asText());
+                if (dataNode.has("signature"))
+                    data.putString("signature", dataNode.get("signature").asText());
+                if (dataNode.has("provider"))
+                    data.putString("provider", dataNode.get("provider").asText());
             /*if (dataNode.has("errors"))
                 data.putString("errors", dataNode.get("errors").get(0).asText());*/
+            }
         }
 
         ret.setData(data);
@@ -278,13 +280,15 @@ public class HttpUtils {
         if (result != null) {
             data.putBoolean("success", result.get("success").asBoolean());
             data.putString("info", result.get("info").asText());
-            JsonNode dataNode = result.get("data");
-            if (dataNode != null) {
-                data.putInt("id", dataNode.get("id").asInt());
-                data.putString("name", dataNode.get("name").asText());
-                data.putString("email", dataNode.get("email").asText());
-                if (dataNode.has("image_url"))
-                    data.putString("image_url", dataNode.get("image_url").asText());
+            if (result != null && result.has("data")) {
+                JsonNode dataNode = result.get("data");
+                if (dataNode != null) {
+                    data.putInt("id", dataNode.get("id").asInt());
+                    data.putString("name", dataNode.get("name").asText());
+                    data.putString("email", dataNode.get("email").asText());
+                    if (dataNode.has("image_url"))
+                        data.putString("image_url", dataNode.get("image_url").asText());
+                }
             }
             ret.setData(data);
         }

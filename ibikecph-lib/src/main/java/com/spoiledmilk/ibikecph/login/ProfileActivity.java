@@ -91,6 +91,10 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         btnDelete.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!Util.isNetworkConnected(ProfileActivity.this)) {
+                    Util.launchNoConnectionDialog(ProfileActivity.this);
+                    return;
+                }
                 launchDeleteDialog();
             }
         });
@@ -255,6 +259,10 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                if (!Util.isNetworkConnected(ProfileActivity.this)) {
+                    Util.launchNoConnectionDialog(ProfileActivity.this);
+                    return;
+                }
                 if (System.currentTimeMillis() - lastAPIRequestTimestamp < API_REQUESTS_TIMEOUT) {
                     return;
                 }

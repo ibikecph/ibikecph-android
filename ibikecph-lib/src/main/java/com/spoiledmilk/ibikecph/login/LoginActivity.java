@@ -33,6 +33,7 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.LOG;
+import com.spoiledmilk.ibikecph.util.Util;
 
 import java.util.Arrays;
 
@@ -73,6 +74,10 @@ public class LoginActivity extends Activity implements FBLoginListener {
 
             @Override
             public void onClick(View arg0) {
+                if (!Util.isNetworkConnected(LoginActivity.this)) {
+                    Util.launchNoConnectionDialog(LoginActivity.this);
+                    return;
+                }
                 if (textEmail.getText() == null || ("" + textEmail.getText().toString().trim()).equals("") || textPassword.getText() == null
                         || ("" + textPassword.getText().toString()).trim().equals("")) {
                     launchErrorDialog("", IbikeApplication.getString("login_error_fields"));
@@ -113,7 +118,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                         if (isFacebookUser.equals("facebook")) {
                             Log.d("DV", "Bruger markeret som Facebook-user!");
                             IbikeApplication.setIsFacebookLogin(true);
-                        } else{
+                        } else {
                             Log.d("DV", "Bruger ikke markeret som Facebook-user!");
                         }
                         int id = data.getInt("id");
@@ -153,6 +158,10 @@ public class LoginActivity extends Activity implements FBLoginListener {
         btnFacebookLogin.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
+                if (!Util.isNetworkConnected(LoginActivity.this)) {
+                    Util.launchNoConnectionDialog(LoginActivity.this);
+                    return;
+                }
                 Log.d("DV", "facebook btn clicked!");
                 performFBLogin(savedInstanceState);
             }

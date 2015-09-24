@@ -43,6 +43,7 @@ import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.ImageData;
 import com.spoiledmilk.ibikecph.util.ImagerPrefetcherListener;
 import com.spoiledmilk.ibikecph.util.LOG;
+import com.spoiledmilk.ibikecph.util.Util;
 
 import java.util.Arrays;
 
@@ -104,6 +105,10 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         btnRegister.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!Util.isNetworkConnected(RegisterActivity.this)) {
+                    Util.launchNoConnectionDialog(RegisterActivity.this);
+                    return;
+                }
                 if (validateInput() && !inProgress) {
                     inProgress = true;
                     new Thread(new Runnable() {

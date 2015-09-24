@@ -135,6 +135,10 @@ public class SignatureActivity extends Activity {
             savePassword.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (!Util.isNetworkConnected(SignatureActivity.this)) {
+                        Util.launchNoConnectionDialog(SignatureActivity.this);
+                        return;
+                    }
                     if (textNewPassword.getText().toString().length() > 0 && !inProgress) {
                         new Thread(new Runnable() {
                             @Override
@@ -272,6 +276,10 @@ public class SignatureActivity extends Activity {
         savePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!Util.isNetworkConnected(SignatureActivity.this)) {
+                    Util.launchNoConnectionDialog(SignatureActivity.this);
+                    return;
+                }
                 if (textNewPassword.getText().toString().length() > 0 && !inProgress) {
                     new Thread(new Runnable() {
                         @Override
@@ -396,6 +404,10 @@ public class SignatureActivity extends Activity {
         savePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!Util.isNetworkConnected(SignatureActivity.this)) {
+                    Util.launchNoConnectionDialog(SignatureActivity.this);
+                    return;
+                }
                 if (validatePasswords() && !inProgress) {
                     inProgress = true;
 

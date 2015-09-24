@@ -16,6 +16,7 @@ import com.spoiledmilk.ibikecph.login.SignatureActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
+import com.spoiledmilk.ibikecph.util.Util;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -218,6 +219,10 @@ public class TrackingActivity extends Activity {
     }
 
     public void onReactivateButtonClick(View v) {
+        if (!Util.isNetworkConnected(TrackingActivity.this)) {
+            Util.launchNoConnectionDialog(TrackingActivity.this);
+            return;
+        }
         // IF the user is not logged in, spawn a dialog saying so.
         if (!IbikeApplication.isUserLogedIn() && !IbikeApplication.isFacebookLogin()) {
             TrackingWelcomeActivity.MustLogInDialogFragment loginDialog = new TrackingWelcomeActivity.MustLogInDialogFragment();

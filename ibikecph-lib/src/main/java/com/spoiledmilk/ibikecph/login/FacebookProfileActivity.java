@@ -180,6 +180,10 @@ public class FacebookProfileActivity extends Activity {
     }
 
     public void onBtnDelete(View v) {
+        if (!Util.isNetworkConnected(FacebookProfileActivity.this)) {
+            Util.launchNoConnectionDialog(FacebookProfileActivity.this);
+            return;
+        }
         /*
         Check wether the Facebook-user has a created a password or not.
         If yes, prompt for it, else don't.
@@ -222,6 +226,10 @@ public class FacebookProfileActivity extends Activity {
         builder.setMessage(IbikeApplication.getString("delete_account_text")).setTitle(IbikeApplication.getString("delete_account_title"));
         builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                if (!Util.isNetworkConnected(FacebookProfileActivity.this)) {
+                    Util.launchNoConnectionDialog(FacebookProfileActivity.this);
+                    return;
+                }
                 IbikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
                 new Thread(new Runnable() {
                     @Override
