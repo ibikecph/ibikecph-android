@@ -6,58 +6,59 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-
 
 
 public class EditFavoriteActivity extends Activity {
 
     public interface FavoriteCallback {
         public void onSuccess();
+
         public void onFailure();
     }
 
-	EditFavoriteFragment editFavoriteFragment;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_edit_favorite);
-		
-		this.editFavoriteFragment = new EditFavoriteFragment();
-		
-		// Take the data we got from our intent (containing the favorites data) and
-		// stick it in the Fragment.
-		this.editFavoriteFragment.setArguments(getIntent().getExtras());
-		
-		if (savedInstanceState == null) {
-			getFragmentManager().beginTransaction()
-					.add(R.id.container, editFavoriteFragment).commit();
-		}
+    EditFavoriteFragment editFavoriteFragment;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit_favorite);
+
+        this.editFavoriteFragment = new EditFavoriteFragment();
+
+        // Take the data we got from our intent (containing the favorites data) and
+        // stick it in the Fragment.
+        this.editFavoriteFragment.setArguments(getIntent().getExtras());
+
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, editFavoriteFragment).commit();
+        }
 
         // Set the ActionBar
         try {
             this.getActionBar().setTitle(IbikeApplication.getString("favorites"));
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
             // There was no ActionBar. Oh well...
         }
-	}
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.edit_favorite, menu);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.edit_favorite, menu);
 
-		menu.getItem(0).setTitle(IbikeApplication.getString("start_route"));
+        menu.getItem(0).setTitle(IbikeApplication.getString("start_route"));
 
         return true;
-	}
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
-		if (id == R.id.action_start_route) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_start_route) {
 
             // The user wants to route to the address in the current Fav. Finish the activity and set up a route in the
             // MapActivity.
@@ -67,10 +68,10 @@ public class EditFavoriteActivity extends Activity {
             setResult(FavoritesListActivity.RESULT_ROUTE, getIntent());
             finish();
 
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onBackPressed() {
@@ -84,7 +85,10 @@ public class EditFavoriteActivity extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.i("JC", "EditFavoriteActivity on address result");
-        editFavoriteFragment.onActivityResult(requestCode, resultCode, data);
+        try {
+            editFavoriteFragment.onActivityResult(requestCode, resultCode, data);
+        } catch (Exception ex) {
+        }
     }
 
 }

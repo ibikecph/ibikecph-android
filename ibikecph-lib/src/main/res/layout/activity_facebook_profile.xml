@@ -97,29 +97,29 @@
 
             <Button
                 android:id="@+id/btnLogout"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
                 android:layout_below="@+id/textLinked"
                 android:layout_centerHorizontal="true"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/btn_delete_selector"
+                android:background="@drawable/stroke_button"
                 android:text="Log out"
                 android:textColor="@color/White" />
 
             <Button
                 android:id="@+id/btnDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/btn_delete_selector"
+                android:background="@drawable/stroke_button"
                 android:onClick="onBtnDelete"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
                 android:text="Delete account"
                 android:textColor="@color/White" />
         </RelativeLayout>
