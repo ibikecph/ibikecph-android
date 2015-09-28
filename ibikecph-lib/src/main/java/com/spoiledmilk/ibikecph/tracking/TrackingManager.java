@@ -254,9 +254,9 @@ public class TrackingManager implements LocationListener {
                 if (tracksToUpload.size() > 0) {
 
                     JSONObject postObject = null;
-                    if (IbikeApplication.isUserLogedIn()) {
+                    String signature = IbikeApplication.getSignature();
+                    if (IbikeApplication.isUserLogedIn() && !signature.equals("")) {
                         String authToken = IbikeApplication.getAuthToken();
-                        String signature = IbikeApplication.getSignature();
                         try {
                             // Loop and pack JSON for each track we want to upload!
                             for (int i = 0; i < tracksToUpload.size(); i++) {
@@ -437,9 +437,9 @@ public class TrackingManager implements LocationListener {
                 if (tracksToUpload.size() > 0) {
 
                     JSONObject postObject = null;
-                    if (IbikeApplication.isUserLogedIn()) {
+                    String signature = IbikeApplication.getSignature();
+                    if (IbikeApplication.isUserLogedIn() && !signature.equals("")) {
                         String authToken = IbikeApplication.getAuthToken();
-                        String signature = IbikeApplication.getSignature();
                         try {
 
                             // Loop and pack JSON for each track we want to upload!
