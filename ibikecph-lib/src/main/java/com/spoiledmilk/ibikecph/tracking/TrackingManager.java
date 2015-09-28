@@ -244,7 +244,10 @@ public class TrackingManager implements LocationListener {
                 Date newDate = cal.getTime();
 
                 try {
-                    // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
+                    /*
+                    If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
+                    Also checks if the track is > 15 minutes old - used to avoid uploading a track in progress in the makeAndSaveTrack-method.
+                     */
                     tracksToUpload = realm.where(Track.class).equalTo("ID", 0).lessThanOrEqualTo("timestamp", newDate).findAll();
                     Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
                 } catch (Exception e) {
@@ -427,7 +430,10 @@ public class TrackingManager implements LocationListener {
                 Date newDate = cal.getTime();
 
                 try {
-                    // If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
+                     /*
+                    If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
+                    Also checks if the track is > 15 minutes old - used to avoid uploading a track in progress in the makeAndSaveTrack-method.
+                     */
                     tracksToUpload = realm.where(Track.class).equalTo("ID", 0).lessThanOrEqualTo("timestamp", newDate).findAll();
                     Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
                 } catch (Exception e) {
