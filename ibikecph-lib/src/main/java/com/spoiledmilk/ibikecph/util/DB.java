@@ -445,6 +445,11 @@ public class DB extends SQLiteOpenHelper {
             String authToken = IbikeApplication.getAuthToken();
             try {
                 JsonNode getObject = HttpUtils.getFromServer(Config.API_URL + "/favourites?auth_token=" + authToken);
+                if (getObject != null && getObject.has("invalid_token")) {
+                    if (getObject.get("invalid_token").asBoolean()) {
+                        IbikeApplication.logout();
+                    }
+                }
                 if (getObject != null && getObject.has("data")) {
                     SQLiteDatabase db = this.getWritableDatabase();
                     if (db != null) {
@@ -700,15 +705,15 @@ public class DB extends SQLiteOpenHelper {
                 postObject.put("favourite", favouriteObject);
                 postObject.put("auth_token", authToken);
 
-                        JsonNode node = HttpUtils.putToServer(Config.API_URL + "/favourites/" + fd.getApiId(), postObject);
-                        if (listener != null) {
-                            boolean success = false;
-                            if (node != null && node.has("success") && node.get("success").asBoolean()) {
-                                success = true;
-                            }
-                            listener.onRequestCompleted(success);
-                            Log.d("DV", "Favorite opdateret på serveren!");
-                        }
+                JsonNode node = HttpUtils.putToServer(Config.API_URL + "/favourites/" + fd.getApiId(), postObject);
+                if (listener != null) {
+                    boolean success = false;
+                    if (node != null && node.has("success") && node.get("success").asBoolean()) {
+                        success = true;
+                    }
+                    listener.onRequestCompleted(success);
+                    Log.d("DV", "Favorite opdateret på serveren!");
+                }
 
 
             } catch (JSONException e) {
@@ -724,7 +729,7 @@ public class DB extends SQLiteOpenHelper {
             try {
                 postObject.put("auth_token", authToken);
 
-                        HttpUtils.deleteFromServer(Config.API_URL + "/favourites/" + fd.getApiId(), postObject);
+                HttpUtils.deleteFromServer(Config.API_URL + "/favourites/" + fd.getApiId(), postObject);
 
             } catch (JSONException e) {
                 LOG.e(e.getLocalizedMessage());
