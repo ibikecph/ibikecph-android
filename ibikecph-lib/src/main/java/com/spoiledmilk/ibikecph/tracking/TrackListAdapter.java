@@ -125,23 +125,22 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Log.d("JC", "Deleted a track");
-                                final Track t = tracks.get(position);
-
+                                Track t = null;
                                 Realm realm = Realm.getInstance(context);
                                 realm.beginTransaction();
-                                Log.d("DV", "Calling delete-method with ID = " + t.getID());
-                                final int id = t.getID();
+
                                 // Only send to the server, if ID > 0. Otherwise just delete, since it hasn't been uploaded to the server yet.
                                 try {
+                                    t = tracks.get(position);
+                                    final int id = t.getID();
+                                    Log.d("DV", "Calling delete-method with ID = " + t.getID());
                                     if (t.getID() > 0) {
                                         realm.commitTransaction();
                                         realm.close();
                                         new AsyncTask<String, Integer, String>() {
                                             @Override
                                             protected String doInBackground(String... strings) {
-
                                                 TrackingManager.deleteTrack(id);
-
                                                 return null;
                                             }
 

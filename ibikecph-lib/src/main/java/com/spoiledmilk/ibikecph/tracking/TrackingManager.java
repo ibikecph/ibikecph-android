@@ -374,6 +374,8 @@ public class TrackingManager implements LocationListener {
                 if (responseNode != null && responseNode.has("invalid_token")) {
                     if (responseNode.get("invalid_token").asBoolean()) {
                         Log.d("DV", "invalid token - logout the user!");
+                        realm.cancelTransaction();
+                        realm.close();
                         IbikeApplication.logout();
                     }
                 } else {
@@ -385,19 +387,25 @@ public class TrackingManager implements LocationListener {
                             realm.commitTransaction();
                             realm.close();
                             Log.d("DV", "Track deleted from the APP!");
-                        } else if (responseNode.has("invalid_token")) {
-                            if (responseNode.get("invalid_token").asBoolean()) {
-                                Log.d("DV", "invalid token - logout the user!");
-                                IbikeApplication.logout();
-                            }
                         } else {
+                            realm.cancelTransaction();
+                            realm.close();
+                            return;
                             //??
                         }
                     }
                 }
+            } else {
+                realm.cancelTransaction();
+                realm.close();
+                return;
             }
         } catch (JSONException e) {
+            realm.cancelTransaction();
+            realm.close();
             LOG.e(e.getLocalizedMessage());
+            return;
+
         }
 
     }
