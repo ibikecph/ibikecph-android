@@ -340,6 +340,10 @@ public class MapActivity extends IBCMapActivity {
 
         if (requestCode == LeftMenu.LAUNCH_LOGIN) {
             Log.d("JC", "Got back from LAUNCH_LOGIN");
+            if (!OverviewMapHandler.isWatchingAddress) {
+                this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+                // Close the LeftMenu
+            }
             leftMenu.populateMenu();
         } else if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
             AlertDialog dialog;
@@ -388,10 +392,14 @@ public class MapActivity extends IBCMapActivity {
                 this.mapView.setCenter(destination, true);
             }
 
-        } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_CANCELED && OverviewMapHandler.isWatchingAddress) {
+        } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_CANCELED) {
             Log.d("JC", "Got back from address search with RESULT_CANCELED!");
-            fromSearch = true;
-            MapActivity.frag.setVisibility(View.VISIBLE);
+            if (!OverviewMapHandler.isWatchingAddress) {
+                showStatisticsInfoPane();
+            } else {
+                fromSearch = true;
+                MapActivity.frag.setVisibility(View.VISIBLE);
+            }
             // mapView.showAddress(OverviewMapHandler.addressBeingWatched);
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             this.mapView.changeState(IBCMapView.MapState.DEFAULT);
@@ -449,12 +457,37 @@ public class MapActivity extends IBCMapActivity {
             }
         }
         // We got a favorite to navigate to
-        else if (requestCode == LeftMenu.LAUNCH_FAVORITE && resultCode == RESULT_OK) {
-            FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
+        else if (requestCode == LeftMenu.LAUNCH_FAVORITE) {
+            if (resultCode == RESULT_OK) {
+                FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
 
-            // Close the LeftMenu
-            drawerLayout.closeDrawer(Gravity.LEFT);
-            mapView.showRoute(fd);
+                // Close the LeftMenu
+                drawerLayout.closeDrawer(Gravity.LEFT);
+                mapView.showRoute(fd);
+            } else {
+                if (!OverviewMapHandler.isWatchingAddress) {
+                    this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+                    // Close the LeftMenu
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                    //showStatisticsInfoPane();
+                }
+            }
+        } else if (requestCode == LeftMenu.LAUNCH_TRACKING) {
+            Log.d("JC", "Got back from LAUNCH_TRACKING");
+            if (!OverviewMapHandler.isWatchingAddress) {
+
+                this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+                // Close the LeftMenu
+            }
+            leftMenu.populateMenu();
+        } else if (requestCode == LeftMenu.LAUNCH_ABOUT) {
+            Log.d("JC", "Got back from T");
+            if (!OverviewMapHandler.isWatchingAddress) {
+
+                this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+                // Close the LeftMenu
+            }
+            leftMenu.populateMenu();
         }
     }
 

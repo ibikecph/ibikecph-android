@@ -45,6 +45,8 @@ import java.util.ArrayList;
 public class LeftMenu extends Fragment {
     public static final int LAUNCH_LOGIN = 501;
     public static final int LAUNCH_FAVORITE = 502;
+    public static final int LAUNCH_TRACKING = 503;
+    public static final int LAUNCH_ABOUT = 504;
 
     protected static final int dividerHeight = Util.dp2px(2);
 
@@ -183,13 +185,14 @@ public class LeftMenu extends Fragment {
         } else {
             i = new Intent(getActivity(), TrackingActivity.class);
         }
-        getActivity().startActivity(i);
+        getActivity().startActivityForResult(i, LAUNCH_TRACKING);
+
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public void spawnAboutActivity() {
         Intent i = new Intent(getActivity(), AboutActivity.class);
-        getActivity().startActivity(i);
+        getActivity().startActivityForResult(i, LAUNCH_ABOUT);
     }
 
     @SuppressWarnings("UnusedDeclaration")

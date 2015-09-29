@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.DB;
 
@@ -74,6 +75,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
 
     public void btnStartRouteClicked(View v) {
         if (IbikeApplication.getService().hasValidLocation()) {
+            OverviewMapHandler.isWatchingAddress = false;
             Address a = (Address) getArguments().getSerializable("address");
 
             ((MapActivity) this.getActivity()).mapView.showRoute(a);
