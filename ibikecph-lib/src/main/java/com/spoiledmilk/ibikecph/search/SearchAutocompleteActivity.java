@@ -572,7 +572,16 @@ public class SearchAutocompleteActivity extends Activity {
                     intent.putExtra("lon", currentSelection.getLongitude());
 
                     if (currentSelection.type != nodeType.CURRENT_POSITION) {
-                        currentSelection.setNumber(addr.getHouseNumber());
+                        String houseNumberFromAddress = "";
+                        try {
+                            houseNumberFromAddress = AddressParser.numberFromAddress(currentSelection.getAdress());
+                        } catch (Exception ex) {
+                        }
+                        if (houseNumberFromAddress != null && !houseNumberFromAddress.equals(addr.getHouseNumber()) && !houseNumberFromAddress.trim().equals("")) {
+                            currentSelection.setNumber(houseNumberFromAddress);
+                        } else {
+                            currentSelection.setNumber(addr.getHouseNumber());
+                        }
                     }
 
                     addr = Address.fromSearchListItem(currentSelection);

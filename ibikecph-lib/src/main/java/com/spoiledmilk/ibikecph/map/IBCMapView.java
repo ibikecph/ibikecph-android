@@ -192,6 +192,9 @@ public class IBCMapView extends MapView {
                 route.endStationName = finalDestination.getStreetAddress();
                 route.startAddress = finalSource;
                 route.endAddress = finalDestination;
+                if(route.endAddress.getAddressSource() == Address.AddressSource.FAVORITE) {
+                    route.endAddress.setHouseNumber("");
+                }
 
                 showRoute(route);
             }
@@ -279,13 +282,16 @@ public class IBCMapView extends MapView {
         // Put a marker on the map. Currently the lat/lon of the Address object corresponds to the position where the
         // user tapped. In a minute, when we're drawing a route, we have to be wary to draw a line from where the route
         // ends to this coordinate.
-        IBCMarker m = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation(), MarkerType.ADDRESS);
-        Icon markerIcon = new Icon(this.getResources().getDrawable(R.drawable.marker));
-        m.setIcon(markerIcon);
+        try {
+            IBCMarker m = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation(), MarkerType.ADDRESS);
+            Icon markerIcon = new Icon(this.getResources().getDrawable(R.drawable.marker));
+            m.setIcon(markerIcon);
 
-        this.addMarker(m);
+            this.addMarker(m);
 
-        this.curAddressMarker = m;
+            this.curAddressMarker = m;
+        } catch (Exception ex) {
+        }
 
         // Invalidate the view so the marker gets drawn.
         this.invalidate();

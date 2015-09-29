@@ -34,16 +34,18 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
 
         this.address = (Address) getArguments().getSerializable("address");
 
-        if (this.address.hasSpecialName()) {
-            Log.d("DV", "Special name!");
-            ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getStreetAddress());
-            ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
-            name = this.address.getStreetAddress();
-        } else {
-            Log.d("DV", "Ikke special name!");
-            ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getDisplayName());
-            ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
-            name = this.address.getDisplayName();
+        if(this.address != null) {
+            if (this.address.hasSpecialName()) {
+                Log.d("DV", "Special name!");
+                ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getStreetAddress());
+                ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
+                name = this.address.getStreetAddress();
+            } else {
+                Log.d("DV", "Ikke special name!");
+                ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getDisplayName());
+                ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
+                name = this.address.getDisplayName();
+            }
         }
 
         // Set click listeners

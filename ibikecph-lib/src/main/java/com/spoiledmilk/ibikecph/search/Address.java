@@ -397,7 +397,7 @@ public class Address implements Serializable {
         Address address = AddressParser.parseAddressRegex(favoritesData.getStreet());
         Log.d("DV", "fromFavorites");
 
-        address.name = "";
+        address.name = favoritesData.getName();
         address.setAddressSource(AddressSource.FAVORITE);
         address.setLocation(new LatLng(favoritesData.latitude, favoritesData.longitude));
 

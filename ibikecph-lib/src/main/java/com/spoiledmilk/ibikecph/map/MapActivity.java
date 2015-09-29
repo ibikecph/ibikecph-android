@@ -164,7 +164,7 @@ public class MapActivity extends IBCMapActivity {
         this.mapView.getUserLocationOverlay().enableFollowLocation();
         this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
-        //TrackingManager.uploadTracksToServer();
+        TrackingManager.uploadTracksToServer();
     }
 
     /**
@@ -242,7 +242,7 @@ public class MapActivity extends IBCMapActivity {
             showStatisticsInfoPane();
         } else if (!fromSearch && OverviewMapHandler.isWatchingAddress) {
             MapActivity.frag.setVisibility(View.VISIBLE);
-            mapView.showAddress(OverviewMapHandler.addressBeingWatched);
+            //mapView.showAddress(OverviewMapHandler.addressBeingWatched);
         } else if (!fromSearch && !OverviewMapHandler.isWatchingAddress) {
             disableStatisticsInfoPane();
         }
@@ -362,6 +362,9 @@ public class MapActivity extends IBCMapActivity {
             final Bundle extras = data.getExtras();
             Address address = (Address) extras.getSerializable("addressObject");
             if (address != null) {
+                if (address.getAddressSource() == Address.AddressSource.FAVORITE) {
+                    address.setHouseNumber("");
+                }
                 MapActivity.frag.setVisibility(View.VISIBLE);
                 mapView.showAddress(address);
                 mapView.setCenter(address.getLocation());
@@ -389,7 +392,7 @@ public class MapActivity extends IBCMapActivity {
             Log.d("JC", "Got back from address search with RESULT_CANCELED!");
             fromSearch = true;
             MapActivity.frag.setVisibility(View.VISIBLE);
-            mapView.showAddress(OverviewMapHandler.addressBeingWatched);
+            // mapView.showAddress(OverviewMapHandler.addressBeingWatched);
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             this.mapView.changeState(IBCMapView.MapState.DEFAULT);
             Log.d("JC", "Got back from address search, spawning");

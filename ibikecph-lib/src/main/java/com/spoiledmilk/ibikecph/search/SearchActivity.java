@@ -188,6 +188,13 @@ public class SearchActivity extends Activity implements ScrollViewListener {
             }
         }
 
+        if (address.getAddressSource() == Address.AddressSource.FAVORITE) {
+            Log.d("DV", "sFAVORITE!");
+            if (address != null) {
+                intent.putExtra("addressObject", address);
+            }
+        }
+
         // TODO: This sucks. It'd be nice to keep Address objects in the Recent buffer, rather than re-establishing here
 
         setResult(Activity.RESULT_OK, intent);
