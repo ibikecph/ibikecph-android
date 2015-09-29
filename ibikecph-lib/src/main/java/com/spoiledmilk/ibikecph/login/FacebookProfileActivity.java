@@ -113,7 +113,7 @@ public class FacebookProfileActivity extends Activity {
                             break;
                         case HTTPAccountHandler.ERROR:
                             logout();
-                            Util.launchNoConnectionDialog(FacebookProfileActivity.this);
+                            //Util.launchNoConnectionDialog(FacebookProfileActivity.this);
                             break;
                     }
                     return true;
