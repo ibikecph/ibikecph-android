@@ -19,10 +19,13 @@ import android.util.Log;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
+import com.google.android.gms.maps.MapView;
+import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.tracking.MilestoneManager;
 import com.spoiledmilk.ibikecph.tracking.TrackHelper;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 import com.spoiledmilk.ibikecph.util.Config;
+import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -180,6 +183,12 @@ public class IbikeApplication extends Application {
     }
 
     public static void logout() {
+        IbikeApplication.setIsFacebookLogin(false);
+
+        // Disable tracking
+        IbikeApplication.getSettings().setTrackingEnabled(false);
+        IbikeApplication.getSettings().setNotifyMilestone(false);
+        IbikeApplication.getSettings().setNotifyWeekly(false);
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("email").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
@@ -187,6 +196,8 @@ public class IbikeApplication extends Application {
 
         // TODO: Move this somewhere more natural
         BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
+        Intent intent = new Intent(MapActivity.mapActivityContext, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        MapActivity.mapActivityContext.startActivity(intent);
     }
 
     /**

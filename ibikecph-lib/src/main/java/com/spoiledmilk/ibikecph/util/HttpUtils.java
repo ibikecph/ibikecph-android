@@ -251,6 +251,12 @@ public class HttpUtils {
                 data.putString("info", result.get("info").asText());
             if (result.has("has_password"))
                 data.putBoolean("has_password", result.get("has_password").asBoolean());
+            if (result.has("invalid_token")) {
+                if (result.get("invalid_token").asBoolean()) {
+                    data.putBoolean("invalid_token", result.get("invalid_token").asBoolean());
+                    IbikeApplication.logout();
+                }
+            }
             /*if (result.has("errors"))
                 data.putString("errors", result.get("errors").get(0).asText());*/
         }
@@ -280,6 +286,12 @@ public class HttpUtils {
         if (result != null) {
             data.putBoolean("success", result.get("success").asBoolean());
             data.putString("info", result.get("info").asText());
+            if (result.has("invalid_token")) {
+                if (result.get("invalid_token").asBoolean()) {
+                    data.putBoolean("invalid_token", result.get("invalid_token").asBoolean());
+                    IbikeApplication.logout();
+                }
+            }
             if (result != null && result.has("data")) {
                 JsonNode dataNode = result.get("data");
                 if (dataNode != null) {

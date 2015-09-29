@@ -301,33 +301,40 @@ public class TrackingManager implements LocationListener {
 
                                 Log.d("DV", "Server request: " + Config.API_UPLOAD_TRACKS);
                                 JsonNode responseNode = HttpUtils.postToServer(Config.API_UPLOAD_TRACKS, postObject);
-                                if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
-                                    int id = responseNode.get("data").get("id").asInt();
-                                    Log.d("DV", "ID modtaget = " + id);
-                                    count = responseNode.get("data").get("count").asInt();
-                                    Log.d("DV", "Count = " + count);
-                                    Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
-                                    // Set the new ID received from the server if the server received all data
-                                    if (count == amountToSend) {
-                                        Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
-                                        tracksToUpload.get(i).setID(id);
-                                        //Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
-                                        attemptsToSend = 0;
-                                        i--;
+                                if (responseNode != null && responseNode.has("invalid_token")) {
+                                    if (responseNode.get("invalid_token").asBoolean()) {
+                                        Log.d("DV", "invalid token - logout the user!");
+                                        IbikeApplication.logout();
                                     }
                                 } else {
-                                    // Try to resend maximum 3 times.
-                                    attemptsToSend++;
-                                    if (attemptsToSend < 4) {
-                                        Log.d("DV", "Resending track.. attempt " + attemptsToSend);
-                                        i--;
-                                        //uploadeFakeTrack();
+                                    if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
+                                        int id = responseNode.get("data").get("id").asInt();
+                                        Log.d("DV", "ID modtaget = " + id);
+                                        count = responseNode.get("data").get("count").asInt();
+                                        Log.d("DV", "Count = " + count);
+                                        Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
+                                        // Set the new ID received from the server if the server received all data
+                                        if (count == amountToSend) {
+                                            Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
+                                            tracksToUpload.get(i).setID(id);
+                                            //Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
+                                            attemptsToSend = 0;
+                                            i--;
+                                        }
                                     } else {
-                                        attemptsToSend = 0;
-                                        //Delete track?
-                                        //tracksToUpload.get(i).removeFromRealm();
-                                        //realm.commitTransaction();
-                                        //realm.close();
+                                        // Try to resend maximum 3 times.
+                                        attemptsToSend++;
+                                        if (attemptsToSend < 4) {
+                                            Log.d("DV", "Resending track.. attempt " + attemptsToSend);
+                                            i--;
+                                            //uploadeFakeTrack();
+                                        } else {
+                                            attemptsToSend = 0;
+                                            //Delete track?
+                                            //tracksToUpload.get(i).removeFromRealm();
+                                            //realm.commitTransaction();
+                                            //realm.close();
+                                        }
                                     }
                                 }
                             }
@@ -364,16 +371,28 @@ public class TrackingManager implements LocationListener {
                 postObject.put("signature", signature);
                 Log.d("DV", "Track ID to delete = " + id);
                 JsonNode responseNode = HttpUtils.deleteFromServer(Config.API_UPLOAD_TRACKS + "/" + id, postObject);
-                if (responseNode != null) {
-                    Log.d("DV", "responseNode = " + responseNode.toString());
-                    if (responseNode.get("success").asBoolean() || statusCode == 404) {
-                        Log.d("DV", "Track deleted from the server!");
-                        trackToDelete.get(0).removeFromRealm();
-                        realm.commitTransaction();
-                        realm.close();
-                        Log.d("DV", "Track deleted from the APP!");
-                    } else {
-                        //??
+                if (responseNode != null && responseNode.has("invalid_token")) {
+                    if (responseNode.get("invalid_token").asBoolean()) {
+                        Log.d("DV", "invalid token - logout the user!");
+                        IbikeApplication.logout();
+                    }
+                } else {
+                    if (responseNode != null) {
+                        Log.d("DV", "responseNode = " + responseNode.toString());
+                        if (responseNode.get("success").asBoolean() || statusCode == 404) {
+                            Log.d("DV", "Track deleted from the server!");
+                            trackToDelete.get(0).removeFromRealm();
+                            realm.commitTransaction();
+                            realm.close();
+                            Log.d("DV", "Track deleted from the APP!");
+                        } else if (responseNode.has("invalid_token")) {
+                            if (responseNode.get("invalid_token").asBoolean()) {
+                                Log.d("DV", "invalid token - logout the user!");
+                                IbikeApplication.logout();
+                            }
+                        } else {
+                            //??
+                        }
                     }
                 }
             }
@@ -434,7 +453,8 @@ public class TrackingManager implements LocationListener {
                     If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
                     Also checks if the track is > 15 minutes old - used to avoid uploading a track in progress in the makeAndSaveTrack-method.
                      */
-                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).lessThanOrEqualTo("timestamp", newDate).findAll();
+                    //tracksToUpload = realm.where(Track.class).equalTo("ID", 0).lessThanOrEqualTo("timestamp", newDate).findAll();
+                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).findAll();//lessThanOrEqualTo("timestamp", newDate).findAll();
                     Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
                 } catch (Exception e) {
                     Log.d("DV", "uploadTracksToServer-exception: " + e.getMessage());
@@ -479,32 +499,39 @@ public class TrackingManager implements LocationListener {
 
                                 Log.d("DV", "Server request: " + Config.API_UPLOAD_TRACKS);
                                 JsonNode responseNode = HttpUtils.postToServer(Config.API_UPLOAD_TRACKS, postObject);
-                                if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
-                                    int id = responseNode.get("data").get("id").asInt();
-                                    Log.d("DV", "ID modtaget = " + id);
-                                    count = responseNode.get("data").get("count").asInt();
-                                    Log.d("DV", "Count = " + count);
-                                    // Set the new ID received from the server if the server received all data
-                                    if (count == amountToSend) {
-                                        Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
-                                        tracksToUpload.get(i).setID(id);
-                                        //Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
-                                        attemptsToSend = 0;
-                                        i--;
+                                if (responseNode != null && responseNode.has("invalid_token")) {
+                                    if (responseNode.get("invalid_token").asBoolean()) {
+                                        Log.d("DV", "invalid token - logout the user!");
+                                        IbikeApplication.logout();
                                     }
                                 } else {
-                                    // Try to resend maximum 3 times.
-                                    attemptsToSend++;
-                                    if (attemptsToSend < 4) {
-                                        Log.d("DV", "Resending track.. attempt " + attemptsToSend);
-                                        i--;
-                                        //uploadeFakeTrack();
+                                    if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
+                                        int id = responseNode.get("data").get("id").asInt();
+                                        Log.d("DV", "ID modtaget = " + id);
+                                        count = responseNode.get("data").get("count").asInt();
+                                        Log.d("DV", "Count = " + count);
+                                        // Set the new ID received from the server if the server received all data
+                                        if (count == amountToSend) {
+                                            Log.d("DV", "Id before set = " + tracksToUpload.get(i).getID());
+                                            tracksToUpload.get(i).setID(id);
+                                            //Log.d("DV", "Id after set = " + tracksToUpload.get(i).getID());
+                                            attemptsToSend = 0;
+                                            i--;
+                                        }
                                     } else {
-                                        attemptsToSend = 0;
-                                        //Delete track?
-                                        //tracksToUpload.get(i).removeFromRealm();
-                                        //realm.commitTransaction();
-                                        //realm.close();
+                                        // Try to resend maximum 3 times.
+                                        attemptsToSend++;
+                                        if (attemptsToSend < 4) {
+                                            Log.d("DV", "Resending track.. attempt " + attemptsToSend);
+                                            i--;
+                                            //uploadeFakeTrack();
+                                        } else {
+                                            attemptsToSend = 0;
+                                            //Delete track?
+                                            //tracksToUpload.get(i).removeFromRealm();
+                                            //realm.commitTransaction();
+                                            //realm.close();
+                                        }
                                     }
                                 }
                             }

@@ -150,7 +150,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                             } else {
                                 enableButtons();
                                 userData = null;
-                                Util.launchNoConnectionDialog(ProfileActivity.this);
+                                //Util.launchNoConnectionDialog(ProfileActivity.this);
                                 progressBar.setVisibility(View.GONE);
                             }
                             break;
@@ -183,7 +183,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                             break;
                         case HTTPAccountHandler.ERROR:
                             enableButtons();
-                            Util.launchNoConnectionDialog(ProfileActivity.this);
+                            //Util.launchNoConnectionDialog(ProfileActivity.this);
                             break;
                     }
                     return true;

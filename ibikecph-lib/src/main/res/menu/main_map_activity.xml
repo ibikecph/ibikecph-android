@@ -3,6 +3,13 @@
     tools:context="com.spoiledmilk.ibikecph.map.MapActivity">
 
     <item
+        android:id="@+id/resetAuthToken"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:title="auth"
+        android:visible="false" />
+
+    <item
         android:id="@+id/resetSignature"
         android:orderInCategory="100"
         android:showAsAction="always"

@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -65,8 +66,9 @@ public class MapActivity extends IBCMapActivity {
     public final static int REQUEST_SEARCH_ADDRESS = 2;
     public final static int REQUEST_CHANGE_SOURCE_ADDRESS = 250;
     public final static int REQUEST_CHANGE_DESTINATION_ADDRESS = 251;
-
     public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
+
+    public static Context mapActivityContext;
 
     protected LeftMenu leftMenu;
     private DrawerLayout drawerLayout;
@@ -80,6 +82,7 @@ public class MapActivity extends IBCMapActivity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mapActivityContext = this;
         this.setContentView(R.layout.main_map_activity);
         this.settings = IbikeApplication.getSettings();
         frag = findViewById(R.id.infoPaneContainer);
@@ -161,7 +164,7 @@ public class MapActivity extends IBCMapActivity {
         this.mapView.getUserLocationOverlay().enableFollowLocation();
         this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
-        TrackingManager.uploadTracksToServer();
+        //TrackingManager.uploadTracksToServer();
     }
 
     /**
@@ -214,6 +217,8 @@ public class MapActivity extends IBCMapActivity {
             TrackingManager.createFakeTrack();
         } else if (id == R.id.resetSignature) {
             PreferenceManager.getDefaultSharedPreferences(MapActivity.this).edit().remove("signature").commit();
+        } else if (id == R.id.resetAuthToken) {
+            PreferenceManager.getDefaultSharedPreferences(MapActivity.this).edit().putString("auth_token", "123").commit();
         }
 
         return super.onOptionsItemSelected(item);
@@ -487,7 +492,7 @@ public class MapActivity extends IBCMapActivity {
      */
     public void onBackPressed() {
         if (mapView.getMapHandler().onBackPressed()) {
-            if(!OverviewMapHandler.isWatchingAddress){
+            if (!OverviewMapHandler.isWatchingAddress) {
                 super.onBackPressed();
             }
         }
