@@ -226,6 +226,7 @@ public class SignatureActivity extends Activity {
                 }).start();
             }
         }
+        initStrings();
     }
 
     public void hasPassword() {
@@ -327,6 +328,12 @@ public class SignatureActivity extends Activity {
                 } else if (!inProgress) {
                     launchAlertDialog(validationMessage);
                 }
+            }
+        });
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                initStrings();
             }
         });
     }
@@ -456,7 +463,6 @@ public class SignatureActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        initStrings();
     }
 
     @Override
@@ -469,6 +475,7 @@ public class SignatureActivity extends Activity {
         lockIcon.setBackground(getResources().getDrawable(R.drawable.hanglock));
         //Load resources and text in relation to the server response
         if (hasPassword) {
+            headLine.setText(IbikeApplication.getString("track_token_headline"));
             explainingText.setText(IbikeApplication.getString("track_token_description_facebook_has_token"));
             savePassword.setText(IbikeApplication.getString("use_password"));
             textLogedIn.setText(IbikeApplication.getString("track_token_subtitle_facebook"));
