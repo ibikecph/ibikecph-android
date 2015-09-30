@@ -58,6 +58,8 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
         if (a != null) {
             v.findViewById(R.id.btnAddFavorite).setTag("filled");
             ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite_filled);
+            ((TextView) v.findViewById(R.id.addressNameLabel)).setText(a.getName());
+            ((TextView) v.findViewById(R.id.addressLabel)).setText(""); //Should this be empty string or??
         } else {
             v.findViewById(R.id.btnAddFavorite).setTag("notFilled");
             ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite);
