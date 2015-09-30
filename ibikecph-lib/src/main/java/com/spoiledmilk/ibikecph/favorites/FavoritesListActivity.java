@@ -38,10 +38,10 @@ public class FavoritesListActivity extends Activity {
     public static final int ADD_FAVORITE = 510;
     public static final int RESULT_ROUTE = 620;
 
-    SortableListView favoritesList;
-    private ListAdapter listAdapter;
+    static SortableListView favoritesList;
+    private static ListAdapter listAdapter;
     private FavoritesAdapter adapter;
-    protected ArrayList<FavoritesData> favorites = new ArrayList<FavoritesData>();
+    protected static ArrayList<FavoritesData> favorites = new ArrayList<FavoritesData>();
     private tFetchFavorites fetchFavorites;
     public ProgressBar progressBar;
     TextView textLogin;
@@ -235,6 +235,42 @@ public class FavoritesListActivity extends Activity {
                 //reloadFavorites();
             }
         }
+    }
+
+    public static class fetchFavoritesAfterEdit {
+        static ArrayList<FavoritesData> favs = null;
+
+        public static void updateFavorites() {
+            LOG.d("fetching the favorites from AfterEdit");
+
+            new AsyncTask<String, Integer, String>() {
+
+                @Override
+                protected String doInBackground(String... strings) {
+                    favs = (new DB(IbikeApplication.getContext())).getFavoritesFromServer(IbikeApplication.getContext(), null);
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(String result) {
+                    super.onPostExecute(result);
+                    Log.d("DV", "Got some favorites from AfterEdit");
+                    favorites.clear();
+                    favorites.addAll(favs);
+                    ((FavoritesAdapter) listAdapter).notifyDataSetChanged();
+
+                    favoritesList.setAdapter(listAdapter);
+                    Log.d("DV", "FavoriteAdapter updated from AfterEdit!");
+                }
+            }.execute();
+
+
+            if (Util.isNetworkConnected(IbikeApplication.getContext())) {
+                // favorites have been fetched
+            }
+
+        }
+
     }
 
     private class tFetchFavorites extends Thread {

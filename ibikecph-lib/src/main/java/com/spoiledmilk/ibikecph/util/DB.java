@@ -18,6 +18,7 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import com.spoiledmilk.ibikecph.search.HistoryData;
@@ -710,12 +711,11 @@ public class DB extends SQLiteOpenHelper {
                     boolean success = false;
                     if (node != null && node.has("success") && node.get("success").asBoolean()) {
                         success = true;
+                        Log.d("DV", "Favorite opdateret på serveren!");
+                        FavoritesListActivity.fetchFavoritesAfterEdit.updateFavorites();
                     }
                     listener.onRequestCompleted(success);
-                    Log.d("DV", "Favorite opdateret på serveren!");
                 }
-
-
             } catch (JSONException e) {
                 LOG.e(e.getLocalizedMessage());
             }

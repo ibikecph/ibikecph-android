@@ -16,33 +16,35 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.search.AddressParser;
 import com.spoiledmilk.ibikecph.util.*;
+
 import org.json.JSONObject;
 
 /**
  * A Fragment used inside the LeftMenu for editing a favorite.
- * @author jens
  *
+ * @author jens
  */
 public class EditFavoriteFragment extends AddFavoriteFragment implements APIListener {
 
-	protected EditText textAddress;
-	protected EditText textFavoriteName;
+    protected EditText textAddress;
+    protected EditText textFavoriteName;
 
-	private FavoritesData favoritesData = null;
-	private AlertDialog dialog;
+    private FavoritesData favoritesData = null;
+    private AlertDialog dialog;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View ret = super.onCreateView(inflater, container, savedInstanceState);
 
-		if (getArguments() != null) {
-			favoritesData = getArguments().getParcelable("favoritesData");
-		}
+        if (getArguments() != null) {
+            favoritesData = getArguments().getParcelable("favoritesData");
+        }
 
         this.textFavoriteName = (EditText) ret.findViewById(R.id.textFavoriteName);
         this.textAddress = (EditText) ret.findViewById(R.id.textAddress);
@@ -64,114 +66,114 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
         }
 
         return ret;
-	}
+    }
 
-	@Override
-	public void onResume() {
+    @Override
+    public void onResume() {
         if (getArguments() != null) {
             favoritesData = getArguments().getParcelable("favoritesData");
         }
 
         super.onResume();
-	}
+    }
 
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		if (data != null) {
-			Bundle b = data.getExtras();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            Bundle b = data.getExtras();
 
             if (b.containsKey("address") && b.containsKey("lat") && b.containsKey("lon")) {
-				favoritesData.setAdress(AddressParser.textFromBundle(b).replaceAll("\n", ""));
-				favoritesData.setLatitude(b.getDouble("lat"));
-				favoritesData.setLongitude(b.getDouble("lon"));
-				String txt = favoritesData.getAdress();
-				textAddress.setText(txt);
+                favoritesData.setAdress(AddressParser.textFromBundle(b).replaceAll("\n", ""));
+                favoritesData.setLatitude(b.getDouble("lat"));
+                favoritesData.setLongitude(b.getDouble("lon"));
+                String txt = favoritesData.getAdress();
+                textAddress.setText(txt);
 
-				if (b.containsKey("poi")) {
-					favoritesData.setName(b.getString("poi"));
-				}
+                if (b.containsKey("poi")) {
+                    favoritesData.setName(b.getString("poi"));
+                }
 
                 saveEditedFavorite();
-			}
-		}
-	}
+            }
+        }
+    }
 
-	private void popFragment() {
-		getActivity().setResult(FavoritesListActivity.RESULT_OK);
-		getActivity().finish();
-	}
+    private void popFragment() {
+        getActivity().setResult(FavoritesListActivity.RESULT_OK);
+        getActivity().finish();
+    }
 
-	@Override
-	public void onPause() {
-		super.onPause();
-		if (dialog != null && dialog.isShowing()) {
-			dialog.dismiss();
-		}
-		if (dialog2 != null && dialog2.isShowing()) {
-			dialog2.dismiss();
-		}
-		hideKeyboard();
-	}
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+        if (dialog2 != null && dialog2.isShowing()) {
+            dialog2.dismiss();
+        }
+        hideKeyboard();
+    }
 
-	private static boolean isPredefinedName(final String name) {
-		if (name.equals(IbikeApplication.getString("Favorite")) || name.equals(IbikeApplication.getString("School"))
-				|| name.equals(IbikeApplication.getString("Work")) || name.equals(IbikeApplication.getString("Home")) || name.equals(""))
-			return true;
-		else
-			return false;
-	}
+    private static boolean isPredefinedName(final String name) {
+        if (name.equals(IbikeApplication.getString("Favorite")) || name.equals(IbikeApplication.getString("School"))
+                || name.equals(IbikeApplication.getString("Work")) || name.equals(IbikeApplication.getString("Home")) || name.equals(""))
+            return true;
+        else
+            return false;
+    }
 
-	public void hideKeyboard() {
-		if (textFavoriteName != null) {
-			InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-			inputManager.hideSoftInputFromWindow(textFavoriteName.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-		}
-	}
+    public void hideKeyboard() {
+        if (textFavoriteName != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(textFavoriteName.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
 
-	private AlertDialog dialog2;
+    private AlertDialog dialog2;
 
-	private void launchErrorDialog(final String msg) {
-		if (getActivity() != null && getView() != null) {
-			getActivity().runOnUiThread(new Runnable() {
+    private void launchErrorDialog(final String msg) {
+        if (getActivity() != null && getView() != null) {
+            getActivity().runOnUiThread(new Runnable() {
 
-				@Override
-				public void run() {
-					getView().findViewById(R.id.progress).setVisibility(View.INVISIBLE);
-					AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-					builder.setTitle("Error");
-					builder.setMessage(msg);
-					builder.setPositiveButton(IbikeApplication.getString("ok"), new DialogInterface.OnClickListener() {
+                @Override
+                public void run() {
+                    getView().findViewById(R.id.progress).setVisibility(View.INVISIBLE);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Error");
+                    builder.setMessage(msg);
+                    builder.setPositiveButton(IbikeApplication.getString("ok"), new DialogInterface.OnClickListener() {
 
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
 
-						}
-					});
-					dialog2 = builder.show();
-				}
-			});
-		}
+                        }
+                    });
+                    dialog2 = builder.show();
+                }
+            });
+        }
 
-	}
+    }
 
-	@Override
-	public void onRequestCompleted(final boolean success) {
-		if (getActivity() != null && getView() != null) {
-			getActivity().runOnUiThread(new Runnable() {
-				@Override
-				public void run() {
-					if (success) {
-						//popFragment();
-					} else {
-						Util.launchNoConnectionDialog(getActivity());
-					}
-				}
-			});
-		}
-	}
+    @Override
+    public void onRequestCompleted(final boolean success) {
+        if (getActivity() != null && getView() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (success) {
+                        //popFragment();
+                    } else {
+                        Util.launchNoConnectionDialog(getActivity());
+                    }
+                }
+            });
+        }
+    }
 
     public void saveEditedFavorite() {
         if (Util.isNetworkConnected(getActivity())) {
@@ -190,7 +192,6 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
                             (new DB(getActivity())).updateFavorite(favoritesData, getActivity(), EditFavoriteFragment.this);
                         }
                     });
-
                     updateThread.start();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
