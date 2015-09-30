@@ -255,6 +255,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setHint(IbikeApplication.getString("register_password_placeholder"));
         builder.setView(input);
 
         builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {

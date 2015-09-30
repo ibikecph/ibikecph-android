@@ -226,6 +226,7 @@ public class FacebookProfileActivity extends Activity {
     private void launchDeleteDialogWithoutPassword() {
         AlertDialog.Builder builder = new AlertDialog.Builder(FacebookProfileActivity.this);
         builder.setMessage(IbikeApplication.getString("delete_account_text")).setTitle(IbikeApplication.getString("delete_account_title"));
+
         builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 if (!Util.isNetworkConnected(FacebookProfileActivity.this)) {
@@ -277,6 +278,7 @@ public class FacebookProfileActivity extends Activity {
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setHint(IbikeApplication.getString("register_password_placeholder"));
         builder.setView(input);
 
         builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
