@@ -571,7 +571,7 @@ public class SearchAutocompleteActivity extends Activity {
                     intent.putExtra("lat", currentSelection.getLatitude());
                     intent.putExtra("lon", currentSelection.getLongitude());
 
-                    if (currentSelection.type != nodeType.CURRENT_POSITION) {
+                    if (currentSelection.type != nodeType.CURRENT_POSITION && !intent.hasExtra("poi")) {
                         String houseNumberFromAddress = "";
                         try {
                             houseNumberFromAddress = AddressParser.numberFromAddress(currentSelection.getAdress());

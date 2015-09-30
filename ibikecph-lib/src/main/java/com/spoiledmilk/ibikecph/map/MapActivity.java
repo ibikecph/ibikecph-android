@@ -453,6 +453,10 @@ public class MapActivity extends IBCMapActivity {
             if (resultCode == RESULT_OK) {
                 FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
                 mapView.showRoute(fd);
+                Address a = Address.fromFavoritesData(fd);
+                mapView.showAddress(a);
+                OverviewMapHandler.isWatchingAddress = true;
+
             } else {
                 if (!OverviewMapHandler.isWatchingAddress) {
                     this.mapView.changeState(IBCMapView.MapState.DEFAULT);
