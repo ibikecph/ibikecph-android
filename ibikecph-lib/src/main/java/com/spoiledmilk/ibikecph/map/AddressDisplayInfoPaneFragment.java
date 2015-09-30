@@ -107,7 +107,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
                     @Override
                     public void run() {
                         (new DB(getActivity())).deleteFavorite(favoritesData, getActivity());
-
+                        (new DB(IbikeApplication.getContext())).getFavoritesFromServer(IbikeApplication.getContext(), null);
                     }
                 });
                 saveThread.start();
