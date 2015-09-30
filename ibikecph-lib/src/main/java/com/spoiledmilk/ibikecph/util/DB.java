@@ -597,7 +597,7 @@ public class DB extends SQLiteOpenHelper {
         return ret;
     }
 
-    public FavoritesData getFavoriteByNameForInfoPane(String name) {
+    public FavoritesData getFavoriteByAddressForInfoPane(String name) {
         FavoritesData ret = null;
 
         SQLiteDatabase db = getReadableDatabase();
@@ -606,7 +606,7 @@ public class DB extends SQLiteOpenHelper {
 
         String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID};
 
-        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " = ? ", new String[]{name.trim()}, null, null, null, null);
+        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_ADDRESS + " = ? ", new String[]{name.trim()}, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             while (cursor != null && !cursor.isAfterLast()) {

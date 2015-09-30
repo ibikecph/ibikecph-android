@@ -268,6 +268,7 @@ public class AddressParser {
                 ret += " " + bundle.getString("city");
             }
         }
+
         return ret;
     }
 

@@ -35,17 +35,17 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
 
         this.address = (Address) getArguments().getSerializable("address");
 
-        if(this.address != null) {
+        if (this.address != null) {
             if (this.address.hasSpecialName()) {
                 Log.d("DV", "Special name!");
                 ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getStreetAddress());
                 ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
-                name = this.address.getStreetAddress();
+                //name = this.address.getStreetAddress();
             } else {
                 Log.d("DV", "Ikke special name!");
                 ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getDisplayName());
                 ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
-                name = this.address.getDisplayName();
+                //name = this.address.getDisplayName();
             }
         }
 
@@ -53,7 +53,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
         v.findViewById(R.id.btnStartRoute).setOnClickListener(this);
         v.findViewById(R.id.btnAddFavorite).setOnClickListener(this);
 
-        FavoritesData a = (new DB(getActivity()).getFavoriteByNameForInfoPane(name));
+        FavoritesData a = (new DB(getActivity()).getFavoriteByAddressForInfoPane(FavoritesData.fromAddress(this.address).getAdress()));
 
         if (a != null) {
             v.findViewById(R.id.btnAddFavorite).setTag("filled");
@@ -97,7 +97,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
                 Log.d("DV", "notFilled!");
 
                 final FavoritesData favoritesData = FavoritesData.fromAddress(this.address);
-                FavoritesData a = (new DB(getActivity()).getFavoriteByNameForInfoPane(favoritesData.getName()));
+                FavoritesData a = (new DB(getActivity()).getFavoriteByAddressForInfoPane(FavoritesData.fromAddress(this.address).getAdress()));
                 favoritesData.setApiId(a.getApiId());
 
                 // Start a thread that removes the favorite from the db.
