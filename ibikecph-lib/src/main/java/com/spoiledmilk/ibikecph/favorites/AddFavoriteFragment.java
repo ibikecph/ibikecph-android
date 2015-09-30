@@ -176,6 +176,7 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
 
         if (data != null) {
             Bundle b = data.getExtras();
+            Address addresss = (Address) b.getSerializable("addressObject");
             String address = "";
             if (b.containsKey("address") && b.containsKey("lat") && b.containsKey("lon")) {
                 try {
@@ -183,18 +184,31 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
                 } catch (Exception ex) {
                 }
 
-                if (address.equals("")) {
+
+                if (address == null) {
+
+                } else if (address.equals("") && addresss != null) {
+                    address = addresss.getDisplayName();
+                }
+
+                favoritesData = new FavoritesData(textFavoriteName.getText().toString(), address, currentFavoriteType, b.getDouble("lat"),
+                        b.getDouble("lon"), -1);
+
+                /*if (address.equals("")) {
                     address = Address.street_s + " " + Address.houseNumber_s + ", " + Address.zip_s + " " + Address.city_s;
                     favoritesData = new FavoritesData(textFavoriteName.getText().toString(), address, currentFavoriteType, Address.lat_s,
                             Address.lon_s, -1);
                 } else {
                     favoritesData = new FavoritesData(textFavoriteName.getText().toString(), address, currentFavoriteType, b.getDouble("lat"),
                             b.getDouble("lon"), -1);
-                }
-
+                }*/
                 textAddress.setText(address);
+
+
                 if (b.containsKey("poi")) {
                     textFavoriteName.setText(b.getString("poi"));
+                } else {
+                    textFavoriteName.setText(address);
                 }
             }
 
