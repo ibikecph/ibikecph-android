@@ -184,9 +184,8 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
                 } catch (Exception ex) {
                 }
 
-
                 if (address == null) {
-
+                    address = "";
                 } else if (address.equals("") && addresss != null) {
                     address = addresss.getDisplayName();
                 }
