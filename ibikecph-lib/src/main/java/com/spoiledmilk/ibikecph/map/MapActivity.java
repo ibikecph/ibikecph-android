@@ -342,7 +342,6 @@ public class MapActivity extends IBCMapActivity {
             Log.d("JC", "Got back from LAUNCH_LOGIN");
             if (!OverviewMapHandler.isWatchingAddress) {
                 this.mapView.changeState(IBCMapView.MapState.DEFAULT);
-                // Close the LeftMenu
             }
             leftMenu.populateMenu();
         } else if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
@@ -356,12 +355,7 @@ public class MapActivity extends IBCMapActivity {
             });
             dialog = builder.create();
             dialog.show();
-
         } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_OK) {
-
-            // FIXME: We have some coordinates of a point that was just searched. Sadly we don't have an Address object
-            // although that would be nice.
-
             Log.d("JC", "Got back from address search, spawning");
             final Bundle extras = data.getExtras();
             Address address = (Address) extras.getSerializable("addressObject");
@@ -391,7 +385,6 @@ public class MapActivity extends IBCMapActivity {
                 // Center the map around the search result.
                 this.mapView.setCenter(destination, true);
             }
-
         } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_CANCELED) {
             Log.d("JC", "Got back from address search with RESULT_CANCELED!");
             if (!OverviewMapHandler.isWatchingAddress) {
@@ -400,7 +393,6 @@ public class MapActivity extends IBCMapActivity {
                 fromSearch = true;
                 MapActivity.frag.setVisibility(View.VISIBLE);
             }
-            // mapView.showAddress(OverviewMapHandler.addressBeingWatched);
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             this.mapView.changeState(IBCMapView.MapState.DEFAULT);
             Log.d("JC", "Got back from address search, spawning");
@@ -460,37 +452,28 @@ public class MapActivity extends IBCMapActivity {
         else if (requestCode == LeftMenu.LAUNCH_FAVORITE) {
             if (resultCode == RESULT_OK) {
                 FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
-
-                // Close the LeftMenu
-                drawerLayout.closeDrawer(Gravity.LEFT);
                 mapView.showRoute(fd);
             } else {
                 if (!OverviewMapHandler.isWatchingAddress) {
                     this.mapView.changeState(IBCMapView.MapState.DEFAULT);
-                    // Close the LeftMenu
-                    drawerLayout.closeDrawer(Gravity.LEFT);
-                    //showStatisticsInfoPane();
                 }
             }
+            // Close the LeftMenu
+            drawerLayout.closeDrawer(Gravity.LEFT);
         } else if (requestCode == LeftMenu.LAUNCH_TRACKING) {
             Log.d("JC", "Got back from LAUNCH_TRACKING");
             if (!OverviewMapHandler.isWatchingAddress) {
-
                 this.mapView.changeState(IBCMapView.MapState.DEFAULT);
-                // Close the LeftMenu
             }
             leftMenu.populateMenu();
         } else if (requestCode == LeftMenu.LAUNCH_ABOUT) {
             Log.d("JC", "Got back from T");
             if (!OverviewMapHandler.isWatchingAddress) {
-
                 this.mapView.changeState(IBCMapView.MapState.DEFAULT);
-                // Close the LeftMenu
             }
             leftMenu.populateMenu();
         }
     }
-
 
     private void showStatisticsInfoPane() {
         frag.setVisibility(View.VISIBLE);
