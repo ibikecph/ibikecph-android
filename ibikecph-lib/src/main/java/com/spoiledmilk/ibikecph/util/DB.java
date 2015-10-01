@@ -448,7 +448,7 @@ public class DB extends SQLiteOpenHelper {
                 JsonNode getObject = HttpUtils.getFromServer(Config.API_URL + "/favourites?auth_token=" + authToken);
                 if (getObject != null && getObject.has("invalid_token")) {
                     if (getObject.get("invalid_token").asBoolean()) {
-                        IbikeApplication.logout();
+                        IbikeApplication.logoutWrongToken();
                     }
                 }
                 if (getObject != null && getObject.has("data")) {

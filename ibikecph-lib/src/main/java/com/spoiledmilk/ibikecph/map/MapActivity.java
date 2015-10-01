@@ -15,13 +15,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Looper;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
@@ -34,6 +38,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.*;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.login.HTTPAccountHandler;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
@@ -257,6 +262,33 @@ public class MapActivity extends IBCMapActivity {
 
         // Check if the user accepts the newest terms
         TermsManager.checkTerms(this);
+
+        // Check if the user was logged out and spawn a dialog
+        Intent intent = getIntent();
+        if (intent.hasExtra("loggedOut")) {
+
+            if (intent.getExtras().getBoolean("loggedOut")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(IbikeApplication.getString("invalid_token_user_logged_out"));
+                builder.setPositiveButton(IbikeApplication.getString("log_in"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(MapActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder.setCancelable(false);
+                builder.show();
+            }
+            intent.removeExtra("loggedOut");
+        }
     }
 
     @Override

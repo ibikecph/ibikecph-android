@@ -7,9 +7,11 @@
 package com.spoiledmilk.ibikecph;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
@@ -198,6 +200,26 @@ public class IbikeApplication extends Application {
         BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
         Intent intent = new Intent(MapActivity.mapActivityContext, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         MapActivity.mapActivityContext.startActivity(intent);
+    }
+
+    public static void logoutWrongToken() {
+        IbikeApplication.setIsFacebookLogin(false);
+
+        // Disable tracking
+        IbikeApplication.getSettings().setTrackingEnabled(false);
+        IbikeApplication.getSettings().setNotifyMilestone(false);
+        IbikeApplication.getSettings().setNotifyWeekly(false);
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("email").commit();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("signature").commit();
+
+        // TODO: Move this somewhere more natural
+        BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
+        Intent intent = new Intent(MapActivity.mapActivityContext, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("loggedOut", true);
+        MapActivity.mapActivityContext.startActivity(intent);
+
     }
 
     /**

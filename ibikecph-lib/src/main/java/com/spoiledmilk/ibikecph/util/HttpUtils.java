@@ -254,7 +254,7 @@ public class HttpUtils {
             if (result.has("invalid_token")) {
                 if (result.get("invalid_token").asBoolean()) {
                     data.putBoolean("invalid_token", result.get("invalid_token").asBoolean());
-                    IbikeApplication.logout();
+                    IbikeApplication.logoutWrongToken();
                 }
             }
             /*if (result.has("errors"))
@@ -289,7 +289,7 @@ public class HttpUtils {
             if (result.has("invalid_token")) {
                 if (result.get("invalid_token").asBoolean()) {
                     data.putBoolean("invalid_token", result.get("invalid_token").asBoolean());
-                    IbikeApplication.logout();
+                    IbikeApplication.logoutWrongToken();
                 }
             }
             if (result != null && result.has("data")) {
