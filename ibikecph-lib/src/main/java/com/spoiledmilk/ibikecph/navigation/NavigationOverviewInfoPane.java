@@ -119,7 +119,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         sourceText.setOnClickListener(this);
         destinationText.setOnClickListener(this);
 
-        ((TextView) v.findViewById(R.id.newRouteText)).setText(IbikeApplication.getString("new_route"));
+        ((TextView) v.findViewById(R.id.newRouteText)).setText(IbikeApplication.getString("Start"));
         if (IbikeApplication.getAppName().equals("Cykelplanen")) {
             ((TextView) v.findViewById(R.id.newRouteText)).setTextColor(getResources().getColor(R.color.CPActionBar));
 
