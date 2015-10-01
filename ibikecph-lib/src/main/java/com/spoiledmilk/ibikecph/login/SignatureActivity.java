@@ -157,7 +157,7 @@ public class SignatureActivity extends Activity {
                                 Looper.prepare();
                                 showProgressDialog();
                                 userData = new UserData(userData.getEmail(), textNewPassword.getText().toString());
-                                Message message = HTTPAccountHandler.performLogin(userData);
+                                Message message = HTTPAccountHandler.performLogin(userData, false);
                                 Bundle data = message.getData();
                                 boolean success = data.getBoolean("success");
                                 if (success) {
@@ -299,7 +299,7 @@ public class SignatureActivity extends Activity {
                             Looper.prepare();
                             showProgressDialog();
                             userData = new UserData(IbikeApplication.getEmail(), textNewPassword.getText().toString());
-                            Message message = HTTPAccountHandler.performLogin(userData);
+                            Message message = HTTPAccountHandler.performLogin(userData, true);
                             Bundle data = message.getData();
                             boolean success = data.getBoolean("success");
                             if (success) {
@@ -316,7 +316,6 @@ public class SignatureActivity extends Activity {
                                 dismissProgressDialog();
                                 if (fromSplashScreen) {
                                     startActivity(new Intent(SignatureActivity.this, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-
                                 } else {
                                     startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 }
@@ -456,10 +455,10 @@ public class SignatureActivity extends Activity {
                                 settings.setTrackingEnabled(true);
                                 settings.setNotifyMilestone(true);
                                 settings.setNotifyWeekly(true);
-                                if(fromSplashScreen){
+                                if (fromSplashScreen) {
                                     startActivity(new Intent(SignatureActivity.this, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
-                                }else {
+                                } else {
                                     startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 }
                                 finish();

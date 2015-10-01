@@ -28,7 +28,7 @@ public class HTTPAccountHandler {
     public static final int DELETE_USER = 3;
     public static final int REGISTER_USER = 4;
 
-    public static Message performLogin(final UserData userData) {
+    public static Message performLogin(final UserData userData, boolean facebookUser) {
         Message message = new Message();
         JsonNode result = null;
         JSONObject jsonPOST = new JSONObject();
@@ -37,6 +37,9 @@ public class HTTPAccountHandler {
         try {
             jsonUser.put("password", userData.getPassword());
             jsonUser.put("email", userData.getEmail());
+            if(facebookUser){
+                jsonUser.put("facebook", "true");
+            }
             jsonPOST.put("user", jsonUser);
             result = HttpUtils.postToServer(Config.API_SERVER_LOGIN, jsonPOST);
             message = HttpUtils.JSONtoMessage(result);

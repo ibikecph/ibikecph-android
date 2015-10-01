@@ -89,7 +89,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                             Looper.prepare();
                             showProgressDialog();
                             userData = new UserData(textEmail.getText().toString(), textPassword.getText().toString());
-                            Message message = HTTPAccountHandler.performLogin(userData);
+                            Message message = HTTPAccountHandler.performLogin(userData, false);
                             handler.sendMessage(message);
 
                             dismissProgressDialog();
