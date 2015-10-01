@@ -29,7 +29,7 @@
         android:layout_below="@+id/addressNameLabel"
         android:layout_toRightOf="@+id/btnAddFavorite"
         android:text="addressLabel"
-        android:textColor="@color/black" />
+        android:textColor="#A9A9A9" />
 
     <RelativeLayout
         android:id="@+id/navigationOverviewGoButtonContainer"

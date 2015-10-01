@@ -59,7 +59,13 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
             v.findViewById(R.id.btnAddFavorite).setTag("filled");
             ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite_filled);
             ((TextView) v.findViewById(R.id.addressNameLabel)).setText(a.getName());
-            ((TextView) v.findViewById(R.id.addressLabel)).setText(""); //Should this be empty string or??
+            if (this.address.hasSpecialName()) {
+                Log.d("DV", "Special name!");
+                ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getStreetAddress() + "\n" + this.address.getPostCodeAndCity());
+            } else {
+                Log.d("DV", "Ikke special name!");
+                ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getDisplayName() + "\n" + this.address.getPostCodeAndCity());
+            }
         } else {
             v.findViewById(R.id.btnAddFavorite).setTag("notFilled");
             ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite);
