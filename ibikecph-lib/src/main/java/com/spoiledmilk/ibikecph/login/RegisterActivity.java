@@ -219,6 +219,10 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         btnFacebookLogin.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
+                if (!Util.isNetworkConnected(RegisterActivity.this)) {
+                    Util.launchNoConnectionDialog(RegisterActivity.this);
+                    return;
+                }
                 Log.d("DV", "facebook btn clicked!");
                 performFBLogin(savedInstanceState);
             }
