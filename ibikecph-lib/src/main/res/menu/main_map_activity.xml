@@ -14,21 +14,21 @@
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="sig"
-        android:visible="true" />
+        android:visible="false" />
 
     <item
         android:id="@+id/createFakeTrack"
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="create"
-        android:visible="true" />
+        android:visible="false" />
 
     <item
         android:id="@+id/uploadFakeTrack"
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="upload"
-        android:visible="true" />
+        android:visible="false" />
 
     <item
         android:id="@+id/ab_search"
