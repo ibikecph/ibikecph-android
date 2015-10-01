@@ -109,13 +109,16 @@ public class FacebookProfileActivity extends Activity {
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             } else {
                                 launchAlertDialog(data.getString("info"));
+                                enableButtons();
                             }
                             break;
                         case HTTPAccountHandler.ERROR:
-                            logout();
+                            enableButtons();
+                            //logout();
                             //Util.launchNoConnectionDialog(FacebookProfileActivity.this);
                             break;
                     }
+                    enableButtons();
                     return true;
                 }
             });
@@ -229,10 +232,23 @@ public class FacebookProfileActivity extends Activity {
 
         builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        disableButtons();
+                    }
+                });
                 if (!Util.isNetworkConnected(FacebookProfileActivity.this)) {
                     Util.launchNoConnectionDialog(FacebookProfileActivity.this);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            enableButtons();
+                        }
+                    });
                     return;
                 }
+
                 IbikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
                 new Thread(new Runnable() {
                     @Override
@@ -285,6 +301,12 @@ public class FacebookProfileActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        disableButtons();
+                    }
+                });
                 IbikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
                 new Thread(new Runnable() {
                     @Override
@@ -379,6 +401,14 @@ public class FacebookProfileActivity extends Activity {
     public void onStop() {
         super.onStop();
         EasyTracker.getInstance().activityStop(this);
+    }
+
+    private void enableButtons() {
+        btnDelete.setEnabled(true);
+    }
+
+    private void disableButtons() {
+        btnDelete.setEnabled(false);
     }
 
 }

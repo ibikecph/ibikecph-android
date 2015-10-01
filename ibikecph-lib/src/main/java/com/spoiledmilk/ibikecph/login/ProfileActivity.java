@@ -186,6 +186,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                             //Util.launchNoConnectionDialog(ProfileActivity.this);
                             break;
                     }
+                    enableButtons();
                     return true;
                 }
             });
@@ -199,7 +200,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
 
         super.onResume();
         initStrings();
-        disableButtons();
+        //disableButtons();
 
     }
 
@@ -261,8 +262,20 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        disableButtons();
+                    }
+                });
                 if (!Util.isNetworkConnected(ProfileActivity.this)) {
                     Util.launchNoConnectionDialog(ProfileActivity.this);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            enableButtons();
+                        }
+                    });
                     return;
                 }
                 if (System.currentTimeMillis() - lastAPIRequestTimestamp < API_REQUESTS_TIMEOUT) {
