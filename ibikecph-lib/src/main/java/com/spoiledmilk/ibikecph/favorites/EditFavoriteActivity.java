@@ -50,7 +50,7 @@ public class EditFavoriteActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.edit_favorite, menu);
 
-        menu.getItem(0).setTitle(IbikeApplication.getString("start_route"));
+        menu.getItem(0).setTitle(IbikeApplication.getString("new_route"));
 
         return true;
     }
