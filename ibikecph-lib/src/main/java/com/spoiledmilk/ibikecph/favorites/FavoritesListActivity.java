@@ -146,6 +146,7 @@ public class FavoritesListActivity extends Activity {
         if (IbikeApplication.isFacebookLogin() || IbikeApplication.isUserLogedIn()) {
             // Inflate the menu; this adds items to the action bar if it is present.
             getMenuInflater().inflate(R.menu.favorites_list, menu);
+            menu.getItem(0).setTitle(IbikeApplication.getString("new_favorite"));
         }
         return true;
     }
