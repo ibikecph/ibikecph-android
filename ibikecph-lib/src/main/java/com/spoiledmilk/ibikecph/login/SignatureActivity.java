@@ -35,6 +35,7 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
 import com.spoiledmilk.ibikecph.util.AsyncImageFetcher;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
@@ -69,6 +70,7 @@ public class SignatureActivity extends Activity {
     boolean normalUser = false;
     String validationMessage;
     String username;
+    boolean fromSplashScreen = false;
 
     boolean inProgress = false;
 
@@ -89,6 +91,14 @@ public class SignatureActivity extends Activity {
         explainingText = (TextView) findViewById(R.id.explainingText);
         savePassword = (Button) findViewById(R.id.savePassword);
         normalUser = intentExtra.getBooleanExtra("normalUser", false);
+
+        // Check if the user came from the splashActivity.
+        if (intentExtra.hasExtra("fromSplashScreen")) {
+            if (intentExtra.getExtras().getBoolean("fromSplashScreen")) {
+                fromSplashScreen = true;
+            }
+            intentExtra.removeExtra("fromSplashScreen");
+        }
 
         if (normalUser) {
             Log.d("DV", "In signatureActivity as a normal user");
@@ -304,7 +314,12 @@ public class SignatureActivity extends Activity {
                                 settings.setNotifyMilestone(true);
                                 settings.setNotifyWeekly(true);
                                 dismissProgressDialog();
-                                startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                if (fromSplashScreen) {
+                                    startActivity(new Intent(SignatureActivity.this, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
+                                } else {
+                                    startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                }
                                 finish();
                             } else {
                                 dismissProgressDialog();
@@ -441,7 +456,12 @@ public class SignatureActivity extends Activity {
                                 settings.setTrackingEnabled(true);
                                 settings.setNotifyMilestone(true);
                                 settings.setNotifyWeekly(true);
-                                startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                if(fromSplashScreen){
+                                    startActivity(new Intent(SignatureActivity.this, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
+                                }else {
+                                    startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                }
                                 finish();
                             }
                             SignatureActivity.this.runOnUiThread(new Runnable() {
