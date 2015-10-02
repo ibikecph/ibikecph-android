@@ -173,9 +173,10 @@
                 <action android:name="android.intent.action.SCREEN_ON" />
             </intent-filter>
         </receiver>
+        <activity
+            android:name="com.spoiledmilk.cykelsuperstier.AcceptNewTermsActivity"
+            android:label="@string/title_activity_accept_new_terms"></activity>
     </application>
 
-    <activity
-        android:name="com.spoiledmilk.cykelsuperstier.AcceptNewTermsActivity"
-        android:label="@string/title_activity_accept_new_terms"></activity>
+
 </manifest>
