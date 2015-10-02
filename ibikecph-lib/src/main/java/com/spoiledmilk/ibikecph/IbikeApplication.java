@@ -222,6 +222,26 @@ public class IbikeApplication extends Application {
 
     }
 
+    public static void logoutDeleteUser() {
+        IbikeApplication.setIsFacebookLogin(false);
+
+        // Disable tracking
+        IbikeApplication.getSettings().setTrackingEnabled(false);
+        IbikeApplication.getSettings().setNotifyMilestone(false);
+        IbikeApplication.getSettings().setNotifyWeekly(false);
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("email").commit();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("signature").commit();
+
+        // TODO: Move this somewhere more natural
+        BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
+        Intent intent = new Intent(MapActivity.mapActivityContext, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("deleteUser", true);
+        MapActivity.mapActivityContext.startActivity(intent);
+
+    }
+
     /**
      * Registers an intent to be delivered every Sunday at 8pm. We want to tell the user how much
      * she's been cycling the past week.

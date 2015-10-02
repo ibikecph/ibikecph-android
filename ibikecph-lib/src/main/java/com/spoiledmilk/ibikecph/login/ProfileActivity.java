@@ -175,7 +175,8 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                                 setResult(RESULT_USER_DELETED);
                                 IbikeApplication.setIsFacebookLogin(false);
                                 (new DB(ProfileActivity.this)).deleteFavorites();
-                                finish();
+                                IbikeApplication.logoutDeleteUser();
+                                //finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             } else {
                                 launchAlertDialog(data.getString("info"));

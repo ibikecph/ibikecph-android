@@ -102,7 +102,8 @@ public class FacebookProfileActivity extends Activity {
                                 PreferenceManager.getDefaultSharedPreferences(FacebookProfileActivity.this).edit().remove("id").commit();
                                 PreferenceManager.getDefaultSharedPreferences(FacebookProfileActivity.this).edit().remove("signature").commit();
                                 //IbikeApplication.setIsFacebookLogin(false);
-                                logout();
+                                IbikeApplication.logoutDeleteUser();
+                                //logout();
                                 setResult(RESULT_USER_DELETED);
                                 (new DB(FacebookProfileActivity.this)).deleteFavorites();
                                 finish();
@@ -232,20 +233,9 @@ public class FacebookProfileActivity extends Activity {
 
         builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        disableButtons();
-                    }
-                });
+
                 if (!Util.isNetworkConnected(FacebookProfileActivity.this)) {
                     Util.launchNoConnectionDialog(FacebookProfileActivity.this);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            enableButtons();
-                        }
-                    });
                     return;
                 }
 

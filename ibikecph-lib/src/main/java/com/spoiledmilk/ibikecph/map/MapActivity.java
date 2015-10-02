@@ -263,7 +263,7 @@ public class MapActivity extends IBCMapActivity {
         // Check if the user accepts the newest terms
         TermsManager.checkTerms(this);
 
-        // Check if the user was logged out and spawn a dialog
+        // Check if the user was logged out/deleted and spawn a dialog
         Intent intent = getIntent();
         if (intent.hasExtra("loggedOut")) {
 
@@ -288,6 +288,20 @@ public class MapActivity extends IBCMapActivity {
                 builder.show();
             }
             intent.removeExtra("loggedOut");
+        } else if (intent.hasExtra("deleteUser")) {
+
+            if (intent.getExtras().getBoolean("deleteUser")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+                builder.setMessage(IbikeApplication.getString("account_deleted"));
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+            intent.removeExtra("deleteUser");
         }
     }
 
