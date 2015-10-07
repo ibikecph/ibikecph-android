@@ -500,7 +500,7 @@ public class MapActivity extends IBCMapActivity {
                 FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
                 mapView.showRoute(fd);
                 Address a = Address.fromFavoritesData(fd);
-                mapView.showAddress(a);
+                mapView.showAddressFromFavorite(a);
                 OverviewMapHandler.isWatchingAddress = true;
 
             } else {
