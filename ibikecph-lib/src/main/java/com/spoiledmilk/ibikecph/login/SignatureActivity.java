@@ -149,7 +149,7 @@ public class SignatureActivity extends Activity {
                         Util.launchNoConnectionDialog(SignatureActivity.this);
                         return;
                     }
-                    if (textNewPassword.getText().toString().length() > 0 && !inProgress) {
+                    if (validatePasswords() && !inProgress) {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -291,7 +291,7 @@ public class SignatureActivity extends Activity {
                     Util.launchNoConnectionDialog(SignatureActivity.this);
                     return;
                 }
-                if (textNewPassword.getText().toString().length() > 0 && !inProgress) {
+                if (validatePassword() && !inProgress) {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -462,7 +462,7 @@ public class SignatureActivity extends Activity {
                                     startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 }
                                 finish();
-                            }else {
+                            } else {
                                 dismissProgressDialog();
                                 final String msg = data.getString("info");//data.containsKey("errors") ? data.getString("errors") : data.getString("info");
                                 String title = "";
@@ -561,14 +561,18 @@ public class SignatureActivity extends Activity {
         } else if (textPasswordConfirm.getText().toString().length() == 0) {
             validationMessage = IbikeApplication.getString("register_error_fields");
             ret = false;
-        } else if (textPasswordConfirm.getText().toString().length() < 3) {
-            validationMessage = IbikeApplication.getString("register_error_passwords_short");
-            ret = false;
         } else if (!textNewPassword.getText().toString().equals(textPasswordConfirm.getText().toString())) {
             validationMessage = IbikeApplication.getString("register_error_passwords");
             ret = false;
-        } else if (textNewPassword.getText().toString().length() < 3) {
-            validationMessage = IbikeApplication.getString("register_error_passwords_short");
+        }
+        userData = new UserData(textNewPassword.getText().toString(), textPasswordConfirm.getText().toString());
+        return ret;
+    }
+
+    private boolean validatePassword() {
+        boolean ret = true;
+        if (textNewPassword.getText().toString().length() == 0) {
+            validationMessage = IbikeApplication.getString("register_error_fields");
             ret = false;
         }
         userData = new UserData(textNewPassword.getText().toString(), textPasswordConfirm.getText().toString());

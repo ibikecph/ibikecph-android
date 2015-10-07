@@ -376,14 +376,8 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         } else if (textPasswordConfirm.getText().toString().length() == 0) {
             validationMessage = IbikeApplication.getString("register_error_fields");
             ret = false;
-        } else if (textPasswordConfirm.getText().toString().length() < 3) {
-            validationMessage = IbikeApplication.getString("register_error_passwords_short");
-            ret = false;
         } else if (!textNewPassword.getText().toString().equals(textPasswordConfirm.getText().toString())) {
             validationMessage = IbikeApplication.getString("register_error_passwords");
-            ret = false;
-        } else if (textNewPassword.getText().toString().length() < 3) {
-            validationMessage = IbikeApplication.getString("register_error_passwords_short");
             ret = false;
         } else {
             int atIndex = textEmail.getText().toString().indexOf('@');
