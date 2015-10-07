@@ -53,8 +53,8 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
         final View view = inflater.inflate(getListRowLayout(), parent, false);
         TextView tv = (TextView) view.findViewById(R.id.textFavoriteName);
         String name = getItem(position).getName();
-        if (name.length() > 19)
-            name = name.substring(0, 19) + "...";
+        /*if (name.length() > 19)
+            name = name.substring(0, 19) + "...";*/
         tv.setText(name);
 
         ImageButton btnEdit = (ImageButton) view.findViewById(R.id.btnEdit);
