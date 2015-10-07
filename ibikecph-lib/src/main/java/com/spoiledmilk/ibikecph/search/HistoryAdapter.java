@@ -6,6 +6,7 @@
 package com.spoiledmilk.ibikecph.search;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mapbox.mapboxsdk.overlay.PathOverlay;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 
 import java.util.ArrayList;
@@ -50,7 +53,7 @@ public class HistoryAdapter extends ArrayAdapter<SearchListItem> {
 
         // Don't show an icon if the resource ID is set to -1
         if (item.getIconResourceId() != -1) {
-            holder.imgIcon.setImageResource(item.getIconResourceId());
+            holder.imgIcon.setImageResource(R.drawable.fav_star);
         } else {
             holder.imgIcon.setVisibility(View.GONE);
         }
