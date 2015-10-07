@@ -1,0 +1,153 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="12dp">
+
+        <ImageButton
+            android:id="@+id/btnAddressSwap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="18dp"
+            android:background="@color/Transparent"
+            android:src="@drawable/infopane_navigation_address_flip" />
+
+        <TextView
+            android:id="@+id/navigationOverviewSource"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/navigationOverviewGoButtonContainer"
+            android:layout_toLeftOf="@+id/navigationOverviewGoButtonContainer"
+            android:layout_toRightOf="@+id/btnAddressSwap"
+            android:layout_toStartOf="@+id/navigationOverviewGoButtonContainer"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:text="source" />
+
+        <View
+            android:id="@+id/breaker"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/navigationOverviewSource"
+            android:layout_toRightOf="@+id/btnAddressSwap"
+            android:background="#e1e1e1"></View>
+
+        <TextView
+            android:id="@+id/navigationOverviewDestination"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/breaker"
+            android:layout_marginBottom="8dp"
+            android:layout_toRightOf="@+id/btnAddressSwap"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:text="destination" />
+
+        <RelativeLayout
+            android:id="@+id/navigationOverviewGoButtonContainer"
+            android:layout_width="33dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="true">
+
+            <ImageButton
+                android:id="@+id/navigationOverviewGoButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@color/White"
+                android:src="@drawable/btn_route_go"
+                android:text="go" />
+
+            <TextView
+                android:id="@+id/newRouteText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/navigationOverviewGoButton"
+                android:layout_centerHorizontal="true"
+                android:text="new_route"
+                android:textColor="@color/IBCActionBar"
+                android:textSize="10dp" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/navigationOverviewDestination"
+            android:gravity="center_horizontal">
+
+            <ImageButton
+                android:id="@+id/navigationOverviewFastButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/White"
+                android:paddingLeft="22dp"
+                android:paddingRight="22dp"
+                android:src="@drawable/btn_route_fastest_disabled" />
+
+            <ImageButton
+                android:id="@+id/navigationOverviewCargoButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/navigationOverviewFastButton"
+                android:background="@color/White"
+                android:paddingLeft="22dp"
+                android:paddingRight="22dp"
+                android:src="@drawable/btn_route_cargo_disabled" />
+
+            <ImageButton
+                android:id="@+id/navigationOverviewGreenButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/navigationOverviewCargoButton"
+                android:background="@color/White"
+                android:paddingLeft="22dp"
+                android:paddingRight="22dp"
+                android:src="@drawable/btn_route_green_disabled" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/navigationOverviewCargoButton"
+        android:background="#f7f7f7"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/navigationOverviewRouteLength"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center_horizontal"
+            android:text="length" />
+
+        <TextView
+            android:id="@+id/navigationOverviewRouteDuration"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center_horizontal"
+            android:text="duration" />
+
+        <TextView
+            android:id="@+id/navigationOverviewRouteETA"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center_horizontal"
+            android:text="eta" />
+    </LinearLayout>
+</LinearLayout>

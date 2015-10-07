@@ -1,0 +1,112 @@
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true" android:layout_alignParentStart="true">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="64dp" android:paddingStart="8dp" android:paddingEnd="8dp">
+
+        <ImageView android:layout_width="wrap_content" android:layout_height="fill_parent"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_menu_tracking"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tracking_enable_text"
+                android:text="tracking_enable_text" android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+
+        <Switch
+                android:id="@+id/tracking_enable_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false" android:layout_gravity="center_vertical|right" />
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="fill_parent" android:layout_height="64dp" android:paddingEnd="8dp"
+                  android:paddingStart="8dp">
+        <ImageView android:layout_width="wrap_content" android:layout_height="fill_parent"
+                   android:layout_gravity="center_vertical"
+                   android:src="@drawable/tracking_settings_milestones"/>
+        <TextView
+                android:id="@+id/notify_milestone_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="notify_milestone_text"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+
+        <Switch
+                android:id="@+id/notify_milestone_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:layout_gravity="center_vertical|right"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="fill_parent" android:layout_height="64dp" android:paddingEnd="8dp"
+                  android:paddingStart="8dp">
+        <ImageView android:layout_width="wrap_content" android:layout_height="fill_parent"
+                   android:layout_gravity="center_vertical"
+                   android:src="@drawable/tracking_settings_weekly"/>
+        <TextView
+                android:id="@+id/notify_weekly_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="notify_weekly_text"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+
+        <Switch
+                android:id="@+id/notify_weekly_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:layout_gravity="center_vertical|right"/>
+    </LinearLayout>
+
+
+    <LinearLayout android:layout_width="fill_parent" android:layout_height="64dp" android:paddingEnd="8dp"
+                  android:paddingStart="8dp" android:visibility="gone">
+        <TextView
+                android:id="@+id/share_data_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="share_data_text" android:layout_weight="1"
+                android:layout_gravity="center_vertical" />
+
+        <Switch
+                android:id="@+id/share_data_switch"
+                android:onClick="onShareData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:layout_gravity="center_vertical|right"/>
+    </LinearLayout>
+
+
+
+    <TextView
+            android:id="@+id/share_data_info_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="share_data_info_text" android:visibility="gone"/>
+
+    <TextView
+            android:id="@+id/share_data_usage_text"
+            android:onClick="onUsageClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="share_data_usage_text" android:visibility="gone"/>
+
+    <TextView
+            android:id="@+id/share_data_terms_text"
+            android:onClick="onTermsClick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="share_data_terms_text" android:visibility="gone"/>
+
+</LinearLayout>

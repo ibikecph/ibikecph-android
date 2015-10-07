@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="22dp">
+
+    <ImageButton
+        android:id="@+id/btnAddFavorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="12dp"
+        android:background="@color/Transparent"
+        android:src="@drawable/btn_add_favorite" />
+
+    <TextView
+        android:id="@+id/addressNameLabel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/btnAddFavorite"
+        android:text="addressNameLabel"
+        android:textColor="@color/black"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/addressLabel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/addressNameLabel"
+        android:layout_toRightOf="@+id/btnAddFavorite"
+        android:text="addressLabel"
+        android:textColor="#A9A9A9" />
+
+    <RelativeLayout
+        android:id="@+id/navigationOverviewGoButtonContainer"
+        android:layout_width="33dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentRight="true">
+
+        <ImageView
+            android:id="@+id/btnStartRoute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/btn_route_to" />
+
+        <TextView
+            android:id="@+id/newRouteText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnStartRoute"
+            android:layout_centerHorizontal="true"
+            android:text="Rute"
+            android:textColor="@color/IBCActionBar"
+            android:textSize="10dp" />
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -1,0 +1,365 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/White"
+    tools:context=".BreakRouteActivity" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@null" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:paddingBottom="20dp" >
+
+            <LinearLayout
+                android:id="@+id/topBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@color/Black"
+                android:orientation="horizontal"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp" >
+
+                <TextView
+                    android:id="@+id/textDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:text=""
+                    android:textColor="@color/White"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/textDistanceKm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:textColor="#f06d1a"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    android:text="."
+                    android:textColor="@color/White"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imgPinA"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/topBar"
+                android:layout_margin="15dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/a_pin_orange" />
+
+            <TextView
+                android:id="@+id/textAAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/imgPinA"
+                android:layout_marginLeft="0dp"
+                android:layout_toRightOf="@+id/imgPinA"
+                android:gravity="left"
+                android:text=""
+                android:textColor="@color/TextDarkGrey"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textARegion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textAAddress"
+                android:layout_below="@+id/textAAddress"
+                android:layout_marginTop="5dp"
+                android:text=""
+                android:textColor="@color/TextDarkGrey"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textDistance1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imgBike1"
+                android:layout_alignLeft="@+id/textAAddress"
+                android:layout_marginBottom="-1dp"
+                android:text=""
+                android:textColor="@color/TextLightGrey" />
+
+            <View
+                android:id="@+id/line1"
+                android:layout_width="1dp"
+                android:layout_height="15dp"
+                android:layout_alignLeft="@id/imgPinA"
+                android:layout_below="@id/imgPinA"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="-10dp"
+                android:background="#b8b8b8" />
+
+            <ImageView
+                android:id="@+id/imgBike1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_below="@+id/line1"
+                android:layout_marginLeft="-8dp"
+                android:layout_marginTop="2dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/list_bike_icon" />
+
+            <View
+                android:id="@+id/line2"
+                android:layout_width="1dp"
+                android:layout_height="15dp"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_alignRight="@+id/line1"
+                android:layout_below="@+id/imgBike1"
+                android:layout_marginTop="2dp"
+                android:background="#b8b8b8" />
+
+            <ImageView
+                android:id="@+id/imgStation1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_below="@+id/line2"
+                android:layout_marginLeft="-18dp"
+                android:layout_marginTop="4dp"
+                android:contentDescription="@string/app_name"
+                android:src="#ffffffff" />
+
+            <Spinner
+                android:id="@+id/spinner1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/textAAddress"
+                android:layout_alignTop="@+id/imgStation1"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="-5dp"
+                android:background="@null" />
+
+            <ImageView
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_below="@+id/imgStation1"
+                android:layout_marginLeft="-2dp"
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/grey_circle" />
+
+            <ImageView
+                android:id="@+id/circle2"
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_below="@+id/imgStation1"
+                android:layout_marginLeft="-2dp"
+                android:layout_marginTop="15dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/grey_circle" />
+
+            <ImageView
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_below="@+id/imgStation1"
+                android:layout_marginLeft="-2dp"
+                android:layout_marginTop="25dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/grey_circle" />
+
+            <ImageView
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_below="@+id/imgStation1"
+                android:layout_marginLeft="-2dp"
+                android:layout_marginTop="35dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/grey_circle" />
+
+            <ImageView
+                android:id="@+id/circle5"
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_below="@+id/imgStation1"
+                android:layout_marginLeft="-2dp"
+                android:layout_marginTop="45dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/grey_circle" />
+
+            <ImageView
+                android:id="@+id/lastCircle"
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_below="@+id/imgStation1"
+                android:layout_marginLeft="-2dp"
+                android:layout_marginTop="55dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/grey_circle" />
+
+            <Button
+                android:id="@+id/btnRejseplanen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/circle5"
+                android:layout_alignLeft="@id/spinner1"
+                android:layout_alignRight="@id/spinner1"
+                android:layout_alignTop="@id/circle2"
+                android:background="@drawable/btn_grey_selector"
+                android:onClick="onBtnRejsplanenClick"
+                android:textColor="@color/TextDarkGrey"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/btnRejseplanen"
+                android:layout_alignLeft="@id/btnRejseplanen"
+                android:layout_alignTop="@id/btnRejseplanen"
+                android:layout_marginLeft="3dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/list_find_icon" />
+
+            <ImageView
+                android:id="@+id/imgStation2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_below="@+id/lastCircle"
+                android:layout_marginLeft="-18dp"
+                android:layout_marginTop="4dp"
+                android:contentDescription="@string/app_name"
+                android:src="#ffffffff" />
+
+            <Spinner
+                android:id="@+id/spinner2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/textAAddress"
+                android:layout_alignTop="@+id/imgStation2"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="-5dp"
+                android:background="@null" />
+
+            <View
+                android:id="@+id/line3"
+                android:layout_width="1dp"
+                android:layout_height="15dp"
+                android:layout_alignLeft="@id/imgPinA"
+                android:layout_below="@+id/imgStation2"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="5dp"
+                android:background="#b8b8b8" />
+
+            <ImageView
+                android:id="@+id/imgBike2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_below="@+id/line3"
+                android:layout_marginLeft="-8dp"
+                android:layout_marginTop="2dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/list_bike_icon" />
+
+            <View
+                android:id="@+id/line4"
+                android:layout_width="1dp"
+                android:layout_height="15dp"
+                android:layout_alignLeft="@+id/line1"
+                android:layout_alignRight="@+id/line1"
+                android:layout_below="@+id/imgBike2"
+                android:layout_marginTop="2dp"
+                android:background="#b8b8b8" />
+
+            <ImageView
+                android:id="@+id/imgPinB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/line4"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="3dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/b_pin_orange" />
+
+            <TextView
+                android:id="@+id/textBAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/imgPinB"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/imgPinB"
+                android:gravity="left"
+                android:maxLines="1"
+                android:text=""
+                android:textColor="@color/TextDarkGrey"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/textBRegion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textBAddress"
+                android:layout_below="@+id/textBAddress"
+                android:layout_marginTop="5dp"
+                android:text=""
+                android:textColor="@color/TextDarkGrey"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textDistance2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imgBike2"
+                android:layout_alignLeft="@+id/textAAddress"
+                android:layout_marginBottom="-1dp"
+                android:text=""
+                android:textColor="@color/TextLightGrey" />
+
+            <com.spoiledmilk.ibikecph.controls.TexturedButton
+                android:id="@+id/btnBreak"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_below="@+id/imgPinB"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
+                android:onClick="onBtnBreakClick" >
+            </com.spoiledmilk.ibikecph.controls.TexturedButton>
+        </RelativeLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

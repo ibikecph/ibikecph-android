@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="5dp"
+    android:orientation="vertical"
+        >
+
+    <ImageView
+        android:id="@+id/imgCurrentLoc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/routeenterlocateicon"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/textCurrentLoc"
+        android:layout_width="180dp"
+        android:layout_height="42dp"
+        android:layout_marginLeft="10dp"
+        android:clickable="true"
+        android:gravity="center_vertical"
+        android:text=""
+        android:textColor="@color/TextBlue"
+        android:textSize="16sp"
+            android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/textA"
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        android:clickable="true"
+        android:gravity="center_vertical|left"
+        android:lines="1"
+        android:maxLines="1"
+        android:text=""
+        android:textColor="@color/Black"
+        android:textSize="16sp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/textB"
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        android:clickable="true"
+        android:gravity="center_vertical|left"
+        android:lines="1"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="#9b9b9b"
+        android:textSize="16sp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="22dp"
+            />
+
+    <View android:layout_width="fill_parent"
+          android:layout_height="2dp"
+          android:background="@color/IBCActionBar"
+          android:layout_marginLeft="12dp"
+          android:layout_marginRight="12dp"
+            android:id="@+id/line"
+            />
+
+    <com.spoiledmilk.ibikecph.controls.ObservableScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/textRecent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="Recent"
+                    android:textSize="16sp"
+                    android:paddingLeft="16dp"
+                    />
+            
+            <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Grey"
+                    android:layout_marginTop="2dp"
+                    />
+
+            <ListView
+                    android:id="@+id/historyList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@null"
+                    android:divider="#dfdfdf"
+                    android:dividerHeight="1dp" >
+            </ListView>
+
+            <TextView
+                android:id="@+id/textFavorites"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="Favorites"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                android:paddingLeft="16dp"
+                />
+            <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Grey"
+                    android:layout_marginTop="2dp"
+                    />
+
+            <ListView
+                android:id="@+id/favoritesList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@null"
+                android:divider="#dfdfdf"
+                android:dividerHeight="1dp" >
+            </ListView>
+
+        </LinearLayout>
+    </com.spoiledmilk.ibikecph.controls.ObservableScrollView>
+
+    <RelativeLayout
+        android:id="@+id/overviewHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#f1f1f1"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/textOverviewHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/Grey"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textOverviewHeader"
+            android:layout_alignTop="@+id/textOverviewHeader"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/textOverviewHeader"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/fav_circles" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textOverviewHeader"
+            android:layout_alignTop="@+id/textOverviewHeader"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/textOverviewHeader"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/fav_circles" />
+    </RelativeLayout>
+
+</LinearLayout>

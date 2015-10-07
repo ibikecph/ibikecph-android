@@ -1,0 +1,4 @@
+include ':ibikecph-app'
+include ':cykelplanen'
+include ':ibikecph-lib'
+include ':libraries:osmdroid-lib'

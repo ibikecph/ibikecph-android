@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="56dp"
+        android:background="@color/white"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="8dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/trackingStatisticsLayout"
+        >
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="today"
+            android:textColor="@color/black"
+            android:id="@+id/todayTextView"
+            android:gravity="center_vertical"
+            android:layout_marginRight="12dp"
+            android:textSize="16dp"
+            />
+
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="distance"
+            android:textColor="@color/black"
+            android:id="@+id/totalDistanceTextView"
+            android:drawableLeft="@drawable/infopane_bicycle"
+            android:drawablePadding="8dp"
+            android:layout_toRightOf="@+id/todayTextView"
+            android:gravity="center_vertical"
+            android:layout_marginRight="12dp"
+            android:textSize="16dp"
+
+            ></TextView>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="duration"
+            android:textColor="@color/black"
+            android:id="@+id/totalDurationTextView"
+            android:layout_toRightOf="@+id/totalDistanceTextView"
+            android:drawableLeft="@drawable/infopane_duration"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:layout_marginRight="12dp"
+            android:textSize="16dp" />
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:text="0 Cal"
+            android:textColor="@color/black"
+            android:id="@+id/totalCaloriesTextView"
+            android:layout_toRightOf="@+id/totalDurationTextView"
+            android:drawableLeft="@drawable/infopane_calories"
+            android:drawablePadding="8dp"
+            android:gravity="center_vertical"
+            android:textSize="16dp" />
+
+</RelativeLayout>

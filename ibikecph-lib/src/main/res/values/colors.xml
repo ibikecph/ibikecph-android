@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="Black">#000000</color>
+    <color name="DarkGrey">#1A1A1A</color>
+    <color name="SkyBlue">#00CCFF</color>
+    <color name="Blue">#0099FF</color>
+    <color name="TextBlue">#1C57AB</color>
+    <color name="LightGrey">#F1F1F1</color>
+    <color name="White">#FFFFFF</color>
+    <color name="Grey">#9A9A9A</color>
+    <color name="PictureContainer">#434343</color>
+    <color name="TextLightGrey">#BFBFBF</color>
+    <color name="TextDarkGrey">#1A1A1A</color>
+    <color name="BlueListBackground">#139DEA</color>
+    <color name="LeftGreyBackground">#101A1A</color>
+    <color name="HintColor"> #ADADAD</color>
+    <color name="TextFavoritesDarkGrey">#3c3c3c</color>
+    <color name="TextGrey">#4d4d4d</color>
+    <color name="BtnStardDisabled">#dbdbdb</color>
+    <color name="Orange">#f58200</color>
+    <color name="MenuItemBackground">#7A7A7A</color>
+    <color name="Transparent">#00ffffff</color>
+    <color name="OrangeSelected">#E2A500</color>
+    <color name="BlackOverlay">#323232</color>
+    <color name="SplashBtnPressed">#FF07568B</color>
+    <color name="IBCActionBar">#D0021B</color>
+    <color name="CPActionBar">#FF6600</color>
+    <color name="app_primary_color">#D0021B</color>
+</resources>

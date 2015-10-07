@@ -1,0 +1,208 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:minHeight="800dp"
+    tools:context=".FavoritesActivity" >
+
+    <ImageView
+        android:id="@+id/imgClounds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/splash_sky"
+        android:contentDescription="@string/app_name"
+        android:padding="0dp" />
+
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/home_btn_inactive" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/splash_grass_transparent"
+        android:contentDescription="@string/app_name"
+        android:padding="0dp" />
+
+    <TextView
+        android:id="@+id/textTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imgIcon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="15dp"
+        android:text=""
+        android:textColor="@color/White"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/textAddFavorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="10dp"
+        android:gravity="left"
+        android:text=""
+        android:textColor="@color/White"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/favorites_input_fields"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="-14dp"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"
+        android:src="@drawable/favorites_input_bg" />
+
+    <ImageView
+        android:id="@+id/favorites_input_fields"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textHome"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-17dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/splash_fav_input_fields" />
+
+    <EditText
+        android:id="@+id/textHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textAddFavorite"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="47dp"
+        android:layout_marginTop="35dp"
+        android:background="@null"
+        android:clickable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="true"
+        android:inputType="none"
+        android:maxLines="1"
+        android:text=""
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/textWork"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textHome"
+        android:layout_marginLeft="80dp"
+        android:layout_marginRight="47dp"
+        android:layout_marginTop="42dp"
+        android:background="@null"
+        android:clickable="true"
+        android:focusable="false"
+        android:focusableInTouchMode="true"
+        android:inputType="text"
+        android:maxLines="1"
+        android:text=""
+        android:textSize="16sp" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/btnSkip"
+        android:layout_centerHorizontal="true"
+        android:background="#d7d7d7" />
+
+    <RelativeLayout
+        android:id="@+id/bottomContainer"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="#ffffff" />
+
+    <Button
+        android:id="@+id/btnSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/btnSave"
+        android:layout_marginTop="0dp"
+        android:layout_toRightOf="@+id/imgDivider"
+        android:background="@null"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/White"
+        android:textSize="12dp" >
+    </Button>
+
+    <ImageView
+        android:id="@+id/imgDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_alignTop="@+id/bottomContainer"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="3dp"
+        android:layout_toRightOf="@+id/btnSave"
+        android:background="@drawable/bottom_divider_vertical"
+        android:contentDescription="@string/app_name" />
+
+    <ImageView
+        android:id="@+id/imgSkip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnSkip"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/btnSkip"
+        android:layout_marginLeft="130dp"
+        android:background="@null"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/enter_icon" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/imgSkip"
+        android:layout_alignTop="@id/imgSkip"
+        android:layout_marginLeft="3dp"
+        android:layout_toRightOf="@id/imgSkip"
+        android:background="@null" >
+
+        <TextView
+            android:id="@+id/textSkip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text=""
+            android:textColor="@color/White"
+            android:textSize="12dp" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="180dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@id/bottomContainer"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/btn_blue_selector"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/White" >
+    </Button>
+
+</RelativeLayout>

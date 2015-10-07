@@ -1,0 +1,299 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f1f1f1" >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="500dp" >
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="20dp"
+                android:background="@null" />
+
+            <ImageView
+                android:id="@+id/imgRadio1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_below="@+id/spinner"
+                android:layout_marginTop="15dp"
+                android:clickable="true"
+                android:contentDescription="@string/app_name"
+                android:onClick="onRadio1Click"
+                android:src="@drawable/radio_unchecked" />
+
+            <TextView
+                android:id="@+id/textOption1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imgRadio1"
+                android:layout_alignTop="@+id/imgRadio1"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/imgRadio1"
+                android:clickable="true"
+                android:onClick="onRadio1Click"
+                android:text=""
+                android:textColor="@color/Black" />
+
+            <EditText
+                android:id="@+id/textComment1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_alignRight="@+id/spinner"
+                android:layout_below="@+id/textOption1"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/input_white_selector"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:maxLines="2"
+                android:minLines="2"
+                android:scrollbars="vertical"
+                android:text=""
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/imgRadio2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_below="@+id/textComment1"
+                android:layout_marginTop="15dp"
+                android:clickable="true"
+                android:contentDescription="@string/app_name"
+                android:onClick="onRadio2Click"
+                android:src="@drawable/radio_unchecked" />
+
+            <TextView
+                android:id="@+id/textOption2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imgRadio2"
+                android:layout_alignTop="@+id/imgRadio2"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/imgRadio2"
+                android:clickable="true"
+                android:onClick="onRadio2Click"
+                android:text=""
+                android:textColor="@color/Black" />
+
+            <EditText
+                android:id="@+id/textComment2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_alignRight="@+id/spinner"
+                android:layout_below="@+id/textOption2"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/input_white_selector"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:maxLines="2"
+                android:minLines="2"
+                android:scrollbars="vertical"
+                android:text=""
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/imgRadio3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_below="@+id/textComment2"
+                android:layout_marginTop="15dp"
+                android:clickable="true"
+                android:contentDescription="@string/app_name"
+                android:onClick="onRadio3Click"
+                android:src="@drawable/radio_unchecked" />
+
+            <TextView
+                android:id="@+id/textOption3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imgRadio3"
+                android:layout_alignTop="@+id/imgRadio3"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/imgRadio3"
+                android:clickable="true"
+                android:onClick="onRadio3Click"
+                android:text=""
+                android:textColor="@color/Black" />
+
+            <EditText
+                android:id="@+id/textComment3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_alignRight="@+id/spinner"
+                android:layout_below="@+id/textOption3"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/input_white_selector"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:maxLines="2"
+                android:minLines="2"
+                android:scrollbars="vertical"
+                android:text=""
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/imgRadio4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_below="@+id/textComment3"
+                android:layout_marginTop="15dp"
+                android:clickable="true"
+                android:contentDescription="@string/app_name"
+                android:onClick="onRadio4Click"
+                android:src="@drawable/radio_unchecked" />
+
+            <TextView
+                android:id="@+id/textOption4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imgRadio4"
+                android:layout_alignTop="@+id/imgRadio4"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/imgRadio4"
+                android:clickable="true"
+                android:onClick="onRadio4Click"
+                android:text=""
+                android:textColor="@color/Black" />
+
+            <EditText
+                android:id="@+id/textComment4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_alignRight="@+id/spinner"
+                android:layout_below="@+id/textOption4"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/input_white_selector"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:maxLines="2"
+                android:minLines="2"
+                android:scrollbars="vertical"
+                android:text=""
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/imgRadio5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_below="@+id/textComment4"
+                android:layout_marginTop="15dp"
+                android:clickable="true"
+                android:contentDescription="@string/app_name"
+                android:onClick="onRadio5Click"
+                android:src="@drawable/radio_unchecked" />
+
+            <TextView
+                android:id="@+id/textOption5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imgRadio5"
+                android:layout_alignTop="@+id/imgRadio5"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/imgRadio5"
+                android:clickable="true"
+                android:onClick="onRadio5Click"
+                android:text=""
+                android:textColor="@color/Black" />
+
+            <EditText
+                android:id="@+id/textComment5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_alignRight="@+id/spinner"
+                android:layout_below="@+id/textOption5"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/input_white_selector"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:maxLines="2"
+                android:minLines="2"
+                android:scrollbars="vertical"
+                android:text=""
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/imgRadio6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_below="@+id/textComment5"
+                android:layout_marginTop="15dp"
+                android:clickable="true"
+                android:contentDescription="@string/app_name"
+                android:onClick="onRadio6Click"
+                android:src="@drawable/radio_unchecked" />
+
+            <TextView
+                android:id="@+id/textOption6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imgRadio6"
+                android:layout_alignTop="@+id/imgRadio6"
+                android:layout_marginLeft="15dp"
+                android:layout_toRightOf="@+id/imgRadio6"
+                android:clickable="true"
+                android:onClick="onRadio6Click"
+                android:text=""
+                android:textColor="@color/Black" />
+
+            <EditText
+                android:id="@+id/textComment6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/spinner"
+                android:layout_alignRight="@+id/spinner"
+                android:layout_below="@+id/textOption6"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/input_white_selector"
+                android:gravity="top"
+                android:inputType="textMultiLine"
+                android:maxLines="2"
+                android:minLines="2"
+                android:scrollbars="vertical"
+                android:text=""
+                android:visibility="visible" />
+        </RelativeLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/bottomContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/DarkGrey"
+        android:padding="5dp" >
+
+        <com.spoiledmilk.ibikecph.controls.TexturedButton
+            android:id="@+id/btnSend"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:background="@null"
+            android:onClick="onButtonSendClick" >
+        </com.spoiledmilk.ibikecph.controls.TexturedButton>
+    </RelativeLayout>
+
+</RelativeLayout>

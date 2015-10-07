@@ -1,0 +1,44 @@
+# built application files
+*.apk
+*.ap_
+
+# files for the dex VM
+*.dex
+
+# Java class files
+*.class
+
+# generated files
+bin/
+gen/
+build
+/libraries/*/build/
+/*/build/
+out
+
+# Local configuration file (sdk path, etc)
+local.properties
+.DS_Store
+.classpath
+.project
+.metadata
+.gradle
+/local.properties
+.idea
+
+# Emacs temporary files
+*~
+#*#
+
+/gradle/
+/gradlew
+/gradlew.bat
+
+#git
+*.orig
+IBike.iml
+cykelplanen/cykelplanen.iml
+ibikecph-app/ibikecph-app.iml
+ibikecph-lib/ibikecph-lib.iml
+libraries/libraries.iml
+libraries/osmdroid-lib/osmdroid-lib.iml

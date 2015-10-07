@@ -1,0 +1,31 @@
+<resources>
+
+    <string name="app_name">osmdorid-lib</string>
+    <string name="ibikecph">I Bike CPH</string>
+    <string name="mapnik">Mapnik</string>
+    <string name="cyclemap">Cycle Map</string>
+    <string name="public_transport">Public transport</string>
+    <string name="base">OSM base layer</string>
+    <string name="topo">Topographic</string>
+    <string name="hills">Hills</string>
+    <string name="cloudmade_standard">CloudMade (Standard tiles)</string>
+    <string name="cloudmade_small">CloudMade (small tiles)</string>
+    <string name="mapquest_osm">Mapquest</string>
+    <string name="mapquest_aerial">Mapquest Aerial</string>
+    <string name="bing">Bing</string>
+    <string name="fiets_nl">OpenFietsKaart overlay</string>
+    <string name="base_nl">Netherlands base overlay</string>
+    <string name="roads_nl">Netherlands roads overlay</string>
+    <string name="unknown">Unknown</string>
+    <string name="format_distance_meters">%s m</string>
+    <string name="format_distance_kilometers">%s km</string>
+    <string name="format_distance_miles">%s mi</string>
+    <string name="format_distance_nautical_miles">%s nm</string>
+    <string name="format_distance_feet">%s ft</string>
+    <string name="online_mode">Online mode</string>
+    <string name="offline_mode">Offline mode</string>
+    <string name="my_location">My location</string>
+    <string name="compass">Compass</string>
+    <string name="map_mode">Map mode</string>
+
+</resources>

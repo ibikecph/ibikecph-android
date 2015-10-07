@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">I Bike CPH</string>
+    <string name="unknown">Unknown</string>
+    <string name="map_mode">Map mode</string>
+    <string name="my_location">My location</string>
+    <string name="format_distance_meters">%s m</string>
+    <string name="format_distance_kilometers">%s km</string>
+    <string name="format_distance_miles">%s mi</string>
+    <string name="format_distance_nautical_miles">%s nm</string>
+    <string name="format_distance_feet">%s ft</string>
+    <string name="compass">Compass</string>
+    <string name="app_id">478150322233312</string>
+    <string name="account_source">ibikecph</string>
+    <string name="title_activity_ttssettings"></string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_favorites_list">FavoritesListActivity</string>
+    <string name="title_activity_add_favorite">AddFavoriteActivity</string>
+    <string name="title_activity_edit_favorite">EditFavoriteActivity</string>
+    <string name="title_activity_tracking">GPS Tracking</string>
+    <string name="title_activity_tracking_settings">GPS Tracking Settings</string>
+    <string name="title_activity_track_map_view">TrackMapView</string>
+    <string name="title_activity_accept_new_terms">AcceptNewTermsActivity</string>
+    <string name="title_activity_read_more">ReadMoreActivity</string>
+    <string name="track_token_title">Security Code</string>
+
+
+</resources>

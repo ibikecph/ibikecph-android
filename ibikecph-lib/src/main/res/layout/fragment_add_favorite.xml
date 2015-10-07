@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+
+            >
+
+            <TextView
+                android:id="@+id/labelAddress"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:text="address_label" />
+
+
+            <EditText
+                android:id="@+id/textAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/labelAddress"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:focusable="false"
+                android:focusableInTouchMode="true"
+                android:inputType="none"
+                android:maxLines="1"
+                android:paddingLeft="10dp"
+                android:paddingRight="25dp"
+                android:singleLine="true"
+                android:text=""
+                android:textSize="14sp" />
+
+            <View
+                android:id="@+id/dummy1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_alignRight="@+id/textAddress"
+                android:background="@null" />
+
+            <TextView
+                android:id="@+id/labelName"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textAddress"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:text="name_label" />
+
+            <EditText
+                android:id="@+id/textFavoriteName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/labelName"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:inputType="text"
+                android:paddingLeft="10dp"
+                android:paddingRight="25dp"
+                android:text=""
+                android:textSize="14sp" />
+
+            <RadioGroup
+                android:id="@+id/favoriteTypeRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textFavoriteName"
+                android:layout_marginTop="18dp">
+
+                <RadioButton
+                    android:id="@+id/radioButtonHome"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/fav_home"
+                    android:text="home" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonWork"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/fav_work"
+                    android:text="work" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonSchool"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/fav_school"
+                    android:text="school" />
+
+                <RadioButton
+                    android:id="@+id/radioButtonFavorite"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/fav_star"
+                    android:text="favorite" />
+
+            </RadioGroup>
+
+            <!--
+            <LinearLayout
+                android:id="@+id/buttonsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="230dp"
+                android:layout_below="@+id/textFavoriteName"
+                android:layout_marginTop="10dp"
+                android:background="@null"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:weightSum="1.0" >
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.1" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.35"
+                    android:orientation="vertical" >
+
+                    <ImageButton
+                        android:id="@+id/btnFavorite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:contentDescription="@string/app_name"
+                        android:src="@drawable/favtypefavoritebuttonpressed" />
+
+                    <TextView
+                        android:id="@+id/textFavorite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:text=""
+                            />
+
+                    <ImageButton
+                        android:id="@+id/btnWork"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="5dp"
+                        android:background="@null"
+                        android:contentDescription="@string/app_name"
+                        android:src="@drawable/favtypeworkbutton" />
+
+                    <TextView
+                        android:id="@+id/textWork"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:text=""/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.1" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.35"
+                    android:orientation="vertical" >
+
+                    <ImageButton
+                        android:id="@+id/btnHome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:background="@null"
+                        android:contentDescription="@string/app_name"
+                        android:src="@drawable/favtypehomebutton" />
+
+                    <TextView
+                        android:id="@+id/textHome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:text="" />
+
+                    <ImageButton
+                        android:id="@+id/btnSchool"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="5dp"
+                        android:background="@null"
+                        android:contentDescription="@string/app_name"
+                        android:src="@drawable/favtypeschoolbutton" />
+
+                    <TextView
+                        android:id="@+id/textSchool"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center"
+                        android:text="" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.1" />
+            </LinearLayout>
+            -->
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/buttonsContainer"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_marginTop="0dp"
+                android:background="@null"
+                android:gravity="center"
+                android:textColor="@color/White"
+                android:visibility="invisible" />
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

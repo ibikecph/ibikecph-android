@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/textLogedIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:text="" />
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/pictureContainer"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_below="@+id/textLogedIn"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/rounded_imageview"
+                app:riv_border_color="@color/Grey"
+                app:riv_border_width="1dip"
+                app:riv_corner_radius="8dip"
+                app:riv_mutate_background="true"
+                app:riv_oval="false"
+                app:riv_tile_mode="repeat" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/pictureContainer"
+                android:layout_alignLeft="@+id/pictureContainer"
+                android:layout_alignRight="@+id/pictureContainer"
+                android:layout_alignTop="@+id/pictureContainer"
+                android:background="@drawable/rounded_image_frame"
+                android:contentDescription="@string/app_name"
+                android:visibility="gone"></ImageView>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/pictureContainer"
+                android:layout_alignLeft="@+id/pictureContainer"
+                android:layout_alignRight="@+id/pictureContainer"
+                android:layout_alignTop="@+id/pictureContainer"
+                android:background="@drawable/image_frame"
+                android:contentDescription="@string/app_name"
+                android:visibility="gone"></ImageView>
+
+            <TextView
+                android:id="@+id/textName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pictureContainer"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/imgLinked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textName"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:background="@null"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/fb_linked_icon" />
+
+            <TextView
+                android:id="@+id/textLinked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imgLinked"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp" />
+
+            <Button
+                android:id="@+id/btnLogout"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_below="@+id/textLinked"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/stroke_button"
+                android:text="Log out"
+                android:textColor="@color/White" />
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/stroke_button"
+                android:onClick="onBtnDelete"
+                android:text="Delete account"
+                android:textColor="@color/White" />
+        </RelativeLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"></ProgressBar>
+</RelativeLayout>

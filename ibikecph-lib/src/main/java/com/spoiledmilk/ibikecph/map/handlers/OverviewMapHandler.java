@@ -1,0 +1,174 @@
+package com.spoiledmilk.ibikecph.map.handlers;
+
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
+import android.view.View;
+
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.mapbox.mapboxsdk.api.ILatLng;
+import com.mapbox.mapboxsdk.overlay.Icon;
+import com.mapbox.mapboxsdk.overlay.Marker;
+import com.mapbox.mapboxsdk.overlay.Overlay;
+import com.mapbox.mapboxsdk.views.InfoWindow;
+import com.mapbox.mapboxsdk.views.MapView;
+import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.Geocoder;
+import com.spoiledmilk.ibikecph.map.IBCMapView;
+import com.spoiledmilk.ibikecph.map.MapActivity;
+import com.spoiledmilk.ibikecph.search.Address;
+import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
+import com.spoiledmilk.ibikecph.util.IbikePreferences;
+
+/**
+ * Created by jens on 5/29/15.
+ */
+public class OverviewMapHandler extends IBCMapHandler {
+    private Marker curMarker;
+    public static boolean isWatchingAddress = false;
+    public static Address addressBeingWatched = null;
+    private IBCMapView mapView;
+    private IbikePreferences settings;
+
+    public OverviewMapHandler(IBCMapView mapView) {
+        super(mapView);
+        this.mapView = mapView;
+        settings = IbikeApplication.getSettings();
+
+        Log.d("JC", "Instantiating OverviewMapHandler");
+
+        mapView.addGPSOverlay();
+
+        View userTrackingButton = mapView.getParentActivity().findViewById(R.id.userTrackingButton);
+        if (userTrackingButton != null) {
+            userTrackingButton.setVisibility(View.VISIBLE);
+        }
+
+        for (Overlay o : mapView.getOverlays()) {
+            Log.d("JC", "Overlay of type: " + o.getClass().getName());
+        }
+    }
+
+    private void showStatisticsInfoPane() {
+        MapActivity.frag.setVisibility(View.VISIBLE);
+        FragmentManager fm = mapView.getParentActivity().getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
+        ft.commit();
+
+        isWatchingAddress = false;
+    }
+
+
+    private void disableStatisticsInfoPane() {
+        MapActivity.frag.setVisibility(View.GONE);
+        Log.d("DV", "Infopanefragment removed!");
+        //OverviewMapHandler.isWatchingAddress = false;
+    }
+
+    @Override
+    public void destructor() {
+        Log.d("JC", "Destructing OverviewMapHandler");
+
+        // Remove the marker if it's there.
+        if (curMarker != null) {
+            mapView.removeMarker(curMarker);
+            curMarker = null;
+        }
+
+        mapView.removeGPSOverlay();
+    }
+
+    @Override
+    public void onShowMarker(MapView mapView, Marker marker) {
+
+    }
+
+    @Override
+    public void onHideMarker(MapView mapView, Marker marker) {
+
+    }
+
+    @Override
+    public void onTapMarker(MapView mapView, Marker marker) {
+        /*
+        There is a bug so that the marker can't be removed on click. Check out this gitissue
+        https://github.com/mapbox/mapbox-android-sdk/issues/567
+         */
+    }
+
+    public void removeMarker() {
+        if (IBCMapView.curAddressMarker != null) {
+            mapView.removeAddressMarker();
+            IBCMapView.curAddressMarker = null;
+        }
+        if (settings.getTrackingEnabled()) {
+            showStatisticsInfoPane();
+        } else {
+            disableStatisticsInfoPane();
+            isWatchingAddress = false;
+        }
+    }
+
+    @Override
+    public void onLongPressMarker(MapView mapView, Marker marker) {
+    }
+
+    @Override
+    public void onTapMap(MapView mapView, ILatLng iLatLng) {
+        removeMarker();
+    }
+
+    @Override
+    public void onLongPressMap(final MapView _mapView, final ILatLng location) {
+        Log.d("JC", "OverviewMapHandler.onLongPressMap");
+
+        Geocoder.getAddressForLocation(location, new Geocoder.GeocoderCallback() {
+            @Override
+            public void onSuccess(Address address) {
+                // This refers to the FIELD, not the argument to the method (which I renamed to _mapView). This is
+                // because we want it to be an IBCMapView.
+                addressBeingWatched = address;
+                MapActivity.frag.setVisibility(View.VISIBLE);
+                mapView.showAddress(address);
+                isWatchingAddress = true;
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+        });
+
+
+    }
+
+    /**
+     * If the user presses the back button we should clean up and return the map in the default state.
+     *
+     * @return
+     */
+    public boolean onBackPressed() {
+        if (isWatchingAddress) {
+            if (settings.getTrackingEnabled()) {
+                showStatisticsInfoPane();
+            } else {
+                disableStatisticsInfoPane();
+            }
+            this.mapView.removeAddressMarker();
+
+            isWatchingAddress = false;
+
+            return false;
+        } else {
+            return true;
+        }
+    }
+}

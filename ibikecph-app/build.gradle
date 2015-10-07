@@ -1,0 +1,24 @@
+apply plugin: 'com.android.application'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':ibikecph-lib')
+}
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "dk.kk.ibikecph"
+        minSdkVersion 16
+        targetSdkVersion 17
+        // versionCode 1
+        // versionName "1.0"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+}
