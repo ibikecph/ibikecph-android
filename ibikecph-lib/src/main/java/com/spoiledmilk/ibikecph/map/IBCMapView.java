@@ -306,7 +306,7 @@ public class IBCMapView extends MapView {
         // Put a marker on the map. Currently the lat/lon of the Address object corresponds to the position where the
         // user tapped. In a minute, when we're drawing a route, we have to be wary to draw a line from where the route
         // ends to this coordinate.
-        try {
+      /*  try {
             IBCMarker m = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation(), MarkerType.ADDRESS);
             Icon markerIcon = new Icon(this.getResources().getDrawable(R.drawable.marker_finish));
             m.setIcon(markerIcon);
@@ -315,7 +315,7 @@ public class IBCMapView extends MapView {
 
             this.curAddressMarker = m;
         } catch (Exception ex) {
-        }
+        }*/
 
         // Invalidate the view so the marker gets drawn.
         this.invalidate();
