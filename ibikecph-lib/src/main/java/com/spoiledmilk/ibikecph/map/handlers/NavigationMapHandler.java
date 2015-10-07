@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.View;
 
@@ -132,8 +133,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void routeRecalculationDone() {
         Log.d("JC", "NavigationMapHandler routeRecalculationDone");
         removeAnyPathOverlays();
+        PathOverlay path = null;
+        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+            path = new PathOverlay(Color.parseColor("#FF6600"), 10);
+        } else {
+            path = new PathOverlay(Color.RED, 10);
+        }
 
-        PathOverlay path = new PathOverlay(Color.RED, 10);
         for (Location loc : this.route.waypoints) {
             path.addPoint(loc.getLatitude(), loc.getLongitude());
         }
@@ -177,7 +183,12 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         initInfopane();
 
         // TODO: Fix confusion between Location and LatLng objects
-        PathOverlay path = new PathOverlay(Color.RED, 10);
+        PathOverlay path = null;
+        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+            path = new PathOverlay(Color.parseColor("#FF6600"), 10);
+        } else {
+            path = new PathOverlay(Color.RED, 10);
+        }
         PathOverlay beginWalkingPath = new PathOverlay(Color.GRAY, 10);
         ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
 
