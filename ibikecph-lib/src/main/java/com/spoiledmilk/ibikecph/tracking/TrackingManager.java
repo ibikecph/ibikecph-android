@@ -247,8 +247,9 @@ public class TrackingManager implements LocationListener {
                     /*
                     If ID values are >0, an ID from the server has already been set, meaning that the track has already been uploaded.
                     Also checks if the track is > 15 minutes old - used to avoid uploading a track in progress in the makeAndSaveTrack-method.
+                    Also checks if the track has been Geocoded (start + end addresses) has been set!
                      */
-                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).lessThanOrEqualTo("timestamp", newDate).findAll();
+                    tracksToUpload = realm.where(Track.class).equalTo("ID", 0).lessThanOrEqualTo("timestamp", newDate).equalTo("hasBeenGeocoded", true).findAll();
                     Log.d("DV", "tracksToUploadSize = " + tracksToUpload.size());
                 } catch (Exception e) {
                     Log.d("DV", "uploadTracksToServer-exception: " + e.getMessage());

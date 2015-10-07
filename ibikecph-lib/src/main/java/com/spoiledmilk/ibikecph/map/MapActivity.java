@@ -46,6 +46,7 @@ import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
+import com.spoiledmilk.ibikecph.tracking.TrackHelper;
 import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 import com.spoiledmilk.ibikecph.util.Config;
@@ -58,6 +59,9 @@ import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.exceptions.RealmMigrationNeededException;
 
 /**
  * The main map view.
@@ -169,6 +173,16 @@ public class MapActivity extends IBCMapActivity {
         this.mapView.getUserLocationOverlay().enableFollowLocation();
         this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
+        // Ensure all tracks have been geocoded.
+        try {
+            TrackHelper.ensureAllTracksGeocoded();
+        } catch (RealmMigrationNeededException e) {
+            // If we need to migrate Realm, just delete the file
+            /* FIXME: This should clearly not go into production. We should decide on a proper DB schema, and make proper
+               migrations if we need to change it. */
+            Log.d("JC", "Migration needed, deleting the Realm file!");
+            Realm.deleteRealmFile(this);
+        }
         TrackingManager.uploadTracksToServer();
     }
 
