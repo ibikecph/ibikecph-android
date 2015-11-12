@@ -112,6 +112,17 @@
                 android:paddingRight="22dp"
                 android:src="@drawable/btn_route_green_disabled" />
 
+            <ImageButton
+                android:id="@+id/navigationOverviewBreakButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/navigationOverviewGreenButton"
+                android:background="@color/White"
+                android:paddingLeft="22dp"
+                android:paddingRight="22dp"
+                android:src="@drawable/btn_train_disabled"
+                android:visibility="gone"/>
+
         </RelativeLayout>
     </RelativeLayout>
 

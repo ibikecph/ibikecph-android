@@ -6,5 +6,6 @@ package com.spoiledmilk.ibikecph.map;
 public enum RouteType {
     FASTEST,
     CARGO,
-    GREEN
+    GREEN,
+    BREAK
 }

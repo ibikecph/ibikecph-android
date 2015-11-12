@@ -27,7 +27,7 @@ import java.util.Date;
  */
 public class NavigationOverviewInfoPane extends InfoPaneFragment implements View.OnClickListener {
     private NavigationMapHandler parent;
-    private ImageButton fastButton, cargoButton, greenButton;
+    private ImageButton fastButton, cargoButton, greenButton, breakButton;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +60,13 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         fastButton.setOnClickListener(this);
         cargoButton.setOnClickListener(this);
         greenButton.setOnClickListener(this);
+
+
+        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+            breakButton = (ImageButton) v.findViewById(R.id.navigationOverviewBreakButton);
+            breakButton.setVisibility(View.VISIBLE);
+            breakButton.setOnClickListener(this);
+        }
 
         TextView durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
         TextView lengthText = (TextView) v.findViewById(R.id.navigationOverviewRouteLength);
@@ -112,6 +119,10 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
                 break;
             case FASTEST:
                 fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
+                break;
+            case BREAK:
+                breakButton.setImageResource(R.drawable.btn_train_enabled);
+                break;
             default:
                 break;
         }
@@ -158,6 +169,11 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
 
             this.parent.changeRouteType(RouteType.GREEN);
 
+        } else if (v.getId() == R.id.navigationOverviewBreakButton) {
+            disableAllRouteButtons();
+            breakButton.setImageResource(R.drawable.btn_train_enabled);
+
+            this.parent.changeRouteType(RouteType.BREAK);
         } else if (v.getId() == R.id.navigationOverviewSource) {
             MapActivity activity = (MapActivity) this.getActivity();
             Intent i = new Intent(activity, SearchAutocompleteActivity.class);
@@ -174,5 +190,8 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         fastButton.setImageResource(R.drawable.btn_route_fastest_disabled);
         cargoButton.setImageResource(R.drawable.btn_route_cargo_disabled);
         greenButton.setImageResource(R.drawable.btn_route_green_disabled);
+        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+            breakButton.setImageResource(R.drawable.btn_train_disabled);
+        }
     }
 }
