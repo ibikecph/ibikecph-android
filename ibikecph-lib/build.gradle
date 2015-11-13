@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 
 repositories {
+    maven { url "http://dl.bintray.com/populov/maven" }
     mavenCentral()
 }
 
@@ -14,9 +15,11 @@ dependencies {
     compile 'com.loopj.android:android-async-http:1.4.7'
     compile 'com.makeramen:roundedimageview:2.2.0'
     compile 'com.jpardogo.materialtabstrip:library:1.0.9'
+    compile 'com.android.support:appcompat-v7:20+'
     compile('com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.4@aar') {
         transitive = true
     }
+
 
 }
 

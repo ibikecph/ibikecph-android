@@ -194,4 +194,5 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             breakButton.setImageResource(R.drawable.btn_train_disabled);
         }
     }
+
 }

@@ -7,7 +7,6 @@ package com.spoiledmilk.ibikecph.map;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -15,19 +14,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Looper;
-import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
 import com.mapbox.mapboxsdk.events.MapListener;
@@ -36,9 +35,11 @@ import com.mapbox.mapboxsdk.events.ScrollEvent;
 import com.mapbox.mapboxsdk.events.ZoomEvent;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
-import com.spoiledmilk.ibikecph.*;
+import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.LeftMenu;
+import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.TermsManager;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
-import com.spoiledmilk.ibikecph.login.HTTPAccountHandler;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
@@ -53,7 +54,6 @@ import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
-import com.vividsolutions.jts.operation.overlay.validate.OverlayResultValidator;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -78,6 +78,7 @@ public class MapActivity extends IBCMapActivity {
     public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
     public static Context mapActivityContext;
+    //FragmentPagerAdapter adapterViewPager;
 
     protected LeftMenu leftMenu;
     private DrawerLayout drawerLayout;
@@ -86,6 +87,7 @@ public class MapActivity extends IBCMapActivity {
     private ArrayList<InfoPaneFragment> fragments = new ArrayList<InfoPaneFragment>();
     private IbikePreferences settings;
     public static View frag;
+    public static View breakFrag;
     public static boolean fromSearch = false;
 
     @Override
@@ -95,6 +97,8 @@ public class MapActivity extends IBCMapActivity {
         this.setContentView(R.layout.main_map_activity);
         this.settings = IbikeApplication.getSettings();
         frag = findViewById(R.id.infoPaneContainer);
+
+        //breakFrag = findViewById(R.id.breakRouteContainer);
 
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.init(IBCMapView.MapState.DEFAULT, this);
@@ -174,6 +178,29 @@ public class MapActivity extends IBCMapActivity {
         this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
         TrackingManager.uploadTracksToServer();
+
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+
+        //TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
+        //titleIndicator.setViewPager(pager);
+
+        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabs.setViewPager(pager);
+
+        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
     /**
@@ -246,7 +273,7 @@ public class MapActivity extends IBCMapActivity {
     public void onResume() {
         super.onResume();
         LOG.d("Map activity onResume");
-
+//        MapActivity.breakFrag.setVisibility(View.VISIBLE);
         if (settings.getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
             showStatisticsInfoPane();
         } else if (!fromSearch && OverviewMapHandler.isWatchingAddress) {
@@ -609,6 +636,32 @@ public class MapActivity extends IBCMapActivity {
         } else {
             userTrackingButton.setImageDrawable(getResources().getDrawable(R.drawable.compass_tracking));
         }
+    }
+
+
+    // Fragment handling section
+    class MyPagerAdapter extends FragmentPagerAdapter {
+        private final String[] TITLES = {"Rute 1", "Rute 2", "Rute 3"};
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return TITLES[position];
+        }
+
+        @Override
+        public int getCount() {
+            return TITLES.length;
+        }
+
+        public MyPagerAdapter(android.support.v4.app.FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return BreakRouteFragment.newInstance(position);
+        }
+
     }
 
 
