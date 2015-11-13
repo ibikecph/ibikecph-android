@@ -26,7 +26,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
 import com.mapbox.mapboxsdk.events.MapListener;
@@ -54,6 +53,7 @@ import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -97,8 +97,7 @@ public class MapActivity extends IBCMapActivity {
         this.setContentView(R.layout.main_map_activity);
         this.settings = IbikeApplication.getSettings();
         frag = findViewById(R.id.infoPaneContainer);
-
-        //breakFrag = findViewById(R.id.breakRouteContainer);
+        breakFrag = findViewById(R.id.breakRouteContainer);
 
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.init(IBCMapView.MapState.DEFAULT, this);
@@ -182,11 +181,13 @@ public class MapActivity extends IBCMapActivity {
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
 
-        //TitlePageIndicator titleIndicator = (TitlePageIndicator)findViewById(R.id.titles);
-        //titleIndicator.setViewPager(pager);
+       /* PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.tabs);
+        pagerTabStrip.setDrawFullUnderline(false);*/
 
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        CirclePageIndicator tabs = (CirclePageIndicator)findViewById(R.id.tabs);
         tabs.setViewPager(pager);
+        tabs.setFillColor(Color.BLACK);
+        tabs.setRadius(15);
 
         tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -641,7 +642,7 @@ public class MapActivity extends IBCMapActivity {
 
     // Fragment handling section
     class MyPagerAdapter extends FragmentPagerAdapter {
-        private final String[] TITLES = {"Rute 1", "Rute 2", "Rute 3"};
+        private final String[] TITLES = {"1", "2", "3"};
 
         @Override
         public CharSequence getPageTitle(int position) {

@@ -66,6 +66,8 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             breakButton = (ImageButton) v.findViewById(R.id.navigationOverviewBreakButton);
             breakButton.setVisibility(View.VISIBLE);
             breakButton.setOnClickListener(this);
+
+            cargoButton.setVisibility(View.GONE);
         }
 
         TextView durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
@@ -172,6 +174,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         } else if (v.getId() == R.id.navigationOverviewBreakButton) {
             disableAllRouteButtons();
             breakButton.setImageResource(R.drawable.btn_train_enabled);
+            MapActivity.breakFrag.setVisibility(View.VISIBLE);
 
             this.parent.changeRouteType(RouteType.BREAK);
         } else if (v.getId() == R.id.navigationOverviewSource) {
@@ -192,6 +195,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         greenButton.setImageResource(R.drawable.btn_route_green_disabled);
         if (IbikeApplication.getAppName().equals("Cykelplanen")) {
             breakButton.setImageResource(R.drawable.btn_train_disabled);
+            MapActivity.breakFrag.setVisibility(View.GONE);
         }
     }
 
