@@ -23,14 +23,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"></android.support.v4.view.ViewPager>
+                android:layout_height="200dp"></android.support.v4.view.ViewPager>
 
-            <com.viewpagerindicator.LinePageIndicator
+            <com.viewpagerindicator.CirclePageIndicator
                 android:id="@+id/tabs"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

@@ -53,7 +53,7 @@ import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
-import com.viewpagerindicator.LinePageIndicator;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -184,13 +184,11 @@ public class MapActivity extends IBCMapActivity {
        /* PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.tabs);
         pagerTabStrip.setDrawFullUnderline(false);*/
 
-        LinePageIndicator tabs = (LinePageIndicator) findViewById(R.id.tabs);
+        CirclePageIndicator tabs = (CirclePageIndicator) findViewById(R.id.tabs);
         tabs.setViewPager(pager);
+        tabs.setRadius(10);
         tabs.setCentered(true);
-        tabs.setLineWidth(70);
-        tabs.setGapWidth(60);
-        tabs.setSelectedColor(Color.parseColor("#FF6600"));
-
+        tabs.setFillColor(Color.parseColor("#E2A500"));
 
         tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
