@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/randomText"
-        android:gravity="center_horizontal"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="FRAGTMENT"
-        android:textColor="@color/black"/>
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/randomText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="FRAGTMENT"
+            android:textColor="@color/black" />
+
+    </ScrollView>
 
 </FrameLayout>

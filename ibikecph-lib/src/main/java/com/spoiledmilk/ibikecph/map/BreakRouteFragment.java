@@ -43,12 +43,21 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
         position = getArguments().getInt(ARG_POSITION);
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
         randomText = (TextView) root.findViewById(R.id.randomText);
-        randomText.setText("Fragment number " + position);
+        randomText.setText("Fragment number " + position + "\n" +
+                " åååh0\n" +
+                " åååh1\n" +
+                " åååh2\n" +
+                " åååh3\n" +
+                " åååh4\n" +
+                " åååh5\n" +
+                " åååh6\n" +
+                " åååh7\n" +
+                " åååh8\n" +
+                " åååh9");
         Log.d("DV", "Fragment onResume!");
     }
 

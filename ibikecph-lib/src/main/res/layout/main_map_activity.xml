@@ -28,26 +28,16 @@
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
                 android:layout_width="match_parent"
-                android:layout_height="100dp">
+                android:layout_height="100dp"></android.support.v4.view.ViewPager>
 
-                <!--<android.support.v4.view.PagerTabStrip
-                    android:id="@+id/tabs"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:paddingBottom="4dp"
-                    android:paddingTop="4dp"
-                    android:textColor="#000"/>-->
-
-            </android.support.v4.view.ViewPager>
-
-            <com.viewpagerindicator.CirclePageIndicator
+            <com.viewpagerindicator.LinePageIndicator
                 android:id="@+id/tabs"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"/>
 
         </LinearLayout>
-
 
         <RelativeLayout
             android:layout_width="fill_parent"

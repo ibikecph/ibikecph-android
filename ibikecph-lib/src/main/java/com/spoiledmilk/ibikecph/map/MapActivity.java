@@ -53,7 +53,7 @@ import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
-import com.viewpagerindicator.CirclePageIndicator;
+import com.viewpagerindicator.LinePageIndicator;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -178,16 +178,19 @@ public class MapActivity extends IBCMapActivity {
         updateUserTrackingState();
         TrackingManager.uploadTracksToServer();
 
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        final ViewPager pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
 
        /* PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.tabs);
         pagerTabStrip.setDrawFullUnderline(false);*/
 
-        CirclePageIndicator tabs = (CirclePageIndicator)findViewById(R.id.tabs);
+        LinePageIndicator tabs = (LinePageIndicator) findViewById(R.id.tabs);
         tabs.setViewPager(pager);
-        tabs.setFillColor(Color.BLACK);
-        tabs.setRadius(15);
+        tabs.setCentered(true);
+        tabs.setLineWidth(70);
+        tabs.setGapWidth(60);
+        tabs.setSelectedColor(Color.parseColor("#FF6600"));
+
 
         tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -202,6 +205,7 @@ public class MapActivity extends IBCMapActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+
     }
 
     /**
