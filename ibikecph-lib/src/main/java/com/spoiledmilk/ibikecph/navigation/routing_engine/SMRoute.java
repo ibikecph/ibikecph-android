@@ -10,9 +10,12 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest.RouteInfo;
@@ -22,6 +25,8 @@ import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,7 +36,7 @@ import java.util.List;
 // TODO: This code comes from previous vendor. It's a mess. /jc
 public class SMRoute implements SMHttpRequestListener, LocationListener {
 
-	public static final int MAX_DISTANCE_FROM_PATH = 20;
+    public static final int MAX_DISTANCE_FROM_PATH = 20;
     public static final int MIN_DISTANCE_FOR_RECALCULATION = 20;
     public static final int TO_START_STATION = 0;
     public static final int TO_END_STATION = 1;
@@ -45,11 +50,11 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public List<Location> waypoints;
     public List<SMTurnInstruction> allTurnInstructions;
     public List<SMTurnInstruction> pastTurnInstructions; // turn instructions
-                                                         // from
+    // from
     // first to the last passed
     // turn
     public ArrayList<SMTurnInstruction> turnInstructions; // turn instruction
-                                                          // from next
+    // from next
     // to the last
     public List<Location> visitedLocations;
     float distanceLeft;
@@ -241,7 +246,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     private void setupRoute(JsonNode jsonRoot) {
         LOG.d("SMRoute setupRoute()");
 
-        boolean ok = parseFromJson(jsonRoot, null, false);
+        JsonNode actualObj = getObject();
+
+        //boolean ok = parseFromJson(jsonRoot, null, false);
+        boolean ok = parseFromJson(actualObj, null, false);
         if (ok) {
             approachingTurn = false;
             tripDistance = 0.0f;
@@ -269,149 +277,170 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             if (jsonRoot == null) {
                 return false;
             }
-            waypoints = decodePolyline(jsonRoot.path("route_geometry").textValue());
 
-            if (waypoints == null || waypoints.size() < 2) {
-                return false;
-            }
+            int amountOfRoutes = jsonRoot.path("routes").size(); // Gets the amount of routes. Needs to implement logic to generate the full route though, only loops now.
+            MapActivity.obsInt.set(amountOfRoutes); // Set the amount of route suggestions in order to display this amount in the fragmentAdapter
 
-            turnInstructions = new ArrayList<SMTurnInstruction>();
-            pastTurnInstructions = new LinkedList<SMTurnInstruction>();
-            visitedLocations = new ArrayList<Location>();
-            estimatedArrivalTime = jsonRoot.path("route_summary").path("total_time").asInt();
-            arrivalTime = estimatedArrivalTime;
-            distancePassed = 0d;
-            if (estimatedRouteDistance < 0)
-                estimatedRouteDistance = jsonRoot.path("route_summary").path("total_distance").asInt();
+            for (int j = 0; j < amountOfRoutes; j++) {
 
-            routeChecksum = null;
-            destinationHint = null;
+                //waypoints = decodePolyline(jsonRoot.path("route_geometry").textValue());
+                waypoints = decodePolyline(jsonRoot.path("routes").get(j).get(1).path("route_geometry").textValue());
 
-            if (!jsonRoot.path("hint_data").path("checksum").isMissingNode()) {
-                routeChecksum = jsonRoot.path("hint_data").path("checksum").asText();
-            }
+                if (waypoints == null || waypoints.size() < 2) {
+                    return false;
+                }
 
-            JsonNode hint_locations = jsonRoot.path("hint_data").path("locations");
-            if (hint_locations != null && !hint_locations.isMissingNode() && hint_locations.size() > 0) {
-                destinationHint = jsonRoot.path("hint_data").path("locations").get(hint_locations.size() - 1).asText();
-            }
+                turnInstructions = new ArrayList<SMTurnInstruction>();
+                pastTurnInstructions = new LinkedList<SMTurnInstruction>();
+                visitedLocations = new ArrayList<Location>();
+                //estimatedArrivalTime = jsonRoot.path("route_summary").path("total_time").asInt();
+                estimatedArrivalTime = jsonRoot.path("meta").path("route_summary").path("total_time").asInt();
+                arrivalTime = estimatedArrivalTime;
+                distancePassed = 0d;
+                if (estimatedRouteDistance < 0)
+                    //estimatedRouteDistance = jsonRoot.path("route_summary").path("total_distance").asInt();
+                    estimatedRouteDistance = jsonRoot.path("meta").path("route_summary").path("total_distance").asInt();
 
-            JsonNode routeInstructionsArr = jsonRoot.path("route_instructions");
-            if (routeInstructionsArr != null && routeInstructionsArr.size() > 0) {
-                int prevlengthInMeters = 0;
-                String prevlengthWithUnit = "";
-                boolean isFirst = true;
-                for (JsonNode instructionNode : routeInstructionsArr) {
-                    SMTurnInstruction instruction = new SMTurnInstruction();
+                routeChecksum = null;
+                destinationHint = null;
 
-                    String[] arr = instructionNode.get(0).asText().split("-");
-                    if (arr.length < 1)
-                        continue;
-                    int pos = Integer.valueOf(arr[0]);
-                    if (pos <= 17) {
-                        instruction.drivingDirection = TurnDirection.values()[pos];
-                        if (arr.length > 1 && arr[1] != null) {
-                            instruction.ordinalDirection = arr[1];
-                        } else {
-                            instruction.ordinalDirection = "";
+                //if (!jsonRoot.path("hint_data").path("checksum").isMissingNode()) {
+                if (!jsonRoot.path("routes").get(j).get(1).path("hint_data").path("checksum").isMissingNode()) {
+                    //routeChecksum = jsonRoot.path("hint_data").path("checksum").asText();
+                    routeChecksum = (jsonRoot.path("routes").get(j).get(1).path("hint_data").path("checksum").asText());
+
+                }
+
+                //JsonNode hint_locations = jsonRoot.path("hint_data").path("locations");
+                JsonNode hint_locations = (jsonRoot.path("routes").get(j).get(1).path("hint_data").path("locations"));
+                if (hint_locations != null && !hint_locations.isMissingNode() && hint_locations.size() > 0) {
+                    //destinationHint = jsonRoot.path("hint_data").path("locations").get(hint_locations.size() - 1).asText();
+                    destinationHint = jsonRoot.path("routes").get(j).get(1).path("hint_data").path("locations").get(hint_locations.size() - 1).asText();
+                }
+
+                //JsonNode routeInstructionsArr = jsonRoot.path("route_instructions");
+                JsonNode routeInstructionsArr = (jsonRoot.path("routes").get(j).get(0).path("route_instructions"));
+                if (routeInstructionsArr != null && routeInstructionsArr.size() > 0) {
+                    int prevlengthInMeters = 0;
+                    String prevlengthWithUnit = "";
+                    boolean isFirst = true;
+                    for (JsonNode instructionNode : routeInstructionsArr) {
+                        SMTurnInstruction instruction = new SMTurnInstruction();
+
+                        String[] arr = instructionNode.get(0).asText().split("-");
+                        if (arr.length < 1)
+                            continue;
+                        int pos = Integer.valueOf(arr[0]);
+                        if (pos <= 17) {
+                            instruction.drivingDirection = TurnDirection.values()[pos];
+                            if (arr.length > 1 && arr[1] != null) {
+                                instruction.ordinalDirection = arr[1];
+                            } else {
+                                instruction.ordinalDirection = "";
+                            }
+
+                            instruction.wayName = instructionNode.get(1).asText();
+                            if (instruction.wayName.matches("\\{.+\\:.+\\}"))
+                                instruction.wayName = IbikeApplication.getString(instruction.wayName);
+                            instruction.wayName = instruction.wayName.replaceAll("&#39;", "'");
+                            instruction.lengthInMeters = prevlengthInMeters;
+                            prevlengthInMeters = instructionNode.get(2).asInt();
+                            instruction.timeInSeconds = instructionNode.get(4).asInt();
+                            instruction.lengthWithUnit = prevlengthWithUnit;
+                            if (instructionNode.size() > 8) {
+                                instruction.vehicle = instructionNode.get(8).asInt();
+                            }
+                            /**
+                             * Save length to next turn with units so we don't have to generate it each time It's formatted just the way we like it
+                             */
+                            instruction.fixedLengthWithUnit = Util.formatDistance(prevlengthInMeters);
+                            prevlengthWithUnit = instructionNode.get(5).asText();
+                            instruction.directionAbrevation = instructionNode.get(6).asText();
+                            instruction.azimuth = (float) instructionNode.get(7).asDouble();
+
+                            if (isFirst) {
+                                instruction.generateStartDescriptionString();
+                                isFirst = false;
+                            } else {
+                                instruction.generateDescriptionString();
+                            }
+                            instruction.generateFullDescriptionString();
+                            int position = instructionNode.get(3).asInt();
+                            instruction.waypointsIndex = position;
+                            if (waypoints != null && position >= 0 && position < waypoints.size())
+                                instruction.loc = waypoints.get(position);
+                            turnInstructions.add(instruction);
                         }
+                    }
+                }
+                if (isRouteBroken && turnInstructions != null) {
 
-                        instruction.wayName = instructionNode.get(1).asText();
-                        if (instruction.wayName.matches("\\{.+\\:.+\\}"))
-                            instruction.wayName = IbikeApplication.getString(instruction.wayName);
-                        instruction.wayName = instruction.wayName.replaceAll("&#39;", "'");
-                        instruction.lengthInMeters = prevlengthInMeters;
-                        prevlengthInMeters = instructionNode.get(2).asInt();
-                        instruction.timeInSeconds = instructionNode.get(4).asInt();
-                        instruction.lengthWithUnit = prevlengthWithUnit;
-                        if (instructionNode.size() > 8) {
-                            instruction.vehicle = instructionNode.get(8).asInt();
+                    double dStat1 = Double.MAX_VALUE, dStat2 = Double.MAX_VALUE;
+                    for (int i = 0; i < waypoints.size(); i++) {
+                        if (startStation.distanceTo(waypoints.get(i)) < dStat1) {
+                            dStat1 = startStation.distanceTo(waypoints.get(i));
+                            waypointStation1 = i;
                         }
-                        /**
-                         * Save length to next turn with units so we don't have to generate it each time It's formatted just the way we like it
-                         */
-                        instruction.fixedLengthWithUnit = Util.formatDistance(prevlengthInMeters);
-                        prevlengthWithUnit = instructionNode.get(5).asText();
-                        instruction.directionAbrevation = instructionNode.get(6).asText();
-                        instruction.azimuth = (float) instructionNode.get(7).asDouble();
-
-                        if (isFirst) {
-                            instruction.generateStartDescriptionString();
-                            isFirst = false;
-                        } else {
-                            instruction.generateDescriptionString();
+                        if (endStation.distanceTo(waypoints.get(i)) < dStat2) {
+                            dStat2 = endStation.distanceTo(waypoints.get(i));
+                            waypointStation2 = i;
                         }
-                        instruction.generateFullDescriptionString();
-                        int position = instructionNode.get(3).asInt();
-                        instruction.waypointsIndex = position;
-                        if (waypoints != null && position >= 0 && position < waypoints.size())
-                            instruction.loc = waypoints.get(position);
-                        turnInstructions.add(instruction);
                     }
-                }
-            }
-            if (isRouteBroken && turnInstructions != null) {
 
-                double dStat1 = Double.MAX_VALUE, dStat2 = Double.MAX_VALUE;
-                for (int i = 0; i < waypoints.size(); i++) {
-                    if (startStation.distanceTo(waypoints.get(i)) < dStat1) {
-                        dStat1 = startStation.distanceTo(waypoints.get(i));
-                        waypointStation1 = i;
+                    Iterator<SMTurnInstruction> it2 = turnInstructions.iterator();
+                    float distToStart = Float.MAX_VALUE, distToEnd = Float.MAX_VALUE;
+                    while (it2.hasNext()) {
+                        SMTurnInstruction smt = it2.next();
+                        if (smt.loc.distanceTo(startStation) < distToStart && smt.waypointsIndex <= waypointStation1) {
+                            distToStart = smt.loc.distanceTo(startStation);
+                            station1 = smt;
+                        }
+                        if (smt.loc.distanceTo(endStation) < distToEnd && smt.waypointsIndex <= waypointStation2) {
+                            distToEnd = smt.loc.distanceTo(endStation);
+                            station2 = smt;
+                        }
                     }
-                    if (endStation.distanceTo(waypoints.get(i)) < dStat2) {
-                        dStat2 = endStation.distanceTo(waypoints.get(i));
-                        waypointStation2 = i;
-                    }
-                }
 
-                Iterator<SMTurnInstruction> it2 = turnInstructions.iterator();
-                float distToStart = Float.MAX_VALUE, distToEnd = Float.MAX_VALUE;
-                while (it2.hasNext()) {
-                    SMTurnInstruction smt = it2.next();
-                    if (smt.loc.distanceTo(startStation) < distToStart && smt.waypointsIndex <= waypointStation1) {
-                        distToStart = smt.loc.distanceTo(startStation);
-                        station1 = smt;
-                    }
-                    if (smt.loc.distanceTo(endStation) < distToEnd && smt.waypointsIndex <= waypointStation2) {
-                        distToEnd = smt.loc.distanceTo(endStation);
-                        station2 = smt;
+                    station1.convertToStation(startStationName, stationIcon);
+                    station2.convertToStation(endStationName, stationIcon);
+                    int startIndex = turnInstructions.indexOf(station1);
+                    int endIndex = turnInstructions.indexOf(station2);
+                    while (startIndex < endIndex - 1) {
+                        turnInstructions.remove(startIndex + 1);
+                        startIndex = turnInstructions.indexOf(station1);
+                        endIndex = turnInstructions.indexOf(station2);
                     }
                 }
 
-                station1.convertToStation(startStationName, stationIcon);
-                station2.convertToStation(endStationName, stationIcon);
-                int startIndex = turnInstructions.indexOf(station1);
-                int endIndex = turnInstructions.indexOf(station2);
-                while (startIndex < endIndex - 1) {
-                    turnInstructions.remove(startIndex + 1);
-                    startIndex = turnInstructions.indexOf(station1);
-                    endIndex = turnInstructions.indexOf(station2);
-                }
-            }
+                int longestStreet = 0;
+                viaStreets = "";
 
-            int longestStreet = 0;
-            viaStreets = "";
-
-            int n = jsonRoot.path("route_name").size();
-            if (n > 0) {
-                int i = 0;
-                for (JsonNode streetNode : jsonRoot.path("route_name")) {
-                    i++;
-                    viaStreets += streetNode.asText() + (i == n ? "" : ", ");
-                }
-            }
-            if (viaStreets == null || viaStreets.trim().equals("")) {
-                for (int i = 1; i < turnInstructions.size() - 1; i++) {
-                    SMTurnInstruction inst = turnInstructions.get(i);
-                    if (inst.lengthInMeters > longestStreet) {
-                        longestStreet = inst.lengthInMeters;
-                        viaStreets = turnInstructions.get(i - 1).wayName;
+                // int n = jsonRoot.path("route_name").size();
+                int n = jsonRoot.path("routes").get(j).get(1).path("route_name").size();
+                if (n > 0) {
+                    int i = 0;
+                    //for (JsonNode streetNode : jsonRoot.path("route_name")) {
+                    for (JsonNode streetNode : jsonRoot.path("routes").get(j).get(1).path("route_name")) {
+                        i++;
+                        viaStreets += streetNode.asText() + (i == n ? "" : ", ");
                     }
                 }
+                if (viaStreets == null || viaStreets.trim().equals("")) {
+                    for (int i = 1; i < turnInstructions.size() - 1; i++) {
+                        SMTurnInstruction inst = turnInstructions.get(i);
+                        if (inst.lengthInMeters > longestStreet) {
+                            longestStreet = inst.lengthInMeters;
+                            viaStreets = turnInstructions.get(i - 1).wayName;
+                        }
+                    }
+                }
+
+                lastVisitedWaypointIndex = 0;
             }
 
-            lastVisitedWaypointIndex = 0;
+
         }
+
         return true;
     }
 
@@ -435,7 +464,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         int lat = 0, lng = 0;
 
         List<Location> locations = new ArrayList<Location>();
-        for (int i = 0; i < len;) {
+        for (int i = 0; i < len; ) {
             for (int k = 0; k < 2; k++) {
 
                 int delta = 0;
@@ -659,7 +688,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         if (!isRouteBroken
                 || (isRouteBroken && (((pastTurnInstructions != null && pastTurnInstructions.contains(station1)) || loc.distanceTo(endStation) < loc
-                        .distanceTo(startStation))))) {
+                .distanceTo(startStation))))) {
             routePhase = TO_DESTINATION;
             isRouteBroken = false;
             new SMHttpRequest().getRecalculatedRoute(loc, end, null, routeChecksum, null, destinationHint, this.type, this);
@@ -870,7 +899,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     // Iterator<Location> it = waypoints.iterator();
     // while (it.hasNext()) {
     // Location loc = it.next();
-    // LOG.d("waypoint = " + loc.getLatitude() + " , " + loc.getLongitude() + "\n");
+    // LOG.d("waypoint = " + loc.getLatitude() + " , " + loc.getLongitude() + "");
     // }
     // LOG.d("///////////////////////////////////////////");
     // }
@@ -919,12 +948,52 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     }
 
 
-
     public RouteType getType() {
         return type;
     }
 
     public float getDistanceLeft() {
         return distanceLeft;
+    }
+
+    public JsonNode getObject() {
+
+        JsonNode actualObj = null;
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            actualObj = mapper.readTree(loadJSONFromAsset());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return actualObj;
+
+    }
+
+    public String loadJSONFromAsset() {
+        String json = null;
+        try {
+
+            InputStream is = IbikeApplication.getContext().getAssets().open("Dummy_JSON.js");
+
+            int size = is.available();
+
+            byte[] buffer = new byte[size];
+
+            is.read(buffer);
+
+            is.close();
+
+            json = new String(buffer, "UTF-8");
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+
     }
 }

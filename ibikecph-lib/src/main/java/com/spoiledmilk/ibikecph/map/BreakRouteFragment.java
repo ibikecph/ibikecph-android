@@ -29,7 +29,7 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     private TableRow tableRow;
     private TableLayout tableLayout;
 
-    private String[] typeImage = new String[20]; // Image for each type of transportation
+    private String[] imageType = new String[20]; // Image for each type of transportation
     private String[] startTime = new String[20]; // Start time for each step of the full route
     private String[] arrivalTime = new String[20]; // Arrival time of each step of the full route
     private String[] typeAndTime = new String[20]; // Transportation type and distance time or station name

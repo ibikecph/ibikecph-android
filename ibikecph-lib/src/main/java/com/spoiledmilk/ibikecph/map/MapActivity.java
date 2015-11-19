@@ -78,7 +78,6 @@ public class MapActivity extends IBCMapActivity {
     public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
     public static Context mapActivityContext;
-    //FragmentPagerAdapter adapterViewPager;
 
     protected LeftMenu leftMenu;
     private DrawerLayout drawerLayout;
@@ -89,6 +88,9 @@ public class MapActivity extends IBCMapActivity {
     public static View frag;
     public static View breakFrag;
     public static boolean fromSearch = false;
+    public static ObservableInteger obsInt;
+    public int amount = 0;
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -177,32 +179,7 @@ public class MapActivity extends IBCMapActivity {
         this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
         TrackingManager.uploadTracksToServer();
-
-        final ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
-
-       /* PagerTabStrip pagerTabStrip = (PagerTabStrip) findViewById(R.id.tabs);
-        pagerTabStrip.setDrawFullUnderline(false);*/
-
-        CirclePageIndicator tabs = (CirclePageIndicator) findViewById(R.id.tabs);
-        tabs.setViewPager(pager);
-        tabs.setRadius(10);
-        tabs.setCentered(true);
-        tabs.setFillColor(Color.parseColor("#E2A500"));
-
-        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
+        fragmentPageAmountListener();
 
     }
 
@@ -641,19 +618,51 @@ public class MapActivity extends IBCMapActivity {
         }
     }
 
+    /*
+    Fragment handling section
+    */
 
-    // Fragment handling section
+    // Listening on variable being set to the amount of breakRoute suggestions, in order to display this amount of pages in the fragmentAdapter.
+    public void fragmentPageAmountListener() {
+
+        obsInt = new ObservableInteger();
+
+        obsInt.setOnIntegerChangeListener(new OnIntegerChangeListener() {
+            @Override
+            public void onIntegerChanged(int newValue) {
+                //Do something here
+                amount = newValue;
+                Log.d("DV", "Amount changed to " + newValue);
+                final ViewPager pager = (ViewPager) findViewById(R.id.pager);
+                pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+                CirclePageIndicator tabs = (CirclePageIndicator) findViewById(R.id.tabs);
+                tabs.setViewPager(pager);
+                tabs.setRadius(10);
+                tabs.setCentered(true);
+                tabs.setFillColor(Color.parseColor("#E2A500"));
+
+                tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+                    }
+                });
+            }
+        });
+    }
+
     class MyPagerAdapter extends FragmentPagerAdapter {
-        private final String[] TITLES = {"1", "2", "3"};
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return TITLES[position];
-        }
 
         @Override
         public int getCount() {
-            return TITLES.length;
+            return amount;
         }
 
         public MyPagerAdapter(android.support.v4.app.FragmentManager fm) {
@@ -666,7 +675,6 @@ public class MapActivity extends IBCMapActivity {
         }
 
     }
-
 
 }
 

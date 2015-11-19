@@ -133,6 +133,9 @@ public class SMHttpRequest {
                     case CARGO:
                         routingServer = Config.OSRM_SERVER_CARGO;
                         break;
+                    case BREAK:
+                        routingServer = null; //Config.OSRM_SERVER_BREAK; - eller lign.
+                        break;
                     case FASTEST:
                     default:
                         routingServer = Config.OSRM_SERVER_FAST;
