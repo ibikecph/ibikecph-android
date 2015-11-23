@@ -28,6 +28,7 @@ import android.widget.ImageButton;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.events.MapListener;
 import com.mapbox.mapboxsdk.events.RotateEvent;
 import com.mapbox.mapboxsdk.events.ScrollEvent;
@@ -90,6 +91,7 @@ public class MapActivity extends IBCMapActivity {
     public static boolean fromSearch = false;
     public static ObservableInteger obsInt;
     public int amount = 0;
+    public static JsonNode breakRouteJSON = null;
 
 
     @Override
@@ -560,6 +562,7 @@ public class MapActivity extends IBCMapActivity {
     private void disableStatisticsInfoPane() {
 
         frag.setVisibility(View.GONE);
+        breakFrag.setVisibility(View.GONE);
 
         /*Fragment fragment = mapView.getParentActivity().getFragmentManager().findFragmentByTag("infopane");
         if (fragment != null)
@@ -586,6 +589,7 @@ public class MapActivity extends IBCMapActivity {
                 super.onBackPressed();
             }
         }
+        breakFrag.setVisibility(View.GONE);
     }
 
     public void userTrackingButtonOnClick(View v) {
@@ -630,30 +634,37 @@ public class MapActivity extends IBCMapActivity {
         obsInt.setOnIntegerChangeListener(new OnIntegerChangeListener() {
             @Override
             public void onIntegerChanged(int newValue) {
-                //Do something here
                 amount = newValue;
                 Log.d("DV", "Amount changed to " + newValue);
-                final ViewPager pager = (ViewPager) findViewById(R.id.pager);
-                pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
-                CirclePageIndicator tabs = (CirclePageIndicator) findViewById(R.id.tabs);
-                tabs.setViewPager(pager);
-                tabs.setRadius(10);
-                tabs.setCentered(true);
-                tabs.setFillColor(Color.parseColor("#E2A500"));
+                if (newValue > 0) {
+                    final CirclePageIndicator tabs = (CirclePageIndicator) findViewById(R.id.tabs);
+                    Log.d("DV", "Amount > 0, enabling fragment!");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            breakFrag.setVisibility(View.VISIBLE);
+                            final ViewPager pager = (ViewPager) findViewById(R.id.pager);
+                            pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+                            tabs.setViewPager(pager);
+                            tabs.setRadius(10);
+                            tabs.setCentered(true);
+                            tabs.setFillColor(Color.parseColor("#E2A500"));
+                        }
+                    });
+                    tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                        @Override
+                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                        }
 
-                tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                    @Override
-                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                    }
+                        @Override
+                        public void onPageSelected(int position) {
+                        }
 
-                    @Override
-                    public void onPageSelected(int position) {
-                    }
-
-                    @Override
-                    public void onPageScrollStateChanged(int state) {
-                    }
-                });
+                        @Override
+                        public void onPageScrollStateChanged(int state) {
+                        }
+                    });
+                }
             }
         });
     }
