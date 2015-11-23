@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -99,6 +100,7 @@ public class MapActivity extends IBCMapActivity {
     public static ObservableInteger obsInt;
     public int amount = 0;
     public static JsonNode breakRouteJSON = null;
+    public static boolean format;
 
 
     @Override
@@ -113,6 +115,9 @@ public class MapActivity extends IBCMapActivity {
         pager = (ViewPager) findViewById(R.id.pager);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBarHolder = (FrameLayout) findViewById(R.id.progressBarHolder);
+
+        // true if 24-hour format, false if 12-hour format
+        format = DateFormat.is24HourFormat(this);
 
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.init(IBCMapView.MapState.DEFAULT, this);

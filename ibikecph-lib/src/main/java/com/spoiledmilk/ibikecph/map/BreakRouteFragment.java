@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Created by Daniel on 12-11-2015.
  */
@@ -176,8 +178,8 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
             type = jsonNode.path("journey").get(i).path("route_summary").path("type").textValue();
             from = "Fra " + jsonNode.path("journey").get(i).path("route_name").get(0).textValue();
             to = " til\n" + jsonNode.path("journey").get(i).path("route_name").get(1).textValue();
-            startTime[i] = jsonNode.path("journey").get(i).path("route_summary").path("departure_time").textValue();
-            arrivalTime[i] = jsonNode.path("journey").get(i).path("route_summary").path("arrival_time").textValue();
+            startTime[i] = timeStampFormat(jsonNode.path("journey").get(i).path("route_summary").path("departure_time").asLong());
+            arrivalTime[i] = timeStampFormat(jsonNode.path("journey").get(i).path("route_summary").path("arrival_time").asLong());
 
             if (type.equals("BIKE")) {
                 typeAndTime[i] = "Cykel " + formatDistance(jsonNode.path("journey").get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.path("journey").get(i).path("route_summary").path("total_time").asDouble()));
@@ -209,6 +211,27 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
         return time;
     }
 
+    public String timeStampFormat(long seconds) {
+
+        String time;
+        seconds = seconds * 1000;
+
+        // 24-hour format
+        if (MapActivity.format) {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            //sdf.setTimeZone(TimeZone.getDefault());
+            time = sdf.format(seconds).toString();
+        }
+        // 12-hour format
+        else {
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
+            //sdf.setTimeZone(TimeZone.getDefault());
+            time = sdf.format(seconds).toString();
+        }
+
+        return time;
+    }
+
     public void dummyData() {
         for (int i = 0; i < 5; i++) {
             startTime[i] = "11" + ":0" + i;
@@ -216,7 +239,6 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
             typeAndTime[i] = "Cykel " + i + " km " + "   0t " + i + "m";
             fromTo[i] = "Fra nuværende position til\nRandom st. ";
         }
-
     }
 
     @Override
