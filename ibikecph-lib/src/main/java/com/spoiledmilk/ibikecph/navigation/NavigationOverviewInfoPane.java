@@ -174,7 +174,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         } else if (v.getId() == R.id.navigationOverviewBreakButton) {
             disableAllRouteButtons();
             breakButton.setImageResource(R.drawable.btn_train_enabled);
-            MapActivity.breakFrag.setVisibility(View.VISIBLE);
+            //MapActivity.breakFrag.setVisibility(View.VISIBLE);
 
             this.parent.changeRouteType(RouteType.BREAK);
         } else if (v.getId() == R.id.navigationOverviewSource) {
