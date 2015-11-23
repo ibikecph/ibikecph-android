@@ -64,14 +64,13 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         position = getArguments().getInt(ARG_POSITION);
-        MapActivity.progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        JsonNode jsonNode = MapActivity.breakRouteJSON;
-        setData(jsonNode.path("journeys").get(position));
+        JsonNode jsonNode = MapActivity.breakRouteJSON.get(position);
+        setData(jsonNode);
         //dummyData();
         int marginPx = convertToDp(10);
         int paddingPx = convertToDp(10);
@@ -79,7 +78,7 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(marginPx, 0, marginPx, 0);
 
-        for (int i = 0; i < jsonNode.path("journeys").get(position).size(); i++) {
+        for (int i = 0; i < jsonNode.path("journey").size(); i++) {
 
             // Layouts
             imageLayout = new LinearLayout(getActivity());
@@ -123,11 +122,11 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
             typeTV.setText(typeAndTime[i]);
             fromToTV.setText(this.fromTo[i]);
             // Don't set lineIcon after last stop
-            if (i < jsonNode.path("journeys").get(position).size() - 1) {
+            if (i < jsonNode.path("journey").size() - 1) {
                 lineIconIV.setImageResource(R.drawable.route_line);
             }
 
-            String type = jsonNode.path("journeys").get(position).get(i).path("route_summary").path("type").textValue();
+            String type = jsonNode.path("journey").get(i).path("route_summary").path("type").textValue();
             if (type.equals("BIKE")) {
                 typeIconIV.setImageResource(R.drawable.route_bike);
             } else if (type.equals("M")) {
@@ -170,22 +169,26 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     public void setData(JsonNode jsonNode) {
 
         String type;
+        String from;
+        String to;
 
-        for (int i = 0; i < jsonNode.size(); i++) {
-            type = jsonNode.get(i).path("route_summary").path("type").textValue();
-            startTime[i] = "";
-            arrivalTime[i] = "";
+        for (int i = 0; i < jsonNode.path("journey").size(); i++) {
+            type = jsonNode.path("journey").get(i).path("route_summary").path("type").textValue();
+            from = "Fra " + jsonNode.path("journey").get(i).path("route_name").get(0).textValue();
+            to = " til\n" + jsonNode.path("journey").get(i).path("route_name").get(1).textValue();
+            startTime[i] = jsonNode.path("journey").get(i).path("route_summary").path("departure_time").textValue();
+            arrivalTime[i] = jsonNode.path("journey").get(i).path("route_summary").path("arrival_time").textValue();
+
             if (type.equals("BIKE")) {
-                typeAndTime[i] = "Cykel " + formatDistance(jsonNode.get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.get(i).path("route_summary").path("total_time").asDouble()));
+                typeAndTime[i] = "Cykel " + formatDistance(jsonNode.path("journey").get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.path("journey").get(i).path("route_summary").path("total_time").asDouble()));
+                fromTo[i] = from + to;
             } else if (type.equals("WALK")) {
-                typeAndTime[i] = "Gå " + formatDistance(jsonNode.get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.get(i).path("route_summary").path("total_time").asDouble()));
-            } else if (type.equals("TOG")) {
-                typeAndTime[i] = jsonNode.get(i).path("route_name").get(0).textValue();
+                typeAndTime[i] = "Gå " + formatDistance(jsonNode.path("journey").get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.path("journey").get(i).path("route_summary").path("total_time").asDouble()));
+                fromTo[i] = from + to;
             } else {
-                typeAndTime[i] = jsonNode.get(i).path("route_name").get(0).textValue();
+                typeAndTime[i] = jsonNode.path("journey").get(i).path("route_name").get(0).textValue();
+                fromTo[i] = jsonNode.path("journey").get(i).path("route_summary").path("name").textValue() + " til\n" + jsonNode.path("journey").get(i).path("route_name").get(1).textValue();
             }
-            fromTo[i] = "Fra " + jsonNode.get(i).path("route_name").get(0).textValue() + " til\n" + jsonNode.get(i).path("route_name").get(1).textValue();
-
         }
 
     }

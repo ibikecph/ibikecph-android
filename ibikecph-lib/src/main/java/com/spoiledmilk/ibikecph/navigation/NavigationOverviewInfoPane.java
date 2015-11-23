@@ -176,8 +176,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             breakButton.setImageResource(R.drawable.btn_train_enabled);
             MapActivity.pager.setAdapter(null);
             MapActivity.tabs.setVisibility(View.GONE);
-            MapActivity.breakFrag.setVisibility(View.VISIBLE);
-            MapActivity.progressBar.setVisibility(View.VISIBLE);
+            MapActivity.progressBarHolder.setVisibility(View.VISIBLE);
 
             this.parent.changeRouteType(RouteType.BREAK);
         } else if (v.getId() == R.id.navigationOverviewSource) {
@@ -197,6 +196,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         cargoButton.setImageResource(R.drawable.btn_route_cargo_disabled);
         greenButton.setImageResource(R.drawable.btn_route_green_disabled);
         if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+            MapActivity.progressBarHolder.setVisibility(View.GONE);
             breakButton.setImageResource(R.drawable.btn_train_disabled);
             MapActivity.breakFrag.setVisibility(View.GONE);
         }

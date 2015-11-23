@@ -94,7 +94,7 @@ public class MapActivity extends IBCMapActivity {
     public static CirclePageIndicator tabs;
     public static ViewPager pager;
     public static ProgressBar progressBar;
-    public FrameLayout progressBarHolder;
+    public static FrameLayout progressBarHolder;
     public static boolean fromSearch = false;
     public static ObservableInteger obsInt;
     public int amount = 0;
@@ -653,6 +653,7 @@ public class MapActivity extends IBCMapActivity {
                         @Override
                         public void run() {
                             progressBarHolder.setVisibility(View.GONE);
+                            breakFrag.setVisibility(View.VISIBLE);
                             pager.setVisibility(View.VISIBLE);
                             tabs.setVisibility(View.VISIBLE);
                             pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
