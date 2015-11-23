@@ -6,8 +6,8 @@
 package com.spoiledmilk.ibikecph.util;
 
 public class Config {
-    //public static String API_URL = "https://ibikecph-staging.herokuapp.com/api";
-    public static String API_URL = "https://www.ibikecph.dk/api";
+    public static String API_URL = "https://ibikecph-staging.herokuapp.com/api";
+    //public static String API_URL = "https://www.ibikecph.dk/api";
     public static final String API_SERVER_LOGIN = API_URL + "/login";
     public static final String API_SERVER_REGISTER = API_URL + "/users";
     public static final String API_SERVER_ADD_PASSWORD = API_SERVER_REGISTER + "/add_password";
@@ -20,6 +20,7 @@ public class Config {
     public static final String OSRM_SERVER_FAST = "http://routes.ibikecph.dk/v1.1/fast";
     public static final String OSRM_SERVER_GREEN = "http://routes.ibikecph.dk/v1.1/green";
     public static final String OSRM_SERVER_CARGO = "http://routes.ibikecph.dk/v1.1/cargo";
+    public static final String OSRM_SERVER_BREAK = API_URL + "/journey";
 
     public static boolean GREEN_ROUTES_ENABLED = true;
 

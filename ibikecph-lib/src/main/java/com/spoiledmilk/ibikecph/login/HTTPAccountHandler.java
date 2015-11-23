@@ -5,13 +5,8 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.login;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.os.Message;
-import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -19,6 +14,9 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.LOG;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class HTTPAccountHandler {
 
@@ -237,7 +235,7 @@ public class HTTPAccountHandler {
             public void run() {
                 boolean ret = false;
                 try {
-                    JsonNode response = HttpUtils.get("https://graph.facebook.com/me?access_token=" + token);
+                    JsonNode response = HttpUtils.get("https://graph.facebook.com/me?access_token=" + token, false);
                     if (response != null) {
                         LOG.d("fb graph response = " + response);
                         if (response.has("error")) {

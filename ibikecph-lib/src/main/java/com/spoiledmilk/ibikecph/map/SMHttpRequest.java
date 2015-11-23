@@ -8,6 +8,7 @@ package com.spoiledmilk.ibikecph.map;
 import android.location.Location;
 import android.os.Handler;
 import android.os.Message;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -24,8 +25,8 @@ import java.util.Locale;
 /**
  * Implements the API calls to search for routes, find nearest points, etc.
  * Also has some model stuff embedded.
- * @author jens
  *
+ * @author jens
  */
 public class SMHttpRequest {
 
@@ -114,19 +115,20 @@ public class SMHttpRequest {
     }
 
     public void getRecalculatedRoute(final Location start, final Location end, List<Location> viaPoints, final String chksum, final String startHint,
-            final String hint, final RouteType type, final SMHttpRequestListener listener) {
+                                     final String hint, final RouteType type, final SMHttpRequestListener listener) {
         getRoute(start, end, viaPoints, chksum, startHint, hint, listener, REQUEST_GET_RECALCULATED_ROUTE, 18, false, type);
     }
 
     public void getRoute(final Location start, final Location end, final List<Location> viaPoints, final String chksum, final String startHint,
-            final String hint, final SMHttpRequestListener listener, final int msgType, final int z, final boolean isFromZ10, final RouteType type) {
+                         final String hint, final SMHttpRequestListener listener, final int msgType, final int z, final boolean isFromZ10, final RouteType type) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 String url;
                 String routingServer;
+                boolean Break = false;
 
-                switch(type) {
+                switch (type) {
                     case GREEN:
                         routingServer = Config.OSRM_SERVER_GREEN;
                         break;
@@ -134,7 +136,8 @@ public class SMHttpRequest {
                         routingServer = Config.OSRM_SERVER_CARGO;
                         break;
                     case BREAK:
-                        routingServer = null; //Config.OSRM_SERVER_BREAK; - eller lign.
+                        routingServer = Config.OSRM_SERVER_BREAK;
+                        Break = true;
                         break;
                     case FASTEST:
                     default:
@@ -142,12 +145,21 @@ public class SMHttpRequest {
                 }
 
                 if (startHint != null) {
-                    url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f&hint=" + startHint + "", routingServer,
-
-                    start.getLatitude(), start.getLongitude());
+                    if (!Break) {
+                        url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f&hint=" + startHint + "", routingServer,
+                                start.getLatitude(), start.getLongitude());
+                    } else {
+                        url = String.format(Locale.US, "%s?&loc[]=%.6f,%.6f&loc[]=%.6f,%.6f", routingServer, start.getLatitude(), start.getLongitude(), end.getLatitude(),
+                                end.getLongitude());
+                    }
                 } else {
-                    url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f", routingServer, start.getLatitude(),
-                            start.getLongitude());
+                    if (!Break) {
+                        url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f", routingServer, start.getLatitude(),
+                                start.getLongitude());
+                    } else {
+                        url = String.format(Locale.US, "%s?&loc[]=%.6f,%.6f&loc[]=%.6f,%.6f", routingServer, start.getLatitude(), start.getLongitude(), end.getLatitude(),
+                                end.getLongitude());
+                    }
                 }
 
                 if (viaPoints != null) {
@@ -158,18 +170,28 @@ public class SMHttpRequest {
                     }
                 }
 
-                if (chksum != null) {
-                    if (hint != null) {
-                        url += String.format(Locale.US, "&loc=%.6f,%.6f&hint=%s&instructions=true&checksum=%s", end.getLatitude(),
-                                end.getLongitude(), hint, chksum);
+                if (!Break) {
+                    if (chksum != null) {
+                        if (hint != null) {
+                            url += String.format(Locale.US, "&loc=%.6f,%.6f&hint=%s&instructions=true&checksum=%s", end.getLatitude(),
+                                    end.getLongitude(), hint, chksum);
+                        } else {
+                            url += String.format(Locale.US, "&loc=%.6f,%.6f&instructions=true&checksum=%s", end.getLatitude(), end.getLongitude(), chksum);
+                        }
                     } else {
-                        url += String.format(Locale.US, "&loc=%.6f,%.6f&instructions=true&checksum=%s", end.getLatitude(), end.getLongitude(), chksum);
+                        url += String.format(Locale.US, "&loc=%.6f,%.6f&instructions=true", end.getLatitude(), end.getLongitude());
                     }
-                } else
-                    url += String.format(Locale.US, "&loc=%.6f,%.6f&instructions=true", end.getLatitude(), end.getLongitude());
+                }
                 LOG.d("Routes request = " + url);
-                RouteInfo ri = new RouteInfo(HttpUtils.get(url), start, end);
+                RouteInfo ri = new RouteInfo(HttpUtils.get(url, Break), start, end);
                 if (ri == null || ri.jsonRoot == null || ri.jsonRoot.path("status").asInt(-1) != 0) {
+                    // Log.d("DV", "jsonRoot = " + ri.jsonRoot);
+
+                    if (ri != null) {
+                        int amountOfRoutes = ri.jsonRoot.path("journeys").size(); // Gets the amount of routes. Needs to implement logic to generate the full route though, only loops now.
+                        MapActivity.breakRouteJSON = ri.jsonRoot;
+                        MapActivity.obsInt.set(amountOfRoutes); // Set the amount of route suggestions in order to display this amount in the fragmentAdapter
+                    }
                     // try to get the route with the z = 10
                     if (!isFromZ10)
                         getRouteZ10(start, end, viaPoints, chksum, startHint, hint, listener, msgType);
@@ -187,13 +209,13 @@ public class SMHttpRequest {
     }
 
     public void getRouteZ10(final Location start, final Location end, final List<Location> viaPoints, final String chksum, final String startHint,
-            final String hint, final SMHttpRequestListener listener, final int msgType) {
+                            final String hint, final SMHttpRequestListener listener, final int msgType) {
         z10Route = null;
         String url;
         if (startHint != null) {
             url = String.format(Locale.US, "%s/viaroute?z=10&alt=false&loc=%.6f,%.6f&hint=" + startHint + "", Config.OSRM_SERVER,
 
-            start.getLatitude(), start.getLongitude());
+                    start.getLatitude(), start.getLongitude());
         } else {
             url = String.format(Locale.US, "%s/viaroute?z=10&alt=false&loc=%.6f,%.6f", Config.OSRM_SERVER, start.getLatitude(), start.getLongitude());
         }
@@ -216,7 +238,7 @@ public class SMHttpRequest {
         } else
             url += String.format(Locale.US, "&loc=%.6f,%.6f&instructions=true", end.getLatitude(), end.getLongitude());
 
-        RouteInfo ri = new RouteInfo(HttpUtils.get(url), start, end);
+        RouteInfo ri = new RouteInfo(HttpUtils.get(url, false), start, end);
         z10Route = ri;
         if (ri == null || ri.jsonRoot == null || ri.jsonRoot.path("status").asInt(-1) != 0) {
             // Can't find the route
@@ -241,9 +263,9 @@ public class SMHttpRequest {
             @Override
             public void run() {
                 String url = String.format(Locale.US, "%s/%f,%f.json", Config.GEOCODER, loc.getLatitude(), loc.getLongitude()); // ,%d
-                
+
                 // GEOCODER_SEARCH_RADIUS
-                JsonNode response = HttpUtils.get(url);
+                JsonNode response = HttpUtils.get(url, false);
                 Address a = null;
                 if (response != null) {
                     if (response.size() > 0) {

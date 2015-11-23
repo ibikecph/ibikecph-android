@@ -46,7 +46,7 @@ public class HttpUtils {
     private static final String ACCEPT = "application/vnd.ibikecph.v1";
     private static final int CONNECTON_TIMEOUT = 30000;
 
-    public static JsonResult readLink(String url_string, String method) {
+    public static JsonResult readLink(String url_string, String method, boolean breakRoute) {
         JsonResult result = new JsonResult();
         if (url_string == null) {
             return result;
@@ -59,7 +59,11 @@ public class HttpUtils {
             httpget = (HttpURLConnection) url.openConnection();
             httpget.setDoInput(true);
             httpget.setRequestMethod(method);
-            httpget.setRequestProperty("Accept", "application/json");
+            if (breakRoute) {
+                httpget.setRequestProperty("Accept", "application/vnd.ibikecph.v1");
+            } else {
+                httpget.setRequestProperty("Accept", "application/json");
+            }
             httpget.setRequestProperty("Content-type", "application/json");
             httpget.setConnectTimeout(CONNECTON_TIMEOUT);
             httpget.setReadTimeout(CONNECTON_TIMEOUT);
@@ -89,8 +93,8 @@ public class HttpUtils {
         return result;
     }
 
-    public static JsonNode get(String url_string) {
-        JsonResult result = readLink(url_string, "GET");
+    public static JsonNode get(String url_string, boolean breakRoute) {
+        JsonResult result = readLink(url_string, "GET", breakRoute);
         Log.d("debug", "get:" + result.toString());
         if (result.error == JsonResult.ErrorCode.Success) {
             return result.getNode();
