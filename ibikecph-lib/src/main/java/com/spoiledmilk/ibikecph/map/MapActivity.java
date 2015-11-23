@@ -25,6 +25,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
@@ -93,6 +94,7 @@ public class MapActivity extends IBCMapActivity {
     public static CirclePageIndicator tabs;
     public static ViewPager pager;
     public static ProgressBar progressBar;
+    public FrameLayout progressBarHolder;
     public static boolean fromSearch = false;
     public static ObservableInteger obsInt;
     public int amount = 0;
@@ -110,6 +112,7 @@ public class MapActivity extends IBCMapActivity {
         tabs = (CirclePageIndicator) findViewById(R.id.tabs);
         pager = (ViewPager) findViewById(R.id.pager);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBarHolder = (FrameLayout) findViewById(R.id.progressBarHolder);
 
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.init(IBCMapView.MapState.DEFAULT, this);
@@ -649,6 +652,8 @@ public class MapActivity extends IBCMapActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            progressBarHolder.setVisibility(View.GONE);
+                            pager.setVisibility(View.VISIBLE);
                             tabs.setVisibility(View.VISIBLE);
                             pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
                             tabs.setViewPager(pager);
