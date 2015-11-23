@@ -16,7 +16,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -25,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
@@ -88,6 +90,9 @@ public class MapActivity extends IBCMapActivity {
     private IbikePreferences settings;
     public static View frag;
     public static View breakFrag;
+    public static CirclePageIndicator tabs;
+    public static ViewPager pager;
+    public static ProgressBar progressBar;
     public static boolean fromSearch = false;
     public static ObservableInteger obsInt;
     public int amount = 0;
@@ -102,6 +107,9 @@ public class MapActivity extends IBCMapActivity {
         this.settings = IbikeApplication.getSettings();
         frag = findViewById(R.id.infoPaneContainer);
         breakFrag = findViewById(R.id.breakRouteContainer);
+        tabs = (CirclePageIndicator) findViewById(R.id.tabs);
+        pager = (ViewPager) findViewById(R.id.pager);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.init(IBCMapView.MapState.DEFAULT, this);
@@ -637,13 +645,11 @@ public class MapActivity extends IBCMapActivity {
                 amount = newValue;
                 Log.d("DV", "Amount changed to " + newValue);
                 if (newValue > 0) {
-                    final CirclePageIndicator tabs = (CirclePageIndicator) findViewById(R.id.tabs);
                     Log.d("DV", "Amount > 0, enabling fragment!");
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            breakFrag.setVisibility(View.VISIBLE);
-                            final ViewPager pager = (ViewPager) findViewById(R.id.pager);
+                            tabs.setVisibility(View.VISIBLE);
                             pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
                             tabs.setViewPager(pager);
                             tabs.setRadius(10);
@@ -669,7 +675,7 @@ public class MapActivity extends IBCMapActivity {
         });
     }
 
-    class MyPagerAdapter extends FragmentPagerAdapter {
+    class MyPagerAdapter extends FragmentStatePagerAdapter {
 
         @Override
         public int getCount() {
@@ -685,11 +691,26 @@ public class MapActivity extends IBCMapActivity {
             return BreakRouteFragment.newInstance(position);
         }
 
+        @Override
+        public int getItemPosition(Object object) {
+            return PagerAdapter.POSITION_NONE;
+        }
+
+
+       /* @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            Log.d("DV", "destroyItem!");
+            if (position >= getCount()) {
+                android.support.v4.app.FragmentManager manager = ((Fragment) object).getFragmentManager();
+                android.support.v4.app.FragmentTransaction trans = manager.beginTransaction();
+                trans.remove((Fragment) object);
+                trans.commit();
+            }
+            notifyDataSetChanged();
+        }*/
+
     }
-
 }
-
-
 
             /*
             Log.d("JC", "Got coordinates to navigate to");

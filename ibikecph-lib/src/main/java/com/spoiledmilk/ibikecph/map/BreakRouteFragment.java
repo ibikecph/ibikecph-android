@@ -3,7 +3,6 @@ package com.spoiledmilk.ibikecph.map;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
 /**
  * Created by Daniel on 12-11-2015.
@@ -29,11 +30,18 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     private TableRow tableRow;
     private TableLayout tableLayout;
 
-    private String[] imageType = new String[20]; // Image for each type of transportation
     private String[] startTime = new String[20]; // Start time for each step of the full route
     private String[] arrivalTime = new String[20]; // Arrival time of each step of the full route
     private String[] typeAndTime = new String[20]; // Transportation type and distance time or station name
     private String[] fromTo = new String[20]; // From A to B of each step of the full route
+
+    ImageView typeIconIV;
+    ImageView lineIconIV;
+    TextView startTimeTV;
+    TextView arrivalTimeTV;
+    TextView typeTV;
+    TextView fromToTV;
+
 
     // newInstance constructor for creating fragment with arguments
     public static BreakRouteFragment newInstance(int position) {
@@ -56,19 +64,22 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         position = getArguments().getInt(ARG_POSITION);
+        MapActivity.progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        dummyData();
+        JsonNode jsonNode = MapActivity.breakRouteJSON;
+        setData(jsonNode.path("journeys").get(position));
+        //dummyData();
         int marginPx = convertToDp(10);
         int paddingPx = convertToDp(10);
         tableLayout = (TableLayout) root.findViewById(R.id.tableLayout);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(marginPx, 0, marginPx, 0);
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < jsonNode.path("journeys").get(position).size(); i++) {
 
             // Layouts
             imageLayout = new LinearLayout(getActivity());
@@ -84,12 +95,12 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
             tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
 
             // Instantiate views
-            ImageView typeIcon = new ImageView(getActivity());
-            ImageView lineIcon = new ImageView(getActivity());
-            TextView startTime = new TextView(getActivity());
-            TextView arrivalTime = new TextView(getActivity());
-            TextView type = new TextView(getActivity());
-            TextView fromTo = new TextView(getActivity());
+            typeIconIV = new ImageView(getActivity());
+            lineIconIV = new ImageView(getActivity());
+            startTimeTV = new TextView(getActivity());
+            arrivalTimeTV = new TextView(getActivity());
+            typeTV = new TextView(getActivity());
+            fromToTV = new TextView(getActivity());
 
             // Set margin
             imageLayout.setLayoutParams(params);
@@ -100,30 +111,42 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
             destLayout.requestLayout();
 
             // Text settings
-            arrivalTime.setTextColor(Color.GRAY);
-            arrivalTime.setTextSize(10);
-            arrivalTime.setPadding(paddingPx, 0, 0, 0);
-            fromTo.setTextColor(Color.GRAY);
-            fromTo.setTextSize(10);
+            arrivalTimeTV.setTextColor(Color.GRAY);
+            arrivalTimeTV.setTextSize(10);
+            arrivalTimeTV.setPadding(paddingPx, 0, 0, 0);
+            fromToTV.setTextColor(Color.GRAY);
+            fromToTV.setTextSize(10);
 
             // Set text and image
-            typeIcon.setImageResource(R.drawable.btn_train_enabled);
-            startTime.setText(this.startTime[i]);
-            arrivalTime.setText(this.arrivalTime[i]);
-            type.setText(typeAndTime[i]);
-            fromTo.setText(this.fromTo[i]);
+            startTimeTV.setText(this.startTime[i]);
+            arrivalTimeTV.setText(this.arrivalTime[i]);
+            typeTV.setText(typeAndTime[i]);
+            fromToTV.setText(this.fromTo[i]);
+            // Don't set lineIcon after last stop
+            if (i < jsonNode.path("journeys").get(position).size() - 1) {
+                lineIconIV.setImageResource(R.drawable.route_line);
+            }
+
+            String type = jsonNode.path("journeys").get(position).get(i).path("route_summary").path("type").textValue();
+            if (type.equals("BIKE")) {
+                typeIconIV.setImageResource(R.drawable.route_bike);
+            } else if (type.equals("M")) {
+                typeIconIV.setImageResource(R.drawable.route_metro);
+            } else if (type.equals("S")) {
+                typeIconIV.setImageResource(R.drawable.route_s);
+            } else if (type.equals("TOG")) {
+                typeIconIV.setImageResource(R.drawable.route_train);
+            } else if (type.equals("WALK")) {
+                typeIconIV.setImageResource(R.drawable.route_walk);
+            } //FÆRGE, ANDET?
 
             // Add the views
-            imageLayout.addView(typeIcon);
-            // Don't set lineIcon after last stop
-            if (i < 4) {
-                lineIcon.setImageResource(R.drawable.fav_star);
-                imageLayout.addView(lineIcon);
-            }
-            timeLayout.addView(startTime);
-            timeLayout.addView(arrivalTime);
-            destLayout.addView(type);
-            destLayout.addView(fromTo);
+            imageLayout.addView(typeIconIV);
+            imageLayout.addView(lineIconIV);
+            timeLayout.addView(startTimeTV);
+            timeLayout.addView(arrivalTimeTV);
+            destLayout.addView(typeTV);
+            destLayout.addView(fromToTV);
             tableLayout.addView(tableRow);
             tableRow.addView(outerLayout);
             outerLayout.addView(imageLayout);
@@ -134,13 +157,7 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void onClick(View view) {
-        Log.d("DV", "Fragment Clicked!");
     }
 
     public int convertToDp(int input) {
@@ -148,6 +165,45 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
         final float scale = getResources().getDisplayMetrics().density;
         //Convert the dps to pixels, based on density scale
         return (int) (input * scale + 0.5f);
+    }
+
+    public void setData(JsonNode jsonNode) {
+
+        String type;
+
+        for (int i = 0; i < jsonNode.size(); i++) {
+            type = jsonNode.get(i).path("route_summary").path("type").textValue();
+            startTime[i] = "";
+            arrivalTime[i] = "";
+            if (type.equals("BIKE")) {
+                typeAndTime[i] = "Cykel " + formatDistance(jsonNode.get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.get(i).path("route_summary").path("total_time").asDouble()));
+            } else if (type.equals("WALK")) {
+                typeAndTime[i] = "Gå " + formatDistance(jsonNode.get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.get(i).path("route_summary").path("total_time").asDouble()));
+            } else if (type.equals("TOG")) {
+                typeAndTime[i] = jsonNode.get(i).path("route_name").get(0).textValue();
+            } else {
+                typeAndTime[i] = jsonNode.get(i).path("route_name").get(0).textValue();
+            }
+            fromTo[i] = "Fra " + jsonNode.get(i).path("route_name").get(0).textValue() + " til\n" + jsonNode.get(i).path("route_name").get(1).textValue();
+
+        }
+
+    }
+
+    public String formatDistance(double distance) {
+        String formattedDistance;
+        if (distance > 1000) {
+            distance /= 1000;
+            formattedDistance = (String.format("%.1f km", distance));
+        } else {
+            formattedDistance = (String.format("%d m", (int) distance));
+        }
+        return formattedDistance;
+    }
+
+    public String formatTime(double seconds) {
+        String time = TrackListAdapter.durationToFormattedTime(seconds);
+        return time;
     }
 
     public void dummyData() {
@@ -158,6 +214,21 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
             fromTo[i] = "Fra nuværende position til\nRandom st. ";
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
 
