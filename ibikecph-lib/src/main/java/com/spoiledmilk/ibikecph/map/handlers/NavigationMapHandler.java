@@ -27,6 +27,8 @@ import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.map.IBCMarker;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.MarkerType;
+import com.spoiledmilk.ibikecph.map.ObservablePageInteger;
+import com.spoiledmilk.ibikecph.map.OnIntegerChangeListener;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
 import com.spoiledmilk.ibikecph.navigation.RouteETAFragment;
@@ -52,26 +54,39 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient TurnByTurnInstructionFragment turnByTurnFragment;
     private transient RouteETAFragment routeETAFragment;
     private transient IBCMarker beginMarker, endMarker;
-    //private transient IBCMarker[] mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker;
     private transient ArrayList<IBCMarker> mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker;
     private boolean isRouting;
     private IbikePreferences settings;
     private PathOverlay[] path;
-    private PathOverlay[] endWalkingPath;
-    private PathOverlay[] beginWalkingPath;
+    PathOverlay beginWalkingPath = null;
+    PathOverlay endWalkingPath = null;
     private int amount = 0;
+    public static ObservablePageInteger obsInt;
+    ArrayList<LatLng> waypoints;
+
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
         Log.d("JC", "Instantiating NavigationMapHandler");
 
         mapView.setMapViewListener(this);
+        startListener();
+    }
+
+    // Listener to draw the selected route from the breakRouteFragment
+    private void startListener() {
+        obsInt = new ObservablePageInteger();
+        obsInt.setOnIntegerChangeListener(new OnIntegerChangeListener() {
+            @Override
+            public void onIntegerChanged(int newValue) {
+                mapView.removeAllMarkers();
+                showRouteOverviewPieces(newValue);
+            }
+        });
     }
 
     @Override
     public void onShowMarker(MapView mapView, Marker marker) {
-
-
     }
 
     @Override
@@ -179,15 +194,16 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         cleanUp();
     }
 
-
-    public void showRouteOverviewPiece() {
+    /*
+     pos = the position chosen in the
+     breakRouteFragment in order to draw the correct route
+     */
+    public void showRouteOverviewPieces(int pos) {
 
         ArrayList<ArrayList<SMRoute>> routes = Geocoder.arrayLists;
 
-        amount = routes.get(0).size();
+        amount = routes.get(pos).size();
         path = new PathOverlay[amount];
-        endWalkingPath = new PathOverlay[amount];
-        beginWalkingPath = new PathOverlay[amount];
         mMarker = new ArrayList<IBCMarker>();
         boatMarker = new ArrayList<IBCMarker>();
         walkMarker = new ArrayList<IBCMarker>();
@@ -195,12 +211,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         busMarker = new ArrayList<IBCMarker>();
         trainMarker = new ArrayList<IBCMarker>();
 
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < routes.get(i).size(); j++) {
-                showBreakRouteOverview(routes.get(i).get(j), j);
-            }
+        for (int j = 0; j < routes.get(pos).size(); j++) {
+            showBreakRouteOverview(routes.get(pos).get(j), j);
         }
-
 
     }
 
@@ -326,13 +339,15 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         } else {
             path[position] = new PathOverlay(Color.RED, 10);
         }
-        beginWalkingPath[position] = new PathOverlay(Color.GRAY, 10);
-        ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
 
-        // Add a waypoint at the user's current position
-        if (route.startAddress != null && route.startAddress.isCurrentLocation()) {
-            beginWalkingPath[position].addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
-            beginWalkingPath[position].addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
+        if (position == 0) {
+            waypoints = new ArrayList<LatLng>();
+            beginWalkingPath = new PathOverlay(Color.GRAY, 10);
+            // Add a waypoint at the user's current position
+            if (route.startAddress != null && route.startAddress.isCurrentLocation()) {
+                beginWalkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
+                beginWalkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
+            }
         }
 
         for (Location loc : route.waypoints) {
@@ -340,28 +355,24 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             waypoints.add(new LatLng(loc));
         }
 
+        if (amount - 1 == position) {
+            endWalkingPath = new PathOverlay(Color.GRAY, 10);
+            // We also want a grey line if the user is expected to walk somewhere we cannot route directly to.
+            LatLng lastPoint = new LatLng(route.waypoints.get(route.waypoints.size() - 1));
+            LatLng realLastPoint = route.getRealEndLocation();
+            endWalkingPath.addPoint(lastPoint);
+            endWalkingPath.addPoint(realLastPoint);
 
-        //Problems with GRAY :P
-/*
-        // We also want a grey line if the user is expected to walk somewhere we cannot route directly to.
-        endWalkingPath[position] = new PathOverlay(Color.GRAY, 10);
-        LatLng lastPoint = new LatLng(route.waypoints.get(route.waypoints.size() - 1));
-        LatLng realLastPoint = route.getRealEndLocation();
-        endWalkingPath[position].addPoint(lastPoint);
-        endWalkingPath[position].addPoint(realLastPoint);
-
-        Log.d("JC", "distance: " + lastPoint.distanceTo(realLastPoint));
-*/
-
-        /*
-        // Show the whole route, zooming to make it fit
-        if (amount -1 == position) {
-            for(int i = 0; i < beginWalkingPath.length; i++) {
-                this.mapView.getOverlays().add(beginWalkingPath[i]);
-                this.mapView.getOverlays().add(endWalkingPath[i]);
-            }
+            Log.d("JC", "distance: " + lastPoint.distanceTo(realLastPoint));
         }
-        */
+
+
+        // Show the whole route, zooming to make it fit
+        if (amount - 1 == position) {
+            this.mapView.getOverlays().add(beginWalkingPath);
+            this.mapView.getOverlays().add(endWalkingPath);
+        }
+
 
         // Loop and add lines to be drawn
         if (amount - 1 == position) {
@@ -392,22 +403,12 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         if (route.transportType != null && route.transportType.equals("WALK")) {
             walkMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_walk))));
         }
-        if (route.transportType != null && route.transportType.equals("WALK")) {
+        if (route.transportType != null && route.transportType.equals("TOG")) {
             trainMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_train))));
         }
         if (route.transportType != null && route.transportType.equals("BUS")) {
             busMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
         }
-
-        //boatMarker = new IBCMarker[amount];
-
-        /*
-        beginMarker = new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT);
-        endMarker = new IBCMarker("", "", new LatLng(route.getRealEndLocation()), MarkerType.PATH_ENDPOINT);
-
-        beginMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_start)));
-        endMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_finish)));
-        */
 
         // Loop and set markers
         if (amount - 1 == position) {
@@ -423,30 +424,37 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             for (int i = 0; i < busMarker.size(); i++) {
                 this.mapView.addMarker(busMarker.get(i));
             }
+            for (int i = 0; i < trainMarker.size(); i++) {
+                this.mapView.addMarker(trainMarker.get(i));
+            }
+            for (int i = 0; i < walkMarker.size(); i++) {
+                this.mapView.addMarker(walkMarker.get(i));
+            }
 
         }
 
-        BoundingBox boundingBox = BoundingBox.fromLatLngs(waypoints);
+        if (amount - 1 == position) {
 
-        double north = boundingBox.getLatNorth();
-        double east = boundingBox.getLonEast();
-        double west = boundingBox.getLonWest();
-        double south = boundingBox.getLatSouth();
+            BoundingBox boundingBox = BoundingBox.fromLatLngs(waypoints);
 
-        double latitudeDiff = Math.abs(north - south) * 0.2;
+            double north = boundingBox.getLatNorth();
+            double east = boundingBox.getLonEast();
+            double west = boundingBox.getLonWest();
+            double south = boundingBox.getLatSouth();
 
-        double longitudeDiff = Math.abs(east - west) * 0.2;
+            double latitudeDiff = Math.abs(north - south) * 0.2;
 
+            double longitudeDiff = Math.abs(east - west) * 0.2;
 
-        // Fix so that it's first and last waypoint
-        //Add 20% padding
-        ArrayList<LatLng> paddedWaypoints = new ArrayList<LatLng>();
-        LatLng ne = new LatLng(north + latitudeDiff, east + longitudeDiff);
-        LatLng sw = new LatLng(south - latitudeDiff, west - longitudeDiff);
-        paddedWaypoints.add(ne);
-        paddedWaypoints.add(sw);
+            //Add 20% padding
+            ArrayList<LatLng> paddedWaypoints = new ArrayList<LatLng>();
+            LatLng ne = new LatLng(north + latitudeDiff, east + longitudeDiff);
+            LatLng sw = new LatLng(south - latitudeDiff, west - longitudeDiff);
+            paddedWaypoints.add(ne);
+            paddedWaypoints.add(sw);
 
-        this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(paddedWaypoints), true, true, false, true);
+            this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(paddedWaypoints), true, true, false, true);
+        }
 
         cleanedUp = false;
     }
