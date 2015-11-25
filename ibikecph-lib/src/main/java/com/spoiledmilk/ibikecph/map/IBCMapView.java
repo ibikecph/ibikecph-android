@@ -144,7 +144,7 @@ public class IBCMapView extends MapView {
         changeState(MapState.NAVIGATION_OVERVIEW);
         Log.d("DV_break", "IBCMapView: In ShowRoute, multipleRoutes!");
 
-        ((NavigationMapHandler) getMapHandler()).showRouteOverviewPiece();
+        ((NavigationMapHandler) getMapHandler()).showRouteOverviewPieces(0);
     }
 
     public void showRoute(final FavoritesData fd) {
