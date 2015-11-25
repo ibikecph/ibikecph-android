@@ -675,6 +675,7 @@ public class MapActivity extends IBCMapActivity {
 
                         @Override
                         public void onPageSelected(int position) {
+                            NavigationMapHandler.obsInt.setPageValue(position);
                         }
 
                         @Override
