@@ -7,19 +7,27 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.View;
 
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.*;
+import com.mapbox.mapboxsdk.overlay.Icon;
+import com.mapbox.mapboxsdk.overlay.Marker;
+import com.mapbox.mapboxsdk.overlay.Overlay;
+import com.mapbox.mapboxsdk.overlay.PathOverlay;
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.IssuesActivity;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.*;
+import com.spoiledmilk.ibikecph.map.Geocoder;
+import com.spoiledmilk.ibikecph.map.IBCMapView;
+import com.spoiledmilk.ibikecph.map.IBCMarker;
+import com.spoiledmilk.ibikecph.map.MapActivity;
+import com.spoiledmilk.ibikecph.map.MarkerType;
+import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
 import com.spoiledmilk.ibikecph.navigation.RouteETAFragment;
 import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
@@ -44,8 +52,14 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient TurnByTurnInstructionFragment turnByTurnFragment;
     private transient RouteETAFragment routeETAFragment;
     private transient IBCMarker beginMarker, endMarker;
+    //private transient IBCMarker[] mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker;
+    private transient ArrayList<IBCMarker> mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker;
     private boolean isRouting;
     private IbikePreferences settings;
+    private PathOverlay[] path;
+    private PathOverlay[] endWalkingPath;
+    private PathOverlay[] beginWalkingPath;
+    private int amount = 0;
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -165,6 +179,32 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         cleanUp();
     }
 
+
+    public void showRouteOverviewPiece() {
+
+        ArrayList<ArrayList<SMRoute>> routes = Geocoder.arrayLists;
+
+        amount = routes.get(0).size();
+        path = new PathOverlay[amount];
+        endWalkingPath = new PathOverlay[amount];
+        beginWalkingPath = new PathOverlay[amount];
+        mMarker = new ArrayList<IBCMarker>();
+        boatMarker = new ArrayList<IBCMarker>();
+        walkMarker = new ArrayList<IBCMarker>();
+        sMarker = new ArrayList<IBCMarker>();
+        busMarker = new ArrayList<IBCMarker>();
+        trainMarker = new ArrayList<IBCMarker>();
+
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < routes.get(i).size(); j++) {
+                showBreakRouteOverview(routes.get(i).get(j), j);
+            }
+        }
+
+
+    }
+
+
     /**
      * Brings up the whole route for the user, shows the address in the info pane. The idea is that the user should
      * start the route from this view.
@@ -174,6 +214,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void showRouteOverview(SMRoute route) {
         this.route = route;
         this.cleanUp();
+
+        Log.d("DV_break", "NavigationMaphandler: In showRouteOverview!");
 
         route.setListener(this);
 
@@ -193,7 +235,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
 
         // Add a waypoint at the user's current position
-        if (route.startAddress.isCurrentLocation()) {
+        if (route.startAddress != null && route.startAddress.isCurrentLocation()) {
             beginWalkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
             beginWalkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
         }
@@ -202,6 +244,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             path.addPoint(loc.getLatitude(), loc.getLongitude());
             waypoints.add(new LatLng(loc));
         }
+
 
         // We also want a grey line if the user is expected to walk somewhere we cannot route directly to.
         PathOverlay endWalkingPath = new PathOverlay(Color.GRAY, 10);
@@ -215,10 +258,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         // Show the whole route, zooming to make it fit
         this.mapView.getOverlays().add(beginWalkingPath);
         this.mapView.getOverlays().add(endWalkingPath);
+
+
         this.mapView.getOverlays().add(path);
 
         // Put markers at the beginning and end of the route. We use the "real" end location, which means the place that
         // the user tapped.
+
         beginMarker = new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT);
         endMarker = new IBCMarker("", "", new LatLng(route.getRealEndLocation()), MarkerType.PATH_ENDPOINT);
 
@@ -240,6 +286,159 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         double longitudeDiff = Math.abs(east - west) * 0.2;
 
 
+        //Add 20% padding
+        ArrayList<LatLng> paddedWaypoints = new ArrayList<LatLng>();
+        LatLng ne = new LatLng(north + latitudeDiff, east + longitudeDiff);
+        LatLng sw = new LatLng(south - latitudeDiff, west - longitudeDiff);
+        paddedWaypoints.add(ne);
+        paddedWaypoints.add(sw);
+
+        this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(paddedWaypoints), true, true, false, true);
+
+        cleanedUp = false;
+    }
+
+    /*
+    Used only for breakRoute. Looks a lot like the other showBreakRouteOverview,
+    but due to too many if conditions etc, it's easier to make a separate method
+     */
+    public void showBreakRouteOverview(SMRoute route, int position) {
+        this.route = route;
+        this.cleanUp();
+
+        Log.d("DV_break", "NavigationMaphandler: In showRouteOverview!");
+
+        route.setListener(this);
+
+        removeAnyPathOverlays();
+
+        // Set up the infoPane
+        initInfopane();
+
+        // TODO: Fix confusion between Location and LatLng objects
+        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+            if (route.transportType != null && route.transportType.equals("BIKE")) {
+                // Only draw an orange line for bike route pieces
+                path[position] = new PathOverlay(Color.parseColor("#FF6600"), 10);
+            } else {
+                path[position] = new PathOverlay(Color.BLUE, 10);
+            }
+        } else {
+            path[position] = new PathOverlay(Color.RED, 10);
+        }
+        beginWalkingPath[position] = new PathOverlay(Color.GRAY, 10);
+        ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
+
+        // Add a waypoint at the user's current position
+        if (route.startAddress != null && route.startAddress.isCurrentLocation()) {
+            beginWalkingPath[position].addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
+            beginWalkingPath[position].addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
+        }
+
+        for (Location loc : route.waypoints) {
+            path[position].addPoint(loc.getLatitude(), loc.getLongitude());
+            waypoints.add(new LatLng(loc));
+        }
+
+
+        //Problems with GRAY :P
+/*
+        // We also want a grey line if the user is expected to walk somewhere we cannot route directly to.
+        endWalkingPath[position] = new PathOverlay(Color.GRAY, 10);
+        LatLng lastPoint = new LatLng(route.waypoints.get(route.waypoints.size() - 1));
+        LatLng realLastPoint = route.getRealEndLocation();
+        endWalkingPath[position].addPoint(lastPoint);
+        endWalkingPath[position].addPoint(realLastPoint);
+
+        Log.d("JC", "distance: " + lastPoint.distanceTo(realLastPoint));
+*/
+
+        /*
+        // Show the whole route, zooming to make it fit
+        if (amount -1 == position) {
+            for(int i = 0; i < beginWalkingPath.length; i++) {
+                this.mapView.getOverlays().add(beginWalkingPath[i]);
+                this.mapView.getOverlays().add(endWalkingPath[i]);
+            }
+        }
+        */
+
+        // Loop and add lines to be drawn
+        if (amount - 1 == position) {
+            Log.d("DV", "Sidste position!");
+            for (int i = 0; i < path.length; i++) {
+                this.mapView.getOverlays().add(path[i]);
+            }
+        }
+
+        // Put markers at the beginning and end of the route. We use the "real" end location, which means the place that
+        // the user tapped.
+        if (position == 0) {
+            beginMarker = new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT);
+            beginMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_start)));
+        }
+        if (amount - 1 == position) {
+            endMarker = new IBCMarker("", "", new LatLng(route.getRealEndLocation()), MarkerType.PATH_ENDPOINT);
+            endMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_finish)));
+        }
+
+        // Set the different marker types
+        if (route.transportType != null && route.transportType.equals("M")) {
+            mMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_metro))));
+        }
+        if (route.transportType != null && route.transportType.equals("S")) {
+            sMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_s))));
+        }
+        if (route.transportType != null && route.transportType.equals("WALK")) {
+            walkMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_walk))));
+        }
+        if (route.transportType != null && route.transportType.equals("WALK")) {
+            trainMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_train))));
+        }
+        if (route.transportType != null && route.transportType.equals("BUS")) {
+            busMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
+        }
+
+        //boatMarker = new IBCMarker[amount];
+
+        /*
+        beginMarker = new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT);
+        endMarker = new IBCMarker("", "", new LatLng(route.getRealEndLocation()), MarkerType.PATH_ENDPOINT);
+
+        beginMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_start)));
+        endMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_finish)));
+        */
+
+        // Loop and set markers
+        if (amount - 1 == position) {
+            this.mapView.addMarker(beginMarker);
+            this.mapView.addMarker(endMarker);
+
+            for (int i = 0; i < mMarker.size(); i++) {
+                this.mapView.addMarker(mMarker.get(i));
+            }
+            for (int i = 0; i < sMarker.size(); i++) {
+                this.mapView.addMarker(sMarker.get(i));
+            }
+            for (int i = 0; i < busMarker.size(); i++) {
+                this.mapView.addMarker(busMarker.get(i));
+            }
+
+        }
+
+        BoundingBox boundingBox = BoundingBox.fromLatLngs(waypoints);
+
+        double north = boundingBox.getLatNorth();
+        double east = boundingBox.getLonEast();
+        double west = boundingBox.getLonWest();
+        double south = boundingBox.getLatSouth();
+
+        double latitudeDiff = Math.abs(north - south) * 0.2;
+
+        double longitudeDiff = Math.abs(east - west) * 0.2;
+
+
+        // Fix so that it's first and last waypoint
         //Add 20% padding
         ArrayList<LatLng> paddedWaypoints = new ArrayList<LatLng>();
         LatLng ne = new LatLng(north + latitudeDiff, east + longitudeDiff);
@@ -476,6 +675,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         final Address finalSource = newSrc;
         final Address finalDestination = newDst;
 
+
+        Log.d("DV_break", "NavigationMaphandler: Geocoder.getroute!");
         Geocoder.getRoute(finalSource.getLocation(), finalDestination.getLocation(), new Geocoder.RouteCallback() {
             @Override
             public void onSuccess(SMRoute route) {
@@ -484,7 +685,20 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 route.startAddress = finalSource;
                 route.endAddress = finalDestination;
 
+                Log.d("DV_break", "NavigationMaphandler: Calling showRoute!");
                 mapView.showRoute(route);
+            }
+
+            @Override
+            public void onSuccess(boolean isBreak) {
+                //Måske fjern route helt herfra og sæt de her ting i Geocoder?
+                route.startStationName = finalSource.getStreetAddress();
+                route.endStationName = finalDestination.getStreetAddress();
+                route.startAddress = finalSource;
+                route.endAddress = finalDestination;
+
+                Log.d("DV_break", "NavigationMaphandler: Calling showRoute with breakRoute!");
+                mapView.showMultipleRoutes();
             }
 
             @Override
