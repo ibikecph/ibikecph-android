@@ -4,15 +4,12 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.view.View;
+import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderApi;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Icon;
@@ -138,8 +135,16 @@ public class IBCMapView extends MapView {
      */
     public void showRoute(SMRoute route) {
         changeState(MapState.NAVIGATION_OVERVIEW);
+        Log.d("DV_break", "IBCMapView: In ShowRoute!");
 
         ((NavigationMapHandler) getMapHandler()).showRouteOverview(route);
+    }
+
+    public void showMultipleRoutes() {
+        changeState(MapState.NAVIGATION_OVERVIEW);
+        Log.d("DV_break", "IBCMapView: In ShowRoute, multipleRoutes!");
+
+        ((NavigationMapHandler) getMapHandler()).showRouteOverviewPiece();
     }
 
     public void showRoute(final FavoritesData fd) {
@@ -185,26 +190,37 @@ public class IBCMapView extends MapView {
 
         final Address finalDestination = destination;
         final Address finalSource = source;
+
+
+        Log.d("DV_break", "Calling Geocoder.getRoute");
         Geocoder.getRoute(source.getLocation(), destination.getLocation(), new Geocoder.RouteCallback() {
             @Override
             public void onSuccess(SMRoute route) {
+                Log.d("DV_break", "IBCMapView, onSuccess!");
                 route.startStationName = finalSource.getStreetAddress();
                 route.endStationName = finalDestination.getStreetAddress();
                 route.startAddress = finalSource;
                 route.endAddress = finalDestination;
-                if(route.endAddress.getAddressSource() == Address.AddressSource.FAVORITE) {
+                if (route.endAddress.getAddressSource() == Address.AddressSource.FAVORITE) {
                     route.endAddress.setHouseNumber("");
                 }
 
+                Log.d("DV_break", "IBCMapView, calling showRoute!");
                 showRoute(route);
             }
 
             @Override
-            public void onFailure() {
+            public void onSuccess(boolean isBreak) {
 
             }
 
+            @Override
+            public void onFailure() {
+                Log.d("DV_break", "IBCMapView, onFailure!");
+            }
+
         }, null, RouteType.FASTEST);
+
 
     }
 
