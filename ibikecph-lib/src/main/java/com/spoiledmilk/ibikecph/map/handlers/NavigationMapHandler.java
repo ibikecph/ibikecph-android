@@ -228,7 +228,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.route = route;
         this.cleanUp();
 
-        Log.d("DV_break", "NavigationMaphandler: In showRouteOverview!");
+        Log.d("DV_break", "showRouteOverview");
 
         route.setListener(this);
 
@@ -319,7 +319,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.route = route;
         this.cleanUp();
 
-        Log.d("DV_break", "NavigationMaphandler: In showRouteOverview!");
+        Log.d("DV_break", "showBreakRouteOverview");
 
         route.setListener(this);
 
@@ -343,7 +343,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             waypoints = new ArrayList<LatLng>();
             beginWalkingPath = new PathOverlay(Color.GRAY, 10);
             // Add a waypoint at the user's current position
-            if (route.startAddress != null && route.startAddress.isCurrentLocation()) { //curr = null ?
+            if (route.startAddress != null) { //curr = null ?
                 beginWalkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
                 beginWalkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
             }
