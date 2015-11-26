@@ -50,6 +50,7 @@ import java.util.ArrayList;
 public class NavigationMapHandler extends IBCMapHandler implements SMRouteListener, Serializable, LocationListener {
     private UserLocationOverlay userLocationOverlay;
     private static SMRoute route; // TODO: Static is bad, but we'll never have two NavigationMapHandlers anyway.
+    private static SMRoute[] breakRoute;
     private boolean cleanedUp = true;
     private transient TurnByTurnInstructionFragment turnByTurnFragment;
     private transient RouteETAFragment routeETAFragment;
@@ -61,6 +62,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient PathOverlay beginWalkingPath = null;
     private transient PathOverlay endWalkingPath = null;
     private int amount = 0;
+    public static int routePos = 0; // Keep track of which routePiece we are currently tracking
     public static ObservablePageInteger obsInt;
     ArrayList<LatLng> waypoints;
 
@@ -124,8 +126,15 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     @Override
     public void reachedDestination() {
-        Log.d("JC", "NavigationMapHandler reachedDestination");
-        this.turnByTurnFragment.reachedDestination();
+        Log.d("DV", "NavigationMapHandler reachedDestination");
+        Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(null);
+        if ((routePos + 1) < Geocoder.arrayLists.get(obsInt.getPageValue()).size()) {
+            routePos = routePos + 1;
+            Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(this);
+            Log.d("DV", "NavigationMapHandler reachedDestination, ny listener er sat med index = " + routePos);
+        } else {
+            this.turnByTurnFragment.reachedDestination();
+        }
     }
 
     @Override
@@ -169,11 +178,38 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             path = new PathOverlay(Color.RED, 10);
         }
 
-        for (Location loc : this.route.waypoints) {
-            path.addPoint(loc.getLatitude(), loc.getLongitude());
+        if (this.route != null) {
+            for (Location loc : this.route.waypoints) {
+                path.addPoint(loc.getLatitude(), loc.getLongitude());
+            }
+
+            this.mapView.getOverlays().add(path);
+        }
+    }
+
+    @Override
+    public void routeRecalculationDone(String type) {
+        Log.d("JC", "NavigationMapHandler routeRecalculationDone");
+        removeAnyPathOverlays();
+        PathOverlay[] path = new PathOverlay[Geocoder.arrayLists.get(obsInt.getPageValue()).size()];
+        
+        // Redraw the rest since they have all been removed with the removeAnyPathOverlays()-function
+        for (int i = 0; i < Geocoder.arrayLists.get(obsInt.getPageValue()).size(); i++) {
+            Log.d("DV", "REDRAWING WITH TYPE = " + Geocoder.arrayLists.get(obsInt.getPageValue()).get(i).transportType);
+            if (Geocoder.arrayLists.get(obsInt.getPageValue()).get(i).transportType.equals("BIKE")) {
+                path[i] = new PathOverlay(Color.parseColor("#FF6600"), 10);
+            } else {
+                path[i] = new PathOverlay(Color.GRAY, 10);
+            }
+            for (Location loc : Geocoder.arrayLists.get(obsInt.getPageValue()).get(i).waypoints) {
+                path[i].addPoint(loc.getLatitude(), loc.getLongitude());
+            }
         }
 
-        this.mapView.getOverlays().add(path);
+        for (int i = 0; i < path.length; i++) {
+            this.mapView.getOverlays().add(path[i]);
+        }
+
     }
 
     @Override
@@ -188,7 +224,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         if (this.route != null) {
             route.cleanUp();
-            route = null;
+            //route = null;
         }
 
         cleanUp();
@@ -210,6 +246,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         sMarker = new ArrayList<IBCMarker>();
         busMarker = new ArrayList<IBCMarker>();
         trainMarker = new ArrayList<IBCMarker>();
+        breakRoute = new SMRoute[amount];
 
         for (int j = 0; j < routes.get(pos).size(); j++) {
             showBreakRouteOverview(routes.get(pos).get(j), j);
@@ -227,6 +264,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void showRouteOverview(SMRoute route) {
         this.route = route;
         this.cleanUp();
+        this.mapView.removeAllMarkers();
 
         Log.d("DV_break", "showRouteOverview");
 
@@ -316,12 +354,16 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     but due to too many if conditions etc, it's easier to make a separate method
      */
     public void showBreakRouteOverview(SMRoute route, int position) {
-        this.route = route;
+        //this.route = route;
+        breakRoute[position] = route;
         this.cleanUp();
 
         Log.d("DV_break", "showBreakRouteOverview");
 
-        route.setListener(this);
+        this.route.setListener(null);
+        if (position == 0) {
+            route.setListener(this);
+        }
 
         removeAnyPathOverlays();
 
@@ -530,6 +572,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         ft.add(R.id.turnByTurnContainer, tbtf, "TurnByTurnPane");
         ft.replace(R.id.infoPaneContainer, ref, "RouteETAFragment");
         ft.commit();
+        MapActivity.breakFrag.setVisibility(View.GONE);
+        MapActivity.progressBarHolder.setVisibility(View.GONE);
     }
 
     /**
@@ -633,6 +677,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         return route;
     }
 
+    public static SMRoute getBreakRoute(int pos) {
+        return breakRoute[pos];
+    }
 
     public void setTurnByTurnFragment(TurnByTurnInstructionFragment turnByTurnFragment) {
         this.turnByTurnFragment = turnByTurnFragment;
@@ -699,10 +746,10 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             @Override
             public void onSuccess(boolean isBreak) {
                 //Måske fjern route helt herfra og sæt de her ting i Geocoder?
-                route.startStationName = finalSource.getStreetAddress();
+                /*route.startStationName = finalSource.getStreetAddress();
                 route.endStationName = finalDestination.getStreetAddress();
                 route.startAddress = finalSource;
-                route.endAddress = finalDestination;
+                route.endAddress = finalDestination;*/
 
                 Log.d("DV_break", "NavigationMaphandler: Calling showRoute with breakRoute!");
                 mapView.showMultipleRoutes();
