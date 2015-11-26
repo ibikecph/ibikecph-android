@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
@@ -61,6 +62,9 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         cargoButton.setOnClickListener(this);
         greenButton.setOnClickListener(this);
 
+        float distance;
+        float duration;
+        long arrivalTime = 0;
 
         if (IbikeApplication.getAppName().equals("Cykelplanen")) {
             breakButton = (ImageButton) v.findViewById(R.id.navigationOverviewBreakButton);
@@ -68,14 +72,26 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             breakButton.setOnClickListener(this);
 
             cargoButton.setVisibility(View.GONE);
+
+            // Set the distance label
+            if (Geocoder.totalDistance != null) {
+                distance = Geocoder.totalDistance.get(NavigationMapHandler.obsInt.getPageValue());
+                duration = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
+                arrivalTime = Geocoder.arrivalTime.get(NavigationMapHandler.obsInt.getPageValue());
+            } else {
+                distance = route.getEstimatedDistance();
+                duration = route.getEstimatedArrivalTime();
+            }
+        } else {
+            // Set the distance label
+            distance = route.getEstimatedDistance();
+            duration = route.getEstimatedArrivalTime();
         }
 
         TextView durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
         TextView lengthText = (TextView) v.findViewById(R.id.navigationOverviewRouteLength);
         TextView etaText = (TextView) v.findViewById(R.id.navigationOverviewRouteETA);
 
-        // Set the distance label
-        float distance = route.getEstimatedDistance();
 
         if (distance > 1000) {
             distance /= 1000;
@@ -85,15 +101,26 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         }
 
         // Set the duration label
-        float duration = route.getEstimatedArrivalTime();
         durationText.setText(TrackListAdapter.durationToFormattedTime(duration));
 
-        // Set the ETA label
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.SECOND, (int) duration);
-        Date arrivalTime = c.getTime();
-        SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
-        etaText.setText(dt.format(arrivalTime));
+        boolean hourFormat = MapActivity.format;
+
+        SimpleDateFormat sdf = null;
+        if (hourFormat) {
+            sdf = new SimpleDateFormat("HH:mm");
+        } else {
+            sdf = new SimpleDateFormat("HH:mm a");
+        }
+
+        if (arrivalTime > 0) {
+            arrivalTime = arrivalTime*1000; //conv to seconds.
+            etaText.setText(sdf.format(arrivalTime).toString());
+        } else {
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.SECOND, (int) duration);
+            Date arrivalTimee = c.getTime();
+            etaText.setText(sdf.format(arrivalTimee));
+        }
 
 
         // Add the ability to flip the route
