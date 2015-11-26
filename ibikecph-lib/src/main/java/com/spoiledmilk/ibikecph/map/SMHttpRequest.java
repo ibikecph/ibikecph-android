@@ -8,6 +8,7 @@ package com.spoiledmilk.ibikecph.map;
 import android.location.Location;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.api.ILatLng;
@@ -116,6 +117,7 @@ public class SMHttpRequest {
 
     public void getRecalculatedRoute(final Location start, final Location end, List<Location> viaPoints, final String chksum, final String startHint,
                                      final String hint, final RouteType type, final SMHttpRequestListener listener) {
+        Log.d("DV_break", "SMRoute, Calling getRoute!");
         getRoute(start, end, viaPoints, chksum, startHint, hint, listener, REQUEST_GET_RECALCULATED_ROUTE, 18, false, type);
     }
 
@@ -127,7 +129,7 @@ public class SMHttpRequest {
                 String url;
                 String routingServer;
                 boolean Break = false;
-
+                Log.d("DV_break", "SMHttpRequest, before switch, type = " + type.toString());
                 switch (type) {
                     case GREEN:
                         routingServer = Config.OSRM_SERVER_GREEN;
@@ -136,6 +138,7 @@ public class SMHttpRequest {
                         routingServer = Config.OSRM_SERVER_CARGO;
                         break;
                     case BREAK:
+                        Log.d("DV_break", "Setting routingServer");
                         routingServer = Config.OSRM_SERVER_BREAK;
                         Break = true;
                         break;
@@ -149,6 +152,7 @@ public class SMHttpRequest {
                         url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f&hint=" + startHint + "", routingServer,
                                 start.getLatitude(), start.getLongitude());
                     } else {
+                        Log.d("DV_break", "Setting URL1");
                         url = String.format(Locale.US, "%s?&loc[]=%.6f,%.6f&loc[]=%.6f,%.6f", routingServer, start.getLatitude(), start.getLongitude(), end.getLatitude(),
                                 end.getLongitude());
                     }
@@ -157,6 +161,7 @@ public class SMHttpRequest {
                         url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f", routingServer, start.getLatitude(),
                                 start.getLongitude());
                     } else {
+                        Log.d("DV_break", "Setting URL2");
                         url = String.format(Locale.US, "%s?&loc[]=%.6f,%.6f&loc[]=%.6f,%.6f", routingServer, start.getLatitude(), start.getLongitude(), end.getLatitude(),
                                 end.getLongitude());
                     }
@@ -183,23 +188,29 @@ public class SMHttpRequest {
                     }
                 }
                 LOG.d("Routes request = " + url);
+                Log.d("DV_break", "SMHttpRequest, getting RouteInfo");
                 RouteInfo ri = new RouteInfo(HttpUtils.get(url, Break), start, end);
+                Log.d("DV_break", "SMHttpRequest, got RouteInfo");
                 if (ri == null || ri.jsonRoot == null || ri.jsonRoot.path("status").asInt(-1) != 0) {
                     // Log.d("DV", "jsonRoot = " + ri.jsonRoot);
 
-                    if (ri != null) {
-                        int amountOfRoutes = ri.jsonRoot.path("journeys").size(); // Gets the amount of routes. Needs to implement logic to generate the full route though, only loops now.
+                    /*if (ri != null && ri.jsonRoot != null) {
+                        Log.d("DV_break", "ri != null");
+                        int amountOfRoutes = ri.jsonRoot.size(); // Gets the amount of routes.
                         MapActivity.breakRouteJSON = ri.jsonRoot;
                         MapActivity.obsInt.set(amountOfRoutes); // Set the amount of route suggestions in order to display this amount in the fragmentAdapter
-                    }
+                    }*/
+
                     // try to get the route with the z = 10
                     if (!isFromZ10)
                         getRouteZ10(start, end, viaPoints, chksum, startHint, hint, listener, msgType);
                     else
                         sendMsg(msgType, z10Route, listener);
-                } else
+                } else {
+                    Log.d("DV_break", "ri == null");
                     // Route found
                     sendMsg(msgType, ri, listener);
+                }
 
                 // String response =
                 // "{\"version\": 0.3,\"status\":0,\"status_message\": \"Found route between points\",\"route_geometry\": \"swyrI}jpkAJu@RuAJq@PoALs@l@qEVgBn@qEJw@v@cGUMq@c@AAIEUOYSKG]USMCCYQCAi@]OK}@e@IEEC_@SIGSOIGOKcAk@MIqAy@XsBFe@NgARyARuAN_AJq@^aCFg@h@kD?Cn@yDFa@Lu@DoAu@Co@KKCUIQIOKOI]Y\",\"route_instructions\": [[\"10\",\"Dyrl�gevej\",109,0,26,\"109m\",\"E\",112],[\"1\",\"Kastanievej\",282,5,76,\"282m\",\"E\",111],[\"7\",\"H.C. �rsteds Vej\",368,10,97,\"368m\",\"N\",20],[\"3\",\"Forchhammersvej\",412,35,109,\"412m\",\"E\",112],[\"7\",\"Vodroffsvej\",124,50,19,\"124m\",\"N\",2],[\"15\",\"\",0,58,0,\"\",\"N\",0.0]],\"route_summary\":{\"total_distance\":1297,\"total_time\":347,\"start_point\":\"service\",\"end_point\":\"Vodroffsvej\"},\"alternative_geometries\": [],\"alternative_instructions\":[],\"alternative_summaries\":[],\"route_name\":[\"H.C. �rsteds Vej\",\"Forchhammersvej\"],\"alternative_names\":[[\"\",\"\"]],\"via_points\":[[55.67882,12.54079 ],[55.68029,12.55526 ]],\"hint_data\": {\"checksum\":1952171896, \"locations\": [\"V5xqALEAAABNAAAAAAAAAAAAAAAAAPA_ivVUAL8iEwB\", \"QEEpACEAAAAsAAAATQAAACl-jExyHNc_HfZUAGYoEwB\"]},\"transactionId\": \"OSRM Routing Engine JSON Descriptor (v0.3)\"}";
