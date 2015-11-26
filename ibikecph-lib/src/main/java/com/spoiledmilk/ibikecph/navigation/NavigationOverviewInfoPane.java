@@ -36,7 +36,12 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        SMRoute route = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).getRoute();
+        SMRoute route;
+        if (MapActivity.isBreakChosen && Geocoder.totalDistance != null) {
+            route = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).getBreakRoute(NavigationMapHandler.obsInt.getPageValue());
+        } else {
+            route = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).getRoute();
+        }
 
         View v = inflater.inflate(R.layout.infopane_navigation_overview, container, false);
 
@@ -120,7 +125,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         }
 
         if (arrivalTime > 0) {
-            arrivalTime = arrivalTime*1000;
+            arrivalTime = arrivalTime * 1000;
             etaText.setText(sdf.format(arrivalTime).toString());
         } else {
             Calendar c = Calendar.getInstance();
@@ -139,11 +144,11 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         });
 
         // Only show the go button if the route starts at the current location
-        if (parent.getRoute().startAddress.isCurrentLocation()) {
+        if (parent.getRoute() != null &&  parent.getRoute().startAddress.isCurrentLocation()) {
             v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.VISIBLE);
-        }else if(MapActivity.isBreakChosen){
+        } else if (MapActivity.isBreakChosen) {
             v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.VISIBLE);
-        }        else {
+        } else {
             v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.GONE);
         }
 
