@@ -76,13 +76,15 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
                 distance = Geocoder.totalDistance.get(NavigationMapHandler.obsInt.getPageValue());
                 duration = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
                 arrivalTime = Geocoder.arrivalTime.get(NavigationMapHandler.obsInt.getPageValue());
-                sourceText.setText(Geocoder.from.get(NavigationMapHandler.obsInt.getPageValue()));
+                //sourceText.setText(Geocoder.from.get(NavigationMapHandler.obsInt.getPageValue()));
+                sourceText.setText(IbikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
                 destinationText.setText(Geocoder.to.get(NavigationMapHandler.obsInt.getPageValue()));
 
             } else {
                 distance = route.getEstimatedDistance();
                 duration = route.getEstimatedArrivalTime();
-                sourceText.setText(route.startAddress.getStreetAddress());
+                //sourceText.setText(route.startAddress.getStreetAddress());
+                sourceText.setText(IbikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
                 destinationText.setText(route.endAddress.getStreetAddress());
             }
         } else {
@@ -118,7 +120,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         }
 
         if (arrivalTime > 0) {
-            arrivalTime = arrivalTime*1000; //conv to seconds.
+            arrivalTime = arrivalTime*1000;
             etaText.setText(sdf.format(arrivalTime).toString());
         } else {
             Calendar c = Calendar.getInstance();
@@ -139,7 +141,9 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         // Only show the go button if the route starts at the current location
         if (parent.getRoute().startAddress.isCurrentLocation()) {
             v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.VISIBLE);
-        } else {
+        }else if(MapActivity.isBreakChosen){
+            v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.VISIBLE);
+        }        else {
             v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.GONE);
         }
 
