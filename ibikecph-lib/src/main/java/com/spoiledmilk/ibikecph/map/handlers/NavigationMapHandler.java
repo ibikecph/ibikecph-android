@@ -57,9 +57,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient ArrayList<IBCMarker> mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker;
     private boolean isRouting;
     private IbikePreferences settings;
-    private PathOverlay[] path;
-    PathOverlay beginWalkingPath = null;
-    PathOverlay endWalkingPath = null;
+    private transient PathOverlay[] path;
+    private transient PathOverlay beginWalkingPath = null;
+    private transient PathOverlay endWalkingPath = null;
     private int amount = 0;
     public static ObservablePageInteger obsInt;
     ArrayList<LatLng> waypoints;
@@ -441,9 +441,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             double west = boundingBox.getLonWest();
             double south = boundingBox.getLatSouth();
 
-            double latitudeDiff = Math.abs(north - south) * 0.2;
+            double latitudeDiff = Math.abs(north - south) * 0.25;
 
-            double longitudeDiff = Math.abs(east - west) * 0.2;
+            double longitudeDiff = Math.abs(east - west) * 0.25;
 
             //Add 20% padding
             ArrayList<LatLng> paddedWaypoints = new ArrayList<LatLng>();
