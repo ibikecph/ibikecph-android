@@ -14,6 +14,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
@@ -176,8 +177,16 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
 
         for (int i = 0; i < jsonNode.path("journey").size(); i++) {
             type = jsonNode.path("journey").get(i).path("route_summary").path("type").textValue();
-            from = "Fra " + jsonNode.path("journey").get(i).path("route_name").get(0).textValue();
-            to = " til\n" + jsonNode.path("journey").get(i).path("route_name").get(1).textValue();
+
+
+            if (i == jsonNode.path("journey").size() - 1) {
+                from = IbikeApplication.getString("From") + " " + IbikeApplication.getString(jsonNode.path("journey").get(i).path("route_name").get(0).textValue());
+                to = " " + IbikeApplication.getString("To") + "\n" + IbikeApplication.getString(jsonNode.path("journey").get(i).path("route_name").get(1).textValue());
+            } else {
+                from = IbikeApplication.getString("From") + " " + jsonNode.path("journey").get(i).path("route_name").get(0).textValue();
+                to = " " + IbikeApplication.getString("To") + "\n" + jsonNode.path("journey").get(i).path("route_name").get(1).textValue();
+            }
+
             startTime[i] = timeStampFormat(jsonNode.path("journey").get(i).path("route_summary").path("departure_time").asLong());
             arrivalTime[i] = timeStampFormat(jsonNode.path("journey").get(i).path("route_summary").path("arrival_time").asLong());
 
@@ -185,11 +194,11 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
                 typeAndTime[i] = "Cykel " + formatDistance(jsonNode.path("journey").get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.path("journey").get(i).path("route_summary").path("total_time").asDouble()));
                 fromTo[i] = from + to;
             } else if (type.equals("WALK")) {
-                typeAndTime[i] = "Gå " + formatDistance(jsonNode.path("journey").get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.path("journey").get(i).path("route_summary").path("total_time").asDouble()));
+                typeAndTime[i] = IbikeApplication.getString("vehicle_2") + " " + formatDistance(jsonNode.path("journey").get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.path("journey").get(i).path("route_summary").path("total_time").asDouble()));
                 fromTo[i] = from + to;
             } else {
                 typeAndTime[i] = jsonNode.path("journey").get(i).path("route_name").get(0).textValue();
-                fromTo[i] = jsonNode.path("journey").get(i).path("route_summary").path("name").textValue() + " til\n" + jsonNode.path("journey").get(i).path("route_name").get(1).textValue();
+                fromTo[i] = jsonNode.path("journey").get(i).path("route_summary").path("name").textValue() + " " + IbikeApplication.getString("To") + "\n" + jsonNode.path("journey").get(i).path("route_name").get(1).textValue();
             }
         }
 
