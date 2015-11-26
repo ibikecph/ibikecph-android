@@ -325,26 +325,25 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         removeAnyPathOverlays();
 
-        // Set up the infoPane
-        initInfopane();
-
         // TODO: Fix confusion between Location and LatLng objects
         if (IbikeApplication.getAppName().equals("Cykelplanen")) {
             if (route.transportType != null && route.transportType.equals("BIKE")) {
                 // Only draw an orange line for bike route pieces
                 path[position] = new PathOverlay(Color.parseColor("#FF6600"), 10);
             } else {
-                path[position] = new PathOverlay(Color.BLUE, 10);
+                path[position] = new PathOverlay(Color.GRAY, 10);
             }
         } else {
             path[position] = new PathOverlay(Color.RED, 10);
         }
 
         if (position == 0) {
+            // Set up the infoPane
+            initInfopane(); //Should only be run once.
             waypoints = new ArrayList<LatLng>();
             beginWalkingPath = new PathOverlay(Color.GRAY, 10);
             // Add a waypoint at the user's current position
-            if (route.startAddress != null && route.startAddress.isCurrentLocation()) {
+            if (route.startAddress != null && route.startAddress.isCurrentLocation()) { //curr = null ?
                 beginWalkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
                 beginWalkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
             }
