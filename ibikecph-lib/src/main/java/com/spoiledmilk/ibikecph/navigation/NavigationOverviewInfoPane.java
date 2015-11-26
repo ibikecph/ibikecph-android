@@ -41,10 +41,8 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         View v = inflater.inflate(R.layout.infopane_navigation_overview, container, false);
 
         TextView sourceText = (TextView) v.findViewById(R.id.navigationOverviewSource);
-        sourceText.setText(route.startAddress.getStreetAddress());
 
         TextView destinationText = (TextView) v.findViewById(R.id.navigationOverviewDestination);
-        destinationText.setText(route.endAddress.getStreetAddress());
 
         ImageButton goButton = (ImageButton) v.findViewById(R.id.navigationOverviewGoButton);
         goButton.setOnClickListener(new View.OnClickListener() {
@@ -74,18 +72,25 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             cargoButton.setVisibility(View.GONE);
 
             // Set the distance label
-            if (Geocoder.totalDistance != null) {
+            if (MapActivity.isBreakChosen && Geocoder.totalDistance != null) {
                 distance = Geocoder.totalDistance.get(NavigationMapHandler.obsInt.getPageValue());
                 duration = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
                 arrivalTime = Geocoder.arrivalTime.get(NavigationMapHandler.obsInt.getPageValue());
+                sourceText.setText(Geocoder.from.get(NavigationMapHandler.obsInt.getPageValue()));
+                destinationText.setText(Geocoder.to.get(NavigationMapHandler.obsInt.getPageValue()));
+
             } else {
                 distance = route.getEstimatedDistance();
                 duration = route.getEstimatedArrivalTime();
+                sourceText.setText(route.startAddress.getStreetAddress());
+                destinationText.setText(route.endAddress.getStreetAddress());
             }
         } else {
             // Set the distance label
             distance = route.getEstimatedDistance();
             duration = route.getEstimatedArrivalTime();
+            sourceText.setText(route.startAddress.getStreetAddress());
+            destinationText.setText(route.endAddress.getStreetAddress());
         }
 
         TextView durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
@@ -183,7 +188,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         if (v.getId() == R.id.navigationOverviewFastButton) {
             disableAllRouteButtons();
             fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
-
+            MapActivity.isBreakChosen = false;
             this.parent.changeRouteType(RouteType.FASTEST);
 
         } else if (v.getId() == R.id.navigationOverviewCargoButton) {
@@ -194,6 +199,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
 
         } else if (v.getId() == R.id.navigationOverviewGreenButton) {
             disableAllRouteButtons();
+            MapActivity.isBreakChosen = false;
             greenButton.setImageResource(R.drawable.btn_route_green_enabled);
 
             this.parent.changeRouteType(RouteType.GREEN);
@@ -201,6 +207,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         } else if (v.getId() == R.id.navigationOverviewBreakButton) {
             disableAllRouteButtons();
             breakButton.setImageResource(R.drawable.btn_train_enabled);
+            MapActivity.isBreakChosen = true;
             MapActivity.pager.setAdapter(null);
             MapActivity.tabs.setVisibility(View.GONE);
             MapActivity.progressBarHolder.setVisibility(View.VISIBLE);

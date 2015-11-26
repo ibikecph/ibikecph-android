@@ -101,6 +101,7 @@ public class MapActivity extends IBCMapActivity {
     public int amount = 0;
     public static JsonNode breakRouteJSON = null;
     public static boolean format;
+    public static boolean isBreakChosen = false;
 
 
     @Override
@@ -579,6 +580,8 @@ public class MapActivity extends IBCMapActivity {
 
         frag.setVisibility(View.GONE);
         breakFrag.setVisibility(View.GONE);
+        progressBarHolder.setVisibility(View.GONE);
+        mapView.removeAllMarkers();
 
         /*Fragment fragment = mapView.getParentActivity().getFragmentManager().findFragmentByTag("infopane");
         if (fragment != null)
@@ -606,6 +609,9 @@ public class MapActivity extends IBCMapActivity {
             }
         }
         breakFrag.setVisibility(View.GONE);
+        progressBarHolder.setVisibility(View.GONE);
+        mapView.removeAllMarkers();
+
     }
 
     public void userTrackingButtonOnClick(View v) {

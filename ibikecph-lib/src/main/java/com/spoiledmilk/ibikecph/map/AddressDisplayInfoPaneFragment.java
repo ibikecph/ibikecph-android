@@ -84,6 +84,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
     public void btnStartRouteClicked(View v) {
         if (IbikeApplication.getService().hasValidLocation()) {
             OverviewMapHandler.isWatchingAddress = false;
+            MapActivity.isBreakChosen = false;
             Address a = (Address) getArguments().getSerializable("address");
 
             ((MapActivity) this.getActivity()).mapView.showRoute(a);
