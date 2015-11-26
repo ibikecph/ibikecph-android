@@ -13,5 +13,6 @@ public interface SMRouteListener {
 	public void routeNotFound();
 	public void routeRecalculationStarted();
 	public void routeRecalculationDone();
+	public void routeRecalculationDone(String type);
 	public void serverError();
 }
