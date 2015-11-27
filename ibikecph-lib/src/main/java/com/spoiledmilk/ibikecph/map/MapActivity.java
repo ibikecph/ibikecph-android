@@ -38,6 +38,7 @@ import com.mapbox.mapboxsdk.events.RotateEvent;
 import com.mapbox.mapboxsdk.events.ScrollEvent;
 import com.mapbox.mapboxsdk.events.ZoomEvent;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
@@ -611,6 +612,11 @@ public class MapActivity extends IBCMapActivity {
         breakFrag.setVisibility(View.GONE);
         progressBarHolder.setVisibility(View.GONE);
         mapView.removeAllMarkers();
+        for (Overlay overlay : this.mapView.getOverlays()) {
+            if (overlay instanceof com.mapbox.mapboxsdk.overlay.PathOverlay) {
+                this.mapView.removeOverlay(overlay);
+            }
+        }
 
     }
 
