@@ -246,7 +246,7 @@ public class Geocoder {
                                 totalBikeDistance.add(node.get(i).path("journey_summary").path("total_bike_distance").asInt());
                                 arrivalTime.add(node.get(i).path("journey").get(node.get(i).path("journey").size() - 1).path("route_summary").path("arrival_time").asLong());
                                 from.add(node.get(i).path("journey").get(0).path("route_name").get(0).textValue());
-                                to.add(node.get(i).path("journey").get(node.get(i).path("journey").size() - 2).path("route_name").get(1).textValue());
+                                //to.add(node.get(i).path("journey").get(node.get(i).path("journey").size() - 1).path("route_name").get(1).textValue());
                             }
                             callback.onSuccess(true);
                         }

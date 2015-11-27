@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.MapActivity;
@@ -83,7 +84,8 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
                 arrivalTime = Geocoder.arrivalTime.get(NavigationMapHandler.obsInt.getPageValue());
                 //sourceText.setText(Geocoder.from.get(NavigationMapHandler.obsInt.getPageValue()));
                 sourceText.setText(IbikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
-                destinationText.setText(Geocoder.to.get(NavigationMapHandler.obsInt.getPageValue()));
+                //destinationText.setText(Geocoder.to.get(NavigationMapHandler.obsInt.getPageValue()));
+                destinationText.setText(AddressDisplayInfoPaneFragment.name);
 
             } else {
                 distance = route.getEstimatedDistance();
@@ -217,6 +219,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             disableAllRouteButtons();
             breakButton.setImageResource(R.drawable.btn_train_enabled);
             MapActivity.isBreakChosen = true;
+            NavigationMapHandler.routePos = 0;
             MapActivity.pager.setAdapter(null);
             MapActivity.tabs.setVisibility(View.GONE);
             MapActivity.progressBarHolder.setVisibility(View.VISIBLE);
