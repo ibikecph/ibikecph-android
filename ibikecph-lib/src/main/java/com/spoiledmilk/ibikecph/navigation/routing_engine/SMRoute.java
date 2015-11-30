@@ -1,7 +1,7 @@
 // Copyright (C) 2013 City of Copenhagen.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at 
+// If a copy of the MPL was not distributed with this file, You can obtain one at
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
@@ -108,7 +108,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         waypointStation1 = -1;
         waypointStation2 = -1;
 
-        IbikeApplication.getService().addGPSListener(this);
+        //IbikeApplication.getService().addGPSListener(this);
     }
 
     public void init(Location start, Location end, SMRouteListener listener, JsonNode routeJSON, RouteType type) {
@@ -135,11 +135,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         locationStart = start;
         locationEnd = end;
         this.type = type;
-        setListener(listener);
+        //setListener(listener);
         setupBrokenRoute(routeJSON);
     }
 
     public void setListener(SMRouteListener listener) {
+        Log.d("DV", "setListener, with type = " + transportType);
         this.listener = listener;
     }
 
@@ -299,6 +300,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 return false;
             }
 
+            Log.d("DV", "Setting turnInstructions");
             turnInstructions = new ArrayList<SMTurnInstruction>();
             pastTurnInstructions = new LinkedList<SMTurnInstruction>();
             visitedLocations = new ArrayList<Location>();
@@ -333,7 +335,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     if (arr.length < 1)
                         continue;
                     int pos = Integer.valueOf(arr[0]);
-                    if (pos <= 17) {
+                    if (pos <= 19) {
                         instruction.drivingDirection = SMTurnInstruction.TurnDirection.values()[pos];
                         if (arr.length > 1 && arr[1] != null) {
                             instruction.ordinalDirection = arr[1];
@@ -512,7 +514,9 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     // Turn by Turn
     public void visitLocation(Location loc) {
+        Log.d("DV", "VISIT LOCATION!, Transport type = " + transportType);
         if (lastLocation != null && loc != null) {
+            Log.d("DV", "lastLocation and loc != null");
             distancePassed += loc.distanceTo(lastLocation);
         }
 
@@ -520,15 +524,19 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         visitedLocations.add(loc);
 
-        if (turnInstructions.size() <= 0)
+        if (turnInstructions.size() <= 0) {
+            Log.d("DV", "turnInstructions.size() <= 0");
             return;
+        }
 
         if (recalculationInProgress) {
+            Log.d("DV", "recalculationInProgress = true");
             return;
         }
 
         // Check if we are finishing:
         double distanceToFinish = loc.distanceTo(getEndLocation());
+        Log.d("DV", "Distance to finish = " + distanceToFinish + ", end location = " + getEndLocation());
 
         arrivalTime = distanceLeft * estimatedArrivalTime / estimatedRouteDistance;
 
@@ -542,8 +550,11 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         // are we close to the finish (< 10m or 3s left)?
         if (distanceToFinish < 100.0 || timeToFinish <= 3) {
-            LOG.d("finishing in " + distanceToFinish + " m and " + timeToFinish + " s");
+            //LOG.d("finishing in " + distanceToFinish + " m and " + timeToFinish + " s");
+            Log.d("DV", "dist < 100 && time <= 3");
+            Log.d("DV", "turnInstructions.size() == " + turnInstructions.size());
             if (turnInstructions.size() == 1) {
+                Log.d("DV", "turnInstructions.size() er nu == 1");
                 // if there was only one instruction left go through usual
                 // channels
                 approachingTurn = false;

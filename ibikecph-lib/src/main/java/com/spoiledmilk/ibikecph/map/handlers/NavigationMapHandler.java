@@ -128,9 +128,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void reachedDestination() {
         Log.d("DV", "NavigationMapHandler reachedDestination");
         Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(null);
+        IbikeApplication.getService().removeGPSListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
+       // Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(this);
+        Log.d("DV", "NavigationMapHandler reachedDestination, fjernet med index = " + routePos);
         if ((routePos + 1) < Geocoder.arrayLists.get(obsInt.getPageValue()).size()) {
             routePos = routePos + 1;
             Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(this);
+            IbikeApplication.getService().addGPSListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
             Log.d("DV", "NavigationMapHandler reachedDestination, ny listener er sat med index = " + routePos);
         } else {
             this.turnByTurnFragment.reachedDestination();
@@ -192,8 +196,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         Log.d("JC", "NavigationMapHandler routeRecalculationDone");
         removeAnyPathOverlays();
         PathOverlay[] path = new PathOverlay[Geocoder.arrayLists.get(obsInt.getPageValue()).size()];
-        
-        // Redraw the rest since they have all been removed with the removeAnyPathOverlays()-function
+
+        // Redraw the whole route
         for (int i = 0; i < Geocoder.arrayLists.get(obsInt.getPageValue()).size(); i++) {
             Log.d("DV", "REDRAWING WITH TYPE = " + Geocoder.arrayLists.get(obsInt.getPageValue()).get(i).transportType);
             if (Geocoder.arrayLists.get(obsInt.getPageValue()).get(i).transportType.equals("BIKE")) {
@@ -224,6 +228,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         if (this.route != null) {
             route.cleanUp();
+            route.setListener(null);
+            IbikeApplication.getService().removeGPSListener(route);
             //route = null;
         }
 
@@ -263,6 +269,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
      */
     public void showRouteOverview(SMRoute route) {
         this.route = route;
+        IbikeApplication.getService().addGPSListener(route);
         this.cleanUp();
         this.mapView.removeAllMarkers();
 
@@ -355,14 +362,16 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
      */
     public void showBreakRouteOverview(SMRoute route, int position) {
         //this.route = route;
-        breakRoute[position] = route;
+        //breakRoute[position] = route;
         this.cleanUp();
 
         Log.d("DV_break", "showBreakRouteOverview");
 
         this.route.setListener(null);
         if (position == 0) {
+            Log.d("DV", "Setting listener from showBreakRouteOverview");
             route.setListener(this);
+            IbikeApplication.getService().addGPSListener(route);
         }
 
         removeAnyPathOverlays();
@@ -385,7 +394,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             waypoints = new ArrayList<LatLng>();
             beginWalkingPath = new PathOverlay(Color.GRAY, 10);
             // Add a waypoint at the user's current position
-            if (route.startAddress != null) { //curr = null ?
+            if (route.startAddress != null) {
                 beginWalkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
                 beginWalkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
             }
@@ -407,13 +416,11 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             Log.d("JC", "distance: " + lastPoint.distanceTo(realLastPoint));
         }
 
-
         // Show the whole route, zooming to make it fit
         if (amount - 1 == position) {
             this.mapView.getOverlays().add(beginWalkingPath);
             this.mapView.getOverlays().add(endWalkingPath);
         }
-
 
         // Loop and add lines to be drawn
         if (amount - 1 == position) {
@@ -496,7 +503,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
             this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(paddedWaypoints), true, true, false, true);
         }
-
+        breakRoute[position] = route;
         cleanedUp = false;
     }
 
