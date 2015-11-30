@@ -15,10 +15,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest.RouteInfo;
 import com.spoiledmilk.ibikecph.map.SMHttpRequestListener;
+import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -138,6 +140,17 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         //setListener(listener);
         setupBrokenRoute(routeJSON);
     }
+
+    public boolean isPublic(String transportType) {
+
+        if (transportType != null && (!transportType.equals("BIKE") || !transportType.equals("WALK"))) {
+            Log.d("DV", "IS PUBLIC!");
+            return true;
+        }
+        Log.d("DV", "IS NOT PUBLIC!");
+        return false;
+    }
+
 
     public void setListener(SMRouteListener listener) {
         Log.d("DV", "setListener, with type = " + transportType);
@@ -548,10 +561,49 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             timeToFinish = (int) (distanceToFinish / speed); // A bike travels approximately 5 meters per second
         }
 
+        double destinationRadius = 40.0;
+        String destRadius = "";
+        double destinationLastPublicRadius = 0;
+        double distance = 0;
+        boolean wasLastPublic = false;
+
+        try {
+            if (NavigationMapHandler.routePos == Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).size() - 1) {
+                if (!isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
+                    destRadius += "Next stop is final destination and public, setting distanceToFinish to = ";
+                    destinationRadius = 100.0;
+                } else {
+                    destRadius += "Next stop is final destination and not publi, setting distanceToFinish to = ";
+                    destinationRadius = 40.0;
+                }
+            } else if (isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos + 1).transportType)) {
+                destRadius += "Next stop is public, setting distanceToFinish to = ";
+                destinationRadius = 100.0;
+            }
+
+            //Location of the last public
+            if (NavigationMapHandler.routePos > 0) {
+                if (isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).transportType)) {
+                    Location location = Util.locationFromCoordinates(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLatitude(),
+                            Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLongitude());
+                    distance = location.distanceTo(lastLocation);
+                    if (distance <= 40) {
+                        wasLastPublic = true;
+                        Log.d("DV", "distance to lastLocation = " + distance);
+                    }
+                }
+            }
+
+        } catch (Exception ex) {
+            Log.d("DV", "Next stop exception = " + ex.getMessage());
+        }
+
+        destRadius += destinationRadius;
+        Log.d("DV", "" + destRadius);
+
         // are we close to the finish (< 10m or 3s left)?
-        if (distanceToFinish < 100.0 || timeToFinish <= 3) {
+        if (distanceToFinish < destinationRadius || timeToFinish <= 3) {
             //LOG.d("finishing in " + distanceToFinish + " m and " + timeToFinish + " s");
-            Log.d("DV", "dist < 100 && time <= 3");
             Log.d("DV", "turnInstructions.size() == " + turnInstructions.size());
             if (turnInstructions.size() == 1) {
                 Log.d("DV", "turnInstructions.size() er nu == 1");
@@ -591,7 +643,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 return;
             }
             // transportType == null if its not a breakRoute, therefore we should just recalculate no matter what as we are always biking.
-        } else if(transportType == null) {
+        } else if (transportType == null) {
             if (!approachingFinish() && listener != null && isTooFarFromRoute(loc, maxD)) {
                 approachingTurn = false;
                 recalculateRoute(loc, false);
