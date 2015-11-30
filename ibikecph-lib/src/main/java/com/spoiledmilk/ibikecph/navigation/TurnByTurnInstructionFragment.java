@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 
 /**
@@ -55,13 +56,28 @@ public class TurnByTurnInstructionFragment extends Fragment {
     public void render() {
         // If the size=0, we've actually already arrived, but render() is called before NavigationMapHandler gets its
         // reachedDestination() callback from the SMRoute. Blame somebody else...
-        if (this.parent.getRoute().getTurnInstructions().size() == 0) return;
+        if (this.parent.getRoute().getTurnInstructions().size() == 0) {
+        Log.d("DV", "render, getRoute size == 0");
+            return;
+        }
 
         SMTurnInstruction turn = this.parent.getRoute().getTurnInstructions().get(0);
         this.textWayname.setText(turn.wayName);
         this.textDistance.setText(turn.lengthInMeters + " m");
         this.imgDirectionIcon.setImageResource(turn.getBlackDirectionImageResource());
 
+    }
+
+    public void renderForBreakRoute(SMRoute route){
+        if (route.getTurnInstructions().size() == 0) {
+            Log.d("DV", "render, getRoute size == 0");
+            return;
+        }
+
+        SMTurnInstruction turn = route.getTurnInstructions().get(0);
+        this.textWayname.setText(turn.wayName);
+        this.textDistance.setText(turn.lengthInMeters + " m");
+        this.imgDirectionIcon.setImageResource(turn.getBlackDirectionImageResource());
     }
 
     public void reachedDestination() {

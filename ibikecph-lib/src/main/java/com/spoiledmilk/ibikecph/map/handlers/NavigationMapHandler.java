@@ -144,11 +144,19 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void updateRoute() {
         Log.d("JC", "NavigationMapHandler updateRoute");
         if (this.turnByTurnFragment != null) {
-            this.turnByTurnFragment.render();
+            if (MapActivity.isBreakChosen) {
+                this.turnByTurnFragment.renderForBreakRoute(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
+            } else {
+                this.turnByTurnFragment.render();
+            }
         }
 
         if (this.routeETAFragment != null) {
-            this.routeETAFragment.render(this);
+            if (MapActivity.isBreakChosen) {
+                this.routeETAFragment.renderForBreakRoute(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
+            } else {
+                this.routeETAFragment.render(this);
+            }
         }
     }
 
