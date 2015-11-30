@@ -195,10 +195,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                                         updateDistances(IbikeApplication.getService().getLastValidLocation());
                                     }
                                     if (listener != null) {
-                                        if(type.toString().equals("BREAK")){
+                                        if (type.toString().equals("BREAK")) {
                                             Log.d("DV", "IS BREAK!");
                                             listener.routeRecalculationDone(type.toString());
-                                        }else{
+                                        } else {
                                             Log.d("DV", "IS BREAK NOT!");
                                             listener.routeRecalculationDone();
                                         }
@@ -516,7 +516,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public void visitLocation(Location loc) {
         Log.d("DV", "VISIT LOCATION!, Transport type = " + transportType);
         if (lastLocation != null && loc != null) {
-            Log.d("DV", "lastLocation and loc != null");
+            //Log.d("DV", "lastLocation and loc != null");
             distancePassed += loc.distanceTo(lastLocation);
         }
 
@@ -525,7 +525,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         visitedLocations.add(loc);
 
         if (turnInstructions.size() <= 0) {
-            Log.d("DV", "turnInstructions.size() <= 0");
+            //Log.d("DV", "turnInstructions.size() <= 0");
             return;
         }
 
@@ -562,7 +562,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 if (listener != null) {
                     reachedDestination = true;
                     listener.reachedDestination();
-                   // IbikeApplication.getService().removeGPSListener(this);
+                    // IbikeApplication.getService().removeGPSListener(this);
                 }
                 return;
             } else {
@@ -572,7 +572,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     reachedDestination = true;
                     listener.reachedDestination();
 
-                   // IbikeApplication.getService().removeGPSListener(this);
+                    // IbikeApplication.getService().removeGPSListener(this);
                 }
                 return;
             }
@@ -582,11 +582,23 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         // recalculate route
         // max allowed distance depends on location's accuracy
         int maxD = loc.getAccuracy() > 0.0 ? (int) (loc.getAccuracy() / 3 + 20) : MAX_DISTANCE_FROM_PATH;
-        if (!approachingFinish() && listener != null && isTooFarFromRoute(loc, maxD)) {
-            approachingTurn = false;
-            recalculateRoute(loc, false);
-            return;
+
+        //Only recalculate if we're walking or biking
+        if (transportType != null && (transportType.equals("BIKE") || transportType.equals("WALK"))) {
+            if (!approachingFinish() && listener != null && isTooFarFromRoute(loc, maxD)) {
+                approachingTurn = false;
+                recalculateRoute(loc, false);
+                return;
+            }
+            // transportType == null if its not a breakRoute, therefore we should just recalculate no matter what as we are always biking.
+        } else if(transportType == null) {
+            if (!approachingFinish() && listener != null && isTooFarFromRoute(loc, maxD)) {
+                approachingTurn = false;
+                recalculateRoute(loc, false);
+                return;
+            }
         }
+
 
         int closestWaypointIndex = -1;
         double minD = Double.MAX_VALUE;
@@ -676,7 +688,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     }
 
     public void recalculateRoute(Location loc, boolean isBicycleTypeChanged) {
-        Log.d("DV_break", "SMRoute, recalculateRoute!");
+        Log.d("DV_break", "SMRoute, recalculateRoute with type = " + transportType);
         if (recalculationInProgress) {
             return;
         }
