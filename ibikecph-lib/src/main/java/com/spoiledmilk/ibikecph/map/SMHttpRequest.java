@@ -139,8 +139,9 @@ public class SMHttpRequest {
                         break;
                     case BREAK:
                         Log.d("DV_break", "Setting routingServer");
-                        routingServer = Config.OSRM_SERVER_BREAK;
-                        Break = true;
+                        //routingServer = Config.OSRM_SERVER_BREAK;
+                        routingServer = Config.OSRM_SERVER_FAST;
+                        Break = false;
                         break;
                     case FASTEST:
                     default:
