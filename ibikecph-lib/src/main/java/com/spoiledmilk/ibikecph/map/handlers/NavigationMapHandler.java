@@ -63,11 +63,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient PathOverlay endWalkingPath = null;
     private int amount = 0;
     public static int routePos = 0; // Keep track of which routePiece we are currently tracking
+    ArrayList<LatLng> waypoints;
     public static ObservablePageInteger obsInt;
     public static boolean displayExtraField = false;
     public static boolean displayGetOffAt = false;
     public static boolean isPublic = false;
-    ArrayList<LatLng> waypoints;
+    public static String getOffAt = "";
+    public static String lastType = "";
 
 
     public NavigationMapHandler(IBCMapView mapView) {

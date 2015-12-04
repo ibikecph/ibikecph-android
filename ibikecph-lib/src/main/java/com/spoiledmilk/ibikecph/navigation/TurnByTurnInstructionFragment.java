@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
@@ -23,9 +24,10 @@ import java.text.SimpleDateFormat;
  */
 public class TurnByTurnInstructionFragment extends Fragment {
     private NavigationMapHandler parent;
-    private ImageView imgDirectionIcon;
+    private ImageView imgDirectionIcon, imgDirectionIconXtra;
     private TextView textDistance;
-    private TextView textWayname, textLastWayName;
+    private TextView textWayname, textWaynameXtra, textLastWayNameXtra;
+    private RelativeLayout XtraView;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +48,11 @@ public class TurnByTurnInstructionFragment extends Fragment {
         this.imgDirectionIcon = (ImageView) v.findViewById(R.id.imgDirectionIcon);
         this.textDistance = (TextView) v.findViewById(R.id.textDistance);
         this.textWayname = (TextView) v.findViewById(R.id.textWayname);
-        this.textLastWayName = (TextView) v.findViewById(R.id.textLastWayName);
+
+        this.XtraView = (RelativeLayout) v.findViewById(R.id.XtraView);
+        this.imgDirectionIconXtra = (ImageView) v.findViewById(R.id.imgDirectionIconXtra);
+        //this.textDistanceXtra = (TextView) v.findViewById(R.id.textDistanceXtra);
+        this.textLastWayNameXtra = (TextView) v.findViewById(R.id.textLastWayNameXtra);
 
         render();
 
@@ -82,10 +88,11 @@ public class TurnByTurnInstructionFragment extends Fragment {
 
         // Display the extra field until we have left the public station
         if (NavigationMapHandler.displayExtraField) {
-            this.textLastWayName.setVisibility(View.VISIBLE);
-            this.textLastWayName.setText("AAA"); //fix
+            this.XtraView.setVisibility(View.VISIBLE);
+            this.textLastWayNameXtra.setText(NavigationMapHandler.getOffAt);
+            getType(NavigationMapHandler.lastType, this.imgDirectionIconXtra);
         } else {
-            this.textLastWayName.setVisibility(View.GONE);
+            this.XtraView.setVisibility(View.GONE);
         }
 
         // Display which public to get on
@@ -99,34 +106,33 @@ public class TurnByTurnInstructionFragment extends Fragment {
                 fromTakeTo = IbikeApplication.getString("direction_18");
                 fromTakeTo = fromTakeTo.replace("%@", "%s");
                 fromTakeTo = String.format(fromTakeTo, from, take, to);
-
                 depatureTime = timeStampFormat(MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_summary").path("departure_time").asLong());
+                getType(MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_summary").path("type").textValue(), this.imgDirectionIcon);
             } catch (Exception ex) {
             }
             this.textWayname.setText(fromTakeTo);
             this.textDistance.setText(depatureTime); //set time instead of m when next stop is public
             // Display which public is the next stop when we have left the current public station
         } else if (NavigationMapHandler.displayGetOffAt) {
-            String getOffAt = "";
             String arrivalTime = "";
             try {
                 String to = MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_name").get(1).textValue();
-                getOffAt = IbikeApplication.getString("direction_19");
-                getOffAt = getOffAt.replace("%@", "%s");
-                getOffAt = String.format(getOffAt, to);
+                NavigationMapHandler.getOffAt = IbikeApplication.getString("direction_19");
+                NavigationMapHandler.getOffAt = NavigationMapHandler.getOffAt.replace("%@", "%s");
+                NavigationMapHandler.getOffAt = String.format(NavigationMapHandler.getOffAt, to);
+                NavigationMapHandler.lastType = MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_summary").path("type").textValue();
                 arrivalTime = timeStampFormat(MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_summary").path("arrival_time").asLong());
             } catch (Exception ex) {
             }
 
-            this.textWayname.setText(getOffAt);
+            this.textWayname.setText(NavigationMapHandler.getOffAt);
             this.textDistance.setText(arrivalTime); //set time instead of m when left radius of start public station
         } else {
             this.textWayname.setText(turn.wayName);
             this.textDistance.setText(turn.lengthInMeters + " m");
+            this.imgDirectionIcon.setImageResource(turn.getBlackDirectionImageResource());
         }
 
-
-        this.imgDirectionIcon.setImageResource(turn.getBlackDirectionImageResource());
     }
 
     public void reachedDestination() {
@@ -156,4 +162,20 @@ public class TurnByTurnInstructionFragment extends Fragment {
 
         return time;
     }
+
+    public void getType(String type, ImageView image) {
+
+        if (type.equals("BIKE")) {
+            image.setImageResource(R.drawable.route_bike);
+        } else if (type.equals("M")) {
+            image.setImageResource(R.drawable.route_metro);
+        } else if (type.equals("S")) {
+            image.setImageResource(R.drawable.route_s);
+        } else if (type.equals("TOG")) {
+            image.setImageResource(R.drawable.route_train);
+        } else if (type.equals("WALK")) {
+            image.setImageResource(R.drawable.route_walk);
+        } // put rest.
+    }
+
 }

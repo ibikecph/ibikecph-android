@@ -4,81 +4,139 @@
     android:layout_height="wrap_content"
     android:background="@color/White"
     android:paddingBottom="8dp"
-    android:paddingTop="8dp" >
+    android:paddingTop="8dp">
 
-    <ImageView
-        android:id="@+id/imgDirectionIcon"
-        android:layout_width="90dp"
-        android:layout_height="60dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="0dp"
-        android:alpha="0.8"
-        android:contentDescription="@string/app_name"
-        android:scaleType="centerInside" />
-
-    <TextView
-        android:id="@+id/textDistance"
-        android:layout_width="90dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/imgDirectionIcon"
-        android:gravity="center_horizontal"
-        android:text=""
-        android:textColor="@color/TextGrey"
-        android:textSize="18dp" />
-
-    <TextView
-        android:id="@+id/textLastWayName"
+    <RelativeLayout
+        android:id="@+id/XtraView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="96dp"
-        android:visibility="gone"
-        android:text="textLastWayName"
-        android:textColor="#000"
-        android:textSize="24dp" />
+        android:visibility="gone">
 
-    <TextView
-        android:id="@+id/textWayname"
-        android:layout_below="@id/textLastWayName"
+        <ImageView
+            android:id="@+id/imgDirectionIconXtra"
+            android:layout_width="90dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="0dp"
+            android:alpha="0.8"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerInside" />
+
+        <TextView
+            android:id="@+id/textDistanceXtra"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/imgDirectionIconXtra"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textColor="@color/TextGrey"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/textLastWayNameXtra"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="96dp"
+            android:text="textLastWayName"
+            android:textColor="#000"
+            android:textSize="24dp" />
+
+        <ImageView
+            android:id="@+id/imgLeftArrowXtra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/left_arrow"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imgRightArrowXtra"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="20dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/right_arrow"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="96dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="15dp"
-        android:text=""
-        android:textColor="@color/TextGrey"
-        android:textSize="24dp" />
+        android:layout_below="@id/XtraView">
 
-    <ImageView
-        android:id="@+id/imgLeftArrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="20dp"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/left_arrow"
-        android:visibility="gone" />
+        <ImageView
+            android:id="@+id/imgDirectionIcon"
+            android:layout_width="90dp"
+            android:layout_height="60dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="0dp"
+            android:alpha="0.8"
+            android:contentDescription="@string/app_name"
+            android:scaleType="centerInside" />
 
-    <ImageView
-        android:id="@+id/imgRightArrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="20dp"
-        android:contentDescription="@string/app_name"
-        android:src="@drawable/right_arrow"
-        android:visibility="gone" />
+        <TextView
+            android:id="@+id/textDistance"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/imgDirectionIcon"
+            android:gravity="center_horizontal"
+            android:text=""
+            android:textColor="@color/TextGrey"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/textWayname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="96dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/TextGrey"
+            android:textSize="24dp" />
+
+        <ImageView
+            android:id="@+id/imgLeftArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/left_arrow"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imgRightArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="20dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/right_arrow"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

@@ -612,6 +612,11 @@ public class MapActivity extends IBCMapActivity {
         breakFrag.setVisibility(View.GONE);
         progressBarHolder.setVisibility(View.GONE);
         mapView.removeAllMarkers();
+        NavigationMapHandler.displayExtraField = false;
+        NavigationMapHandler.displayGetOffAt = false;
+        NavigationMapHandler.isPublic = false;
+        NavigationMapHandler.getOffAt = "";
+        NavigationMapHandler.lastType = "";
         for (Overlay overlay : this.mapView.getOverlays()) {
             if (overlay instanceof com.mapbox.mapboxsdk.overlay.PathOverlay) {
                 this.mapView.removeOverlay(overlay);
