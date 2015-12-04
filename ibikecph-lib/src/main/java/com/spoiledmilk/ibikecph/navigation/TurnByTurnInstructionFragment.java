@@ -22,7 +22,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
     private NavigationMapHandler parent;
     private ImageView imgDirectionIcon;
     private TextView textDistance;
-    private TextView textWayname;
+    private TextView textWayname, textLastWayName;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +43,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
         this.imgDirectionIcon = (ImageView) v.findViewById(R.id.imgDirectionIcon);
         this.textDistance = (TextView) v.findViewById(R.id.textDistance);
         this.textWayname = (TextView) v.findViewById(R.id.textWayname);
+        this.textLastWayName = (TextView) v.findViewById(R.id.textLastWayName);
 
         render();
 
@@ -57,7 +58,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
         // If the size=0, we've actually already arrived, but render() is called before NavigationMapHandler gets its
         // reachedDestination() callback from the SMRoute. Blame somebody else...
         if (this.parent.getRoute().getTurnInstructions().size() == 0) {
-        Log.d("DV", "render, getRoute size == 0");
+            Log.d("DV", "render, getRoute size == 0");
             return;
         }
 
@@ -68,19 +69,41 @@ public class TurnByTurnInstructionFragment extends Fragment {
 
     }
 
-    public void renderForBreakRoute(SMRoute route){
+    public void renderForBreakRoute(SMRoute route) {
         if (route.getTurnInstructions().size() == 0) {
             Log.d("DV", "render, getRoute size == 0");
             return;
         }
 
         SMTurnInstruction turn = route.getTurnInstructions().get(0);
-        this.textWayname.setText(turn.wayName);
-        this.textDistance.setText(turn.lengthInMeters + " m");
+
+        // Display the extra field until we have left the public station
+        if (NavigationMapHandler.displayExtraField) {
+            this.textLastWayName.setVisibility(View.VISIBLE);
+            this.textLastWayName.setText("AAA"); //fix
+        } else {
+            this.textLastWayName.setVisibility(View.GONE);
+        }
+
+        // Display which public to get on
+        if (NavigationMapHandler.isPublic) {
+            this.textWayname.setText(IbikeApplication.getString("direction_18"));
+            this.textDistance.setText("Set time"); //set time instead of m when left radius of start public station
+            // Display which public is the next stop when we have left the current public station
+        } else if (NavigationMapHandler.displayGetOffAt) {
+            this.textWayname.setText(IbikeApplication.getString("direction_19"));
+            this.textDistance.setText("Set time"); //set time instead of m when left radius of start public station
+        } else {
+            this.textWayname.setText(turn.wayName);
+            this.textDistance.setText(turn.lengthInMeters + " m");
+        }
+
+
         this.imgDirectionIcon.setImageResource(turn.getBlackDirectionImageResource());
     }
 
     public void reachedDestination() {
+        Log.d("DV", "turnbyturn reacheddestination");
         this.textWayname.setText(IbikeApplication.getString("direction_15"));
         this.textDistance.setText("");
         this.imgDirectionIcon.setImageResource(R.drawable.flag);

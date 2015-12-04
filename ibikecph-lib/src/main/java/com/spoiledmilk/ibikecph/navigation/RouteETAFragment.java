@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
@@ -86,7 +87,7 @@ public class RouteETAFragment extends InfoPaneFragment {
         this.lengthText.setText(getFormattedDistance((int)route.getDistanceLeft()));
 
         // Set the address text
-        textAddress.setText(route.endStationName);
+        textAddress.setText(AddressDisplayInfoPaneFragment.name);
 
         // Set the duration label
         durationText.setText(TrackListAdapter.durationToFormattedTime(secondsToFinish));

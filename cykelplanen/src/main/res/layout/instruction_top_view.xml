@@ -30,7 +30,21 @@
         android:textSize="18dp" />
 
     <TextView
+        android:id="@+id/textLastWayName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="96dp"
+        android:visibility="gone"
+        android:text="textLastWayName"
+        android:textColor="#000"
+        android:textSize="24dp" />
+
+    <TextView
         android:id="@+id/textWayname"
+        android:layout_below="@id/textLastWayName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"

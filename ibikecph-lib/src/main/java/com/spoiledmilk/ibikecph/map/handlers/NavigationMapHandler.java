@@ -64,6 +64,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private int amount = 0;
     public static int routePos = 0; // Keep track of which routePiece we are currently tracking
     public static ObservablePageInteger obsInt;
+    public static boolean displayExtraField = false;
+    public static boolean displayGetOffAt = false;
+    public static boolean isPublic = false;
     ArrayList<LatLng> waypoints;
 
 
@@ -135,6 +138,14 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(this);
             IbikeApplication.getService().addGPSListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
             Log.d("DV", "NavigationMapHandler reachedDestination, ny listener er sat med index = " + routePos);
+            if (Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
+                isPublic = true;
+                Log.d("DV", "NavigationMapHandler reachedDestination, public set to true");
+            } else {
+                isPublic = false;
+                Log.d("DV", "NavigationMapHandler reachedDestination, public set to false");
+            }
+
         } else {
             this.turnByTurnFragment.reachedDestination();
         }
