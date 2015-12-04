@@ -600,6 +600,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     } else {
                         NavigationMapHandler.displayExtraField = false;
                     }
+                    //Location of the last public when next step is leaving the public station with a public transport type
                 } else if (isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
                     Log.d("DV", "2transport type with pos is = " + Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType);
                     Location location = Util.locationFromCoordinates(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLatitude(),
@@ -615,27 +616,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
                 }
             }
-
-           /* //Location of the last public when next step is leaving the public station with a public transport type
-            if (NavigationMapHandler.routePos > 0) {
-                if (!wasLastPublic || isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
-                    int pos = NavigationMapHandler.routePos;
-                    Log.d("DV", "checking with pos = " + pos);
-                    if (isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(pos).transportType)) {
-                        Log.d("DV", "transport type with pos is = " + Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(pos).transportType);
-                        Location location = Util.locationFromCoordinates(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).waypoints.size() - 1).getLatitude(),
-                                Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).waypoints.size() - 1).getLongitude());
-                        double distance = location.distanceTo(lastLocation);
-                        if (distance >= destinationLeavingLastPublicRadius) {
-                            NavigationMapHandler.displayGetOffAt = true;
-                            Log.d("DV", "distance to lastLocation = " + distance);
-                        } else {
-                            NavigationMapHandler.displayGetOffAt = false;
-                        }
-                    }
-                }
-            }*/
-
         } catch (Exception ex) {
             Log.d("DV", "Next stop exception = " + ex.getMessage());
         }

@@ -134,6 +134,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         IbikeApplication.getService().removeGPSListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
         Log.d("DV", "NavigationMapHandler reachedDestination, fjernet med index = " + routePos);
         if ((routePos + 1) < Geocoder.arrayLists.get(obsInt.getPageValue()).size()) {
+            displayGetOffAt = false;
             routePos = routePos + 1;
             Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(this);
             IbikeApplication.getService().addGPSListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
