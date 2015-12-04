@@ -108,6 +108,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
                 depatureTime = timeStampFormat(MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_summary").path("departure_time").asLong());
                 getType(MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_summary").path("type").textValue(), this.imgDirectionIcon);
             } catch (Exception ex) {
+                Log.d("DV", "TurnByTurn exception ispublic, ex = " + ex.getMessage());
             }
             this.textWayname.setText(fromTakeTo);
             this.textDistance.setText(depatureTime); //set time instead of m when next stop is public
@@ -122,6 +123,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
                 NavigationMapHandler.lastType = MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_summary").path("type").textValue();
                 arrivalTime = timeStampFormat(MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_summary").path("arrival_time").asLong());
             } catch (Exception ex) {
+                Log.d("DV", "TurnByTurn exception displayGetOffAt, ex = " + ex.getMessage());
             }
 
             this.textWayname.setText(NavigationMapHandler.getOffAt);
@@ -175,19 +177,19 @@ public class TurnByTurnInstructionFragment extends Fragment {
         } else if (type.equals("WALK")) {
             image.setImageResource(R.drawable.route_walking_direction);
         } else if (type.equals("IC")) {
-            image.setImageResource(R.drawable.route_walking_direction); // fix
+            image.setImageResource(R.drawable.route_train_direction);
         } else if (type.equals("LYN")) {
-            image.setImageResource(R.drawable.route_walking_direction); // fix
+            image.setImageResource(R.drawable.route_train_direction);
         } else if (type.equals("REG")) {
-            image.setImageResource(R.drawable.route_walking_direction); // fix
-        }  else if (type.equals("BUS")) {
+            image.setImageResource(R.drawable.route_train_direction);
+        } else if (type.equals("BUS")) {
             image.setImageResource(R.drawable.route_bus_direction);
         } else if (type.equals("EXB")) {
-            image.setImageResource(R.drawable.route_walking_direction); // fix
+            image.setImageResource(R.drawable.route_bus_direction);
         } else if (type.equals("NB")) {
-            image.setImageResource(R.drawable.route_walking_direction); // fix
+            image.setImageResource(R.drawable.route_bus_direction);
         } else if (type.equals("TB")) {
-            image.setImageResource(R.drawable.route_walking_direction); // fix
+            image.setImageResource(R.drawable.route_bus_direction);
         } else if (type.equals("F")) {
             image.setImageResource(R.drawable.route_ship_direction);
         }

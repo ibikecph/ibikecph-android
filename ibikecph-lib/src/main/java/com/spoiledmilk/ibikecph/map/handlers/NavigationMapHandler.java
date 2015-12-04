@@ -134,7 +134,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         Log.d("DV", "NavigationMapHandler reachedDestination");
         Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(null);
         IbikeApplication.getService().removeGPSListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
-        Log.d("DV", "NavigationMapHandler reachedDestination, fjernet med index = " + routePos);
+        Log.d("DV", "NavigationMapHandler reachedDestination, fjernet med index = " + routePos + " og pageValue = " + obsInt.getPageValue());
         if ((routePos + 1) < Geocoder.arrayLists.get(obsInt.getPageValue()).size()) {
             displayGetOffAt = false;
             routePos = routePos + 1;
@@ -220,7 +220,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // Redraw the whole route
         for (int i = 0; i < Geocoder.arrayLists.get(obsInt.getPageValue()).size(); i++) {
-            Log.d("DV", "REDRAWING WITH TYPE = " + Geocoder.arrayLists.get(obsInt.getPageValue()).get(i).transportType);
+            //Log.d("DV", "REDRAWING WITH TYPE = " + Geocoder.arrayLists.get(obsInt.getPageValue()).get(i).transportType);
             if (Geocoder.arrayLists.get(obsInt.getPageValue()).get(i).transportType.equals("BIKE")) {
                 path[i] = new PathOverlay(Color.parseColor("#FF6600"), 10);
             } else {
@@ -487,13 +487,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             busMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
         }
         if (route.transportType != null && route.transportType.equals("IC")) {
-            icMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
+            icMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_train))));
         } //fix
         if (route.transportType != null && route.transportType.equals("LYN")) {
-            lynMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
+            lynMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_train))));
         } //fix
         if (route.transportType != null && route.transportType.equals("REG")) {
-            regMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
+            regMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_train))));
         } //fix
         if (route.transportType != null && route.transportType.equals("EXB")) {
             exbMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));

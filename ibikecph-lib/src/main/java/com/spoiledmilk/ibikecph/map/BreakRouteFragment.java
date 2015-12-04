@@ -141,24 +141,22 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
             } else if (type.equals("WALK")) {
                 typeIconIV.setImageResource(R.drawable.route_walk);
             } else if (type.equals("IC")) {
-                typeIconIV.setImageResource(R.drawable.route_walking_direction); // fix
+                typeIconIV.setImageResource(R.drawable.route_train);
             } else if (type.equals("LYN")) {
-                typeIconIV.setImageResource(R.drawable.route_walking_direction); // fix
+                typeIconIV.setImageResource(R.drawable.route_train);
             } else if (type.equals("REG")) {
-                typeIconIV.setImageResource(R.drawable.route_walking_direction); // fix
+                typeIconIV.setImageResource(R.drawable.route_train);
             } else if (type.equals("BUS")) {
                 typeIconIV.setImageResource(R.drawable.route_bus);
             } else if (type.equals("EXB")) {
-                typeIconIV.setImageResource(R.drawable.route_walking_direction); // fix
+                typeIconIV.setImageResource(R.drawable.route_bus);
             } else if (type.equals("NB")) {
-                typeIconIV.setImageResource(R.drawable.route_walking_direction); // fix
+                typeIconIV.setImageResource(R.drawable.route_bus);
             } else if (type.equals("TB")) {
-                typeIconIV.setImageResource(R.drawable.route_walking_direction); // fix
+                typeIconIV.setImageResource(R.drawable.route_bus);
             } else if (type.equals("F")) {
                 typeIconIV.setImageResource(R.drawable.route_ship_direction);
             }
-
-
 
 
             // Add the views
