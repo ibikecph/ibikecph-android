@@ -26,7 +26,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
     private NavigationMapHandler parent;
     private ImageView imgDirectionIcon, imgDirectionIconXtra;
     private TextView textDistance;
-    private TextView textWayname, textWaynameXtra, textLastWayNameXtra;
+    private TextView textWayname, textLastWayNameXtra;
     private RelativeLayout XtraView;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,6 @@ public class TurnByTurnInstructionFragment extends Fragment {
 
         this.XtraView = (RelativeLayout) v.findViewById(R.id.XtraView);
         this.imgDirectionIconXtra = (ImageView) v.findViewById(R.id.imgDirectionIconXtra);
-        //this.textDistanceXtra = (TextView) v.findViewById(R.id.textDistanceXtra);
         this.textLastWayNameXtra = (TextView) v.findViewById(R.id.textLastWayNameXtra);
 
         render();
@@ -168,14 +167,30 @@ public class TurnByTurnInstructionFragment extends Fragment {
         if (type.equals("BIKE")) {
             image.setImageResource(R.drawable.route_bike);
         } else if (type.equals("M")) {
-            image.setImageResource(R.drawable.route_metro);
+            image.setImageResource(R.drawable.route_metro_direction);
         } else if (type.equals("S")) {
-            image.setImageResource(R.drawable.route_s);
+            image.setImageResource(R.drawable.route_s_direction);
         } else if (type.equals("TOG")) {
-            image.setImageResource(R.drawable.route_train);
+            image.setImageResource(R.drawable.route_train_direction);
         } else if (type.equals("WALK")) {
-            image.setImageResource(R.drawable.route_walk);
-        } // put rest.
+            image.setImageResource(R.drawable.route_walking_direction);
+        } else if (type.equals("IC")) {
+            image.setImageResource(R.drawable.route_walking_direction); // fix
+        } else if (type.equals("LYN")) {
+            image.setImageResource(R.drawable.route_walking_direction); // fix
+        } else if (type.equals("REG")) {
+            image.setImageResource(R.drawable.route_walking_direction); // fix
+        }  else if (type.equals("BUS")) {
+            image.setImageResource(R.drawable.route_bus_direction);
+        } else if (type.equals("EXB")) {
+            image.setImageResource(R.drawable.route_walking_direction); // fix
+        } else if (type.equals("NB")) {
+            image.setImageResource(R.drawable.route_walking_direction); // fix
+        } else if (type.equals("TB")) {
+            image.setImageResource(R.drawable.route_walking_direction); // fix
+        } else if (type.equals("F")) {
+            image.setImageResource(R.drawable.route_ship_direction);
+        }
     }
 
 }

@@ -144,10 +144,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public boolean isPublic(String transportType) {
 
         if (transportType != null && !transportType.equals("BIKE") && !transportType.equals("WALK")) {
-            Log.d("DV", "IS PUBLIC!");
+            //Log.d("DV", "IS PUBLIC!");
             return true;
         }
-        Log.d("DV", "IS NOT PUBLIC!");
+        //Log.d("DV", "IS NOT PUBLIC!");
         return false;
     }
 
@@ -563,19 +563,18 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         Log.d("DV", "Time to finish = " + timeToFinish);
 
         double destinationRadius = 40.0;
-        String destRadius = "";
+        String destRadius = ""; // string used to print in log
         double destinationLastPublicRadius = 50;
         double destinationLeavingLastPublicRadius = 250;
-        boolean wasLastPublic = false;
 
         try {
             if (NavigationMapHandler.routePos == Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).size() - 1) {
                 if (!isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
-                    destRadius += "Next stop is final destination and public, setting distanceToFinish to = ";
-                    destinationRadius = 100.0;
-                } else {
                     destRadius += "Next stop is final destination and not public, setting distanceToFinish to = ";
                     destinationRadius = 40.0;
+                } else {
+                    destRadius += "Next stop is final destination and public, setting distanceToFinish to = ";
+                    destinationRadius = 100.0;
                 }
             } else if (isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos + 1).transportType)) {
                 destRadius += "Next stop is public, setting distanceToFinish to = ";
@@ -587,7 +586,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 int pos = NavigationMapHandler.routePos - 1;
                 Log.d("DV", "checking with pos = " + pos);
                 if (isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(pos).transportType)) {
-                    wasLastPublic = true;
                     Log.d("DV", "transport type with pos is = " + Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(pos).transportType);
                     Location location = Util.locationFromCoordinates(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLatitude(),
                             Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLongitude());

@@ -55,7 +55,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient TurnByTurnInstructionFragment turnByTurnFragment;
     private transient RouteETAFragment routeETAFragment;
     private transient IBCMarker beginMarker, endMarker;
-    private transient ArrayList<IBCMarker> mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker;
+    private transient ArrayList<IBCMarker> mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker, icMarker, lynMarker, regMarker, exbMarker, nbMarker, tbMarker, fMarker;
     private boolean isRouting;
     private IbikePreferences settings;
     private transient PathOverlay[] path;
@@ -273,6 +273,14 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         sMarker = new ArrayList<IBCMarker>();
         busMarker = new ArrayList<IBCMarker>();
         trainMarker = new ArrayList<IBCMarker>();
+        icMarker = new ArrayList<IBCMarker>();
+        lynMarker = new ArrayList<IBCMarker>();
+        regMarker = new ArrayList<IBCMarker>();
+        exbMarker = new ArrayList<IBCMarker>();
+        nbMarker = new ArrayList<IBCMarker>();
+        tbMarker = new ArrayList<IBCMarker>();
+        fMarker = new ArrayList<IBCMarker>();
+
         breakRoute = new SMRoute[amount];
 
         for (int j = 0; j < routes.get(pos).size(); j++) {
@@ -478,9 +486,32 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         if (route.transportType != null && route.transportType.equals("BUS")) {
             busMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
         }
+        if (route.transportType != null && route.transportType.equals("IC")) {
+            icMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
+        } //fix
+        if (route.transportType != null && route.transportType.equals("LYN")) {
+            lynMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
+        } //fix
+        if (route.transportType != null && route.transportType.equals("REG")) {
+            regMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
+        } //fix
+        if (route.transportType != null && route.transportType.equals("EXB")) {
+            exbMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
+        } //fix
+        if (route.transportType != null && route.transportType.equals("NB")) {
+            nbMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
+        } //fix
+        if (route.transportType != null && route.transportType.equals("TB")) {
+            tbMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_bus))));
+        } // fix
+        if (route.transportType != null && route.transportType.equals("F")) {
+            fMarker.add(new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT).setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_boat))));
+        }
 
         // Loop and set markers
-        if (amount - 1 == position) {
+        if (amount - 1 == position)
+
+        {
             this.mapView.addMarker(beginMarker);
             this.mapView.addMarker(endMarker);
 
@@ -502,7 +533,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         }
 
-        if (amount - 1 == position) {
+        if (amount - 1 == position)
+
+        {
 
             BoundingBox boundingBox = BoundingBox.fromLatLngs(waypoints);
 
@@ -524,6 +557,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
             this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(paddedWaypoints), true, true, false, true);
         }
+
         breakRoute[position] = route;
         cleanedUp = false;
     }
