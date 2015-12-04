@@ -146,7 +146,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         });
 
         // Only show the go button if the route starts at the current location
-        if (parent.getRoute() != null &&  parent.getRoute().startAddress.isCurrentLocation()) {
+        if (parent.getRoute() != null && parent.getRoute().startAddress.isCurrentLocation()) {
             v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.VISIBLE);
         } else if (MapActivity.isBreakChosen) {
             v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.VISIBLE);
@@ -246,6 +246,22 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             breakButton.setImageResource(R.drawable.btn_train_disabled);
             MapActivity.breakFrag.setVisibility(View.GONE);
         }
+
+        NavigationMapHandler.displayExtraField = false;
+        NavigationMapHandler.displayGetOffAt = false;
+        NavigationMapHandler.isPublic = false;
+        NavigationMapHandler.getOffAt = "";
+        NavigationMapHandler.lastType = "";
+
+        if (Geocoder.arrayLists != null) {
+            for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
+                for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
+                    Geocoder.arrayLists.get(i).get(j).setListener(null);
+                    IbikeApplication.getService().removeGPSListener(Geocoder.arrayLists.get(i).get(j));
+                }
+            }
+        }
+
     }
 
 }

@@ -564,8 +564,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         double destinationRadius = 40.0;
         String destRadius = ""; // string used to print in log
-        double destinationLastPublicRadius = 50;
-        double destinationLeavingLastPublicRadius = 250;
+        double destinationLastPublicRadius = 50; // Display two informations in fragment until futher away than this
+        double destinationLeavingLastPublicRadius = 200; // Display get on transport xx on xx until this distance away, then change to "get off on xx"
 
         try {
             if (NavigationMapHandler.routePos == Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).size() - 1) {
@@ -584,9 +584,9 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             //Location of the last public when next step is leaving the public station
             if (NavigationMapHandler.routePos > 0) {
                 int pos = NavigationMapHandler.routePos - 1;
-                Log.d("DV", "checking with pos = " + pos);
+                //Log.d("DV", "checking with pos = " + pos);
                 if (isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(pos).transportType)) {
-                    Log.d("DV", "transport type with pos is = " + Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(pos).transportType);
+                    Log.d("DV", "previous transport type with pos was = " + Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(pos).transportType);
                     Location location = Util.locationFromCoordinates(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLatitude(),
                             Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLongitude());
                     double distance = location.distanceTo(lastLocation);
@@ -600,7 +600,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     }
                     //Location of the last public when next step is leaving the public station with a public transport type
                 } else if (isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
-                    Log.d("DV", "2transport type with pos is = " + Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType);
+                    Log.d("DV", "transport type with pos is = " + Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType);
                     Location location = Util.locationFromCoordinates(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLatitude(),
                             Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLongitude());
                     double distance = location.distanceTo(lastLocation);
@@ -621,32 +621,35 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         destRadius += destinationRadius;
         Log.d("DV", "" + destRadius);
 
-        // are we close to the finish (< 10m or 3s left)?
-        if (distanceToFinish < destinationRadius || timeToFinish <= 3) {
-            Log.d("DV", "finishing in " + distanceToFinish + " m and " + timeToFinish + " s");
-            Log.d("DV", "turnInstructions.size() == " + turnInstructions.size());
-            if (turnInstructions.size() == 1) {
-                Log.d("DV", "turnInstructions.size() er nu == 1");
-                // if there was only one instruction left go through usual
-                // channels
-                approachingTurn = false;
-                // removeTurn();
-                if (listener != null) {
-                    reachedDestination = true;
-                    listener.reachedDestination();
-                    // IbikeApplication.getService().removeGPSListener(this);
-                }
-                return;
-            } else {
-                // we have somehow skipped most of the route (going through a
-                // park or unknown street)
-                if (listener != null) {
-                    reachedDestination = true;
-                    listener.reachedDestination();
+        Log.d("DV", "ReachedDest bool = " + reachedDestination);
+        if (!reachedDestination) {
+            // are we close to the finish (< 10m or 3s left)?
+            if (distanceToFinish < destinationRadius || timeToFinish <= 3) {
+                Log.d("DV", "finishing in " + distanceToFinish + " m and " + timeToFinish + " s");
+                Log.d("DV", "turnInstructions.size() == " + turnInstructions.size());
+                if (turnInstructions.size() == 1) {
+                    Log.d("DV", "turnInstructions.size() er nu == 1");
+                    // if there was only one instruction left go through usual
+                    // channels
+                    approachingTurn = false;
+                    // removeTurn();
+                    if (listener != null) {
+                        reachedDestination = true;
+                        listener.reachedDestination();
+                        // IbikeApplication.getService().removeGPSListener(this);
+                    }
+                    return;
+                } else {
+                    // we have somehow skipped most of the route (going through a
+                    // park or unknown street)
+                    if (listener != null) {
+                        reachedDestination = true;
+                        listener.reachedDestination();
 
-                    // IbikeApplication.getService().removeGPSListener(this);
+                        // IbikeApplication.getService().removeGPSListener(this);
+                    }
+                    return;
                 }
-                return;
             }
         }
 
