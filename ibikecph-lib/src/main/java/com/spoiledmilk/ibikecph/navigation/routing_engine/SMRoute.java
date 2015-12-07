@@ -538,7 +538,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         visitedLocations.add(loc);
 
-        if (turnInstructions.size() <= 0) {
+        if (turnInstructions.size() <= 0 && !type.toString().equals("BREAK")) {
             //Log.d("DV", "turnInstructions.size() <= 0");
             return;
         }
@@ -598,6 +598,22 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                         //Log.d("DV", "distance to lastLocation = " + distance);
                     } else {
                         NavigationMapHandler.displayExtraField = false;
+                    }
+
+                    if (isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
+                        Log.d("DV", "transport type with current routepos is = " + Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType);
+                        location = Util.locationFromCoordinates(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLatitude(),
+                                Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLongitude());
+                        distance = location.distanceTo(lastLocation);
+                        if (distance >= leavingLastPublicRadius) {
+                            //Log.d("DV", "2distance to lastLocation = " + distance);
+                            //Log.d("DV", "Setting displayGetOffAt");
+                            NavigationMapHandler.isPublic = false;
+                            NavigationMapHandler.displayGetOffAt = true;
+                        } else {
+                            NavigationMapHandler.isPublic = true;
+                        }
+
                     }
                     //Location of the last public when next step is leaving the public station with a public transport type
                 } else if (isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
