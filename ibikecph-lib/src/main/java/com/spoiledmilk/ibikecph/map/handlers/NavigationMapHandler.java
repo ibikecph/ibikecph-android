@@ -132,25 +132,32 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     @Override
     public void reachedDestination() {
         Log.d("DV", "NavigationMapHandler reachedDestination");
-        Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(null);
-        Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).reachedDestination = true;
-        Log.d("DV", "NavigationMapHandler reachedDestination, removed with index = " + routePos + " og pageValue = " + obsInt.getPageValue());
-        if ((routePos + 1) < Geocoder.arrayLists.get(obsInt.getPageValue()).size()) {
-            displayGetOffAt = false;
-            routePos = routePos + 1;
-            Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(this);
-            IbikeApplication.getService().addGPSListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
-            Log.d("DV", "NavigationMapHandler reachedDestination, ny listener er sat med index = " + routePos);
-            if (Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
-                isPublic = true;
-                Log.d("DV", "NavigationMapHandler reachedDestination, public set to true");
+
+        if (Geocoder.arrayLists != null) {
+            Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(null);
+            Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).reachedDestination = true;
+            Log.d("DV", "NavigationMapHandler reachedDestination, removed with index = " + routePos + " og pageValue = " + obsInt.getPageValue());
+            if ((routePos + 1) < Geocoder.arrayLists.get(obsInt.getPageValue()).size()) {
+                displayGetOffAt = false;
+                routePos = routePos + 1;
+                Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(this);
+                IbikeApplication.getService().addGPSListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
+                Log.d("DV", "NavigationMapHandler reachedDestination, ny listener er sat med index = " + routePos);
+                if (Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
+                    isPublic = true;
+                    Log.d("DV", "NavigationMapHandler reachedDestination, public set to true");
+                } else {
+                    isPublic = false;
+                    Log.d("DV", "NavigationMapHandler reachedDestination, public set to false");
+                }
             } else {
-                isPublic = false;
-                Log.d("DV", "NavigationMapHandler reachedDestination, public set to false");
+                this.turnByTurnFragment.reachedDestination();
             }
         } else {
             this.turnByTurnFragment.reachedDestination();
         }
+
+
     }
 
     @Override
@@ -396,7 +403,18 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         Log.d("DV_break", "showBreakRouteOverview");
 
         this.route.setListener(null);
+
         if (position == 0) {
+
+            if (Geocoder.arrayLists != null) {
+                for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
+                    for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
+                        Geocoder.arrayLists.get(i).get(j).setListener(null);
+                        IbikeApplication.getService().removeGPSListener(Geocoder.arrayLists.get(i).get(j));
+                    }
+                }
+            }
+
             Log.d("DV", "Setting listener from showBreakRouteOverview");
             route.setListener(this);
             IbikeApplication.getService().addGPSListener(route);
