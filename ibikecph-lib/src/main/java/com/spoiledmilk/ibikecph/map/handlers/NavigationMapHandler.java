@@ -133,8 +133,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void reachedDestination() {
         Log.d("DV", "NavigationMapHandler reachedDestination");
         Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(null);
-        IbikeApplication.getService().removeGPSListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
-        Log.d("DV", "NavigationMapHandler reachedDestination, fjernet med index = " + routePos + " og pageValue = " + obsInt.getPageValue());
+        Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).reachedDestination = true;
+        Log.d("DV", "NavigationMapHandler reachedDestination, removed with index = " + routePos + " og pageValue = " + obsInt.getPageValue());
         if ((routePos + 1) < Geocoder.arrayLists.get(obsInt.getPageValue()).size()) {
             displayGetOffAt = false;
             routePos = routePos + 1;
@@ -148,7 +148,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 isPublic = false;
                 Log.d("DV", "NavigationMapHandler reachedDestination, public set to false");
             }
-
         } else {
             this.turnByTurnFragment.reachedDestination();
         }
