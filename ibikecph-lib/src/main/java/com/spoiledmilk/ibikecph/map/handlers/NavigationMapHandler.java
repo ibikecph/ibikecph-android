@@ -151,6 +151,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                     Log.d("DV", "NavigationMapHandler reachedDestination, public set to false");
                 }
             } else {
+                displayGetOffAt = false;
                 this.turnByTurnFragment.reachedDestination();
             }
         } else {
@@ -547,12 +548,31 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             for (int i = 0; i < walkMarker.size(); i++) {
                 this.mapView.addMarker(walkMarker.get(i));
             }
+            for (int i = 0; i < icMarker.size(); i++) {
+                this.mapView.addMarker(icMarker.get(i));
+            }
+            for (int i = 0; i < lynMarker.size(); i++) {
+                this.mapView.addMarker(lynMarker.get(i));
+            }
+            for (int i = 0; i < regMarker.size(); i++) {
+                this.mapView.addMarker(regMarker.get(i));
+            }
+            for (int i = 0; i < exbMarker.size(); i++) {
+                this.mapView.addMarker(exbMarker.get(i));
+            }
+            for (int i = 0; i < nbMarker.size(); i++) {
+                this.mapView.addMarker(nbMarker.get(i));
+            }
+            for (int i = 0; i < tbMarker.size(); i++) {
+                this.mapView.addMarker(tbMarker.get(i));
+            }
+            for (int i = 0; i < fMarker.size(); i++) {
+                this.mapView.addMarker(fMarker.get(i));
+            }
 
         }
 
-        if (amount - 1 == position)
-
-        {
+        if (amount - 1 == position) {
 
             BoundingBox boundingBox = BoundingBox.fromLatLngs(waypoints);
 
