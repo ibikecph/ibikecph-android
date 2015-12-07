@@ -28,6 +28,7 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     private static final String ARG_POSITION = "position";
     private int position;
     private View root;
+    private boolean hasDataBeenSet = false;
 
     private LinearLayout imageLayout, timeLayout, destLayout, outerLayout;
     private TableRow tableRow;
@@ -72,107 +73,110 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-        JsonNode jsonNode = MapActivity.breakRouteJSON.get(position);
-        setData(jsonNode);
-        //dummyData();
-        int marginPx = convertToDp(10);
-        int paddingPx = convertToDp(10);
-        tableLayout = (TableLayout) root.findViewById(R.id.tableLayout);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(marginPx, 0, marginPx, 0);
+        if (!hasDataBeenSet) {
+            JsonNode jsonNode = MapActivity.breakRouteJSON.get(position);
+            setData(jsonNode);
+            //dummyData();
+            int marginPx = convertToDp(10);
+            int paddingPx = convertToDp(10);
+            tableLayout = (TableLayout) root.findViewById(R.id.tableLayout);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(marginPx, 0, marginPx, 0);
 
-        for (int i = 0; i < jsonNode.path("journey").size(); i++) {
+            for (int i = 0; i < jsonNode.path("journey").size(); i++) {
 
-            // Layouts
-            imageLayout = new LinearLayout(getActivity());
-            timeLayout = new LinearLayout(getActivity());
-            destLayout = new LinearLayout(getActivity());
-            outerLayout = new LinearLayout(getActivity());
-            tableRow = new TableRow(getActivity());
+                // Layouts
+                imageLayout = new LinearLayout(getActivity());
+                timeLayout = new LinearLayout(getActivity());
+                destLayout = new LinearLayout(getActivity());
+                outerLayout = new LinearLayout(getActivity());
+                tableRow = new TableRow(getActivity());
 
-            // Layout settings
-            imageLayout.setOrientation(LinearLayout.VERTICAL);
-            timeLayout.setOrientation(LinearLayout.VERTICAL);
-            destLayout.setOrientation(LinearLayout.VERTICAL);
-            tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+                // Layout settings
+                imageLayout.setOrientation(LinearLayout.VERTICAL);
+                timeLayout.setOrientation(LinearLayout.VERTICAL);
+                destLayout.setOrientation(LinearLayout.VERTICAL);
+                tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            // Instantiate views
-            typeIconIV = new ImageView(getActivity());
-            lineIconIV = new ImageView(getActivity());
-            startTimeTV = new TextView(getActivity());
-            arrivalTimeTV = new TextView(getActivity());
-            typeTV = new TextView(getActivity());
-            fromToTV = new TextView(getActivity());
+                // Instantiate views
+                typeIconIV = new ImageView(getActivity());
+                lineIconIV = new ImageView(getActivity());
+                startTimeTV = new TextView(getActivity());
+                arrivalTimeTV = new TextView(getActivity());
+                typeTV = new TextView(getActivity());
+                fromToTV = new TextView(getActivity());
 
-            // Set margin
-            imageLayout.setLayoutParams(params);
-            timeLayout.setLayoutParams(params);
-            destLayout.setLayoutParams(params);
-            imageLayout.requestLayout();
-            timeLayout.requestLayout();
-            destLayout.requestLayout();
+                // Set margin
+                imageLayout.setLayoutParams(params);
+                timeLayout.setLayoutParams(params);
+                destLayout.setLayoutParams(params);
+                imageLayout.requestLayout();
+                timeLayout.requestLayout();
+                destLayout.requestLayout();
 
-            // Text settings
-            arrivalTimeTV.setTextColor(Color.GRAY);
-            arrivalTimeTV.setTextSize(10);
-            arrivalTimeTV.setPadding(paddingPx, 0, 0, 0);
-            fromToTV.setTextColor(Color.GRAY);
-            fromToTV.setTextSize(10);
+                // Text settings
+                arrivalTimeTV.setTextColor(Color.GRAY);
+                arrivalTimeTV.setTextSize(10);
+                arrivalTimeTV.setPadding(paddingPx, 0, 0, 0);
+                fromToTV.setTextColor(Color.GRAY);
+                fromToTV.setTextSize(10);
 
-            // Set text and image
-            startTimeTV.setText(this.startTime[i]);
-            arrivalTimeTV.setText(this.arrivalTime[i]);
-            typeTV.setText(typeAndTime[i]);
-            fromToTV.setText(this.fromTo[i]);
-            // Don't set lineIcon after last stop
-            if (i < jsonNode.path("journey").size() - 1) {
-                lineIconIV.setImageResource(R.drawable.route_line);
+                // Set text and image
+                startTimeTV.setText(this.startTime[i]);
+                arrivalTimeTV.setText(this.arrivalTime[i]);
+                typeTV.setText(typeAndTime[i]);
+                fromToTV.setText(this.fromTo[i]);
+                // Don't set lineIcon after last stop
+                if (i < jsonNode.path("journey").size() - 1) {
+                    lineIconIV.setImageResource(R.drawable.route_line);
+                }
+
+                String type = jsonNode.path("journey").get(i).path("route_summary").path("type").textValue();
+                if (type.equals("BIKE")) {
+                    typeIconIV.setImageResource(R.drawable.route_bike);
+                } else if (type.equals("M")) {
+                    typeIconIV.setImageResource(R.drawable.route_metro);
+                } else if (type.equals("S")) {
+                    typeIconIV.setImageResource(R.drawable.route_s);
+                } else if (type.equals("TOG")) {
+                    typeIconIV.setImageResource(R.drawable.route_train);
+                } else if (type.equals("WALK")) {
+                    typeIconIV.setImageResource(R.drawable.route_walk);
+                } else if (type.equals("IC")) {
+                    typeIconIV.setImageResource(R.drawable.route_train);
+                } else if (type.equals("LYN")) {
+                    typeIconIV.setImageResource(R.drawable.route_train);
+                } else if (type.equals("REG")) {
+                    typeIconIV.setImageResource(R.drawable.route_train);
+                } else if (type.equals("BUS")) {
+                    typeIconIV.setImageResource(R.drawable.route_bus);
+                } else if (type.equals("EXB")) {
+                    typeIconIV.setImageResource(R.drawable.route_bus);
+                } else if (type.equals("NB")) {
+                    typeIconIV.setImageResource(R.drawable.route_bus);
+                } else if (type.equals("TB")) {
+                    typeIconIV.setImageResource(R.drawable.route_bus);
+                } else if (type.equals("F")) {
+                    typeIconIV.setImageResource(R.drawable.route_ship_direction);
+                }
+
+
+                // Add the views
+                imageLayout.addView(typeIconIV);
+                imageLayout.addView(lineIconIV);
+                timeLayout.addView(startTimeTV);
+                timeLayout.addView(arrivalTimeTV);
+                destLayout.addView(typeTV);
+                destLayout.addView(fromToTV);
+                tableLayout.addView(tableRow);
+                tableRow.addView(outerLayout);
+                outerLayout.addView(imageLayout);
+                outerLayout.addView(timeLayout);
+                outerLayout.addView(destLayout);
+
             }
-
-            String type = jsonNode.path("journey").get(i).path("route_summary").path("type").textValue();
-            if (type.equals("BIKE")) {
-                typeIconIV.setImageResource(R.drawable.route_bike);
-            } else if (type.equals("M")) {
-                typeIconIV.setImageResource(R.drawable.route_metro);
-            } else if (type.equals("S")) {
-                typeIconIV.setImageResource(R.drawable.route_s);
-            } else if (type.equals("TOG")) {
-                typeIconIV.setImageResource(R.drawable.route_train);
-            } else if (type.equals("WALK")) {
-                typeIconIV.setImageResource(R.drawable.route_walk);
-            } else if (type.equals("IC")) {
-                typeIconIV.setImageResource(R.drawable.route_train);
-            } else if (type.equals("LYN")) {
-                typeIconIV.setImageResource(R.drawable.route_train);
-            } else if (type.equals("REG")) {
-                typeIconIV.setImageResource(R.drawable.route_train);
-            } else if (type.equals("BUS")) {
-                typeIconIV.setImageResource(R.drawable.route_bus);
-            } else if (type.equals("EXB")) {
-                typeIconIV.setImageResource(R.drawable.route_bus);
-            } else if (type.equals("NB")) {
-                typeIconIV.setImageResource(R.drawable.route_bus);
-            } else if (type.equals("TB")) {
-                typeIconIV.setImageResource(R.drawable.route_bus);
-            } else if (type.equals("F")) {
-                typeIconIV.setImageResource(R.drawable.route_ship_direction);
-            }
-
-
-            // Add the views
-            imageLayout.addView(typeIconIV);
-            imageLayout.addView(lineIconIV);
-            timeLayout.addView(startTimeTV);
-            timeLayout.addView(arrivalTimeTV);
-            destLayout.addView(typeTV);
-            destLayout.addView(fromToTV);
-            tableLayout.addView(tableRow);
-            tableRow.addView(outerLayout);
-            outerLayout.addView(imageLayout);
-            outerLayout.addView(timeLayout);
-            outerLayout.addView(destLayout);
-
         }
+        hasDataBeenSet = true;
     }
 
     @Override
