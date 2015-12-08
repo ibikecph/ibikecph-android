@@ -229,7 +229,10 @@ public class MapActivity extends IBCMapActivity {
         if (id == R.id.ab_search) {
             // to avoid too many not parcelable things, just set the map back to default state
             this.mapView.changeState(IBCMapView.MapState.DEFAULT);
-
+            breakFrag.setVisibility(View.GONE);
+            progressBarHolder.setVisibility(View.GONE);
+            isBreakChosen = false;
+            this.mapView.removeAllMarkers();
             Intent i = new Intent(MapActivity.this, SearchActivity.class);
             startActivityForResult(i, REQUEST_SEARCH_ADDRESS);
             overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
@@ -273,7 +276,6 @@ public class MapActivity extends IBCMapActivity {
     public void onResume() {
         super.onResume();
         LOG.d("Map activity onResume");
-//        MapActivity.breakFrag.setVisibility(View.VISIBLE);
         if (settings.getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
             showStatisticsInfoPane();
         } else if (!fromSearch && OverviewMapHandler.isWatchingAddress) {
@@ -617,6 +619,7 @@ public class MapActivity extends IBCMapActivity {
         NavigationMapHandler.isPublic = false;
         NavigationMapHandler.getOffAt = "";
         NavigationMapHandler.lastType = "";
+        isBreakChosen = false;
         for (Overlay overlay : this.mapView.getOverlays()) {
             if (overlay instanceof com.mapbox.mapboxsdk.overlay.PathOverlay) {
                 this.mapView.removeOverlay(overlay);
@@ -674,15 +677,17 @@ public class MapActivity extends IBCMapActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            progressBarHolder.setVisibility(View.GONE);
-                            breakFrag.setVisibility(View.VISIBLE);
-                            pager.setVisibility(View.VISIBLE);
-                            tabs.setVisibility(View.VISIBLE);
-                            pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
-                            tabs.setViewPager(pager);
-                            tabs.setRadius(10);
-                            tabs.setCentered(true);
-                            tabs.setFillColor(Color.parseColor("#E2A500"));
+                            if (isBreakChosen) {
+                                progressBarHolder.setVisibility(View.GONE);
+                                breakFrag.setVisibility(View.VISIBLE);
+                                pager.setVisibility(View.VISIBLE);
+                                tabs.setVisibility(View.VISIBLE);
+                                pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+                                tabs.setViewPager(pager);
+                                tabs.setRadius(10);
+                                tabs.setCentered(true);
+                                tabs.setFillColor(Color.parseColor("#E2A500"));
+                            }
                         }
                     });
                     tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {

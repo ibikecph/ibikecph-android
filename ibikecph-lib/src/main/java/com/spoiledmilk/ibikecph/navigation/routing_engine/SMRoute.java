@@ -645,7 +645,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         Log.d("DV", "ReachedDest bool = " + reachedDestination + " with type = " + transportType + " of routeType = " + type.toString());
         if (!reachedDestination) {
             // are we close to the finish (< 10m or 3s left)?
-            if (distanceToFinish < destinationRadius) {// || timeToFinish <= 3) {
+            if (distanceToFinish < destinationRadius || timeToFinish <= 3) {
                 Log.d("DV", "finishing in " + distanceToFinish + " m and " + timeToFinish + " s");
                 //Log.d("DV", "turnInstructions.size() == " + turnInstructions.size());
                 if (turnInstructions.size() == 1) {
