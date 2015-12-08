@@ -33,7 +33,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="96dp"
             android:text="textLastWayName"
-            android:textColor="#000"
+            android:textColor="@color/TextGrey"
             android:textSize="24dp" />
 
     </RelativeLayout>

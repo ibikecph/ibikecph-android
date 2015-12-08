@@ -226,7 +226,6 @@ public class Geocoder {
                                     Location loc1 = Util.locationFromCoordinates(node.get(i).path("journey").get(j).path("via_points").get(0).get(0).asDouble(), node.get(i).path("journey").get(j).path("via_points").get(0).get(1).asDouble());
                                     Location loc2 = Util.locationFromCoordinates(node.get(i).path("journey").get(j).path("via_points").get(viaPointsSize - 1).get(0).asDouble(), node.get(i).path("journey").get(j).path("via_points").get(viaPointsSize - 1).get(1).asDouble());
 
-                                    //Sæt end address og div her?
                                     Address start = new Address();
                                     Address end = new Address();
 
