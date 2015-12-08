@@ -249,6 +249,8 @@ public class Geocoder {
                                 //to.add(node.get(i).path("journey").get(node.get(i).path("journey").size() - 1).path("route_name").get(1).textValue());
                             }
                             callback.onSuccess(true);
+                        } else {
+                            callback.onFailure();
                         }
                     }
 
@@ -258,4 +260,4 @@ public class Geocoder {
 
         Log.d("JC", url);
     }
-}
+    }

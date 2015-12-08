@@ -1,7 +1,9 @@
 package com.spoiledmilk.ibikecph.map.handlers;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
@@ -70,6 +72,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public static boolean isPublic = false;
     public static String getOffAt = "";
     public static String lastType = "";
+    private Address tryAgainSrc, tryAgainDst;
 
 
     public NavigationMapHandler(IBCMapView mapView) {
@@ -827,6 +830,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         final Address finalSource = newSrc;
         final Address finalDestination = newDst;
+        tryAgainSrc = finalSource;
+        tryAgainDst = finalDestination;
 
 
         Log.d("DV_break", "NavigationMaphandler: Geocoder.getroute!");
@@ -856,11 +861,46 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
             @Override
             public void onFailure() {
-
+                Log.d("DV_break", "IBCMapView, onFailure!");
+                displayTryAgain();
             }
 
         }, null, newRouteType);
 
+    }
+
+    public void displayTryAgain() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.mapActivityContext);
+        String[] options = {IbikeApplication.getString("Cancel"), IbikeApplication.getString("Try_again")};
+        builder.setTitle(IbikeApplication.getString("error_route_not_found"))
+                .setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (which == 0) {
+                            MapActivity.breakFrag.setVisibility(View.GONE);
+                            MapActivity.progressBarHolder.setVisibility(View.GONE);
+                            MapActivity.frag.setVisibility(View.GONE);
+                            mapView.removeAllMarkers();
+                            removeAnyPathOverlays();
+                        } else {
+                            changeAddress(tryAgainSrc, tryAgainDst, RouteType.BREAK);
+                        }
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                MapActivity.breakFrag.setVisibility(View.GONE);
+                MapActivity.progressBarHolder.setVisibility(View.GONE);
+                MapActivity.frag.setVisibility(View.GONE);
+                mapView.removeAllMarkers();
+                removeAnyPathOverlays();
+            }
+        });
+        dialog.show();
     }
 
     public void changeDestinationAddress(Address a) {

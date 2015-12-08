@@ -84,6 +84,7 @@ public class HttpUtils {
         } catch (IOException e) {
             LOG.w("HttpUtils readLink() IOException", e);
             result.error = JsonResult.ErrorCode.ConnectionError;
+        } catch (Exception e) {
         } finally {
             if (httpget != null) {
                 httpget.disconnect();
