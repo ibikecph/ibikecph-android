@@ -78,19 +78,16 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             cargoButton.setVisibility(View.GONE);
 
             // Set the distance label
-            if (MapActivity.isBreakChosen && Geocoder.totalDistance != null) {
-                distance = Geocoder.totalDistance.get(NavigationMapHandler.obsInt.getPageValue());
+            if (MapActivity.isBreakChosen && Geocoder.totalBikeDistance != null) {
+                distance = Geocoder.totalBikeDistance.get(NavigationMapHandler.obsInt.getPageValue());
                 duration = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
                 arrivalTime = Geocoder.arrivalTime.get(NavigationMapHandler.obsInt.getPageValue());
-                //sourceText.setText(Geocoder.from.get(NavigationMapHandler.obsInt.getPageValue()));
                 sourceText.setText(IbikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
-                //destinationText.setText(Geocoder.to.get(NavigationMapHandler.obsInt.getPageValue()));
                 destinationText.setText(AddressDisplayInfoPaneFragment.name);
 
             } else {
                 distance = route.getEstimatedDistance();
                 duration = route.getEstimatedArrivalTime();
-                //sourceText.setText(route.startAddress.getStreetAddress());
                 sourceText.setText(IbikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
                 destinationText.setText(route.endAddress.getStreetAddress());
             }
