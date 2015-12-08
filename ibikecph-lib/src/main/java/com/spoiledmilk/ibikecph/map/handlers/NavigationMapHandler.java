@@ -58,7 +58,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient RouteETAFragment routeETAFragment;
     private transient IBCMarker beginMarker, endMarker;
     private transient ArrayList<IBCMarker> mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker, icMarker, lynMarker, regMarker, exbMarker, nbMarker, tbMarker, fMarker;
-    private boolean isRouting;
+    public static boolean isRouting;
     private IbikePreferences settings;
     private transient PathOverlay[] path;
     private transient PathOverlay beginWalkingPath = null;
@@ -136,7 +136,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void reachedDestination() {
         Log.d("DV", "NavigationMapHandler reachedDestination");
 
-        if (Geocoder.arrayLists != null) {
+        if (Geocoder.arrayLists != null && MapActivity.isBreakChosen) {
             Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(null);
             Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).reachedDestination = true;
             Log.d("DV", "NavigationMapHandler reachedDestination, removed with index = " + routePos + " og pageValue = " + obsInt.getPageValue());
@@ -307,6 +307,16 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
      * @param route
      */
     public void showRouteOverview(SMRoute route) {
+
+        if (Geocoder.arrayLists != null) {
+            for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
+                for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
+                    Geocoder.arrayLists.get(i).get(j).setListener(null);
+                    IbikeApplication.getService().removeGPSListener(Geocoder.arrayLists.get(i).get(j));
+                }
+            }
+        }
+
         this.route = route;
         IbikeApplication.getService().addGPSListener(route);
         this.cleanUp();
@@ -849,14 +859,20 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
             @Override
             public void onSuccess(boolean isBreak) {
-                //Måske fjern route helt herfra og sæt de her ting i Geocoder?
+                Log.d("DV", "isRouting = " + isRouting);
+                if (MapActivity.isBreakChosen && !isRouting) {
+                    //Måske fjern route helt herfra og sæt de her ting i Geocoder?
                 /*route.startStationName = finalSource.getStreetAddress();
                 route.endStationName = finalDestination.getStreetAddress();
                 route.startAddress = finalSource;
                 route.endAddress = finalDestination;*/
 
-                Log.d("DV_break", "NavigationMaphandler: Calling showRoute with breakRoute!");
-                mapView.showMultipleRoutes();
+                    Log.d("DV_break", "NavigationMaphandler: Calling showRoute with breakRoute!");
+                    mapView.showMultipleRoutes();
+                } else {
+                    MapActivity.breakFrag.setVisibility(View.GONE);
+                }
+
             }
 
             @Override
