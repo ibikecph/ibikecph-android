@@ -10,6 +10,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -49,6 +50,8 @@ public class OverlaysActivity extends Activity {
         textPath       = (TextView) findViewById(R.id.pathText);
         textService    = (TextView) findViewById(R.id.serviceText);
 
+        disablePath();
+        Log.d("DV", "Is path selected = " + isPathSelected);
         refreshOverlays();
     }
 
@@ -56,6 +59,11 @@ public class OverlaysActivity extends Activity {
     public void onResume() {
         super.onResume();
         initStrings();
+    }
+
+    public void disablePath(){
+        updateContainer(OverlayType.PATH, false);
+        IbikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
     }
 
     public void onPathContainerClick(View v) {

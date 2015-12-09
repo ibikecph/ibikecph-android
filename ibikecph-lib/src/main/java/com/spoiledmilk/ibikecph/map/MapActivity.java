@@ -201,6 +201,8 @@ public class MapActivity extends IBCMapActivity {
         TrackingManager.uploadTracksToServer();
         fragmentPageAmountListener();
 
+        //disable pathoverlay for super roads until this functionality is ready to be used.
+        IbikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
     }
 
     /**
