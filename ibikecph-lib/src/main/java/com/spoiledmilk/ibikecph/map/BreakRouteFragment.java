@@ -212,7 +212,7 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
             arrivalTime[i] = timeStampFormat(jsonNode.path("journey").get(i).path("route_summary").path("arrival_time").asLong());
 
             if (type.equals("BIKE")) {
-                typeAndTime[i] = "Cykel " + formatDistance(jsonNode.path("journey").get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.path("journey").get(i).path("route_summary").path("total_time").asDouble()));
+                typeAndTime[i] = IbikeApplication.getString("vehicle_1") + " " + formatDistance(jsonNode.path("journey").get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.path("journey").get(i).path("route_summary").path("total_time").asDouble()));
                 fromTo[i] = from + to;
             } else if (type.equals("WALK")) {
                 typeAndTime[i] = IbikeApplication.getString("vehicle_2") + " " + formatDistance(jsonNode.path("journey").get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.path("journey").get(i).path("route_summary").path("total_time").asDouble()));
