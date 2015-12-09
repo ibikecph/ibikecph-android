@@ -7,11 +7,9 @@
 package com.spoiledmilk.ibikecph;
 
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
@@ -21,22 +19,20 @@ import android.util.Log;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.GoogleAnalytics;
 import com.google.analytics.tracking.android.Tracker;
-import com.google.android.gms.maps.MapView;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.tracking.MilestoneManager;
 import com.spoiledmilk.ibikecph.tracking.TrackHelper;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.SMDictionary;
 
+import java.util.Calendar;
+
 import io.realm.Realm;
 import io.realm.exceptions.RealmMigrationNeededException;
-
-import java.util.Calendar;
 
 public class IbikeApplication extends Application {
     protected static String APP_NAME = "I Bike CPH";
@@ -60,7 +56,7 @@ public class IbikeApplication extends Application {
         normalFont = Typeface.DEFAULT; //Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Md.ttf");
         boldFont = Typeface.DEFAULT_BOLD; //Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Bd.ttf");
         italicFont = Typeface.defaultFromStyle(Typeface.ITALIC); // Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
-        GoogleAnalytics.getInstance(this).setAppOptOut(!Config.ANALYTICS_ENABLED);
+        GoogleAnalytics.getInstance(this).setAppOptOut(Config.ANALYTICS_ENABLED);
 
         this.startService(new Intent(this, BikeLocationService.class));
 
