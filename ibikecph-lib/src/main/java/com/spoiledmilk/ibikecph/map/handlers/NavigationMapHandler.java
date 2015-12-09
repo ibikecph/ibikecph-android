@@ -59,7 +59,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient IBCMarker beginMarker, endMarker;
     private transient ArrayList<IBCMarker> mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker, icMarker, lynMarker, regMarker, exbMarker, nbMarker, tbMarker, fMarker;
     public static boolean isRouting;
-    private IbikePreferences settings;
     private transient PathOverlay[] path;
     private transient PathOverlay beginWalkingPath = null;
     private transient PathOverlay endWalkingPath = null;
@@ -695,7 +694,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
      */
     public boolean onBackPressed() {
         if (!cleanedUp) {
-
+            IbikePreferences settings;
             settings = IbikeApplication.getSettings();
             // Navigation happens in two steps. First is showing the route, second is actually following it turn-by-turn
             // If we're in turn-by-turn mode, go back to showing the route. If we're seeing the route, go back to
