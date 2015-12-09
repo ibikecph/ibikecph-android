@@ -20,11 +20,15 @@ public class Config {
     public static final String OSRM_SERVER_FAST = "http://routes.ibikecph.dk/v1.1/fast";
     public static final String OSRM_SERVER_GREEN = "http://routes.ibikecph.dk/v1.1/green";
     public static final String OSRM_SERVER_CARGO = "http://routes.ibikecph.dk/v1.1/cargo";
+    public static final String OSRM_SERVER_BREAK = API_URL + "/journey";
 
     public static boolean GREEN_ROUTES_ENABLED = true;
 
     public static final double GEOMETRY_DIGITS_LATITUDE = 1e6;
     public static final double GEOMETRY_DIGITS_LONGITUDE = 1e6;
+
+    public static final double GEOMETRY_DIGITS_LATITUDE_RP = 1e5;
+    public static final double GEOMETRY_DIGITS_LONGITUDE_RP = 1e5;
 
     public static final String OSRM_SERVER_DEFAULT = OSRM_SERVER_FAST;
 

@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
+import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
@@ -35,15 +37,18 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        SMRoute route = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).getRoute();
+        SMRoute route;
+        if (MapActivity.isBreakChosen && Geocoder.totalDistance != null) {
+            route = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).getBreakRoute(NavigationMapHandler.obsInt.getPageValue());
+        } else {
+            route = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).getRoute();
+        }
 
         View v = inflater.inflate(R.layout.infopane_navigation_overview, container, false);
 
         TextView sourceText = (TextView) v.findViewById(R.id.navigationOverviewSource);
-        sourceText.setText(route.startAddress.getStreetAddress());
 
         TextView destinationText = (TextView) v.findViewById(R.id.navigationOverviewDestination);
-        destinationText.setText(route.endAddress.getStreetAddress());
 
         ImageButton goButton = (ImageButton) v.findViewById(R.id.navigationOverviewGoButton);
         goButton.setOnClickListener(new View.OnClickListener() {
@@ -61,19 +66,42 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         cargoButton.setOnClickListener(this);
         greenButton.setOnClickListener(this);
 
+        float distance;
+        float duration;
+        long arrivalTime = 0;
 
         if (IbikeApplication.getAppName().equals("Cykelplanen")) {
             breakButton = (ImageButton) v.findViewById(R.id.navigationOverviewBreakButton);
             breakButton.setVisibility(View.VISIBLE);
             breakButton.setOnClickListener(this);
+
+            cargoButton.setVisibility(View.GONE);
+
+            // Set the distance label
+            if (MapActivity.isBreakChosen && Geocoder.totalBikeDistance != null) {
+                distance = Geocoder.totalBikeDistance.get(NavigationMapHandler.obsInt.getPageValue());
+                duration = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
+                arrivalTime = Geocoder.arrivalTime.get(NavigationMapHandler.obsInt.getPageValue());
+                sourceText.setText(IbikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
+                destinationText.setText(AddressDisplayInfoPaneFragment.name);
+
+            } else {
+                distance = route.getEstimatedDistance();
+                duration = route.getEstimatedArrivalTime();
+                sourceText.setText(IbikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
+                destinationText.setText(route.endAddress.getStreetAddress());
+            }
+        } else {
+            // Set the distance label
+            distance = route.getEstimatedDistance();
+            duration = route.getEstimatedArrivalTime();
+            sourceText.setText(route.startAddress.getStreetAddress());
+            destinationText.setText(route.endAddress.getStreetAddress());
         }
 
         TextView durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
         TextView lengthText = (TextView) v.findViewById(R.id.navigationOverviewRouteLength);
         TextView etaText = (TextView) v.findViewById(R.id.navigationOverviewRouteETA);
-
-        // Set the distance label
-        float distance = route.getEstimatedDistance();
 
         if (distance > 1000) {
             distance /= 1000;
@@ -83,15 +111,26 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         }
 
         // Set the duration label
-        float duration = route.getEstimatedArrivalTime();
         durationText.setText(TrackListAdapter.durationToFormattedTime(duration));
 
-        // Set the ETA label
-        Calendar c = Calendar.getInstance();
-        c.add(Calendar.SECOND, (int) duration);
-        Date arrivalTime = c.getTime();
-        SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
-        etaText.setText(dt.format(arrivalTime));
+        boolean hourFormat = MapActivity.format;
+
+        SimpleDateFormat sdf = null;
+        if (hourFormat) {
+            sdf = new SimpleDateFormat("HH:mm");
+        } else {
+            sdf = new SimpleDateFormat("HH:mm a");
+        }
+
+        if (arrivalTime > 0) {
+            arrivalTime = arrivalTime * 1000;
+            etaText.setText(sdf.format(arrivalTime).toString());
+        } else {
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.SECOND, (int) duration);
+            Date arrivalTimee = c.getTime();
+            etaText.setText(sdf.format(arrivalTimee));
+        }
 
 
         // Add the ability to flip the route
@@ -103,7 +142,9 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         });
 
         // Only show the go button if the route starts at the current location
-        if (parent.getRoute().startAddress.isCurrentLocation()) {
+        if (parent.getRoute() != null && parent.getRoute().startAddress.isCurrentLocation()) {
+            v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.VISIBLE);
+        } else if (MapActivity.isBreakChosen) {
             v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.VISIBLE);
         } else {
             v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.GONE);
@@ -154,7 +195,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         if (v.getId() == R.id.navigationOverviewFastButton) {
             disableAllRouteButtons();
             fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
-
+            MapActivity.isBreakChosen = false;
             this.parent.changeRouteType(RouteType.FASTEST);
 
         } else if (v.getId() == R.id.navigationOverviewCargoButton) {
@@ -165,6 +206,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
 
         } else if (v.getId() == R.id.navigationOverviewGreenButton) {
             disableAllRouteButtons();
+            MapActivity.isBreakChosen = false;
             greenButton.setImageResource(R.drawable.btn_route_green_enabled);
 
             this.parent.changeRouteType(RouteType.GREEN);
@@ -172,6 +214,11 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         } else if (v.getId() == R.id.navigationOverviewBreakButton) {
             disableAllRouteButtons();
             breakButton.setImageResource(R.drawable.btn_train_enabled);
+            MapActivity.isBreakChosen = true;
+            NavigationMapHandler.routePos = 0;
+            MapActivity.pager.setAdapter(null);
+            MapActivity.tabs.setVisibility(View.GONE);
+            MapActivity.progressBarHolder.setVisibility(View.VISIBLE);
 
             this.parent.changeRouteType(RouteType.BREAK);
         } else if (v.getId() == R.id.navigationOverviewSource) {
@@ -191,7 +238,26 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         cargoButton.setImageResource(R.drawable.btn_route_cargo_disabled);
         greenButton.setImageResource(R.drawable.btn_route_green_disabled);
         if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+            MapActivity.progressBarHolder.setVisibility(View.GONE);
             breakButton.setImageResource(R.drawable.btn_train_disabled);
+            MapActivity.breakFrag.setVisibility(View.GONE);
         }
+
+        NavigationMapHandler.displayExtraField = false;
+        NavigationMapHandler.displayGetOffAt = false;
+        NavigationMapHandler.isPublic = false;
+        NavigationMapHandler.getOffAt = "";
+        NavigationMapHandler.lastType = "";
+
+        if (Geocoder.arrayLists != null) {
+            for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
+                for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
+                    Geocoder.arrayLists.get(i).get(j).setListener(null);
+                    IbikeApplication.getService().removeGPSListener(Geocoder.arrayLists.get(i).get(j));
+                }
+            }
+        }
+
     }
+
 }

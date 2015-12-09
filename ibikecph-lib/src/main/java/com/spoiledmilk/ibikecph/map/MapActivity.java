@@ -7,7 +7,6 @@ package com.spoiledmilk.ibikecph.map;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -15,30 +14,37 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Looper;
-import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.text.InputType;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.events.MapListener;
 import com.mapbox.mapboxsdk.events.RotateEvent;
 import com.mapbox.mapboxsdk.events.ScrollEvent;
 import com.mapbox.mapboxsdk.events.ZoomEvent;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
-import com.spoiledmilk.ibikecph.*;
+import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.LeftMenu;
+import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.TermsManager;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
-import com.spoiledmilk.ibikecph.login.HTTPAccountHandler;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
@@ -53,7 +59,7 @@ import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
-import com.vividsolutions.jts.operation.overlay.validate.OverlayResultValidator;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -86,7 +92,18 @@ public class MapActivity extends IBCMapActivity {
     private ArrayList<InfoPaneFragment> fragments = new ArrayList<InfoPaneFragment>();
     private IbikePreferences settings;
     public static View frag;
+    public static View breakFrag;
+    public static CirclePageIndicator tabs;
+    public static ViewPager pager;
+    public static ProgressBar progressBar;
+    public static FrameLayout progressBarHolder;
     public static boolean fromSearch = false;
+    public static ObservableInteger obsInt;
+    public int amount = 0;
+    public static JsonNode breakRouteJSON = null;
+    public static boolean format;
+    public static boolean isBreakChosen = false;
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -95,6 +112,14 @@ public class MapActivity extends IBCMapActivity {
         this.setContentView(R.layout.main_map_activity);
         this.settings = IbikeApplication.getSettings();
         frag = findViewById(R.id.infoPaneContainer);
+        breakFrag = findViewById(R.id.breakRouteContainer);
+        tabs = (CirclePageIndicator) findViewById(R.id.tabs);
+        pager = (ViewPager) findViewById(R.id.pager);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBarHolder = (FrameLayout) findViewById(R.id.progressBarHolder);
+
+        // true if 24-hour format, false if 12-hour format
+        format = DateFormat.is24HourFormat(this);
 
         this.mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.init(IBCMapView.MapState.DEFAULT, this);
@@ -174,6 +199,10 @@ public class MapActivity extends IBCMapActivity {
         this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
         TrackingManager.uploadTracksToServer();
+        fragmentPageAmountListener();
+
+        //disable pathoverlay for super roads until this functionality is ready to be used.
+        IbikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
     }
 
     /**
@@ -202,7 +231,10 @@ public class MapActivity extends IBCMapActivity {
         if (id == R.id.ab_search) {
             // to avoid too many not parcelable things, just set the map back to default state
             this.mapView.changeState(IBCMapView.MapState.DEFAULT);
-
+            breakFrag.setVisibility(View.GONE);
+            progressBarHolder.setVisibility(View.GONE);
+            isBreakChosen = false;
+            this.mapView.removeAllMarkers();
             Intent i = new Intent(MapActivity.this, SearchActivity.class);
             startActivityForResult(i, REQUEST_SEARCH_ADDRESS);
             overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
@@ -246,7 +278,6 @@ public class MapActivity extends IBCMapActivity {
     public void onResume() {
         super.onResume();
         LOG.d("Map activity onResume");
-
         if (settings.getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
             showStatisticsInfoPane();
         } else if (!fromSearch && OverviewMapHandler.isWatchingAddress) {
@@ -553,6 +584,9 @@ public class MapActivity extends IBCMapActivity {
     private void disableStatisticsInfoPane() {
 
         frag.setVisibility(View.GONE);
+        breakFrag.setVisibility(View.GONE);
+        progressBarHolder.setVisibility(View.GONE);
+        mapView.removeAllMarkers();
 
         /*Fragment fragment = mapView.getParentActivity().getFragmentManager().findFragmentByTag("infopane");
         if (fragment != null)
@@ -579,6 +613,21 @@ public class MapActivity extends IBCMapActivity {
                 super.onBackPressed();
             }
         }
+        breakFrag.setVisibility(View.GONE);
+        progressBarHolder.setVisibility(View.GONE);
+        mapView.removeAllMarkers();
+        NavigationMapHandler.displayExtraField = false;
+        NavigationMapHandler.displayGetOffAt = false;
+        NavigationMapHandler.isPublic = false;
+        NavigationMapHandler.getOffAt = "";
+        NavigationMapHandler.lastType = "";
+        isBreakChosen = false;
+        for (Overlay overlay : this.mapView.getOverlays()) {
+            if (overlay instanceof com.mapbox.mapboxsdk.overlay.PathOverlay) {
+                this.mapView.removeOverlay(overlay);
+            }
+        }
+
     }
 
     public void userTrackingButtonOnClick(View v) {
@@ -611,10 +660,93 @@ public class MapActivity extends IBCMapActivity {
         }
     }
 
+    /*
+    Fragment handling section
+    */
 
+    // Listening on variable being set to the amount of breakRoute suggestions, in order to display this amount of pages in the fragmentAdapter.
+    public void fragmentPageAmountListener() {
+
+        obsInt = new ObservableInteger();
+
+        obsInt.setOnIntegerChangeListener(new OnIntegerChangeListener() {
+            @Override
+            public void onIntegerChanged(int newValue) {
+                amount = newValue;
+                Log.d("DV", "Amount changed to " + newValue);
+                if (newValue > 0) {
+                    Log.d("DV", "Amount > 0, enabling fragment!");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isBreakChosen) {
+                                progressBarHolder.setVisibility(View.GONE);
+                                breakFrag.setVisibility(View.VISIBLE);
+                                pager.setVisibility(View.VISIBLE);
+                                tabs.setVisibility(View.VISIBLE);
+                                pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+                                tabs.setViewPager(pager);
+                                tabs.setRadius(10);
+                                tabs.setCentered(true);
+                                tabs.setFillColor(Color.parseColor("#E2A500"));
+                            }
+                        }
+                    });
+                    tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                        @Override
+                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                        }
+
+                        @Override
+                        public void onPageSelected(int position) {
+                            NavigationMapHandler.obsInt.setPageValue(position);
+                        }
+
+                        @Override
+                        public void onPageScrollStateChanged(int state) {
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    class MyPagerAdapter extends FragmentStatePagerAdapter {
+
+        @Override
+        public int getCount() {
+            return amount;
+        }
+
+        public MyPagerAdapter(android.support.v4.app.FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return BreakRouteFragment.newInstance(position);
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return PagerAdapter.POSITION_NONE;
+        }
+
+
+       /* @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            Log.d("DV", "destroyItem!");
+            if (position >= getCount()) {
+                android.support.v4.app.FragmentManager manager = ((Fragment) object).getFragmentManager();
+                android.support.v4.app.FragmentTransaction trans = manager.beginTransaction();
+                trans.remove((Fragment) object);
+                trans.commit();
+            }
+            notifyDataSetChanged();
+        }*/
+
+    }
 }
-
-
 
             /*
             Log.d("JC", "Got coordinates to navigate to");

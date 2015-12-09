@@ -5,11 +5,19 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.util;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Message;
+import android.util.Log;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.login.HTTPDeleteWithBody;
+import com.spoiledmilk.ibikecph.login.UserData;
+import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -27,26 +35,18 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Message;
-import android.util.Log;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.spoiledmilk.ibikecph.IbikeApplication;
-import com.spoiledmilk.ibikecph.login.HTTPDeleteWithBody;
-import com.spoiledmilk.ibikecph.login.UserData;
-import com.spoiledmilk.ibikecph.tracking.TrackingManager;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class HttpUtils {
 
     private static final String ACCEPT = "application/vnd.ibikecph.v1";
     private static final int CONNECTON_TIMEOUT = 30000;
 
-    public static JsonResult readLink(String url_string, String method) {
+    public static JsonResult readLink(String url_string, String method, boolean breakRoute) {
         JsonResult result = new JsonResult();
         if (url_string == null) {
             return result;
@@ -59,7 +59,11 @@ public class HttpUtils {
             httpget = (HttpURLConnection) url.openConnection();
             httpget.setDoInput(true);
             httpget.setRequestMethod(method);
-            httpget.setRequestProperty("Accept", "application/json");
+            if (breakRoute) {
+                httpget.setRequestProperty("Accept", "application/vnd.ibikecph.v1");
+            } else {
+                httpget.setRequestProperty("Accept", "application/json");
+            }
             httpget.setRequestProperty("Content-type", "application/json");
             httpget.setConnectTimeout(CONNECTON_TIMEOUT);
             httpget.setReadTimeout(CONNECTON_TIMEOUT);
@@ -80,6 +84,7 @@ public class HttpUtils {
         } catch (IOException e) {
             LOG.w("HttpUtils readLink() IOException", e);
             result.error = JsonResult.ErrorCode.ConnectionError;
+        } catch (Exception e) {
         } finally {
             if (httpget != null) {
                 httpget.disconnect();
@@ -89,8 +94,8 @@ public class HttpUtils {
         return result;
     }
 
-    public static JsonNode get(String url_string) {
-        JsonResult result = readLink(url_string, "GET");
+    public static JsonNode get(String url_string, boolean breakRoute) {
+        JsonResult result = readLink(url_string, "GET", breakRoute);
         Log.d("debug", "get:" + result.toString());
         if (result.error == JsonResult.ErrorCode.Success) {
             return result.getNode();

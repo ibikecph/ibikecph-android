@@ -5,8 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
-import java.util.Locale;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -14,6 +12,8 @@ import android.location.Location;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.LOG;
+
+import java.util.Locale;
 
 public class SMTurnInstruction {
 

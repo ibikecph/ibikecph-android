@@ -24,7 +24,7 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
 
     private TextView addressView;
     private Address address;
-    private String name = "";
+    public static String name = "";
 
     public AddressDisplayInfoPaneFragment() {
         super();
@@ -40,12 +40,12 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
                 Log.d("DV", "Special name!");
                 ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getStreetAddress());
                 ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
-                //name = this.address.getStreetAddress();
+                name = this.address.getStreetAddress();
             } else {
                 Log.d("DV", "Ikke special name!");
                 ((TextView) v.findViewById(R.id.addressNameLabel)).setText(this.address.getDisplayName());
                 ((TextView) v.findViewById(R.id.addressLabel)).setText(this.address.getPostCodeAndCity());
-                //name = this.address.getDisplayName();
+                name = this.address.getDisplayName();
             }
         }
 
@@ -83,7 +83,8 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
 
     public void btnStartRouteClicked(View v) {
         if (IbikeApplication.getService().hasValidLocation()) {
-            OverviewMapHandler.isWatchingAddress = false;
+            OverviewMapHandler.isWatchingAddress = true;
+            MapActivity.isBreakChosen = false;
             Address a = (Address) getArguments().getSerializable("address");
 
             ((MapActivity) this.getActivity()).mapView.showRoute(a);
