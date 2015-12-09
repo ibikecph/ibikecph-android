@@ -91,6 +91,9 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     // Variables for breakRoute
     public String transportType;
+    private float breakRouteArrivalTime;
+    private float breakRouteEstimatedArrivalTime;
+    private int breakRouteEstimatedRouteDistance = -1;
 
     public SMRoute() {
         init();
@@ -515,8 +518,17 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return arrivalTime;
     }
 
+    public float getBreakRouteEstimatedArrivalTime() {
+        return breakRouteArrivalTime;
+    }
+
+
     public int getEstimatedDistance() {
         return estimatedRouteDistance;
+    }
+
+    public int getBreakRouteEstimatedDistance() {
+        return breakRouteEstimatedRouteDistance;
     }
 
     ArrayList<Double> speedData = new ArrayList<Double>();
@@ -552,7 +564,15 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         double distanceToFinish = loc.distanceTo(getEndLocation());
         Log.d("DV", "Distance to finish = " + distanceToFinish + ", end location = " + getEndLocation());
 
-        arrivalTime = distanceLeft * estimatedArrivalTime / estimatedRouteDistance;
+        if (!type.toString().equals("BREAK")) {
+            arrivalTime = distanceLeft * estimatedArrivalTime / estimatedRouteDistance;
+        } else {
+            breakRouteEstimatedRouteDistance = Geocoder.totalBikeDistance.get(NavigationMapHandler.obsInt.getPageValue());
+            breakRouteEstimatedArrivalTime = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
+
+            breakRouteArrivalTime = distanceLeft * breakRouteEstimatedArrivalTime / breakRouteEstimatedRouteDistance;
+        }
+
 
         // Calculate the average speed and update the ETA
         double speed = loc.getSpeed() > 0 ? loc.getSpeed() : 5;
@@ -565,7 +585,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         double destinationRadius = 40.0;
         double destinationRadiusPublic = 300;
-        double leaveLastPublicInfoRadius = 50; // Display two informations in fragment until we are further away than this
+        double leaveLastPublicInfoRadius = 300; // Display two informations in fragment until we are further away than this
         double leavingLastPublicRadius = 300; // Display "get on transport xx on xx" until we are this distance away, then change to "get off on xx"
         //String destRadius = ""; // string used to print in log
         if (type != null && type.toString().equals("BREAK")) {
@@ -966,7 +986,22 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         }
 
         if (distanceLeft < 0.0) {
-            distanceLeft = estimatedRouteDistance;
+            if (!type.toString().equals("BREAK")) {
+                distanceLeft = estimatedRouteDistance;
+            } else {
+                if (NavigationMapHandler.routePos == 0) {
+                    distanceLeft = breakRouteEstimatedRouteDistance;
+                    try {
+                        if (Geocoder.totalTime != null) {
+                            breakRouteArrivalTime = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
+                        }
+                    } catch (Exception ex) {
+                    }
+                } else {
+                    distanceLeft = NavigationMapHandler.dist;
+                    breakRouteArrivalTime = distanceLeft * breakRouteEstimatedArrivalTime / breakRouteEstimatedRouteDistance;
+                }
+            }
         } else if (turnInstructions.size() > 0) {
             // calculate distance from location to the next turn
             SMTurnInstruction nextTurn = turnInstructions.get(0);
@@ -978,12 +1013,47 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             // nextTurn.lengthInMeters);
             nextTurn.lengthWithUnit = Util.formatDistance(nextTurn.lengthInMeters);
             // turnInstructions.set(0, nextTurn);
-            distanceLeft = nextTurn.lengthInMeters;
 
-            // calculate distance from next turn to the end of the route
-            for (int i = 1; i < turnInstructions.size(); i++) {
-                distanceLeft += turnInstructions.get(i).lengthInMeters;
+            if (!type.toString().equals("BREAK")) {
+                distanceLeft = nextTurn.lengthInMeters;
+                // calculate distance from next turn to the end of the route
+                for (int i = 1; i < turnInstructions.size(); i++) {
+                    distanceLeft += turnInstructions.get(i).lengthInMeters;
+                }
+            } else {
+                // breakRoute distance left on bike calculation
+                if (Geocoder.arrayLists != null) {
+                    distanceLeft = 0;
+                    Log.d("DV", "SMRoute dist left set to = 0");
+                    for (int j = NavigationMapHandler.routePos; j < Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).size(); j++) {
+                        if (Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(j).transportType.equals("BIKE") && j < Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).size() - 1) {
+
+                            for (int i = 0; i < turnInstructions.size(); i++) {
+
+                                distanceLeft += Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(j).turnInstructions.get(i).lengthInMeters;
+                            }
+                            Log.d("DV", "SMRoute dist left1 = " + distanceLeft);
+                        } else if (NavigationMapHandler.routePos == Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).size() - 1) {
+                            for (int i = 0; i < turnInstructions.size(); i++) {
+
+                                distanceLeft += Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(j).turnInstructions.get(i).lengthInMeters;
+                                Log.d("DV", "SMRoute dist left3 = " + distanceLeft);
+                            }
+                        }
+                        try {
+                            if (Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(j + 1).transportType.equals("BIKE")) {
+                                distanceLeft += Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(j + 1).estimatedRouteDistance;
+                                Log.d("DV", "SMRoute dist left2 = " + distanceLeft);
+                            }
+                        } catch (Exception ex) {
+                            Log.d("DV", "dist exception");
+                        }
+                    }
+                    //Hold the distance to show this when on a public transport
+                    NavigationMapHandler.dist = distanceLeft;
+                }
             }
+
         }
         if (listener != null) {
             listener.updateRoute();

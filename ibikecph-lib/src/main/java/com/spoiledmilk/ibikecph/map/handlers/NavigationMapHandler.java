@@ -71,6 +71,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public static boolean isPublic = false;
     public static String getOffAt = "";
     public static String lastType = "";
+    public static float dist = 0;
     private Address tryAgainSrc, tryAgainDst;
 
 

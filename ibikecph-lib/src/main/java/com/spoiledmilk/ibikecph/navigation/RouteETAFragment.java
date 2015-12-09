@@ -82,9 +82,12 @@ public class RouteETAFragment extends InfoPaneFragment {
             return;
         }
 
-        int secondsToFinish = (int) route.getEstimatedArrivalTime();
+        //int secondsToFinish = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
+        int secondsToFinish = (int) route.getBreakRouteEstimatedArrivalTime();
 
-        this.lengthText.setText(getFormattedDistance((int)route.getDistanceLeft()));
+        //this.lengthText.setText(getFormattedDistance(Geocoder.totalBikeDistance.get(NavigationMapHandler.obsInt.getPageValue())));
+            this.lengthText.setText(getFormattedDistance((int) route.getDistanceLeft()));
+            Log.d("DV", "Render dist left = " + getFormattedDistance((int) route.getDistanceLeft()));
 
         // Set the address text
         textAddress.setText(AddressDisplayInfoPaneFragment.name);

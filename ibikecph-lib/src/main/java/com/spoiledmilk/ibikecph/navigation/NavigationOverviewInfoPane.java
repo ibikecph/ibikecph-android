@@ -103,7 +103,6 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         TextView lengthText = (TextView) v.findViewById(R.id.navigationOverviewRouteLength);
         TextView etaText = (TextView) v.findViewById(R.id.navigationOverviewRouteETA);
 
-
         if (distance > 1000) {
             distance /= 1000;
             lengthText.setText(String.format("%.1f km", distance));
