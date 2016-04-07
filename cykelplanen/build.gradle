@@ -7,8 +7,7 @@ dependencies {
 
 android {
     compileSdkVersion 17
-    buildToolsVersion "21.1.2"
-
+    buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId "com.spoiledmilk.cykelsuperstier"
         minSdkVersion 16
@@ -16,9 +15,16 @@ android {
         // versionCode 1
         // versionName "1.0"
     }
-
     packagingOptions {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            pseudoLocalesEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                          '../ibikecph-lib/proguard-rules.pro'
+        }
     }
 }
