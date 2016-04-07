@@ -346,7 +346,9 @@ public class MapActivity extends IBCMapActivity {
             /* FIXME: This should clearly not go into production. We should decide on a proper DB schema, and make proper
                migrations if we need to change it. */
             Log.d("JC", "Migration needed, deleting the Realm file!");
-            Realm.deleteRealmFile(this);
+            // FIXME²: This method has been removed from Realm.
+            // Might be useful: https://realm.io/docs/java/latest/api/io/realm/Realm.html#deleteRealm-io.realm.RealmConfiguration-
+            // Realm.deleteRealmFile(this);
         }
     }
 

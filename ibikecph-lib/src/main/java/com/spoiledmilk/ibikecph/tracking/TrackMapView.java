@@ -19,6 +19,7 @@ import com.spoiledmilk.ibikecph.persist.TrackLocation;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 import java.util.ArrayList;
 
@@ -44,7 +45,7 @@ public class TrackMapView extends IBCMapActivity {
         RealmResults<Track> tracks = realm.allObjects(Track.class);
 
         // We want to see the newest track first
-        tracks.sort("timestamp", false);
+        tracks.sort("timestamp", Sort.DESCENDING);
 
         Track track = tracks.get(track_position);
         PathOverlay path = new PathOverlay(Color.RED, 10);

@@ -20,6 +20,7 @@ import com.spoiledmilk.ibikecph.util.Util;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 import java.text.SimpleDateFormat;
@@ -158,7 +159,7 @@ public class TrackingActivity extends Activity {
         try {
             Realm realm = Realm.getInstance(IbikeApplication.getContext());
             RealmResults<Track> results = realm.allObjects(Track.class);
-            results.sort("timestamp", RealmResults.SORT_ORDER_ASCENDING);
+            results.sort("timestamp", Sort.ASCENDING);
 
             Calendar firstTrip = Calendar.getInstance();
             firstTrip.setTime(results.first().getTimestamp());

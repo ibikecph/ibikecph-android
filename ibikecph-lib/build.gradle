@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'realm-android'
 
 repositories {
     maven { url "http://dl.bintray.com/populov/maven" }
@@ -9,7 +10,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.facebook.android:facebook-android-sdk:3.22.+'
     compile 'com.google.android.gms:play-services-location:7.5.0'
-    compile 'io.realm:realm-android:0.78.0'
     compile 'se.emilsjolander:stickylistheaders:2.6.0'
     compile 'com.balysv.materialmenu:material-menu:1.5.3'
     compile 'com.loopj.android:android-async-http:1.4.7'

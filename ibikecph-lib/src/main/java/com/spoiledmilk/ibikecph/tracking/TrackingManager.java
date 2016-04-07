@@ -31,6 +31,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 /**
  * Created by jens on 2/25/15.
@@ -131,7 +132,7 @@ public class TrackingManager implements LocationListener {
         // last track
         try {
             Track lastTrack = realm.where(Track.class)
-                    .findAllSorted("timestamp", RealmResults.SORT_ORDER_DESCENDING)
+                    .findAllSorted("timestamp", Sort.DESCENDING)
                     .first();
 
             Log.d("MF", "last track time: " + lastTrack.getLocations().last().getTimestamp().getTime());

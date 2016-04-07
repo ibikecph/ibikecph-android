@@ -18,6 +18,7 @@ import com.spoiledmilk.ibikecph.persist.Track;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 import java.text.SimpleDateFormat;
@@ -40,7 +41,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
         this.tracks = realm.allObjects(Track.class);
 
         // We want to see the newest track first
-        this.tracks.sort("timestamp", false);
+        this.tracks.sort("timestamp", Sort.DESCENDING);
 
         this.context = context;
 
