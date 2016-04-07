@@ -7,6 +7,7 @@ package com.spoiledmilk.ibikecph;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -106,8 +107,12 @@ public class LeftMenu extends Fragment {
             menuItems.add(new LeftMenuItem("map_overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
         }
         // Rutetype
-        // Fartguide
-        menuItems.add(new LeftMenuItem("tracking", R.drawable.ic_menu_tracking, "spawnTrackingActivity"));
+        // Tracking
+        if (getResources().getBoolean(R.bool.trackingEnabled)) {
+            menuItems.add(new LeftMenuItem("tracking",
+                                           R.drawable.ic_menu_tracking,
+                                           "spawnTrackingActivity"));
+        }
         // Påmindelser
 
         if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {

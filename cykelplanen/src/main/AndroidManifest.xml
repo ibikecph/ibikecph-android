@@ -152,19 +152,25 @@
             android:name="com.spoiledmilk.ibikecph.favorites.EditFavoriteActivity"
             android:label="@string/title_activity_edit_favorite" />
 
-        <service android:name="com.spoiledmilk.ibikecph.BikeLocationService"></service>
-        <service android:name="com.spoiledmilk.ibikecph.BikeActivityService"></service>
+        <service android:name="com.spoiledmilk.ibikecph.BikeLocationService" />
+        <service android:enabled="@bool/trackingEnabled"
+            android:name="com.spoiledmilk.ibikecph.BikeActivityService" />
 
         <activity
+            android:enabled="@bool/trackingEnabled"
             android:name="com.spoiledmilk.ibikecph.tracking.TrackingActivity"
             android:label="@string/title_activity_tracking" />
-        <activity android:name="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity" />
         <activity
+            android:enabled="@bool/trackingEnabled"
+            android:name="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity" />
+        <activity
+            android:enabled="@bool/trackingEnabled"
             android:name="com.spoiledmilk.ibikecph.tracking.TrackingSettingsActivity"
             android:label="@string/title_activity_tracking_settings" />
         <activity
+            android:enabled="@bool/trackingEnabled"
             android:name="com.spoiledmilk.ibikecph.tracking.TrackMapView"
-            android:label="@string/title_activity_track_map_view"></activity>
+            android:label="@string/title_activity_track_map_view" />
 
         <receiver android:name="com.spoiledmilk.ibikecph.BootReceiver">
             <intent-filter>

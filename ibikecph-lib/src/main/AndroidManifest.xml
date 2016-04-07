@@ -94,29 +94,30 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".favorites.FavoritesActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".IssuesActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".login.FacebookProfileActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".TTSSettingsActivity"
-            android:label="@string/title_activity_ttssettings"></activity>
+            android:label="@string/title_activity_ttssettings" />
         <activity
             android:name=".favorites.FavoritesListActivity"
-            android:label="@string/title_activity_favorites_list"></activity>
+            android:label="@string/title_activity_favorites_list" />
         <activity
             android:name=".favorites.AddFavoriteActivity"
-            android:label="@string/title_activity_add_favorite"></activity>
+            android:label="@string/title_activity_add_favorite" />
         <activity
             android:name=".favorites.EditFavoriteActivity"
             android:label="@string/title_activity_edit_favorite" />
 
-        <service android:name=".BikeLocationService"></service>
-        <service android:name=".BikeActivityService"></service>
-        <service android:name=".tracking.MilestoneManager"></service>
+        <service android:name=".BikeLocationService" />
+        <service android:enabled="@bool/trackingEnabled"
+            android:name=".BikeActivityService" />
+        <service android:name=".tracking.MilestoneManager" />
 
         <activity
             android:name=".tracking.TrackingActivity"

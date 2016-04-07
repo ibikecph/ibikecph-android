@@ -7,6 +7,7 @@ package com.spoiledmilk.ibikecph.login;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -32,7 +33,6 @@ public class LoginSplashActivity extends Activity {
     Bundle savedInstanceState;
     Handler handler;
 
-    private static boolean DEBUG = false;
     public static final int LOGIN_REQUEST = 80;
     public static final int RESULT_FACEBOOK_REGISTERED = 104;
     private Button logInButton, enableTrackingButton;
@@ -44,12 +44,6 @@ public class LoginSplashActivity extends Activity {
         this.savedInstanceState = savedInstanceState;
 
         this.findViewById(R.id.rootLayout).setBackgroundColor(getResources().getColor(IbikeApplication.getPrimaryColor()));
-
-
-        // If the user has already seen the welcome screen, don't bother her again.
-        if (IbikeApplication.isWelcomeScreenSeen() && !DEBUG) {
-            launchMainMapActivity();
-        }
 
         TextView welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
         TextView welcomeExplanationTextView = (TextView) findViewById(R.id.welcomeExplanationTextView);
@@ -82,7 +76,8 @@ public class LoginSplashActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        if (IbikeApplication.isWelcomeScreenSeen() && !DEBUG) {
+        boolean trackingEnabled = getResources().getBoolean(R.bool.trackingEnabled);
+        if (IbikeApplication.isWelcomeScreenSeen() || !trackingEnabled) {
             launchMainMapActivity();
         }
     }

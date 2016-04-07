@@ -20,8 +20,8 @@
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission
-            android:name="android.permission.READ_EXTERNAL_STORAGE"
-            android:maxSdkVersion="18" />
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -42,12 +42,11 @@
     <application
         android:name="com.spoiledmilk.ibikecph.IbikeApplication"
         android:allowBackup="true"
-        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:screenOrientation="portrait"
         android:theme="@style/iBikeCPHTheme.ActionBar">
+
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity
             android:name="com.spoiledmilk.ibikecph.SplashActivity"
@@ -55,10 +54,8 @@
             android:theme="@style/iBikeCPHTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name="com.spoiledmilk.ibikecph.login.LoginSplashActivity"

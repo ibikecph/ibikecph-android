@@ -63,8 +63,11 @@ public class ActivityRecognitionClient implements GoogleApiClient.ConnectionCall
      */
     private PendingIntent getActivityDetectionPendingIntent() {
 
+        Context context = IbikeApplication.getContext();
+        boolean trackingEnabled = context.getResources().getBoolean(R.bool.trackingEnabled);
+
         // Reuse the PendingIntent if we already have it.
-        if (this.mActivityDetectionPendingIntent == null) {
+        if (trackingEnabled && this.mActivityDetectionPendingIntent == null) {
             Intent intent = new Intent(IbikeApplication.getContext(), BikeActivityService.class);
 
             // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
