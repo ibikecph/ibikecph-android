@@ -2,3 +2,9 @@ dependencies:
   pre:
     - echo y | android update sdk --no-ui --all --filter "tools,platform-tools,android-22"
     - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.2"
+deployment:
+  beta:
+    branch: develop
+    commands:
+      - ./gradlew :cykelplanen:uploadReleaseToHockeyApp
+      - ./gradlew :ibikecph-app:uploadReleaseToHockeyApp

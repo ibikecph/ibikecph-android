@@ -39,3 +39,5 @@ ibikecph-app/ibikecph-app.iml
 ibikecph-lib/ibikecph-lib.iml
 libraries/libraries.iml
 libraries/osmdroid-lib/osmdroid-lib.iml
+
+secret.properties

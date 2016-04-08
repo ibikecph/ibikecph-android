@@ -6,6 +6,14 @@ dependencies {
 }
 
 android {
+    signingConfigs {
+        development {
+            keyAlias secret('DEV_KEY_ALIAS')
+            keyPassword secret('DEV_KEY_PASSWORD')
+            storeFile file('../development-keystore.jks')
+            storePassword secret('DEV_KEYSTORE_PASSWORD')
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "23.0.2"
     defaultConfig {
@@ -24,7 +32,18 @@ android {
             minifyEnabled true
             pseudoLocalesEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                    '../ibikecph-lib/proguard-rules.pro'
+                          '../ibikecph-lib/proguard-rules.pro'
+            signingConfig signingConfigs.development
         }
     }
+}
+
+apply plugin: 'de.felixschulze.gradle.hockeyapp'
+hockeyapp {
+    apiToken = secret('HOCKEY_APP_TOKEN')
+    notify = 1
+    teams = 65310
+    commitSha = git.head().id
+    notes = git.head().fullMessage
+    status = 2
 }
