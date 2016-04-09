@@ -14,6 +14,9 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.d("JC", "Bootreceiver got boot intent");
 
-        context.startService(new Intent(context, BikeLocationService.class));
+        boolean trackingEnabled = context.getResources().getBoolean(R.bool.trackingEnabled);
+        if (trackingEnabled) {
+            context.startService(new Intent(context, BikeLocationService.class));
+        }
     }
 }
