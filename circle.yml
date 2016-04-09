@@ -7,5 +7,7 @@ deployment:
   beta:
     branch: develop
     commands:
-      - ./gradlew :cykelplanen:uploadReleaseToHockeyApp
-      - ./gradlew :ibikecph-app:uploadReleaseToHockeyApp
+      #- ./gradlew :cykelplanen:uploadReleaseToHockeyApp
+      #- ./gradlew :ibikecph-app:uploadReleaseToHockeyApp
+      - ./gradlew :cykelplanen:uploadDebugToHockeyApp
+      - ./gradlew :ibikecph-app:uploadDebugToHockeyApp
