@@ -245,40 +245,44 @@ public class IbikeApplication extends Application {
      * she's been cycling the past week.
      */
     public static void registerWeeklyNotification() {
-        Context ctx = IbikeApplication.getContext();
-        AlarmManager alarmMgr = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(ctx, MilestoneManager.class);
-        intent.putExtra("weekly", true);
-        PendingIntent alarmIntent = PendingIntent.getService(ctx, 0, intent, 0);
+        // Let's only do this if the app was actually build with tracking
+        // TODO: Consider also checking for the tracking preference to be enabled.
+        boolean trackingEnabled = getContext().getResources().getBoolean(R.bool.trackingEnabled);
+        if (trackingEnabled) {
+            Context ctx = IbikeApplication.getContext();
+            AlarmManager alarmMgr = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(ctx, MilestoneManager.class);
+            intent.putExtra("weekly", true);
+            PendingIntent alarmIntent = PendingIntent.getService(ctx, 0, intent, 0);
 
-        Calendar nextSunday = Calendar.getInstance();
+            Calendar nextSunday = Calendar.getInstance();
 
-        // Without resorting to third party libraries, there's no real elegant way of doing this...
-        // Add a day
-        while (!(nextSunday.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && nextSunday.get(Calendar.HOUR_OF_DAY) < 18)) {
-            nextSunday.add(Calendar.DAY_OF_WEEK, 1);
+            // Without resorting to third party libraries, there's no real elegant way of doing this...
+            // Add a day
+            while (!(nextSunday.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && nextSunday.get(Calendar.HOUR_OF_DAY) < 18)) {
+                nextSunday.add(Calendar.DAY_OF_WEEK, 1);
 
-            // If today is Sunday but it's after 8, make sure to at least trigger on the *next* Sunday! :)
-            nextSunday.set(Calendar.HOUR_OF_DAY, 12);
+                // If today is Sunday but it's after 8, make sure to at least trigger on the *next* Sunday! :)
+                nextSunday.set(Calendar.HOUR_OF_DAY, 12);
+            }
+
+            nextSunday.set(Calendar.HOUR_OF_DAY, 18);
+            nextSunday.set(Calendar.MINUTE, 0);
+            nextSunday.set(Calendar.SECOND, 0);
+
+            // Great, nextSunday now reflects the time 18:00 on the coming Sunday, or today if called on a Sunday.
+
+            /*
+            // DEBUG CODE. Will schedule the notification ten seconds after starting, repeating every 20 secs.
+            nextSunday = Calendar.getInstance();
+            nextSunday.add(Calendar.SECOND, 10);
+            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 20, alarmIntent);
+            */
+
+            // Run the notification next Sunday, repeating every Sunday. MilestoneManager will receive the Intent
+            // regardless of the user's preference, but will only actually *make* the notification if the user wants it.
+            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
         }
-
-        nextSunday.set(Calendar.HOUR_OF_DAY, 18);
-        nextSunday.set(Calendar.MINUTE, 0);
-        nextSunday.set(Calendar.SECOND, 0);
-
-        // Great, nextSunday now reflects the time 18:00 on the coming Sunday, or today if called on a Sunday.
-
-        /*
-        // DEBUG CODE. Will schedule the notification ten seconds after starting, repeating every 20 secs.
-        nextSunday = Calendar.getInstance();
-        nextSunday.add(Calendar.SECOND, 10);
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 20, alarmIntent);
-        */
-
-        // Run the notification next Sunday, repeating every Sunday. MilestoneManager will receive the Intent
-        // regardless of the user's preference, but will only actually *make* the notification if the user wants it.
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
-
     }
 
     public static String getAppName() {
