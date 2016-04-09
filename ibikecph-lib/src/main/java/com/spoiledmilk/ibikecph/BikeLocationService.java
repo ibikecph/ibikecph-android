@@ -139,8 +139,8 @@ public class BikeLocationService extends Service implements LocationListener, co
         PowerManager pm = (PowerManager) context.getSystemService(Service.POWER_SERVICE);
         this.wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BikeLocationService");
 
-
-        if (activityRecognitionClient == null) {
+        boolean trackingEnabled = getResources().getBoolean(R.bool.trackingEnabled);
+        if (trackingEnabled && activityRecognitionClient == null) {
             Log.d("JC", "Spawning new ActivityRecognitionClient");
 
             activityRecognitionClient = new ActivityRecognitionClient();
