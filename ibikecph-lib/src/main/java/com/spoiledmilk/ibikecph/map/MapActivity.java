@@ -105,6 +105,8 @@ public class MapActivity extends IBCMapActivity {
     public static boolean format;
     public static boolean isBreakChosen = false;
 
+    private static final String TAG = "IBCMapActivity";
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -131,7 +133,7 @@ public class MapActivity extends IBCMapActivity {
         // LeftMenu
         initLeftMenu(savedInstanceState);
 
-        // Check for crashes with Hockey
+        // Check for HockeyApp updates
         if (Config.HOCKEY_UPDATES_ENABLED) {
             UpdateManager.register(this, Config.HOCKEY_APP_ID);
         }
@@ -574,14 +576,19 @@ public class MapActivity extends IBCMapActivity {
     }
 
     private void showStatisticsInfoPane() {
-        frag.setVisibility(View.VISIBLE);
-        FragmentManager fm = mapView.getParentActivity().getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
-        ft.commit();
-        Log.d("DV", "Infopanefragment added!");
+        boolean trackingEnabled = getResources().getBoolean(R.bool.trackingEnabled);
+        if (trackingEnabled) {
+            frag.setVisibility(View.VISIBLE);
+            FragmentManager fm = mapView.getParentActivity().getFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
+            ft.commit();
+            Log.d("DV", "Infopanefragment added!");
 
-        OverviewMapHandler.isWatchingAddress = false;
+            OverviewMapHandler.isWatchingAddress = false;
+        } else {
+            Log.i(TAG, "showStatisticsInfoPane was called, but tracking is disabled.");
+        }
     }
 
     private void disableStatisticsInfoPane() {
