@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.OverlayType;
 
 import java.util.Locale;
@@ -101,11 +102,16 @@ public class IbikePreferences {
         return languageNames;
     }
 
-    public void setTrackingEnabled(boolean trackingEnabled) {
-        getPrefs().edit().putBoolean(PREFS_TRACKING_ENABLED, trackingEnabled).commit();
+    public void setTrackingEnabled(boolean enabled) {
+        // Check if the app is build with the tracking enabled.
+        boolean trackingEnabled = context.getResources().getBoolean(R.bool.trackingEnabled);
+        if (!trackingEnabled && enabled) {
+            throw new RuntimeException("Cannot enable tracking when the app was build without it.");
+        }
 
+        getPrefs().edit().putBoolean(PREFS_TRACKING_ENABLED, enabled).commit();
         // Make sure the user's choice is immediately respected.
-        if (trackingEnabled) {
+        if (enabled) {
             Log.d("DV", "tracking sat til true");
             //IbikeApplication.getService().getActivityRecognitionClient().setTracking(true);
             IbikeApplication.getService().getActivityRecognitionClient().requestActivityUpdates();
@@ -117,7 +123,8 @@ public class IbikePreferences {
     }
 
     public boolean getTrackingEnabled() {
-        return getPrefs().getBoolean(PREFS_TRACKING_ENABLED, false);
+        boolean trackingEnabled = context.getResources().getBoolean(R.bool.trackingEnabled);
+        return trackingEnabled && getPrefs().getBoolean(PREFS_TRACKING_ENABLED, false);
     }
 
     public void setNotifyMilestone(boolean notifyMilestone) {
