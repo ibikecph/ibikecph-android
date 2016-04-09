@@ -18,6 +18,12 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @deprecated
+ * Strings should be placed in the res/values/strings.xml instead of loading them from an assets
+ * file in a custom format. For string reuse across apps, a Gradle build task could come in handy.
+ */
+@Deprecated
 public class SMDictionary {
 	private static final String dict_dir = "strings";
 
