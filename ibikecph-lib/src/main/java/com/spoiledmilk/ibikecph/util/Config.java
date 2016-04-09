@@ -6,6 +6,7 @@
 package com.spoiledmilk.ibikecph.util;
 
 public class Config {
+    // TODO: Consider using build variants for this
     //public static String API_URL = "https://ibikecph-staging.herokuapp.com/api";
     public static String API_URL = "https://www.ibikecph.dk/api";
     public static final String API_SERVER_LOGIN = API_URL + "/login";
@@ -39,6 +40,7 @@ public class Config {
     // TODO uncomment this before submission
     public static final String ALTERNATE_TILESOURCE = "IBikeCPH";
 //	public static final String ALTERNATE_TILESOURCE = "CycleMap";
+    // TODO: No - Let's make it unnecessary to uncomment that before submission.
 
     public static final String USER_AGENT = "IBikeCPH/1.1";
 
