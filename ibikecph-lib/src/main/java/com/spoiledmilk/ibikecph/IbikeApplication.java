@@ -31,13 +31,12 @@ import com.spoiledmilk.ibikecph.util.SMDictionary;
 
 import java.util.Calendar;
 
-import io.realm.Realm;
 import io.realm.exceptions.RealmMigrationNeededException;
 
 public class IbikeApplication extends Application {
     protected static String APP_NAME = "I Bike CPH";
     private static IbikeApplication instance = null;
-    public IbikePreferences settings;
+    public IbikePreferences prefs;
     public SMDictionary dictionary;
     private static Typeface normalFont, boldFont, italicFont;
 
@@ -49,8 +48,8 @@ public class IbikeApplication extends Application {
         LOG.d("Creating Application");
         super.onCreate();
         instance = this;
-        settings = new IbikePreferences(this);
-        settings.load();
+        prefs = new IbikePreferences(this);
+        prefs.load();
         dictionary = new SMDictionary(this);
         dictionary.init();
         normalFont = Typeface.DEFAULT; //Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Md.ttf");
@@ -101,19 +100,19 @@ public class IbikeApplication extends Application {
     }
 
     public void changeLanguage(Language language) {
-        if (settings.getLanguage() != language) {
+        if (prefs.getLanguage() != language) {
             LOG.d("Changing language to " + language.name());
             dictionary.changeLanguage(language);
-            settings.setLanguage(language);
+            prefs.setLanguage(language);
         }
     }
 
     public static String getLanguageString() {
-        return instance.settings.language == Language.DAN ? "da" : "en";
+        return instance.prefs.language == Language.DAN ? "da" : "en";
     }
 
     public static IbikePreferences getSettings() {
-        return instance.settings;
+        return instance.prefs;
     }
 
     public static boolean isUserLogedIn() {

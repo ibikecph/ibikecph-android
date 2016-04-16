@@ -11,6 +11,8 @@ import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.spoiledmilk.ibikecph.ActivityRecognitionClient;
+import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.OverlayType;
@@ -103,94 +105,91 @@ public class IbikePreferences {
     }
 
     public void setTrackingEnabled(boolean enabled) {
+        getPreferences().edit().putBoolean(PREFS_TRACKING_ENABLED, enabled).commit();
         // Check if the app is build with the tracking enabled.
         boolean trackingEnabled = context.getResources().getBoolean(R.bool.trackingEnabled);
-        if (!trackingEnabled && enabled) {
-            throw new RuntimeException("Cannot enable tracking when the app was build without it.");
-        }
-
-        getPrefs().edit().putBoolean(PREFS_TRACKING_ENABLED, enabled).commit();
-        // Make sure the user's choice is immediately respected.
-        if (enabled) {
-            Log.d("DV", "tracking sat til true");
-            //IbikeApplication.getService().getActivityRecognitionClient().setTracking(true);
-            IbikeApplication.getService().getActivityRecognitionClient().requestActivityUpdates();
-
-        } else {
-            Log.d("DV", "tracking released");
-            IbikeApplication.getService().getActivityRecognitionClient().releaseActivityUpdates();
+        if (trackingEnabled) {
+            // Make sure the user's choice is immediately respected.
+            if (enabled) {
+                Log.d("DV", "tracking sat til true");
+                //IbikeApplication.getService().getActivityRecognitionClient().setTracking(true);
+                IbikeApplication.getService().getActivityRecognitionClient().requestActivityUpdates();
+            } else {
+                Log.d("DV", "tracking released");
+                IbikeApplication.getService().getActivityRecognitionClient().releaseActivityUpdates();
+            }
         }
     }
 
     public boolean getTrackingEnabled() {
         boolean trackingEnabled = context.getResources().getBoolean(R.bool.trackingEnabled);
-        return trackingEnabled && getPrefs().getBoolean(PREFS_TRACKING_ENABLED, false);
+        return trackingEnabled && getPreferences().getBoolean(PREFS_TRACKING_ENABLED, false);
     }
 
     public void setNotifyMilestone(boolean notifyMilestone) {
-        getPrefs().edit().putBoolean(PREFS_NOTIFY_MILESTONE, notifyMilestone).commit();
+        getPreferences().edit().putBoolean(PREFS_NOTIFY_MILESTONE, notifyMilestone).commit();
     }
 
     public boolean getNotifyMilestone() {
-        return getPrefs().getBoolean(PREFS_NOTIFY_MILESTONE, true);
+        return getPreferences().getBoolean(PREFS_NOTIFY_MILESTONE, true);
     }
 
     public void setNotifyWeekly(boolean notifyWeekly) {
-        getPrefs().edit().putBoolean(PREFS_NOTIFY_WEEKLY, notifyWeekly).commit();
+        getPreferences().edit().putBoolean(PREFS_NOTIFY_WEEKLY, notifyWeekly).commit();
 
         IbikeApplication.registerWeeklyNotification();
     }
 
     public boolean getNotifyWeekly() {
-        return getPrefs().getBoolean(PREFS_NOTIFY_WEEKLY, true);
+        return getPreferences().getBoolean(PREFS_NOTIFY_WEEKLY, true);
     }
 
     public boolean getShareData() {
-        return getPrefs().getBoolean(PREFS_SHARE_DATA, false);
+        return getPreferences().getBoolean(PREFS_SHARE_DATA, false);
     }
 
     public void setShareData(boolean shareData) {
-        getPrefs().edit().putBoolean(PREFS_SHARE_DATA, shareData).commit();
+        getPreferences().edit().putBoolean(PREFS_SHARE_DATA, shareData).commit();
     }
 
     public void setOverlay(OverlayType type, boolean value) {
-        getPrefs().edit().putBoolean(getPrefOverlayKey(type), value).commit();
+        getPreferences().edit().putBoolean(getPrefOverlayKey(type), value).commit();
     }
 
     public boolean getOverlay(OverlayType type) {
-        return getPrefs().getBoolean(getPrefOverlayKey(type), false);
+        return getPreferences().getBoolean(getPrefOverlayKey(type), false);
     }
 
     public String getPrefOverlayKey(OverlayType type) {
         return String.format("%s_%s", PREFS_OVERLAYS, type.toString().toLowerCase());
     }
     public int getLengthNotificationOrdinal() {
-        return getPrefs().getInt(LENGTH_NOTIFICATION, -1);
+        return getPreferences().getInt(LENGTH_NOTIFICATION, -1);
     }
 
     public void setLengthNotificationOrdinal(int ordinal) {
-        getPrefs().edit().putInt(LENGTH_NOTIFICATION, ordinal).commit();
+        getPreferences().edit().putInt(LENGTH_NOTIFICATION, ordinal).commit();
     }
 
 
     public int getMaxStreakLength() {
-        return getPrefs().getInt(STREAK_NOTIFICATION, 0);
+        return getPreferences().getInt(STREAK_NOTIFICATION, 0);
     }
 
     public void setMaxStreakLength(int streakLength) {
-        getPrefs().edit().putInt(STREAK_NOTIFICATION, streakLength).commit();
+        getPreferences().edit().putInt(STREAK_NOTIFICATION, streakLength).commit();
     }
 
     public int getNewestTermsAccepted() {
-        return getPrefs().getInt(NEWEST_TERMS_ACCEPTED, 0);
+        return getPreferences().getInt(NEWEST_TERMS_ACCEPTED, 0);
     }
 
     public void setNewestTermsAccepted(int newestTermsAccepted) {
-        getPrefs().edit().putInt(NEWEST_TERMS_ACCEPTED, newestTermsAccepted).commit();
+        getPreferences().edit().putInt(NEWEST_TERMS_ACCEPTED, newestTermsAccepted).commit();
     }
 
 
-    public SharedPreferences getPrefs() {
+    public SharedPreferences getPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this.context);
     }
 }
