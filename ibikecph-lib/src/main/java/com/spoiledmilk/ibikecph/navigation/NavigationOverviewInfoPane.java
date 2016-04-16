@@ -70,9 +70,11 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         float duration;
         long arrivalTime = 0;
 
+        // TODO: Consider moving this to the cykelplanen directory.
         if (IbikeApplication.getAppName().equals("Cykelplanen")) {
             breakButton = (ImageButton) v.findViewById(R.id.navigationOverviewBreakButton);
-            breakButton.setVisibility(View.VISIBLE);
+            boolean breakRouteEnabled = getResources().getBoolean(R.bool.breakRouteEnabled);
+            breakButton.setVisibility(breakRouteEnabled ? View.VISIBLE : View.GONE);
             breakButton.setOnClickListener(this);
 
             cargoButton.setVisibility(View.GONE);
