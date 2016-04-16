@@ -342,7 +342,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         ArrayList<LatLng> waypoints = new ArrayList<LatLng>();
 
         // Add a waypoint at the user's current position
-        if (route.startAddress != null && route.startAddress.isCurrentLocation()) {
+        if (route.startAddress != null && route.startAddress.isCurrentLocation() && !route.waypoints.isEmpty()) {
             beginWalkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
             beginWalkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
         }
