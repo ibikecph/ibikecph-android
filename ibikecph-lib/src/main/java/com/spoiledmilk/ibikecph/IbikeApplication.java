@@ -194,7 +194,9 @@ public class IbikeApplication extends Application {
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("signature").commit();
 
         // TODO: Move this somewhere more natural
-        BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
+        if (BikeLocationService.getInstance().getActivityRecognitionClient() != null) {
+            BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
+        }
         Intent intent = new Intent(MapActivity.mapActivityContext, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         MapActivity.mapActivityContext.startActivity(intent);
     }
@@ -212,7 +214,9 @@ public class IbikeApplication extends Application {
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("signature").commit();
 
         // TODO: Move this somewhere more natural
-        BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
+        if (BikeLocationService.getInstance().getActivityRecognitionClient() != null) {
+            BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
+        }
         Intent intent = new Intent(MapActivity.mapActivityContext, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("loggedOut", true);
         MapActivity.mapActivityContext.startActivity(intent);
@@ -232,7 +236,9 @@ public class IbikeApplication extends Application {
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("signature").commit();
 
         // TODO: Move this somewhere more natural
-        BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
+        if (BikeLocationService.getInstance().getActivityRecognitionClient() != null) {
+            BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
+        }
         Intent intent = new Intent(MapActivity.mapActivityContext, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("deleteUser", true);
         MapActivity.mapActivityContext.startActivity(intent);
