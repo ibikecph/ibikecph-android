@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':ibikecph-lib')
 }
 
@@ -32,10 +32,10 @@ android {
             signingConfig signingConfigs.development
         }
         release {
-            minifyEnabled true
+            minifyEnabled false
             pseudoLocalesEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
-                          '../ibikecph-lib/proguard-rules.pro'
+                    '../ibikecph-lib/proguard-rules.pro'
             signingConfig signingConfigs.development
         }
     }
