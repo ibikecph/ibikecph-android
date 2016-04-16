@@ -11,3 +11,13 @@ The library implements all of the functionality needed for the I BIKE CPH app, s
 Supercykelstier also relies on the library for most of its functionality, but also implements some additional things, among other things the "Knæk ruten" functionality.
 
 The Java code is published under the `com.spoiledmilk` namespace, and split into packages that reflect what part of the app they pertain to. Model class names are suffixed with  `Data`.
+
+## Creating a `secret.properties` file
+
+To be able to build and sign the apps using the development-keystore in the root of this directory,
+either add a secret.properties or as environment variables.
+
+    DEV_KEYSTORE_PASSWORD=...
+    DEV_KEY_ALIAS=...
+    DEV_KEY_PASSWORD=...
+    HOCKEY_APP_TOKEN=... # Used when pushing to HockeyApp
