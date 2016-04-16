@@ -67,7 +67,6 @@ import net.hockeyapp.android.UpdateManager;
 
 import java.util.ArrayList;
 
-import io.realm.Realm;
 import io.realm.exceptions.RealmMigrationNeededException;
 
 /**

@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import com.spoiledmilk.cykelsuperstier.map.OverlaysActivity;
+
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenuItem;
 import com.spoiledmilk.ibikecph.LeftMenuItemAdapter;
