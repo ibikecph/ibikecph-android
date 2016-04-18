@@ -242,7 +242,9 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
                                         public void run() {
                                             String st = favoritesData.getName() + " - (" + favoritesData.getLatitude() + ","
                                                     + favoritesData.getLongitude() + ")";
-                                            IbikeApplication.getTracker().sendEvent("Favorites", "Delete", st, (long) 0);
+                                            // TODO: Change this to the implementation described here
+                                            // https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
+                                            // IbikeApplication.getTracker().sendEvent("Favorites", "Delete", st, (long) 0);
                                             (new DB(getActivity())).deleteFavorite(favoritesData, getActivity());
                                             popFragment();
                                         }

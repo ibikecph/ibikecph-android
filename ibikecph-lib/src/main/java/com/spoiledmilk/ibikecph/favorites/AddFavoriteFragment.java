@@ -107,7 +107,11 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
                     favoritesData.setSubSource(currentFavoriteType);
                     String st = favoritesData.getName() + " - (" + favoritesData.getLatitude() + "," + favoritesData.getLongitude()
                             + ")";
-                    IbikeApplication.getTracker().sendEvent("Favorites", "Save", st, (long) 0);
+
+
+                    // TODO: Change this to the implementation described here
+                    // https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
+                    // IbikeApplication.getTracker().sendEvent("Favorites", "Save", st, (long) 0);
 
                     Thread saveThread = new Thread(new Runnable() {
                         @Override

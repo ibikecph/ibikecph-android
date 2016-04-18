@@ -11,7 +11,6 @@ import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
-import com.google.analytics.tracking.android.EasyTracker;
 
 import java.text.SimpleDateFormat;
 import java.util.zip.ZipEntry;
@@ -50,18 +49,6 @@ public class AboutActivity extends Activity {
 	private void initStrings() {
 		String text = IbikeApplication.getString("about_text_ibc");
 		textAboutText.setText(text);
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		EasyTracker.getInstance().activityStart(this);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		EasyTracker.getInstance().activityStop(this);
 	}
 
 	protected void getBuildInfo() {

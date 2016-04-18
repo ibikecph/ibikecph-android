@@ -29,7 +29,6 @@ import android.widget.TextView;
 import com.facebook.*;
 import com.facebook.Session.NewPermissionsRequest;
 import com.facebook.model.GraphUser;
-import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -332,7 +331,6 @@ public class LoginActivity extends Activity implements FBLoginListener {
         if (Session.getActiveSession() != null) {
             Session.getActiveSession().addCallback(statusCallback);
         }
-        EasyTracker.getInstance().activityStart(this);
     }
 
     @Override
@@ -342,7 +340,6 @@ public class LoginActivity extends Activity implements FBLoginListener {
         if (Session.getActiveSession() != null) {
             Session.getActiveSession().removeCallback(statusCallback);
         }
-        EasyTracker.getInstance().activityStop(this);
     }
 
     private class SessionStatusCallback implements Session.StatusCallback {

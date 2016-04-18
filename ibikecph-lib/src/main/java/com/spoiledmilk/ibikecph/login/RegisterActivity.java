@@ -32,7 +32,6 @@ import android.widget.Toast;
 import com.facebook.*;
 import com.facebook.Session.NewPermissionsRequest;
 import com.facebook.model.GraphUser;
-import com.google.analytics.tracking.android.EasyTracker;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -126,7 +125,11 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
                                 //IbikeApplication.savePassword(userData.getPassword());
                             }
                             handler.sendMessage(message);
-                            IbikeApplication.getTracker().sendEvent("Register", "Completed", userData.getEmail(), (long) 0);
+
+                            // TODO: Change this to the implementation described here
+                            // https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
+                            // IbikeApplication.getTracker().sendEvent("Register", "Completed", userData.getEmail(), (long) 0);
+
                             RegisterActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -447,7 +450,6 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         if (Session.getActiveSession() != null) {
             Session.getActiveSession().addCallback(statusCallback);
         }
-        EasyTracker.getInstance().activityStart(this);
     }
 
     @Override
@@ -457,7 +459,6 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         if (Session.getActiveSession() != null) {
             Session.getActiveSession().removeCallback(statusCallback);
         }
-        EasyTracker.getInstance().activityStop(this);
     }
 
     @Override

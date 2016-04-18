@@ -26,7 +26,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.analytics.tracking.android.EasyTracker;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -603,12 +602,6 @@ public class SearchAutocompleteActivity extends Activity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        EasyTracker.getInstance().activityStart(this);
-    }
-
-    @Override
     public void onStop() {
         if (kmsThread != null) {
             kmsThread.interrupt();
@@ -616,7 +609,6 @@ public class SearchAutocompleteActivity extends Activity {
         }
 
         super.onStop();
-        EasyTracker.getInstance().activityStop(this);
     }
 
 }

@@ -10,9 +10,9 @@ import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import android.util.Log;
 import android.util.Xml;
 
-import com.google.analytics.tracking.android.Log;
 import com.spoiledmilk.cykelsuperstier.break_rote.TimetableData;
 
 public class XMLParser {
@@ -36,7 +36,7 @@ public class XMLParser {
 					}
 			}
 		} catch (Exception e) {
-			Log.e(e.getLocalizedMessage());
+			Log.e("XMLParser", e.getLocalizedMessage());
 		}
 		return ret;
 	}
@@ -94,7 +94,7 @@ public class XMLParser {
 				}
 			}
 		} catch (Exception e) {
-			Log.e(e.getLocalizedMessage());
+			Log.e("XMLParser", e.getLocalizedMessage());
 		}
 		return ret;
 	}

@@ -25,7 +25,6 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.*;
 
-import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.*;
@@ -282,7 +281,11 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                 if (System.currentTimeMillis() - lastAPIRequestTimestamp < API_REQUESTS_TIMEOUT) {
                     return;
                 }
-                IbikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
+
+                // TODO: Change this to the implementation described here
+                // https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
+                // IbikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
+
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -357,18 +360,6 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
             }
         }).start();
 
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        EasyTracker.getInstance().activityStart(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EasyTracker.getInstance().activityStop(this);
     }
 
     @Override

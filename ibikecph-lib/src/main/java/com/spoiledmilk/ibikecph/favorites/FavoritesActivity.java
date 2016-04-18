@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.MapActivity;
@@ -172,18 +171,6 @@ public class FavoritesActivity extends Activity implements SMLocationListener {
 				}
 			}
 		}
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		EasyTracker.getInstance().activityStart(this);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		EasyTracker.getInstance().activityStop(this);
 	}
 
 	@Override

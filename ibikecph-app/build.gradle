@@ -3,6 +3,8 @@ apply plugin: 'com.android.application'
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':ibikecph-lib')
+
+    compile 'com.google.android.gms:play-services-analytics:8.4.0'
 }
 
 android {
@@ -14,12 +16,12 @@ android {
             storePassword secret('DEV_KEYSTORE_PASSWORD')
         }
     }
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId "dk.kk.ibikecph"
         minSdkVersion 16
-        targetSdkVersion 17
+        targetSdkVersion 23
         // versionCode 1
         // versionName "1.0"
     }
@@ -50,3 +52,5 @@ hockeyapp {
     notes = git.head().fullMessage
     status = 2
 }
+// This line needs to be in the bottom of the file
+apply plugin: 'com.google.gms.google-services'

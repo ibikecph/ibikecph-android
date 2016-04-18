@@ -16,9 +16,9 @@ import android.preference.PreferenceManager;
 import android.text.Spanned;
 import android.util.Log;
 
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.GoogleAnalytics;
-import com.google.analytics.tracking.android.Tracker;
+import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.analytics.GoogleAnalytics;
+
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.tracking.MilestoneManager;
 import com.spoiledmilk.ibikecph.tracking.TrackHelper;
@@ -42,6 +42,8 @@ public class IbikeApplication extends Application {
 
     private static TrackingManager trackingManager;
     protected static int primaryColor = R.color.IBCActionBar;
+
+    protected Tracker gaTracker;
 
     @Override
     public void onCreate() {
@@ -76,6 +78,14 @@ public class IbikeApplication extends Application {
             // Might be useful: https://realm.io/docs/java/latest/api/io/realm/Realm.html#deleteRealm-io.realm.RealmConfiguration-
             // Realm.deleteRealmFile(this);
         }
+    }
+
+    /**
+     * Gets the default {@link Tracker} for this {@link Application}.
+     * @return tracker
+     */
+    synchronized public Tracker getDefaultTracker() {
+        return gaTracker;
     }
 
 
@@ -159,10 +169,6 @@ public class IbikeApplication extends Application {
 
     public static Typeface getItalicFont() {
         return italicFont;
-    }
-
-    public static Tracker getTracker() {
-        return EasyTracker.getTracker();
     }
 
     public static void setWelcomeScreenSeen(boolean b) {

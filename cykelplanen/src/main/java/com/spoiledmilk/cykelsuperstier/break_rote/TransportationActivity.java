@@ -18,7 +18,6 @@ import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.cykelsuperstier.util.XMLParser;
 import com.spoiledmilk.ibikecph.util.LOG;
-import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
@@ -223,9 +222,6 @@ public class TransportationActivity extends Activity {
 							+ "/location?input="
 							+ URLEncoder.encode(fromStation, "utf-8");
 					LOG.d("Rejsplanen request, url = " + urlString);
-					HttpParams myParams = new BasicHttpParams();
-					HttpConnectionParams.setConnectionTimeout(myParams, 20000);
-					HttpConnectionParams.setSoTimeout(myParams, 20000);
 					URL url = null;
 					url = new URL(urlString);
 					is = url.openStream();

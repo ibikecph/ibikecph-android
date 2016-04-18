@@ -19,7 +19,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 
-import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.login.LoginSplashActivity;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -71,17 +70,6 @@ public class SplashActivity extends Activity {
 		return LoginSplashActivity.class;
 	}
 
-	@Override
-	public void onStart() {
-		super.onStart();
-		EasyTracker.getInstance().activityStart(this);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		EasyTracker.getInstance().activityStop(this);
-	}
 
 	class CopyTilesThread extends Thread {
 

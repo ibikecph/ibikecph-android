@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.analytics.tracking.android.EasyTracker;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
@@ -80,7 +79,11 @@ public class IssuesActivity extends Activity {
 		btnSend.setTextureResource(R.drawable.btn_pattern_repeteable);
 		btnSend.setBackgroundResource(R.drawable.btn_blue_selector);
 		btnSend.setTextColor(Color.WHITE);
-		IbikeApplication.getTracker().sendEvent("Report", "Start", "", (long) 0);
+
+		// TODO: Change this to the implementation described here
+		// https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
+		//IbikeApplication.getTracker().sendEvent("Report", "Start", "", (long) 0);
+
 		deselectAll();
 	}
 
@@ -219,7 +222,9 @@ public class IssuesActivity extends Activity {
 						jsonIssue.put("comment", comment);
 						jsonPost.put("issue", jsonIssue);
 						response = HttpUtils.postToServer(Config.API_URL + "/issues", jsonPost);
-						IbikeApplication.getTracker().sendEvent("Report", "Completed", "", (long) 0);
+						// TODO: Change this to the implementation described here
+						// https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
+						// IbikeApplication.getTracker().sendEvent("Report", "Completed", "", (long) 0);
 					} catch (JSONException e) {
 						LOG.e(e.getLocalizedMessage());
 					} finally {
@@ -251,17 +256,5 @@ public class IssuesActivity extends Activity {
 			}).start();
 
 		}
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		EasyTracker.getInstance().activityStart(this);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		EasyTracker.getInstance().activityStop(this);
 	}
 }
