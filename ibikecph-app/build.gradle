@@ -1,6 +1,23 @@
 apply plugin: 'com.android.application'
 
 dependencies {
+    // For testing
+    androidTestCompile 'com.android.support:support-annotations:23.3.0'
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test:rules:0.5'
+    // Optional -- Hamcrest library
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
+    // Optional -- UI testing with Espresso
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    // This is needed to perform actions of ex the Drawer menu
+    androidTestCompile ("com.android.support.test.espresso:espresso-contrib:2.2.2") {
+        exclude module: 'support-annotations'
+        exclude module: 'recyclerview-v7'
+        exclude module: 'support-v4'
+    }
+    // Optional -- UI testing with UI Automator
+    //androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
+
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':ibikecph-lib')
 
@@ -22,6 +39,7 @@ android {
         applicationId "dk.kk.ibikecph"
         minSdkVersion 16
         targetSdkVersion 23
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         // versionCode 1
         // versionName "1.0"
     }
