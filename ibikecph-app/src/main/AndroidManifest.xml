@@ -127,7 +127,7 @@
             android:label="@string/title_activity_edit_favorite"
             android:theme="@style/iBikeCPHTheme.ActionBar"/>
         
-        <service android:name="com.spoiledmilk.ibikecph.BikeLocationService"></service>
+        <service android:name="com.spoiledmilk.ibikecph.BikeLocationService" />
         <service android:name="com.spoiledmilk.ibikecph.BikeActivityService" >
         </service>
 
