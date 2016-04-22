@@ -181,7 +181,6 @@ public class FavoritesActivity extends Activity implements SMLocationListener {
 	@Override
 	public void onPause() {
 		super.onPause();
-		SMLocationManager.getInstance().removeUpdates();
 	}
 
 }

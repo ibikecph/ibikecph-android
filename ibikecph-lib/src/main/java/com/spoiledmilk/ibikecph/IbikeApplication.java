@@ -6,13 +6,17 @@
 
 package com.spoiledmilk.ibikecph;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Spanned;
 import android.util.Log;
 

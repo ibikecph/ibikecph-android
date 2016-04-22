@@ -7,11 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -144,7 +144,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 displayGetOffAt = false;
                 routePos = routePos + 1;
                 Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(this);
-                IbikeApplication.getService().addGPSListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
+                IbikeApplication.getService().addLocationListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
                 Log.d("DV", "NavigationMapHandler reachedDestination, ny listener er sat med index = " + routePos);
                 if (Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
                     isPublic = true;
@@ -260,7 +260,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         if (this.route != null) {
             route.cleanUp();
             route.setListener(null);
-            IbikeApplication.getService().removeGPSListener(route);
+            IbikeApplication.getService().removeLocationListener(route);
             //route = null;
         }
 
@@ -312,13 +312,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
                 for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
                     Geocoder.arrayLists.get(i).get(j).setListener(null);
-                    IbikeApplication.getService().removeGPSListener(Geocoder.arrayLists.get(i).get(j));
+                    IbikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
                 }
             }
         }
 
         this.route = route;
-        IbikeApplication.getService().addGPSListener(route);
+        IbikeApplication.getService().addLocationListener(route);
         this.cleanUp();
         this.mapView.removeAllMarkers();
 
@@ -424,14 +424,14 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
                     for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
                         Geocoder.arrayLists.get(i).get(j).setListener(null);
-                        IbikeApplication.getService().removeGPSListener(Geocoder.arrayLists.get(i).get(j));
+                        IbikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
                     }
                 }
             }
 
             Log.d("DV", "Setting listener from showBreakRouteOverview");
             route.setListener(this);
-            IbikeApplication.getService().addGPSListener(route);
+            IbikeApplication.getService().addLocationListener(route);
         }
 
         removeAnyPathOverlays();
@@ -625,7 +625,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         //registerBearingRotation();
 
-        IbikeApplication.getService().addGPSListener(this);
+        IbikeApplication.getService().addLocationListener(this);
 
         isRouting = true;
 
@@ -753,7 +753,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // Return the orientation to normal.
         this.mapView.setMapOrientation(0);
-        IbikeApplication.getService().removeGPSListener(this);
+        IbikeApplication.getService().removeLocationListener(this);
 
         this.mapView.invalidate();
 
@@ -965,20 +965,5 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         if (this.isRouting) {
             mapView.setMapOrientation(-1 * location.getBearing());
         }
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
     }
 }

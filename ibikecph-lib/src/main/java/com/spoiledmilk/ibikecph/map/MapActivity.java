@@ -5,6 +5,7 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.map;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
@@ -12,11 +13,15 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -33,6 +38,7 @@ import android.widget.ProgressBar;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.events.MapListener;
 import com.mapbox.mapboxsdk.events.RotateEvent;
 import com.mapbox.mapboxsdk.events.ScrollEvent;
@@ -106,6 +112,9 @@ public class MapActivity extends IBCMapActivity {
 
     private static final String TAG = "IBCMapActivity";
 
+    protected LocationListener locationListener;
+    final static int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
+
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -165,11 +174,9 @@ public class MapActivity extends IBCMapActivity {
             }
         });
 
-
-        // We need a LocationListener to have the service be able to provide GPS coords.
-        // TODO: This is kind of a hack :( The service only requests GPS upstream if it has listeners. Should be able
-        // to give a one-off coordinate.
-        IbikeApplication.getService().addGPSListener(new DummyLocationListener());
+        // This call checks if the app has suffecient permissions and updates the center of the
+        // map to the current location upon receiving this.
+        attemptToRegisterLocationListener();
 
         // When scrolling the map, make sure that the compass icon is updated.
         this.mapView.addListener(new MapListener() {
@@ -193,10 +200,6 @@ public class MapActivity extends IBCMapActivity {
         // Check if the user accepts the newest terms
         // TermsManager.checkTerms(this);
 
-        if (IbikeApplication.getService().hasValidLocation()) {
-            this.mapView.setCenter(new LatLng(IbikeApplication.getService().getLastValidLocation()));
-        }
-
         this.mapView.getUserLocationOverlay().enableFollowLocation();
         this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         updateUserTrackingState();
@@ -205,6 +208,65 @@ public class MapActivity extends IBCMapActivity {
 
         //disable pathoverlay for super roads until this functionality is ready to be used.
         IbikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
+    }
+
+    private void attemptToRegisterLocationListener() {
+        boolean hasLocationPermissions = ensureLocationPermissions();
+        if (hasLocationPermissions && locationListener == null) {
+            // We can register a location listener and start receiving location updates right away.
+            locationListener = new LocationListener() {
+
+                protected boolean hasUpdatedMap = false;
+
+                @Override
+                public void onLocationChanged(Location location) {
+                    Log.d("MapActivity", "The map got a new location - hasUpdatedMap = " + hasUpdatedMap);
+                    // Let's update the map only once.
+                    if (!hasUpdatedMap) {
+                        mapView.changeState(IBCMapView.MapState.DEFAULT);
+                        mapView.setCenter(new LatLng(location));
+                        hasUpdatedMap = true;
+                    }
+                }
+            };
+
+            Log.d("MapActivity", "Adding map's locationListener to the LocationService.");
+            // We need a LocationListener to have the service be able to provide GPS coordinates.
+            IbikeApplication.getService().addLocationListener(locationListener);
+        }
+    }
+
+    private void deregisterLocationListener() {
+        if (locationListener != null) {
+            IbikeApplication.getService().removeLocationListener(locationListener);
+            // Kill as this is how we know if we've already added it to the location service.
+            locationListener = null;
+        }
+    }
+
+    private boolean ensureLocationPermissions() {
+        final String permission = Manifest.permission.ACCESS_FINE_LOCATION;
+        // Let's check if we have permissions to get file locations.
+        int hasPermission = ContextCompat.checkSelfPermission(this.getApplicationContext(), permission);
+        if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{ permission }, PERMISSIONS_REQUEST_FINE_LOCATION);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_FINE_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("MapActivity", "Got the permission to receive fine locations.");
+                    attemptToRegisterLocationListener();
+                }
+                return;
+            }
+        }
     }
 
     /**
@@ -407,6 +469,7 @@ public class MapActivity extends IBCMapActivity {
     @Override
     public void onPause() {
         super.onPause();
+        deregisterLocationListener();
     }
 
     @Override

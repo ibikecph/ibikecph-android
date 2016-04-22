@@ -8,10 +8,11 @@ package com.spoiledmilk.ibikecph.navigation.routing_engine;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.google.android.gms.location.LocationListener;
 import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -30,7 +31,6 @@ public class SMLocationManager implements LocationListener {
 
     Location prevLastValidLocation;
     Location lastValidLocation;
-    boolean locationServicesEnabled;
     private Context context;
     private boolean hasBeenInited = false;
 
@@ -45,8 +45,6 @@ public class SMLocationManager implements LocationListener {
 
     private SMLocationManager() {
         lastValidLocation = null;
-        locationServicesEnabled = false;
-
     }
 
     public static SMLocationManager getInstance() {
@@ -61,11 +59,11 @@ public class SMLocationManager implements LocationListener {
 
     	this.context = context;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        locationServicesEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        boolean locationServicesEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         Log.i("JC", "LocationServicesEnabled = " + locationServicesEnabled);
 
-        IbikeApplication.getService().addGPSListener(this);
+        IbikeApplication.getService().addLocationListener(this);
 
         if (locationServicesEnabled) {
             Intent subscriptionIntent = new Intent(getContext(), BikeLocationService.class);
@@ -83,11 +81,6 @@ public class SMLocationManager implements LocationListener {
         hasBeenInited = true;
     }
 
-    public void removeUpdates() {
-        listener = null;
-        locationManager.removeUpdates(this);
-    }
-
     public boolean hasValidLocation() {
         Log.e("JC", "FIXME: SMLocationManager.hasValidLocation()");
 
@@ -98,12 +91,6 @@ public class SMLocationManager implements LocationListener {
         Log.e("JC", "FIXME: SMLocationManager.getLastValidLocation()");
 
         return IbikeApplication.getService().getLastValidLocation();
-    }
-    
-    public Location getPrevLastValidLocation() {
-        Log.e("JC", "FIXME: SMLocationManager.getPrevLastValidLocation()");
-
-        return IbikeApplication.getService().getPrevLastValidLocation();
     }
 
     public Location getLastKnownLocation() {
@@ -133,21 +120,6 @@ public class SMLocationManager implements LocationListener {
                 listener.onLocationChanged(location);
             }
         }
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        locationServicesEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        locationServicesEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        locationServicesEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
     public boolean shouldIgnore(final String pProvider, final long pTime) {

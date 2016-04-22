@@ -1,13 +1,12 @@
 package com.spoiledmilk.ibikecph.tracking;
 
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.android.gms.location.DetectedActivity;
+import com.google.android.gms.location.LocationListener;
 import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.persist.Track;
@@ -20,9 +19,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.nio.channels.spi.AbstractSelectionKey;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -74,7 +70,7 @@ public class TrackingManager implements LocationListener {
     public void startTracking() {
         if (!this.isTracking) {
             Log.d("JC", "TrackingManager: Starting to track");
-            BikeLocationService.getInstance().addGPSListener(this);
+            BikeLocationService.getInstance().addLocationListener(this);
             this.curLocationList = new ArrayList<Location>();
             this.isTracking = true;
         }
@@ -90,7 +86,7 @@ public class TrackingManager implements LocationListener {
         // locally overrode the override. This nomenclature sucks.
         if (this.isTracking && (!manualOverride || override)) {
             Log.d("JC", "TrackingManager: Stopping track");
-            BikeLocationService.getInstance().removeGPSListener(this);
+            BikeLocationService.getInstance().removeLocationListener(this);
             this.isTracking = false;
 
             makeAndSaveTrack();
@@ -596,19 +592,6 @@ public class TrackingManager implements LocationListener {
             Log.d("JC", "Got new GPS coord");
             curLocationList.add(givenLocation);
         }
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        this.stopTracking();
     }
 
     public void onActivityChanged(int activityType, int confidence) {

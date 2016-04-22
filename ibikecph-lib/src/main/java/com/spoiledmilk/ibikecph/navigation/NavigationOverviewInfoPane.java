@@ -255,7 +255,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
                 for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
                     Geocoder.arrayLists.get(i).get(j).setListener(null);
-                    IbikeApplication.getService().removeGPSListener(Geocoder.arrayLists.get(i).get(j));
+                    IbikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
                 }
             }
         }

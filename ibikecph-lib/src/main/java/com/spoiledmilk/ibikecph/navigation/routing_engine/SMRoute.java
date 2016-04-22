@@ -6,13 +6,13 @@
 package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.map.Geocoder;
@@ -113,7 +113,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         waypointStation1 = -1;
         waypointStation2 = -1;
 
-        //IbikeApplication.getService().addGPSListener(this);
+        //IbikeApplication.getService().addLocationListener(this);
     }
 
     public void init(Location start, Location end, SMRouteListener listener, JsonNode routeJSON, RouteType type) {
@@ -675,7 +675,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     approachingTurn = false;
                     // removeTurn();
                     if (listener != null) {
-                        IbikeApplication.getService().removeGPSListener(this);
+                        IbikeApplication.getService().removeLocationListener(this);
                         reachedDestination = true;
                         listener.reachedDestination();
                     }
@@ -684,7 +684,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     // we have somehow skipped most of the route (going through a
                     // park or unknown street)
                     if (listener != null) {
-                        IbikeApplication.getService().removeGPSListener(this);
+                        IbikeApplication.getService().removeLocationListener(this);
                         reachedDestination = true;
                         listener.reachedDestination();
                     }
@@ -1112,7 +1112,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         if (this.cleanedUp) {
-            IbikeApplication.getService().removeGPSListener(this);
+            IbikeApplication.getService().removeLocationListener(this);
             return;
         }
 
@@ -1120,26 +1120,11 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         this.visitLocation(location);
     }
 
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
-    }
-
     /**
      * Severs any connections with this SMRoute object, since we're not gonna need it anymore.
      */
     public void cleanUp() {
-        IbikeApplication.getService().removeGPSListener(this);
+        IbikeApplication.getService().removeLocationListener(this);
         this.setListener(null);
         this.cleanedUp = true;
     }
