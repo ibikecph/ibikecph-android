@@ -14,12 +14,10 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.spoiledmilk.cykelsuperstier.Config;
-import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
+import com.spoiledmilk.cykelsuperstier.CykelPlanenApplication;
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.cykelsuperstier.util.XMLParser;
 import com.spoiledmilk.ibikecph.util.LOG;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -85,13 +83,13 @@ public class TransportationActivity extends Activity {
 
 	private void initStrings() {
 		((TextView) findViewById(R.id.textFrom))
-				.setText(CykelsuperstierApplication.getString("from") + ":");
+				.setText(CykelPlanenApplication.getString("from") + ":");
 		((TextView) findViewById(R.id.textFromStation))
-				.setTypeface(CykelsuperstierApplication.getBoldFont());
+				.setTypeface(CykelPlanenApplication.getBoldFont());
 		((TextView) findViewById(R.id.textFromStation)).setText(fromStation
 				+ " st");
 		((TextView) findViewById(R.id.textToStation))
-				.setTypeface(CykelsuperstierApplication.getBoldFont());
+				.setTypeface(CykelPlanenApplication.getBoldFont());
 		((TextView) findViewById(R.id.textToStation))
 				.setText(toStation + " st");
 		String currentTime = "";
@@ -103,43 +101,43 @@ public class TransportationActivity extends Activity {
 		currentTime += calendar.get(Calendar.DAY_OF_MONTH) + ". "
 				+ monthString(calendar.get(Calendar.MONTH)) + " "
 				+ calendar.get(Calendar.YEAR) + ", "
-				+ CykelsuperstierApplication.getString("departure") + ". "
-				+ CykelsuperstierApplication.getString("at") + ". "
+				+ CykelPlanenApplication.getString("departure") + ". "
+				+ CykelPlanenApplication.getString("at") + ". "
 				+ (hours < 10 ? "0" + hours : hours + "") + ":"
 				+ (mins < 10 ? "0" + mins : "" + mins);
 		((TextView) findViewById(R.id.textCurrentTime))
-				.setTypeface(CykelsuperstierApplication.getBoldFont());
+				.setTypeface(CykelPlanenApplication.getBoldFont());
 		((TextView) findViewById(R.id.textCurrentTime)).setText(currentTime);
 		((TextView) findViewById(R.id.textTo))
-				.setText(CykelsuperstierApplication.getString("to") + ":");
+				.setText(CykelPlanenApplication.getString("to") + ":");
 		((TextView) findViewById(R.id.textTime))
-				.setText(CykelsuperstierApplication.getString("time") + ":");
+				.setText(CykelPlanenApplication.getString("time") + ":");
 		((TextView) findViewById(R.id.textDeparture))
-				.setTypeface(CykelsuperstierApplication.getBoldFont());
+				.setTypeface(CykelPlanenApplication.getBoldFont());
 		((TextView) findViewById(R.id.textDeparture))
-				.setText(CykelsuperstierApplication.getString("departure")
+				.setText(CykelPlanenApplication.getString("departure")
 						+ ".");
 		((TextView) findViewById(R.id.textArrival))
-				.setTypeface(CykelsuperstierApplication.getBoldFont());
+				.setTypeface(CykelPlanenApplication.getBoldFont());
 		((TextView) findViewById(R.id.textArrival))
-				.setText(CykelsuperstierApplication.getString("arrival") + ".");
+				.setText(CykelPlanenApplication.getString("arrival") + ".");
 		((TextView) findViewById(R.id.textArrivalTime))
-				.setTypeface(CykelsuperstierApplication.getBoldFont());
+				.setTypeface(CykelPlanenApplication.getBoldFont());
 		((TextView) findViewById(R.id.textArrivalTime))
-				.setText(CykelsuperstierApplication.getString("time"));
+				.setText(CykelPlanenApplication.getString("time"));
 		((TextView) findViewById(R.id.textShift))
-				.setTypeface(CykelsuperstierApplication.getBoldFont());
+				.setTypeface(CykelPlanenApplication.getBoldFont());
 		((TextView) findViewById(R.id.textShift))
-				.setText(CykelsuperstierApplication.getString("shift"));
+				.setText(CykelPlanenApplication.getString("shift"));
 		((TextView) findViewById(R.id.textTitle)).setTextSize(
 				TypedValue.COMPLEX_UNIT_SP, 16);
 		((TextView) findViewById(R.id.textTitle))
-				.setText(CykelsuperstierApplication
+				.setText(CykelPlanenApplication
 						.getString("recommended_routes"));
 	}
 
 	private String monthString(final int i) {
-		return CykelsuperstierApplication.getString("month_" + (i - 1));
+		return CykelPlanenApplication.getString("month_" + (i - 1));
 	}
 
 	private void getStationsData() {

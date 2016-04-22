@@ -34,7 +34,7 @@ public class SplashActivity extends Activity {
 			@Override
 			public void run() {
 				Intent i;
-				if (CykelsuperstierApplication.isUserLogedIn()) {
+				if (CykelPlanenApplication.isUserLogedIn()) {
 					Log.i("JC", "going to map activity");
 					i = new Intent(SplashActivity.this, MapActivity.class);
 				} else {

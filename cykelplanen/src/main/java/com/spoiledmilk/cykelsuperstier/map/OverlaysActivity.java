@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
+import com.spoiledmilk.cykelsuperstier.CykelPlanenApplication;
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.map.OverlayType;
@@ -121,8 +121,8 @@ public class OverlaysActivity extends Activity {
     }
 
     private void initStrings() {
-        actionBar.setTitle(CykelsuperstierApplication.getString("map_overlays"));
-        textPath.setText(CykelsuperstierApplication.getString("cycle_super_highways"));
-        textService.setText(CykelsuperstierApplication.getString("service_stations"));
+        actionBar.setTitle(CykelPlanenApplication.getString("map_overlays"));
+        textPath.setText(CykelPlanenApplication.getString("cycle_super_highways"));
+        textService.setText(CykelPlanenApplication.getString("service_stations"));
     }
 }

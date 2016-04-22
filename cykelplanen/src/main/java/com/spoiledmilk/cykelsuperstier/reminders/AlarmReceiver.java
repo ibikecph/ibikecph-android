@@ -18,7 +18,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
-import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
+import com.spoiledmilk.cykelsuperstier.CykelPlanenApplication;
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.cykelsuperstier.SplashActivity;
 
@@ -39,7 +39,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 			AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 			Intent newIntent = new Intent(AlarmUtils.ALARM_ACTION);
 			newIntent.putExtra("repetition", repetition);
-			PendingIntent sender = PendingIntent.getBroadcast(context, CykelsuperstierApplication.ALARM_REQUEST_CODE + 1, newIntent,
+			PendingIntent sender = PendingIntent.getBroadcast(context, CykelPlanenApplication.ALARM_REQUEST_CODE + 1, newIntent,
 					PendingIntent.FLAG_UPDATE_CURRENT);
 			am.set(AlarmManager.RTC_WAKEUP, nextAlarmTime.getTimeInMillis(), sender);
 		}
@@ -54,7 +54,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-		String description = CykelsuperstierApplication.getString("reminder_alert_text");
+		String description = CykelPlanenApplication.getString("reminder_alert_text");
 		builder.setContentIntent(pendingIntent).setSmallIcon(R.drawable.ic_launcher)
 				.setTicker(context.getResources().getString(R.string.app_name) + " " + description).setWhen(System.currentTimeMillis())
 				.setAutoCancel(true).setContentText(description).setContentTitle(context.getResources().getString(R.string.app_name));

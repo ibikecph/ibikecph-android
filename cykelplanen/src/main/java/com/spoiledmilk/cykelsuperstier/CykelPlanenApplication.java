@@ -9,7 +9,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.util.Config;
 
-public class CykelsuperstierApplication extends IbikeApplication {
+public class CykelPlanenApplication extends IbikeApplication {
 
 	public static final int ALARM_REQUEST_CODE = 202837;
 	
@@ -19,7 +19,7 @@ public class CykelsuperstierApplication extends IbikeApplication {
 		Config.GREEN_ROUTES_ENABLED = false; 
 		Config.EXTENDED_PULL_TOUCH = false;
 
-        IbikeApplication.APP_NAME = "Cykelplanen";
+        IbikeApplication.APP_NAME = "CykelPlanen";
         this.primaryColor = R.color.CPActionBar;
 
 		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);

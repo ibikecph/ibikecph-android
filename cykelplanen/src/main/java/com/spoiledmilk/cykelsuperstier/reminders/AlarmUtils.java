@@ -7,7 +7,7 @@ package com.spoiledmilk.cykelsuperstier.reminders;
 
 import java.util.Calendar;
 
-import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
+import com.spoiledmilk.cykelsuperstier.CykelPlanenApplication;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -22,7 +22,7 @@ public class AlarmUtils {
 		AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(AlarmUtils.ALARM_ACTION);
 		intent.putExtra("repetition", repetition);
-		PendingIntent sender = PendingIntent.getBroadcast(ctx, CykelsuperstierApplication.ALARM_REQUEST_CODE + 1, intent,
+		PendingIntent sender = PendingIntent.getBroadcast(ctx, CykelPlanenApplication.ALARM_REQUEST_CODE + 1, intent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		if (repetition == 0)
@@ -51,14 +51,14 @@ public class AlarmUtils {
 		AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 		Intent intent = new Intent(ALARM_ACTION);
 		intent.putExtra("repetition", repetition);
-		PendingIntent sender = PendingIntent.getBroadcast(ctx, CykelsuperstierApplication.ALARM_REQUEST_CODE + 1, intent,
+		PendingIntent sender = PendingIntent.getBroadcast(ctx, CykelPlanenApplication.ALARM_REQUEST_CODE + 1, intent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		am.cancel(sender);
 	}
 
 	public static boolean isAlarmActive(Context ctx, long id) {
 		Intent intent = new Intent(ALARM_ACTION);
-		PendingIntent sender = PendingIntent.getBroadcast(ctx, CykelsuperstierApplication.ALARM_REQUEST_CODE + (int) id, intent,
+		PendingIntent sender = PendingIntent.getBroadcast(ctx, CykelPlanenApplication.ALARM_REQUEST_CODE + (int) id, intent,
 				PendingIntent.FLAG_NO_CREATE);
 
 		return sender != null;

@@ -38,7 +38,7 @@
         android:required="false" />
 
     <application
-        android:name="com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication"
+        android:name="com.spoiledmilk.cykelsuperstier.CykelPlanenApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -179,7 +179,7 @@
         </receiver>
         <activity
             android:name="com.spoiledmilk.cykelsuperstier.AcceptNewTermsActivity"
-            android:label="@string/title_activity_accept_new_terms"></activity>
+            android:label="@string/title_activity_accept_new_terms" />
     </application>
 
 

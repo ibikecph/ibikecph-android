@@ -19,7 +19,7 @@ import android.view.Window;
 import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
+import com.spoiledmilk.cykelsuperstier.CykelPlanenApplication;
 import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.ibikecph.IssuesAdapter;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
@@ -361,8 +361,8 @@ public class BreakRouteActivity extends Activity implements
 	private void showRouteNoBreakDialog() {
 		if (dialog == null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(CykelsuperstierApplication.getString("no_route"));
-			builder.setMessage(CykelsuperstierApplication
+			builder.setTitle(CykelPlanenApplication.getString("no_route"));
+			builder.setMessage(CykelPlanenApplication
 					.getString("cannot_broken"));
 			builder.setPositiveButton("OK", new OnClickListener() {
 				@Override
@@ -506,20 +506,20 @@ public class BreakRouteActivity extends Activity implements
 	}
 
 	private void initStrings() {
-        actionBar.setTitle(CykelsuperstierApplication.getString("break_route_title"));
-		textDistance.setTypeface(CykelsuperstierApplication.getBoldFont());
-		textDistance.setText(CykelsuperstierApplication
+        actionBar.setTitle(CykelPlanenApplication.getString("break_route_title"));
+		textDistance.setTypeface(CykelPlanenApplication.getBoldFont());
+		textDistance.setText(CykelPlanenApplication
 				.getString("break_route_header_title"));
 		textDistanceKm.setText(" " + (distance / 1000) + " km");
-		btnBreak.setText(CykelsuperstierApplication
+		btnBreak.setText(CykelPlanenApplication
 				.getString("btn_break_route"));
-		textAAddress.setTypeface(CykelsuperstierApplication.getBoldFont());
+		textAAddress.setTypeface(CykelPlanenApplication.getBoldFont());
 		textAAddress.setText(source);
-		textBAddress.setTypeface(CykelsuperstierApplication.getBoldFont());
+		textBAddress.setTypeface(CykelPlanenApplication.getBoldFont());
 		textBAddress.setText(destination);
-		btnRejseplanen.setTypeface(CykelsuperstierApplication.getBoldFont());
+		btnRejseplanen.setTypeface(CykelPlanenApplication.getBoldFont());
 		btnRejseplanen.setText("      "
-				+ CykelsuperstierApplication.getString("route_plan_button"));
+				+ CykelPlanenApplication.getString("route_plan_button"));
 	}
 
 	public void onBtnRejsplanenClick(View v) {

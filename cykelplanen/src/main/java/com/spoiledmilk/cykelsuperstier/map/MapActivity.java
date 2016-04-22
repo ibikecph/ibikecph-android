@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
-import com.spoiledmilk.cykelsuperstier.CykelsuperstierApplication;
+import com.spoiledmilk.cykelsuperstier.CykelPlanenApplication;
 import com.spoiledmilk.cykelsuperstier.LeftMenu;
 import com.spoiledmilk.ibikecph.map.IBCMarker;
 import com.spoiledmilk.ibikecph.map.MarkerType;
@@ -58,7 +58,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
         this.mapView.removeAllMarkersOfType(MarkerType.OVERLAY);
 
         // Plot the service stations.
-        if (CykelsuperstierApplication.getSettings().getOverlay(OverlayType.SERVICE)) {
+        if (CykelPlanenApplication.getSettings().getOverlay(OverlayType.SERVICE)) {
             // Initialize the overlays
             ArrayList<ServiceStationMarker> serviceStations = ServiceStationMarker.getServiceStationMarkersFromJSON();
 
@@ -68,7 +68,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
         }
 
         // Plot the Supercykelsti
-        if (CykelsuperstierApplication.getSettings().getOverlay(OverlayType.PATH)) {
+        if (CykelPlanenApplication.getSettings().getOverlay(OverlayType.PATH)) {
             ArrayList<SupercykelstiPathOverlay> paths = SupercykelstiPathOverlay.getSupercykelstiPathsFromJSON();
 
             for (SupercykelstiPathOverlay path : paths) {

@@ -33,22 +33,22 @@ public class BreakRouteSplashActivity extends Activity {
 
 	private void initStrings() {
 		TextView textTitle = (TextView) findViewById(R.id.textTitle);
-		textTitle.setTypeface(CykelsuperstierApplication.getBoldFont());
+		textTitle.setTypeface(CykelPlanenApplication.getBoldFont());
 		textTitle.setTextColor(Color.rgb(243, 109, 0));
-		textTitle.setText(CykelsuperstierApplication.getString("break_route_title"));
+		textTitle.setText(CykelPlanenApplication.getString("break_route_title"));
 
 		TextView textBreakRoute = (TextView) findViewById(R.id.textBreakRoute);
 		textBreakRoute.setTextColor(Color.rgb(131, 131, 131)); // 60, 60, 60
-		textBreakRoute.setText(CykelsuperstierApplication.getString("break_route_text_top"));
+		textBreakRoute.setText(CykelPlanenApplication.getString("break_route_text_top"));
 
 		TextView textBreakRouteHint = (TextView) findViewById(R.id.textBreakRouteHint);
 		textBreakRouteHint.setTextColor(Color.rgb(131, 131, 131));
-		textBreakRouteHint.setText(CykelsuperstierApplication.getString("break_route_text_bottom"));
+		textBreakRouteHint.setText(CykelPlanenApplication.getString("break_route_text_bottom"));
 
 		TextView textSkip = (TextView) findViewById(R.id.textSkip);
-		textSkip.setTypeface(CykelsuperstierApplication.getBoldFont());
+		textSkip.setTypeface(CykelPlanenApplication.getBoldFont());
 		textSkip.setTextColor(Color.rgb(243, 109, 0));
-		textSkip.setText(CykelsuperstierApplication.getString("skip"));
+		textSkip.setText(CykelPlanenApplication.getString("skip"));
 	}
 
 	public void onBtnSkipClick(View view) {
