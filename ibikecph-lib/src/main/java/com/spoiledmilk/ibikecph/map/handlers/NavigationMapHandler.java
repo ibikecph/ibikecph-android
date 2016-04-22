@@ -135,7 +135,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     @Override
     public void reachedDestination() {
         Log.d("DV", "NavigationMapHandler reachedDestination");
-
         if (Geocoder.arrayLists != null && MapActivity.isBreakChosen) {
             Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(null);
             Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).reachedDestination = true;
@@ -155,10 +154,14 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 }
             } else {
                 displayGetOffAt = false;
-                this.turnByTurnFragment.reachedDestination();
+                if (this.turnByTurnFragment != null) {
+                    this.turnByTurnFragment.reachedDestination();
+                }
             }
         } else {
-            this.turnByTurnFragment.reachedDestination();
+            if (this.turnByTurnFragment != null) {
+                this.turnByTurnFragment.reachedDestination();
+            }
         }
 
 
