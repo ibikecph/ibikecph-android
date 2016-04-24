@@ -14,6 +14,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
+import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
@@ -310,6 +311,7 @@ public class IBCMapView extends MapView {
         } catch (Exception ex) {
         }*/
 
+        // TODO: Consider if this invalidate is even needed - as removeAddressMarker calls this internally.
         // Invalidate the view so the marker gets drawn.
         this.invalidate();
     }
@@ -326,6 +328,7 @@ public class IBCMapView extends MapView {
             this.removeMarker(curAddressMarker);
             curAddressMarker = null;
         }
+        // TODO: Consider if this invalidate is even needed - as removeMarker calls this internally.
         this.invalidate();
     }
 
@@ -337,10 +340,7 @@ public class IBCMapView extends MapView {
 
     public void removeMarker(IBCMarker m) {
         markers.remove(m);
-        try {
-            super.removeMarker(m);
-        } catch (Exception ex) {
-        }
+        super.removeMarker(m);
     }
 
     public void removeAllMarkers() {

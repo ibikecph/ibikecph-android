@@ -110,7 +110,7 @@ public class MapActivity extends BaseMapActivity {
     public static boolean format;
     public static boolean isBreakChosen = false;
 
-    private static final String TAG = "IBCMapActivity";
+    private static final String TAG = "MapActivity";
 
     protected LocationListener locationListener;
     final static int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
@@ -805,42 +805,5 @@ public class MapActivity extends BaseMapActivity {
         }
 
 
-       /* @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            Log.d("DV", "destroyItem!");
-            if (position >= getCount()) {
-                android.support.v4.app.FragmentManager manager = ((Fragment) object).getFragmentManager();
-                android.support.v4.app.FragmentTransaction trans = manager.beginTransaction();
-                trans.remove((Fragment) object);
-                trans.commit();
-            }
-            notifyDataSetChanged();
-        }*/
-
     }
 }
-
-            /*
-            Log.d("JC", "Got coordinates to navigate to");
-            if (data != null) {
-                final Bundle extras = data.getExtras();
-                Location start = Util.locationFromCoordinates(extras.getDouble("startLat"), extras.getDouble("startLng"));
-                Location end = Util.locationFromCoordinates(extras.getDouble("endLat"), extras.getDouble("endLng"));
-
-                // TODO: Throwing stuff around between Location and ILatLng like it ain't a thing. Drop it.
-                Geocoder.getRoute(new LatLng(start), new LatLng(end), new Geocoder.RouteCallback() {
-                    @Override
-                    public void onSuccess(SMRoute route) {
-                        Log.d("JC", "Got SMRoute");
-                        route.startStationName = extras.getString("fromName");
-                        route.endStationName = extras.getString("toName");
-                        mapView.showRouteOverview(route);
-                    }
-
-                    @Override
-                    public void onFailure() {
-                        Log.e("JC", "Did not get SMRoute");
-                    }
-                }, null);
-            }
-            */
