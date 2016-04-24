@@ -35,7 +35,7 @@ public class OverviewMapHandler extends IBCMapHandler {
 
         Log.d("JC", "Instantiating OverviewMapHandler");
 
-        mapView.addGPSOverlay();
+        mapView.addUserLocationOverlay();
 
         View userTrackingButton = mapView.getParentActivity().findViewById(R.id.userTrackingButton);
         if (userTrackingButton != null) {
@@ -74,7 +74,7 @@ public class OverviewMapHandler extends IBCMapHandler {
             curMarker = null;
         }
 
-        mapView.removeGPSOverlay();
+        mapView.removeUserLocationOverlay();
     }
 
     @Override

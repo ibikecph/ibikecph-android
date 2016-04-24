@@ -43,7 +43,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class IBCMapView extends MapView {
 
-    private UserLocationOverlay userLocationOverlay;
     public static IBCMarker curAddressMarker;
     private CopyOnWriteArrayList<IBCMarker> markers = new CopyOnWriteArrayList<IBCMarker>();
 
@@ -236,40 +235,18 @@ public class IBCMapView extends MapView {
     /**
      * Adds a GPS location dot.
      */
-    public UserLocationOverlay addGPSOverlay() {
-
-        GpsLocationProvider pr = new GpsLocationProvider(this.getContext());
-        userLocationOverlay = new IBCUserLocationOverlay(pr, this);
-
+    public void addUserLocationOverlay() {
         this.setUserLocationEnabled(true);
-
-        userLocationOverlay.enableMyLocation();
-        userLocationOverlay.setDrawAccuracyEnabled(true);
-        userLocationOverlay.enableFollowLocation();
-        userLocationOverlay.setPersonBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.tracking_dot));
-
-        this.getOverlays().add(userLocationOverlay);
-        this.invalidate();
-
-        return userLocationOverlay;
+        this.getUserLocationOverlay().setDrawAccuracyEnabled(true);
+        this.getUserLocationOverlay().enableFollowLocation();
+        this.getUserLocationOverlay().setPersonBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.tracking_dot));
     }
 
     /**
      * Removed the stored GPS overlay from the map view.
      */
-    public void removeGPSOverlay() {
-        if (userLocationOverlay != null) {
-            userLocationOverlay.disableFollowLocation();
-            this.getOverlays().remove(userLocationOverlay);
-            this.invalidate();
-        }
-
-        userLocationOverlay = null;
-
-    }
-
-    public UserLocationOverlay getGPSOverlay() {
-        return userLocationOverlay;
+    public void removeUserLocationOverlay() {
+        setUserLocationEnabled(false);
     }
 
     public void showAddressInfoPane(Address a) {
