@@ -45,6 +45,9 @@ import com.spoiledmilk.ibikecph.util.bearing.BearingToNorthProvider;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by jens on 5/30/15.
@@ -304,8 +307,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
 
     /**
-     * Brings up the whole route for the user, shows the address in the info pane. The idea is that the user should
-     * start the route from this view.
+     * Brings up the whole route for the user, shows the address in the info pane.
+     * The idea is that the user should start the route from this view.
      *
      * @param route
      */
@@ -322,14 +325,12 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         this.route = route;
         IbikeApplication.getService().addLocationListener(route);
-        this.cleanUp();
         this.mapView.removeAllMarkers();
+        this.cleanUp();
 
         Log.d("DV_break", "showRouteOverview");
 
         route.setListener(this);
-
-        removeAnyPathOverlays();
 
         // Set up the infoPane
         initInfopane();
@@ -355,6 +356,27 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             waypoints.add(new LatLng(loc));
         }
 
+        // Start the zoom to the bounding box around the waypoints of the route.
+        BoundingBox boundingBox = BoundingBox.fromLatLngs(waypoints);
+
+        double north = boundingBox.getLatNorth();
+        double east = boundingBox.getLonEast();
+        double west = boundingBox.getLonWest();
+        double south = boundingBox.getLatSouth();
+
+        double latitudeDiff = Math.abs(north - south) * 0.2;
+
+        double longitudeDiff = Math.abs(east - west) * 0.2;
+
+        // Add 20% padding
+        ArrayList<LatLng> paddedWaypoints = new ArrayList<LatLng>();
+        LatLng ne = new LatLng(north + latitudeDiff, east + longitudeDiff);
+        LatLng sw = new LatLng(south - latitudeDiff, west - longitudeDiff);
+        paddedWaypoints.add(ne);
+        paddedWaypoints.add(sw);
+
+        this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(paddedWaypoints), true, true, false, true);
+
 
         // We also want a grey line if the user is expected to walk somewhere we cannot route directly to.
         PathOverlay endWalkingPath = new PathOverlay(Color.GRAY, 10);
@@ -366,11 +388,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         Log.d("JC", "distance: " + lastPoint.distanceTo(realLastPoint));
 
         // Show the whole route, zooming to make it fit
-        this.mapView.getOverlays().add(beginWalkingPath);
-        this.mapView.getOverlays().add(endWalkingPath);
-
-
-        this.mapView.getOverlays().add(path);
+        this.mapView.addOverlay(beginWalkingPath);
+        this.mapView.addOverlay(endWalkingPath);
+        this.mapView.addOverlay(path);
 
         // Put markers at the beginning and end of the route. We use the "real" end location, which means the place that
         // the user tapped.
@@ -384,26 +404,11 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.mapView.addMarker(beginMarker);
         this.mapView.addMarker(endMarker);
 
-        BoundingBox boundingBox = BoundingBox.fromLatLngs(waypoints);
 
-        double north = boundingBox.getLatNorth();
-        double east = boundingBox.getLonEast();
-        double west = boundingBox.getLonWest();
-        double south = boundingBox.getLatSouth();
-
-        double latitudeDiff = Math.abs(north - south) * 0.2;
-
-        double longitudeDiff = Math.abs(east - west) * 0.2;
-
-
-        //Add 20% padding
-        ArrayList<LatLng> paddedWaypoints = new ArrayList<LatLng>();
-        LatLng ne = new LatLng(north + latitudeDiff, east + longitudeDiff);
-        LatLng sw = new LatLng(south - latitudeDiff, west - longitudeDiff);
-        paddedWaypoints.add(ne);
-        paddedWaypoints.add(sw);
-
-        this.mapView.zoomToBoundingBox(BoundingBox.fromLatLngs(paddedWaypoints), true, true, false, true);
+        Log.d("NavitationMapHandler", "Printing the " + this.mapView.getOverlays().size() + " overlays:");
+        for(Overlay overlay: this.mapView.getOverlays()) {
+            Log.d("NavitationMapHandler", "\tOverlay: " + overlay + " isEnabled=" + overlay.isEnabled());
+        }
 
         cleanedUp = false;
     }
@@ -623,8 +628,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         mapView.setCenter(new LatLng(start), true);
         mapView.setZoom(17f);
 
-        mapView.addGPSOverlay();
-        mapView.getGPSOverlay().setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
+        mapView.addUserLocationOverlay();
+        mapView.getUserLocationOverlay().setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
 
         //registerBearingRotation();
 
@@ -727,17 +732,23 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     }
 
     private void removeAnyPathOverlays() {
-        // remove any path overlays. Mapbox bug: Why do we need this spin lock?
-        boolean foundPathOverlay = true;
-        while (foundPathOverlay) {
-            foundPathOverlay = false;
-            for (Overlay overlay : this.mapView.getOverlays()) {
-                if (overlay instanceof com.mapbox.mapboxsdk.overlay.PathOverlay) {
-                    this.mapView.removeOverlay(overlay);
-                    foundPathOverlay = true;
-                }
+        // It's suspected that a bug in Mapbox gives trouble when iterating getOverlays and removing
+        // from it at the same time. Therefore we use an iterator to remove overlays.
+        //Log.d("NavigationMapHandler", "Before removal " + this.mapView.getOverlays().size() + " overlays exists.");
+        Iterator<Overlay> overlays = this.mapView.getOverlays().iterator();
+        while(overlays.hasNext()) {
+            Overlay overlay = overlays.next();
+            if (overlay instanceof PathOverlay) {
+                //Log.d("NavigationMapHandler", "\tRemoving " + overlay);
+                overlays.remove();
             }
         }
+        /*
+        Log.d("NavigationMapHandler", "After removal " + this.mapView.getOverlays().size() + " overlays exists.");
+        for(Overlay o: this.mapView.getOverlays()) {
+            Log.d("NavigationMapHandler", "\tOverlay: " + o);
+        }
+        */
     }
 
     public void cleanUp() {
@@ -758,6 +769,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.mapView.setMapOrientation(0);
         IbikeApplication.getService().removeLocationListener(this);
 
+        // TODO: Consider if this is needed - removing markers invalidates the MapView internally.
         this.mapView.invalidate();
 
         // And remove the fragment(s)
