@@ -55,7 +55,7 @@ public class IBCMapView extends MapView {
 
     private MapState state = MapState.DEFAULT;
     private IBCMapHandler curHandler;
-    private IBCMapActivity parentActivity;
+    private BaseMapActivity parentActivity;
 
     protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase tileProvider, Handler tileRequestCompleteHandler, AttributeSet attrs) {
         super(aContext, tileSizePixels, tileProvider, tileRequestCompleteHandler, attrs);
@@ -76,7 +76,7 @@ public class IBCMapView extends MapView {
     /**
      * Do some initializations that are always needed
      */
-    public void init(MapState initialState, IBCMapActivity parent) {
+    public void init(MapState initialState, BaseMapActivity parent) {
         WebSourceTileLayer ws = new WebSourceTileLayer("ibikecph", "https://tiles.ibikecph.dk/tiles/{z}/{x}/{y}.png");
         ws.setName("OpenStreetMap")
                 .setAttribution("© OpenStreetMap Contributors")
@@ -229,7 +229,7 @@ public class IBCMapView extends MapView {
         return this.curHandler;
     }
 
-    public IBCMapActivity getParentActivity() {
+    public BaseMapActivity getParentActivity() {
         return parentActivity;
     }
 

@@ -83,7 +83,7 @@ import io.realm.exceptions.RealmMigrationNeededException;
  * @author jens
  */
 @SuppressLint("NewApi")
-public class MapActivity extends IBCMapActivity {
+public class MapActivity extends BaseMapActivity {
     public final static int REQUEST_SEARCH_ADDRESS = 2;
     public final static int REQUEST_CHANGE_SOURCE_ADDRESS = 250;
     public final static int REQUEST_CHANGE_DESTINATION_ADDRESS = 251;

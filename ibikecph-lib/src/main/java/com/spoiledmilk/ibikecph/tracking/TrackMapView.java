@@ -12,7 +12,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.IBCMapActivity;
+import com.spoiledmilk.ibikecph.map.BaseMapActivity;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
@@ -24,7 +24,7 @@ import io.realm.Sort;
 import java.util.ArrayList;
 
 
-public class TrackMapView extends IBCMapActivity {
+public class TrackMapView extends BaseMapActivity {
     IBCMapView mapView;
     BoundingBox bbox;
 

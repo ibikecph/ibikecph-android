@@ -6,7 +6,8 @@ import android.support.v4.app.FragmentActivity;
  * Created by jens on 7/10/15.
  */
 
-public abstract class IBCMapActivity extends FragmentActivity {
+public abstract class BaseMapActivity extends FragmentActivity {
+
     protected boolean problemButtonVisible;
 
     public void showProblemButton() {
