@@ -684,19 +684,20 @@ public class MapActivity extends BaseMapActivity {
             if (!OverviewMapHandler.isWatchingAddress) {
                 super.onBackPressed();
             }
-        }
-        breakFrag.setVisibility(View.GONE);
-        progressBarHolder.setVisibility(View.GONE);
-        mapView.removeAllMarkers();
-        NavigationMapHandler.displayExtraField = false;
-        NavigationMapHandler.displayGetOffAt = false;
-        NavigationMapHandler.isPublic = false;
-        NavigationMapHandler.getOffAt = "";
-        NavigationMapHandler.lastType = "";
-        isBreakChosen = false;
-        for (Overlay overlay : this.mapView.getOverlays()) {
-            if (overlay instanceof com.mapbox.mapboxsdk.overlay.PathOverlay) {
-                this.mapView.removeOverlay(overlay);
+
+            breakFrag.setVisibility(View.GONE);
+            progressBarHolder.setVisibility(View.GONE);
+            mapView.removeAllMarkers();
+            NavigationMapHandler.displayExtraField = false;
+            NavigationMapHandler.displayGetOffAt = false;
+            NavigationMapHandler.isPublic = false;
+            NavigationMapHandler.getOffAt = "";
+            NavigationMapHandler.lastType = "";
+            isBreakChosen = false;
+            for (Overlay overlay : this.mapView.getOverlays()) {
+                if (overlay instanceof com.mapbox.mapboxsdk.overlay.PathOverlay) {
+                    this.mapView.removeOverlay(overlay);
+                }
             }
         }
 
