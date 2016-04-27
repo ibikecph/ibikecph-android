@@ -213,7 +213,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         Log.d("JC", "NavigationMapHandler routeRecalculationDone");
         removeAnyPathOverlays();
         PathOverlay path = null;
-        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
             path = new PathOverlay(Color.parseColor("#FF6600"), 10);
         } else {
             path = new PathOverlay(Color.RED, 10);
@@ -337,7 +337,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // TODO: Fix confusion between Location and LatLng objects
         PathOverlay path = null;
-        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
             path = new PathOverlay(Color.parseColor("#FF6600"), 10);
         } else {
             path = new PathOverlay(Color.RED, 10);
@@ -445,7 +445,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         removeAnyPathOverlays();
 
         // TODO: Fix confusion between Location and LatLng objects
-        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
             if (route.transportType != null && route.transportType.equals("BIKE")) {
                 // Only draw an orange line for bike route pieces
                 path[position] = new PathOverlay(Color.parseColor("#FF6600"), 10);

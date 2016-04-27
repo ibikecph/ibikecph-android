@@ -71,7 +71,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         long arrivalTime = 0;
 
         // TODO: Consider moving this to the cykelplanen directory.
-        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
             breakButton = (ImageButton) v.findViewById(R.id.navigationOverviewBreakButton);
             boolean breakRouteEnabled = getResources().getBoolean(R.bool.breakRouteEnabled);
             breakButton.setVisibility(breakRouteEnabled ? View.VISIBLE : View.GONE);
@@ -174,7 +174,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         destinationText.setOnClickListener(this);
 
         ((TextView) v.findViewById(R.id.newRouteText)).setText(IbikeApplication.getString("Start"));
-        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
             ((TextView) v.findViewById(R.id.newRouteText)).setTextColor(getResources().getColor(R.color.CPActionBar));
 
         }
@@ -239,7 +239,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         fastButton.setImageResource(R.drawable.btn_route_fastest_disabled);
         cargoButton.setImageResource(R.drawable.btn_route_cargo_disabled);
         greenButton.setImageResource(R.drawable.btn_route_green_disabled);
-        if (IbikeApplication.getAppName().equals("Cykelplanen")) {
+        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
             MapActivity.progressBarHolder.setVisibility(View.GONE);
             breakButton.setImageResource(R.drawable.btn_train_disabled);
             MapActivity.breakFrag.setVisibility(View.GONE);
