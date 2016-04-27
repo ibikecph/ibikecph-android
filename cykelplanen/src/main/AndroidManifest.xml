@@ -14,9 +14,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!--uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /-->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
@@ -170,13 +171,14 @@
             android:name="com.spoiledmilk.ibikecph.tracking.TrackMapView"
             android:label="@string/title_activity_track_map_view" />
 
-        <receiver android:name="com.spoiledmilk.ibikecph.BootReceiver">
+        <!--receiver android:name="com.spoiledmilk.ibikecph.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.SCREEN_OFF" />
                 <action android:name="android.intent.action.SCREEN_ON" />
             </intent-filter>
-        </receiver>
+        </receiver-->
+
         <activity
             android:name="com.spoiledmilk.cykelsuperstier.AcceptNewTermsActivity"
             android:label="@string/title_activity_accept_new_terms" />
