@@ -48,7 +48,6 @@ public class Config {
 
     public static final String HOCKEY_APP_ID = "d10e63f39cdbe7e8e3af275207388b2a";
     public static final boolean HOCKEY_UPDATES_ENABLED = true;
-    public static final boolean ANALYTICS_ENABLED = true;
 
     public static boolean EXTENDED_PULL_TOUCH = true;
     public static boolean TTS_ENABLED = true;

@@ -61,7 +61,9 @@ public class IbikeApplication extends Application {
         normalFont = Typeface.DEFAULT; //Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Md.ttf");
         boldFont = Typeface.DEFAULT_BOLD; //Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Bd.ttf");
         italicFont = Typeface.defaultFromStyle(Typeface.ITALIC); // Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
-        GoogleAnalytics.getInstance(this).setAppOptOut(Config.ANALYTICS_ENABLED);
+
+        boolean googleAnalyticsEnabled = getResources().getBoolean(R.bool.googleAnalyticsEnabled);
+        GoogleAnalytics.getInstance(this).setAppOptOut(googleAnalyticsEnabled == false);
 
         this.startService(new Intent(this, BikeLocationService.class));
 
