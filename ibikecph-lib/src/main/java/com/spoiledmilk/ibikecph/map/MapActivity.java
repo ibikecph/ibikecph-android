@@ -146,7 +146,8 @@ public class MapActivity extends BaseMapActivity {
         initLeftMenu(savedInstanceState);
 
         // Check for HockeyApp updates
-        if (Config.HOCKEY_UPDATES_ENABLED) {
+        boolean hockeyAppEnabled = getResources().getBoolean(R.bool.hockeyAppEnabled);
+        if (hockeyAppEnabled) {
             UpdateManager.register(this, Config.HOCKEY_APP_ID);
         }
 
@@ -433,7 +434,10 @@ public class MapActivity extends BaseMapActivity {
     }
 
     protected void checkForCrashes() {
-        CrashManager.register(this, Config.HOCKEY_APP_ID);
+        boolean hockeyAppEnabled = getResources().getBoolean(R.bool.hockeyAppEnabled);
+        if (hockeyAppEnabled) {
+            CrashManager.register(this, Config.HOCKEY_APP_ID);
+        }
     }
 
     @Override
