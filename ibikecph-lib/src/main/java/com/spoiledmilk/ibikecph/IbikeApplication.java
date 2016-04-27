@@ -89,6 +89,11 @@ public class IbikeApplication extends Application {
      * @return tracker
      */
     synchronized public Tracker getDefaultTracker() {
+        if (gaTracker == null) {
+            String msg = "The Google Analytics tracker is not ready yet. " +
+                         "Concrete applications should initialize this from their onCreate method.";
+            throw new RuntimeException(msg);
+        }
         return gaTracker;
     }
 
