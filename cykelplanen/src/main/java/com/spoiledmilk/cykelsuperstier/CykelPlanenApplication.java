@@ -22,9 +22,7 @@ public class CykelPlanenApplication extends IbikeApplication {
         IbikeApplication.APP_NAME = "CykelPlanen";
         this.primaryColor = R.color.CPActionBar;
 
-		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-		// To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-		gaTracker = analytics.newTracker(R.xml.global_tracker);
+		initializeGoogleAnalytics(R.xml.global_tracker);
 	}
 
 

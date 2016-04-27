@@ -7,6 +7,7 @@
 package com.spoiledmilk.ibikecph;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
@@ -20,6 +21,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.Spanned;
 import android.util.Log;
 
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.GoogleAnalytics;
 
@@ -305,6 +307,24 @@ public class IbikeApplication extends Application {
             // regardless of the user's preference, but will only actually *make* the notification if the user wants it.
             alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
         }
+    }
+
+    protected void initializeGoogleAnalytics(int configResId) {
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+        gaTracker = analytics.newTracker(configResId);
+        // Enable reporting of exceptions to Google Analytics.
+        gaTracker.enableExceptionReporting(true);
+    }
+
+    public static void sendGoogleAnalyticsEvent(Activity activity, String category, String action) {
+        Tracker gaTracker = ((IbikeApplication) activity.getApplication()).getDefaultTracker();
+        gaTracker.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).build());
+    }
+
+    public static void sendGoogleAnalyticsActivityEvent(Activity activity) {
+        Tracker gaTracker = ((IbikeApplication) activity.getApplication()).getDefaultTracker();
+        gaTracker.setScreenName(activity.getClass().getSimpleName());
+        gaTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     public static String getAppName() {

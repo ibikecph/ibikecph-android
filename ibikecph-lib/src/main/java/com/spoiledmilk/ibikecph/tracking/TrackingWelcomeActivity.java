@@ -86,6 +86,10 @@ public class TrackingWelcomeActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Tell Google Analytics that the user has resumed on this screen.
+        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+
         if (IbikeApplication.getSettings().getTrackingEnabled()) {
             finish();
         }

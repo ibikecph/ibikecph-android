@@ -8,8 +8,6 @@ public class IBikeCPHApplication extends IbikeApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-        // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-        gaTracker = analytics.newTracker(R.xml.global_tracker);
+        initializeGoogleAnalytics(R.xml.global_tracker);
     }
 }

@@ -38,6 +38,8 @@ import android.widget.ProgressBar;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.events.MapListener;
 import com.mapbox.mapboxsdk.events.RotateEvent;
@@ -97,6 +99,8 @@ public class MapActivity extends BaseMapActivity {
     protected IBCMapView mapView;
     private ArrayList<InfoPaneFragment> fragments = new ArrayList<InfoPaneFragment>();
     private IbikePreferences settings;
+
+    // TODO: Consider if these need to be static members of the class.
     public static View frag;
     public static View breakFrag;
     public static CirclePageIndicator tabs;
@@ -341,6 +345,10 @@ public class MapActivity extends BaseMapActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        // Tell Google Analytics that the user has resumed on this screen.
+        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+
         LOG.d("Map activity onResume");
         if (settings.getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
             showStatisticsInfoPane();

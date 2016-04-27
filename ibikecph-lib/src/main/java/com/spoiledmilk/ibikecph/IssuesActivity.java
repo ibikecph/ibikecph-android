@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
@@ -80,10 +82,6 @@ public class IssuesActivity extends Activity {
 		btnSend.setBackgroundResource(R.drawable.btn_blue_selector);
 		btnSend.setTextColor(Color.WHITE);
 
-		// TODO: Change this to the implementation described here
-		// https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
-		//IbikeApplication.getTracker().sendEvent("Report", "Start", "", (long) 0);
-
 		deselectAll();
 	}
 
@@ -100,6 +98,11 @@ public class IssuesActivity extends Activity {
 		textOption5.setText(IbikeApplication.getString("report_wrong_instruction"));
 		textOption6.setText(IbikeApplication.getString("report_other"));
 		btnSend.setText(IbikeApplication.getString("report_send"));
+
+        // Tell Google Analytics that the user has resumed on this screen.
+        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        // TODO: Consider if this double event tracking is needed.
+        IbikeApplication.sendGoogleAnalyticsEvent(this, "Report", "Start");
 	}
 	
 	// TODO: Don't repeat yourself /jc 
@@ -222,9 +225,8 @@ public class IssuesActivity extends Activity {
 						jsonIssue.put("comment", comment);
 						jsonPost.put("issue", jsonIssue);
 						response = HttpUtils.postToServer(Config.API_URL + "/issues", jsonPost);
-						// TODO: Change this to the implementation described here
-						// https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
-						// IbikeApplication.getTracker().sendEvent("Report", "Completed", "", (long) 0);
+
+                        IbikeApplication.sendGoogleAnalyticsEvent(IssuesActivity.this, "Report", "Completed");
 					} catch (JSONException e) {
 						LOG.e(e.getLocalizedMessage());
 					} finally {

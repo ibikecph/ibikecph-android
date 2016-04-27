@@ -211,6 +211,10 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     @Override
     public void onResume() {
         super.onResume();
+
+        // Tell Google Analytics that the user has resumed on this screen.
+        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+
         initStrings();
         if (textCurrentLoc.getVisibility() == View.VISIBLE
                 && (IbikeApplication.getService().getLastValidLocation() != null || IbikeApplication.getService().getLastKnownLocation() != null)) {

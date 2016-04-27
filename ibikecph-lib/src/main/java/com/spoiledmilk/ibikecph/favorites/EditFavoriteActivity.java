@@ -46,6 +46,13 @@ public class EditFavoriteActivity extends Activity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // Tell Google Analytics that the user has resumed on this screen.
+        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.edit_favorite, menu);

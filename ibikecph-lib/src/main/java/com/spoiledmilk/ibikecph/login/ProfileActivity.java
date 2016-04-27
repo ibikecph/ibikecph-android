@@ -198,6 +198,9 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
     public void onResume() {
         //actionbar.show();
 
+        // Tell Google Analytics that the user has resumed on this screen.
+        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+
         super.onResume();
         initStrings();
         //disableButtons();
