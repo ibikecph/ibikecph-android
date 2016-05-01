@@ -19,6 +19,7 @@ dependencies {
     compile('com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.4@aar') {
         transitive = true
     }
+    compile 'net.hockeyapp.android:HockeySDK:4.0.0'
     compile project(':viewpagerindicator')
 }
 
