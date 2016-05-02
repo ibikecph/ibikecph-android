@@ -159,7 +159,7 @@ public class MapActivity extends BaseMapActivity {
         materialMenu = new MaterialMenuIcon(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
         materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
 
-        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerOpened(View drawerView) {
                 materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
@@ -179,7 +179,7 @@ public class MapActivity extends BaseMapActivity {
             }
         });
 
-        // This call checks if the app has suffecient permissions and updates the center of the
+        // This call checks if the app has sufficient permissions and updates the center of the
         // map to the current location upon receiving this.
         attemptToRegisterLocationListener();
 
