@@ -118,6 +118,10 @@ public class MapActivity extends BaseMapActivity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Link the activity to the map activity layout.
+        setContentView(R.layout.map_activity);
+
         // Make sure the app icon is clickable
         getActionBar().setHomeButtonEnabled(true);
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -128,7 +132,6 @@ public class MapActivity extends BaseMapActivity {
 
         // TODO: Remove this after reimplementing the logout* methods of the IbikeApplication class
         mapActivityContext = this;
-        this.setContentView(R.layout.main_map_activity);
 
         // Finding the sub-components of the activity's view, consider if these need to be static
         // or if we could pass a reference to this activity to the components that needs access
