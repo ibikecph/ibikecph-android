@@ -41,8 +41,6 @@ public class SplashActivity extends Activity {
 			timeout = getIntent().getExtras().getInt("timeout");
 		}
 
-		// new CopyTilesThread().start();
-
 	}
 
 	@Override
@@ -57,7 +55,7 @@ public class SplashActivity extends Activity {
 			public void run() {
 				Intent i;
 				if (IbikeApplication.isUserLogedIn()) {
-					i = new Intent(SplashActivity.this, MapActivity.class);
+					i = new Intent(SplashActivity.this, getMapActivityClass());
 				} else {
 					i = new Intent(SplashActivity.this, getLoginActivityClass());
 				}
@@ -68,73 +66,12 @@ public class SplashActivity extends Activity {
 
 	}
 
-	protected Class<?> getLoginActivityClass() {
-		return LoginSplashActivity.class;
+	protected Class<?> getMapActivityClass() {
+		return MapActivity.class;
 	}
 
-
-	class CopyTilesThread extends Thread {
-
-		@Override
-		public void run() {
-			AssetManager assetManager = getAssets();
-			String[] files = null;
-			try {
-				files = assetManager.list("iBikeTiles/12");
-			} catch (IOException e) {
-				Log.e("tag", "Failed to get asset file list.", e);
-			}
-			for (String filename : files) {
-				InputStream in = null;
-				OutputStream out = null;
-				try {
-					in = assetManager.open("iBikeTiles/12/" + filename);
-					final File osmDir = new File(Environment.getExternalStorageDirectory(), "osmdroid");
-					if (!osmDir.exists()) {
-						osmDir.mkdir();
-					}
-					final File tilesDir = new File(osmDir, "tiles");
-					if (!tilesDir.exists()) {
-						tilesDir.mkdir();
-					}
-					final File iBikeDir = new File(tilesDir, "IBikeCPH");
-					if (!iBikeDir.exists()) {
-						iBikeDir.mkdir();
-					}
-					final File dir = new File(iBikeDir, "12");
-					if (!dir.exists()) {
-						dir.mkdir();
-					}
-					String dirName = filename.split(" ")[0];
-					final File dir1 = new File(dir, dirName);
-					if (!dir1.exists()) {
-						dir1.mkdir();
-					}
-					String name = filename.split(" ")[1] + ".tile";
-					File outFile = new File(dir1, name);
-					if (!outFile.exists()) {
-						outFile.createNewFile();
-						out = new FileOutputStream(outFile);
-						copyFile(in, out);
-						in.close();
-						in = null;
-						out.flush();
-						out.close();
-						out = null;
-					}
-				} catch (IOException e) {
-					Log.e("tag", "Failed to copy asset file: " + filename, e);
-				}
-			}
-		}
-
-		private void copyFile(InputStream in, OutputStream out) throws IOException {
-			byte[] buffer = new byte[1024];
-			int read;
-			while ((read = in.read(buffer)) != -1) {
-				out.write(buffer, 0, read);
-			}
-		}
+	protected Class<?> getLoginActivityClass() {
+		return LoginSplashActivity.class;
 	}
 
 }

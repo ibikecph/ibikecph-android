@@ -86,6 +86,10 @@ public class LoginSplashActivity extends Activity {
         }
     }
 
+    protected Class<?> getMapActivityClass() {
+        return MapActivity.class;
+    }
+
     public void onBtnSkipClick(View v) {
         launchMainMapActivity();
     }
@@ -102,7 +106,7 @@ public class LoginSplashActivity extends Activity {
 
     public void launchMainMapActivity() {
         IbikeApplication.setWelcomeScreenSeen(true);
-        Intent i = new Intent(LoginSplashActivity.this, MapActivity.class);
+        Intent i = new Intent(LoginSplashActivity.this, getMapActivityClass());
         LoginSplashActivity.this.startActivity(i);
         finish();
     }

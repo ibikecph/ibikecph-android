@@ -139,7 +139,7 @@ public class LeftMenu extends Fragment {
     public void spawnFunction(String name) {
         Method handlerMethod;
         try {
-            handlerMethod = this.getClass().getDeclaredMethod(name, (Class[]) null);
+            handlerMethod = this.getClass().getMethod(name, (Class[]) null);
             handlerMethod.invoke(this);
         } catch (Exception e) {
             Log.e("JC", "Handler " + name + " not found");

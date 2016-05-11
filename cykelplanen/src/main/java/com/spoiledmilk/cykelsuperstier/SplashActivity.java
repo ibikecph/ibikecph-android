@@ -16,35 +16,24 @@ import com.spoiledmilk.cykelsuperstier.map.MapActivity;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.Util;
 
-public class SplashActivity extends Activity {
+public class SplashActivity extends com.spoiledmilk.ibikecph.SplashActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
 		Util.init(getWindowManager());
-
+		// Log.d("SplashActivity", "Created CykelPlanen's SplashActivity");
 	}
 
 	@Override
-	public void onResume() {
-		super.onResume();
-		final Handler handler = new Handler();
-		handler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				Intent i;
-				if (CykelPlanenApplication.isUserLogedIn()) {
-					Log.i("JC", "going to map activity");
-					i = new Intent(SplashActivity.this, MapActivity.class);
-				} else {
-					i = new Intent(SplashActivity.this, LoginSplashActivity.class);
-				}
-				startActivity(i);
-				finish();
-			}
-		}, 800);
+	protected Class<?> getMapActivityClass() {
+		return MapActivity.class;
+	}
 
+	@Override
+	protected Class<?> getLoginActivityClass() {
+		return LoginSplashActivity.class;
 	}
 
 }

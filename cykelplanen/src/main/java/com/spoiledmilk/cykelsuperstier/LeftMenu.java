@@ -25,31 +25,23 @@ import io.realm.Realm;
 import java.util.ArrayList;
 
 public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
-	int settingsHeight = 0;
-
-    private ArrayList<LeftMenuItem> cpMenuItems = new ArrayList<LeftMenuItem>();
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d("JC", "CP LeftMenu onCreate");
-
-        // TODO: Technically we should be able to just do everything we need on menuItems directly.
-        cpMenuItems.addAll(this.menuItems);
-
+    public void populateMenu() {
+        super.populateMenu();
         // Find the ID of the "voice" menu item. Append the overlays after that.
-        for (int i = 0; i<this.cpMenuItems.size(); i++) {
-            if (this.cpMenuItems.get(i).getLabelID().equals("favorites")) {
+        for (LeftMenuItem item: menuItems) {
+            if (item.getLabelID().equals("favorites")) {
                 Log.d("JC", "Adding overlays menu");
                 //this.cpMenuItems.add(i+1, new LeftMenuItem("map_overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
             }
-
-            if (this.cpMenuItems.get(i).getLabelID().equals("about_app_ibc")) {
-                this.cpMenuItems.get(i).setLabelID("about_app_cp");
+            if (item.getLabelID().equals("about_app_ibc")) {
+                item.setLabelID("about_app_cp");
             }
         }
     }
 
+    /*
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		final View ret = super.onCreateView(inflater, container, savedInstanceState);
@@ -66,31 +58,13 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 
 		return ret;
 	}
-
-    @Override
-    public void spawnOverlaysActivity(){
-        super.spawnOverlaysActivity();
-    }
+	*/
 
 	@Override
 	public void spawnAboutActivity() {
         Intent i = new Intent(getActivity(), com.spoiledmilk.cykelsuperstier.AboutActivity.class);
         getActivity().startActivity(i);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-	}
-
-	public void spawnTTSSettingsActivity() {
-		Log.i("JC", "CP: Spawning TTS settings");
-		super.spawnTTSSettingsActivity();
-	}
-
-	public void spawnFavoritesListActivity() {
-		Log.i("JC", "CP: Spawning Favorites settings");
-		super.spawnFavoritesListActivity();
-	}
-
-	public void spawnLoginActivity() {
-		super.spawnLoginActivity();
 	}
 
     public void spawnTrackingActivity() {
@@ -105,15 +79,5 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
         getActivity().startActivity(i);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
-
-	@Override
-	public void onResume() {
-		super.onResume();
-	}
-
-	public void initStrings() {
-
-
-	}
 
 }
