@@ -11,11 +11,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.GpsLocationProvider;
 import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
-import com.mapbox.mapboxsdk.overlay.Overlay;
-import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
@@ -47,13 +44,13 @@ public class IBCMapView extends MapView {
     public static IBCMarker curAddressMarker;
     private CopyOnWriteArrayList<IBCMarker> markers = new CopyOnWriteArrayList<IBCMarker>();
 
-    public enum MapState {
+    public enum MapViewState {
         DEFAULT,
         TRACK_DISPLAY,
         NAVIGATION_OVERVIEW
     }
 
-    private MapState state = MapState.DEFAULT;
+    private MapViewState state = MapViewState.DEFAULT;
     private IBCMapHandler curHandler;
     private BaseMapActivity parentActivity;
 
@@ -76,7 +73,7 @@ public class IBCMapView extends MapView {
     /**
      * Do some initializations that are always needed
      */
-    public void init(MapState initialState, BaseMapActivity parent) {
+    public void init(MapViewState initialState, BaseMapActivity parent) {
         WebSourceTileLayer ws = new WebSourceTileLayer("ibikecph", "https://tiles.ibikecph.dk/tiles/{z}/{x}/{y}.png");
         ws.setName("OpenStreetMap")
                 .setAttribution("© OpenStreetMap Contributors")
@@ -122,7 +119,7 @@ public class IBCMapView extends MapView {
         this.setMapViewListener(curHandler);
     }
 
-    public void changeState(MapState newState) {
+    public void changeState(MapViewState newState) {
         state = newState;
         updateListeners();
     }
@@ -134,14 +131,14 @@ public class IBCMapView extends MapView {
      * @param route
      */
     public void showRoute(SMRoute route) {
-        changeState(MapState.NAVIGATION_OVERVIEW);
+        changeState(MapViewState.NAVIGATION_OVERVIEW);
         Log.d("DV_break", "IBCMapView: In ShowRoute!");
 
         ((NavigationMapHandler) getMapHandler()).showRouteOverview(route);
     }
 
     public void showMultipleRoutes() {
-        changeState(MapState.NAVIGATION_OVERVIEW);
+        changeState(MapViewState.NAVIGATION_OVERVIEW);
         Log.d("DV_break", "IBCMapView: In ShowRoute, multipleRoutes!");
 
         ((NavigationMapHandler) getMapHandler()).showRouteOverviewPieces(0);

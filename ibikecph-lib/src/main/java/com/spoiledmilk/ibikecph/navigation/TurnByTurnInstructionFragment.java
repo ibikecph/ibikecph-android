@@ -2,6 +2,7 @@ package com.spoiledmilk.ibikecph.navigation;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,7 +150,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
         seconds = seconds * 1000;
 
         // 24-hour format
-        if (MapActivity.format) {
+        if (DateFormat.is24HourFormat(this.getActivity())) {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
             //sdf.setTimeZone(TimeZone.getDefault());
             time = sdf.format(seconds).toString();

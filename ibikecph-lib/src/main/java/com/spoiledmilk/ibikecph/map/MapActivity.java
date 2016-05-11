@@ -25,7 +25,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -38,8 +37,6 @@ import android.widget.ProgressBar;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.events.MapListener;
 import com.mapbox.mapboxsdk.events.RotateEvent;
@@ -58,6 +55,8 @@ import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
+import com.spoiledmilk.ibikecph.map.states.BrowsingState;
+import com.spoiledmilk.ibikecph.map.states.MapState;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
@@ -65,15 +64,12 @@ import com.spoiledmilk.ibikecph.tracking.TrackHelper;
 import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
-
-import java.util.ArrayList;
 
 import io.realm.exceptions.RealmMigrationNeededException;
 
@@ -86,10 +82,13 @@ import io.realm.exceptions.RealmMigrationNeededException;
  */
 @SuppressLint("NewApi")
 public class MapActivity extends BaseMapActivity {
+
     public final static int REQUEST_SEARCH_ADDRESS = 2;
     public final static int REQUEST_CHANGE_SOURCE_ADDRESS = 250;
     public final static int REQUEST_CHANGE_DESTINATION_ADDRESS = 251;
     public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
+
+    protected MapState state;
 
     public static Context mapActivityContext;
 
@@ -97,8 +96,6 @@ public class MapActivity extends BaseMapActivity {
     private DrawerLayout drawerLayout;
     private MaterialMenuIcon materialMenu;
     protected IBCMapView mapView;
-    private ArrayList<InfoPaneFragment> fragments = new ArrayList<InfoPaneFragment>();
-    private IbikePreferences settings;
 
     // TODO: Consider if these need to be static members of the class.
     public static View frag;
@@ -111,7 +108,6 @@ public class MapActivity extends BaseMapActivity {
     public static ObservableInteger obsInt;
     public int amount = 0;
     public static JsonNode breakRouteJSON = null;
-    public static boolean format;
     public static boolean isBreakChosen = false;
 
     private static final String TAG = "MapActivity";
@@ -119,13 +115,23 @@ public class MapActivity extends BaseMapActivity {
     protected LocationListener locationListener;
     final static int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
 
-
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Make sure the app icon is clickable
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayShowCustomEnabled(true);
+
+        // Create the drawer menu to the left.
+        createMenu();
+
+        // TODO: Remove this after reimplementing the logout* methods of the IbikeApplication class
         mapActivityContext = this;
         this.setContentView(R.layout.main_map_activity);
-        this.settings = IbikeApplication.getSettings();
+
+        // Finding the sub-components of the activity's view, consider if these need to be static
+        // or if we could pass a reference to this activity to the components that needs access
         frag = findViewById(R.id.infoPaneContainer);
         breakFrag = findViewById(R.id.breakRouteContainer);
         tabs = (CirclePageIndicator) findViewById(R.id.tabs);
@@ -133,17 +139,11 @@ public class MapActivity extends BaseMapActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBarHolder = (FrameLayout) findViewById(R.id.progressBarHolder);
 
-        // true if 24-hour format, false if 12-hour format
-        format = DateFormat.is24HourFormat(this);
+        // Initialize the map view
+        mapView = (IBCMapView) findViewById(R.id.mapView);
+        mapView.init(IBCMapView.MapViewState.DEFAULT, this);
 
-        this.mapView = (IBCMapView) findViewById(R.id.mapView);
-        mapView.init(IBCMapView.MapState.DEFAULT, this);
-
-        // We want the hamburger in the ActionBar
-        materialMenu = new MaterialMenuIcon(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
-
-        // LeftMenu
-        initLeftMenu(savedInstanceState);
+        changeState(new BrowsingState());
 
         // Check for HockeyApp updates
         try {
@@ -152,195 +152,37 @@ public class MapActivity extends BaseMapActivity {
             Log.i("HockeyApp", "No HockeyApp app identifier provided - HockeyApp is disabled");
         }
 
-        // Make sure the app icon is clickable
-        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setDisplayShowCustomEnabled(true);
-
-        materialMenu = new MaterialMenuIcon(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
-        materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
-
-        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
-            }
-
-            @Override
-            public void onDrawerStateChanged(int newState) {
-            }
-
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-            }
-        });
-
-        // This call checks if the app has sufficient permissions and updates the center of the
-        // map to the current location upon receiving this.
         attemptToRegisterLocationListener();
+
+        // Check if the user accepts the newest terms
+        // TermsManager.checkTerms(this);
+
+        // TODO: Move this to the CykelPlanen app - as it's break route related.
+        setupBreakRouteListener();
 
         // When scrolling the map, make sure that the compass icon is updated.
         this.mapView.addListener(new MapListener() {
             @Override
             public void onScroll(ScrollEvent scrollEvent) {
-                updateUserTrackingState();
+                updateCompassIcon();
             }
 
             @Override
             public void onZoom(ZoomEvent zoomEvent) {
-                updateUserTrackingState();
+                updateCompassIcon();
             }
 
             @Override
             public void onRotate(RotateEvent rotateEvent) {
-                updateUserTrackingState();
+                updateCompassIcon();
             }
         });
 
-
-        // Check if the user accepts the newest terms
-        // TermsManager.checkTerms(this);
-
-        this.mapView.getUserLocationOverlay().enableFollowLocation();
-        this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
-        updateUserTrackingState();
-        TrackingManager.uploadTracksToServer();
-        fragmentPageAmountListener();
-
-        //disable pathoverlay for super roads until this functionality is ready to be used.
+        // Disable pathoverlay for super roads until this functionality is ready to be used.
         IbikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
-    }
 
-    private void attemptToRegisterLocationListener() {
-        boolean hasLocationPermissions = ensureLocationPermissions();
-        if (hasLocationPermissions && locationListener == null) {
-            // We can register a location listener and start receiving location updates right away.
-            locationListener = new LocationListener() {
-
-                protected boolean hasUpdatedMap = false;
-
-                @Override
-                public void onLocationChanged(Location location) {
-                    Log.d("MapActivity", "The map got a new location - hasUpdatedMap = " + hasUpdatedMap);
-                    // Let's update the map only once.
-                    if (!hasUpdatedMap) {
-                        mapView.changeState(IBCMapView.MapState.DEFAULT);
-                        mapView.setCenter(new LatLng(location));
-                        hasUpdatedMap = true;
-                    }
-                }
-            };
-
-            Log.d("MapActivity", "Adding map's locationListener to the LocationService.");
-            // We need a LocationListener to have the service be able to provide GPS coordinates.
-            IbikeApplication.getService().addLocationListener(locationListener);
-        }
-    }
-
-    private void deregisterLocationListener() {
-        if (locationListener != null) {
-            IbikeApplication.getService().removeLocationListener(locationListener);
-            // Kill as this is how we know if we've already added it to the location service.
-            locationListener = null;
-        }
-    }
-
-    private boolean ensureLocationPermissions() {
-        final String permission = Manifest.permission.ACCESS_FINE_LOCATION;
-        // Let's check if we have permissions to get file locations.
-        int hasPermission = ContextCompat.checkSelfPermission(this.getApplicationContext(), permission);
-        if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{ permission }, PERMISSIONS_REQUEST_FINE_LOCATION);
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_FINE_LOCATION: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("MapActivity", "Got the permission to receive fine locations.");
-                    attemptToRegisterLocationListener();
-                }
-                return;
-            }
-        }
-    }
-
-    /**
-     * Initializes the LeftMenu
-     *
-     * @param savedInstanceState
-     */
-    private void initLeftMenu(final Bundle savedInstanceState) {
-        leftMenu = getLeftMenu();
-
-        // Add the menu to the Navigation Drawer
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (savedInstanceState == null) {
-            fragmentTransaction.add(R.id.leftContainerDrawer, leftMenu);
-        } else {
-            fragmentTransaction.replace(R.id.leftContainerDrawer, leftMenu);
-        }
-        fragmentTransaction.commit();
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        if (id == R.id.ab_search) {
-            // to avoid too many not parcelable things, just set the map back to default state
-            this.mapView.changeState(IBCMapView.MapState.DEFAULT);
-            breakFrag.setVisibility(View.GONE);
-            progressBarHolder.setVisibility(View.GONE);
-            isBreakChosen = false;
-            this.mapView.removeAllMarkers();
-            Intent i = new Intent(MapActivity.this, SearchActivity.class);
-            startActivityForResult(i, REQUEST_SEARCH_ADDRESS);
-            overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
-        } else if (id == R.id.ab_problem) {
-            ((NavigationMapHandler) this.mapView.getMapHandler()).problemButtonPressed();
-        }
-        // Toggle the drawer when tapping the app icon.
-        else if (id == android.R.id.home) {
-            if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
-            } else {
-                drawerLayout.openDrawer(Gravity.LEFT);
-                materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
-
-            }
-        } else if (id == R.id.uploadFakeTrack) {
-            TrackingManager.uploadeFakeTrack();
-            //TrackingManager.printAllTracks();
-        } else if (id == R.id.createFakeTrack) {
-            TrackingManager.createFakeTrack();
-        } else if (id == R.id.resetSignature) {
-            PreferenceManager.getDefaultSharedPreferences(MapActivity.this).edit().remove("signature").commit();
-        } else if (id == R.id.resetAuthToken) {
-            PreferenceManager.getDefaultSharedPreferences(MapActivity.this).edit().putString("auth_token", "123").commit();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    protected LeftMenu getLeftMenu() {
-        if (leftMenu == null) {
-            return leftMenu = new LeftMenu();
-        } else {
-            return leftMenu;
-        }
+        // Uploads tracks to the server - TODO: consider removing this call and class entirely.
+        TrackingManager.uploadTracksToServer();
     }
 
     @SuppressWarnings("deprecation")
@@ -352,7 +194,7 @@ public class MapActivity extends BaseMapActivity {
         IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         LOG.d("Map activity onResume");
-        if (settings.getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
+        if (IbikeApplication.getSettings().getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
             showStatisticsInfoPane();
         } else if (!fromSearch && OverviewMapHandler.isWatchingAddress) {
             MapActivity.frag.setVisibility(View.VISIBLE);
@@ -367,7 +209,8 @@ public class MapActivity extends BaseMapActivity {
             Util.launchNoConnectionDialog(this);
         }
         checkForCrashes();
-        getLeftMenu().onResume();
+        // TODO: Check if this is even needed as the menu has been added using the fragment manager.
+        leftMenu.onResume();
 
         // Check if the user accepts the newest terms
         TermsManager.checkTerms(this);
@@ -426,14 +269,219 @@ public class MapActivity extends BaseMapActivity {
         }
     }
 
+    /**
+     * Transition the map activity to another state.
+     * @param toState the new state
+     */
+    public void changeState(MapState toState) {
+        // Give the state a reference back to this activity.
+        toState.setMapActivity(this);
+        if(state != null) {
+            state.transitionAway(toState);
+        }
+        MapState fromState = state;
+        state = toState;
+        state.transitionTowards(fromState);
+    }
+
+    /**
+     *
+     */
+    public IBCMapView getMapView() {
+        if(mapView == null) {
+            throw new RuntimeException("The mapView has not yet been initialized.");
+        }
+        return mapView;
+    }
+
+    /**
+     * Instantiate the left menu - this needs to be a method, so it can be overwritten.
+     * @return
+     */
+    protected LeftMenu instantiateLeftMenu() {
+        return new LeftMenu();
+    }
+
+    /**
+     * Creates the material menu icon that animates when the drawer changes state.
+     */
+    protected void createMenu() {
+        // Creating the left menu fragment
+        leftMenu = instantiateLeftMenu();
+
+        // Find the drawer layout view using it's id, we'll attach the menu to that.
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        // Add the menu to the drawer layout
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.leftContainerDrawer, leftMenu)
+                .commit();
+
+        // We want the hamburger in the ActionBar
+        materialMenu = new MaterialMenuIcon(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
+        materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
+
+        // When the drawer opens or closes, we want the icon to animate between "burger" and "arrow"
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+            }
+        });
+    }
+
+    /**
+     * Checks if the app has sufficient permissions and updates the center of the map to the
+     * current location upon receiving this.
+     */
+    private void attemptToRegisterLocationListener() {
+        boolean hasLocationPermissions = ensureLocationPermissions();
+        if (hasLocationPermissions && locationListener == null) {
+            // We can register a location listener and start receiving location updates right away.
+            locationListener = new LocationListener() {
+
+                protected boolean hasUpdatedMap = false;
+
+                @Override
+                public void onLocationChanged(Location location) {
+                    // Let's update the map only once - we use the hasUpdatedMap for this
+                    // We cannot simply deregister the listener as this would stop updating the
+                    // user's location on the map.
+                    if (!hasUpdatedMap) {
+                        mapView.changeState(IBCMapView.MapViewState.DEFAULT);
+                        mapView.setCenter(new LatLng(location));
+                        hasUpdatedMap = true;
+                    }
+                }
+            };
+
+            Log.d("MapActivity", "Adding map's locationListener to the LocationService.");
+            // We need a LocationListener to have the service be able to provide GPS coordinates.
+            IbikeApplication.getService().addLocationListener(locationListener);
+        }
+    }
+
+    /**
+     * Stop listening for locations by removing the location listener.
+     */
+    private void deregisterLocationListener() {
+        if (locationListener != null) {
+            IbikeApplication.getService().removeLocationListener(locationListener);
+            // Null this - as this is how we know if we've already added it to the location service.
+            locationListener = null;
+        }
+    }
+
+    /**
+     * Checks if the app has permissions to the device's physical location and requests it if not.
+     * The result of a permission request ends up calling the onRequestPermissionsResult method.
+     */
+    private boolean ensureLocationPermissions() {
+        final String permission = Manifest.permission.ACCESS_FINE_LOCATION;
+        // Let's check if we have permissions to get file locations.
+        int hasPermission = ContextCompat.checkSelfPermission(this.getApplicationContext(), permission);
+        if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{ permission }, PERMISSIONS_REQUEST_FINE_LOCATION);
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Result is back from a request for permissions.
+     * If this request was for the device location, we attempt to register the location listener.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_FINE_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("MapActivity", "Got the permission to receive fine locations.");
+                    attemptToRegisterLocationListener();
+                }
+                return;
+            }
+            default: {
+                throw new RuntimeException("Request for permission was not handled");
+            }
+        }
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.ab_search) {
+            // to avoid too many not parcelable things, just set the map back to default state
+            this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
+            breakFrag.setVisibility(View.GONE);
+            progressBarHolder.setVisibility(View.GONE);
+            isBreakChosen = false;
+            this.mapView.removeAllMarkers();
+            Intent i = new Intent(MapActivity.this, SearchActivity.class);
+            startActivityForResult(i, REQUEST_SEARCH_ADDRESS);
+            overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
+        } else if (id == R.id.ab_problem) {
+            ((NavigationMapHandler) this.mapView.getMapHandler()).problemButtonPressed();
+        }
+        // Toggle the drawer when tapping the app icon.
+        else if (id == android.R.id.home) {
+            toggleDrawer();
+        } else if (id == R.id.uploadFakeTrack) {
+            TrackingManager.uploadeFakeTrack();
+            //TrackingManager.printAllTracks();
+        } else if (id == R.id.createFakeTrack) {
+            TrackingManager.createFakeTrack();
+        } else if (id == R.id.resetSignature) {
+            PreferenceManager.getDefaultSharedPreferences(MapActivity.this).edit().remove("signature").commit();
+        } else if (id == R.id.resetAuthToken) {
+            PreferenceManager.getDefaultSharedPreferences(MapActivity.this).edit().putString("auth_token", "123").commit();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    protected void toggleDrawer() {
+        if(drawerLayout == null) {
+            throw new RuntimeException("toggleDrawer called too soon, drawerLayout was null");
+        }
+
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            drawerLayout.closeDrawer(Gravity.LEFT);
+            // Start the animation right away, instead of waiting for the drawer to settle.
+            materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
+        } else {
+            drawerLayout.openDrawer(Gravity.LEFT);
+            // Start the animation right away, instead of waiting for the drawer to settle.
+            materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
+        }
+    }
+
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        leftMenu = getLeftMenu();
         leftMenu.onResume();
     }
 
+    /**
+     * Uses hockey app (if enabled) to check for crashes that can be reported back to Hockey App.
+     */
     protected void checkForCrashes() {
         try {
             CrashManager.register(this);
@@ -513,7 +561,7 @@ public class MapActivity extends BaseMapActivity {
         if (requestCode == LeftMenu.LAUNCH_LOGIN) {
             Log.d("JC", "Got back from LAUNCH_LOGIN");
             if (!OverviewMapHandler.isWatchingAddress) {
-                this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+                this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
             }
             leftMenu.populateMenu();
         } else if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
@@ -566,7 +614,7 @@ public class MapActivity extends BaseMapActivity {
                 MapActivity.frag.setVisibility(View.VISIBLE);
             }
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
-            this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+            this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
             Log.d("JC", "Got back from address search, spawning");
             final Bundle extras = data.getExtras();
             Address address = (Address) extras.getSerializable("addressObject");
@@ -593,7 +641,7 @@ public class MapActivity extends BaseMapActivity {
                 this.mapView.setCenter(destination, true);
             }
         } else if (requestCode == REQUEST_CHANGE_DESTINATION_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
-            this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+            this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
             Log.d("JC", "Got back from address search, spawning");
             final Bundle extras = data.getExtras();
             Address address = (Address) extras.getSerializable("addressObject");
@@ -631,7 +679,7 @@ public class MapActivity extends BaseMapActivity {
 
             } else {
                 if (!OverviewMapHandler.isWatchingAddress) {
-                    this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+                    this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
                 }
             }
             // Close the LeftMenu
@@ -639,13 +687,13 @@ public class MapActivity extends BaseMapActivity {
         } else if (requestCode == LeftMenu.LAUNCH_TRACKING) {
             Log.d("JC", "Got back from LAUNCH_TRACKING");
             if (!OverviewMapHandler.isWatchingAddress) {
-                this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+                this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
             }
             leftMenu.populateMenu();
         } else if (requestCode == LeftMenu.LAUNCH_ABOUT) {
             Log.d("JC", "Got back from T");
             if (!OverviewMapHandler.isWatchingAddress) {
-                this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+                this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
             }
             leftMenu.populateMenu();
         }
@@ -681,17 +729,9 @@ public class MapActivity extends BaseMapActivity {
         //OverviewMapHandler.isWatchingAddress = false;
     }
 
-    public void registerFragment(InfoPaneFragment fragment) {
-        fragments.add(fragment);
-    }
-
-    public void unregisterFragment(InfoPaneFragment fragment) {
-        fragments.remove(fragment);
-    }
-
     /**
-     * Checks with all registered fragments if they're OK with letting back be pressed. They should return false if they
-     * want to do something before letting the user continue back.
+     * Checks with all registered fragments if they're OK with letting back be pressed.
+     * They should return false if they want to do something before letting the user continue back.
      */
     public void onBackPressed() {
         if (mapView.getMapHandler().onBackPressed()) {
@@ -717,7 +757,7 @@ public class MapActivity extends BaseMapActivity {
 
     }
 
-    public void userTrackingButtonOnClick(View v) {
+    public void compassClicked(View v) {
         UserLocationOverlay.TrackingMode curMode = this.mapView.getUserLocationTrackingMode();
 
         if (curMode == UserLocationOverlay.TrackingMode.NONE) {
@@ -730,13 +770,13 @@ public class MapActivity extends BaseMapActivity {
             this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.NONE);
         }
 
-        updateUserTrackingState();
+        updateCompassIcon();
     }
 
     /**
      * Called when the user scrolls the map. Updates the compass.
      */
-    public void updateUserTrackingState() {
+    public void updateCompassIcon() {
         UserLocationOverlay.TrackingMode curMode = this.mapView.getUserLocationTrackingMode();
         ImageButton userTrackingButton = (ImageButton) this.findViewById(R.id.userTrackingButton);
 
@@ -747,12 +787,14 @@ public class MapActivity extends BaseMapActivity {
         }
     }
 
-    /*
-    Fragment handling section
-    */
-
-    // Listening on variable being set to the amount of breakRoute suggestions, in order to display this amount of pages in the fragmentAdapter.
-    public void fragmentPageAmountListener() {
+    /**
+     * Creates a static observable integer for the Geocoder to callback when the amount of
+     * alternative breaking routes are available. When they are a listner is registered on the
+     * CirclePageIndicator tabs, that will notify the NavigationMapHandler when the user swipes.
+     * TODO: Consider refactoring this so static members of classes are no longer needed.
+     * TODO: Move this to the CykelPlanen app.
+     */
+    public void setupBreakRouteListener() {
 
         obsInt = new ObservableInteger();
 
@@ -771,7 +813,7 @@ public class MapActivity extends BaseMapActivity {
                                 breakFrag.setVisibility(View.VISIBLE);
                                 pager.setVisibility(View.VISIBLE);
                                 tabs.setVisibility(View.VISIBLE);
-                                pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+                                pager.setAdapter(new BreakRoutePagerAdapter(getSupportFragmentManager()));
                                 tabs.setViewPager(pager);
                                 tabs.setRadius(10);
                                 tabs.setCentered(true);
@@ -798,14 +840,17 @@ public class MapActivity extends BaseMapActivity {
         });
     }
 
-    class MyPagerAdapter extends FragmentStatePagerAdapter {
+    /**
+     * TODO: Refactor by renaming, removing the need for a static amount and moving to CykelPlanen.
+     */
+    class BreakRoutePagerAdapter extends FragmentStatePagerAdapter {
 
         @Override
         public int getCount() {
             return amount;
         }
 
-        public MyPagerAdapter(android.support.v4.app.FragmentManager fm) {
+        public BreakRoutePagerAdapter(android.support.v4.app.FragmentManager fm) {
             super(fm);
         }
 
@@ -818,7 +863,5 @@ public class MapActivity extends BaseMapActivity {
         public int getItemPosition(Object object) {
             return PagerAdapter.POSITION_NONE;
         }
-
-
     }
 }

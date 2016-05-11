@@ -2,6 +2,8 @@ package com.spoiledmilk.ibikecph.navigation;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,6 +76,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         if (IbikeApplication.getAppName().equals("CykelPlanen")) {
             breakButton = (ImageButton) v.findViewById(R.id.navigationOverviewBreakButton);
             boolean breakRouteEnabled = getResources().getBoolean(R.bool.breakRouteEnabled);
+            Log.d(getClass().getSimpleName(), "breakRouteEnabled = " + breakRouteEnabled);
             breakButton.setVisibility(breakRouteEnabled ? View.VISIBLE : View.GONE);
             breakButton.setOnClickListener(this);
 
@@ -115,10 +118,8 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         // Set the duration label
         durationText.setText(TrackListAdapter.durationToFormattedTime(duration));
 
-        boolean hourFormat = MapActivity.format;
-
         SimpleDateFormat sdf = null;
-        if (hourFormat) {
+        if (DateFormat.is24HourFormat(this.getActivity())) {
             sdf = new SimpleDateFormat("HH:mm");
         } else {
             sdf = new SimpleDateFormat("HH:mm a");

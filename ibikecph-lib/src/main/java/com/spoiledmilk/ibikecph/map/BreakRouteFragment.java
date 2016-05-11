@@ -3,6 +3,7 @@ package com.spoiledmilk.ibikecph.map;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -247,7 +248,7 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
         seconds = seconds * 1000;
 
         // 24-hour format
-        if (MapActivity.format) {
+        if (DateFormat.is24HourFormat(this.getActivity())) {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
             //sdf.setTimeZone(TimeZone.getDefault());
             time = sdf.format(seconds).toString();

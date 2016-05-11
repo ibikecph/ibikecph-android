@@ -46,8 +46,6 @@ import com.spoiledmilk.ibikecph.util.bearing.BearingToNorthProvider;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by jens on 5/30/15.
@@ -722,7 +720,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 } else {
                     MapActivity.frag.setVisibility(View.GONE);
                 }
-                this.mapView.changeState(IBCMapView.MapState.DEFAULT);
+                this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
             }
             return false;
         }
