@@ -3,5 +3,4 @@
     <bool name="trackingEnabled">false</bool>
     <bool name="breakRouteEnabled">false</bool>
     <bool name="googleAnalyticsEnabled">true</bool>
-    <bool name="hockeyAppEnabled">true</bool>
 </resources>

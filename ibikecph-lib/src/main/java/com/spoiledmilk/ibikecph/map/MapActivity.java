@@ -146,9 +146,10 @@ public class MapActivity extends BaseMapActivity {
         initLeftMenu(savedInstanceState);
 
         // Check for HockeyApp updates
-        boolean hockeyAppEnabled = getResources().getBoolean(R.bool.hockeyAppEnabled);
-        if (hockeyAppEnabled) {
-            UpdateManager.register(this, Config.HOCKEY_APP_ID);
+        try {
+            UpdateManager.register(this);
+        } catch (IllegalArgumentException e) {
+            Log.i("HockeyApp", "No HockeyApp app identifier provided - HockeyApp is disabled");
         }
 
         // Make sure the app icon is clickable
@@ -434,9 +435,10 @@ public class MapActivity extends BaseMapActivity {
     }
 
     protected void checkForCrashes() {
-        boolean hockeyAppEnabled = getResources().getBoolean(R.bool.hockeyAppEnabled);
-        if (hockeyAppEnabled) {
-            CrashManager.register(this, Config.HOCKEY_APP_ID);
+        try {
+            CrashManager.register(this);
+        } catch (IllegalArgumentException e) {
+            Log.i("HockeyApp", "No HockeyApp app identifier provided - HockeyApp is disabled");
         }
     }
 
