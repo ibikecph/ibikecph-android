@@ -5,17 +5,17 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.util;
 
-public class Config {
-    // TODO: Consider using build variants for this
-    //public static String API_URL = "https://ibikecph-staging.herokuapp.com/api";
-    public static String API_URL = "https://www.ibikecph.dk/api";
-    public static final String API_SERVER_LOGIN = API_URL + "/login";
-    public static final String API_SERVER_REGISTER = API_URL + "/users";
-    public static final String API_SERVER_ADD_PASSWORD = API_SERVER_REGISTER + "/add_password";
-    public static final String API_SERVER_HAS_PASSWORD = API_SERVER_REGISTER + "/has_password";
-    public static final String API_SERVER_CHANGE_PASSWORD = API_SERVER_REGISTER + "/change_password";
-    public static final String API_UPLOAD_TRACKS = API_URL + "/tracks";
+import com.spoiledmilk.ibikecph.BuildConfig;
 
+public class Config {
+
+    public static String API_URL;
+    public static String API_SERVER_LOGIN;
+    public static String API_SERVER_REGISTER;
+    public static String API_SERVER_ADD_PASSWORD;
+    public static String API_SERVER_HAS_PASSWORD;
+    public static String API_SERVER_CHANGE_PASSWORD;
+    public static String API_UPLOAD_TRACKS;
 
     // routing
     public static final String OSRM_SERVER_FAST = "http://routes.ibikecph.dk/v1.1/fast";
@@ -46,14 +46,27 @@ public class Config {
 
     public static boolean LOG_ENABLED = true;
 
-    public static final String HOCKEY_APP_ID = "d10e63f39cdbe7e8e3af275207388b2a";
-    public static final boolean HOCKEY_UPDATES_ENABLED = true;
-
     public static boolean EXTENDED_PULL_TOUCH = true;
     public static boolean TTS_ENABLED = true;
 
     public static String TRACKING_TERMS_URL = "https://www.ibikecph.dk/terms";
     public static String TRACKING_USAGE_URL = "https://www.ibikecph.dk/about/privacy";
 
-    public static String TRACKING_TERMS_JSON_URL = API_URL + "/terms";
+    public static String TRACKING_TERMS_JSON_URL;
+
+    /**
+     * Generates the API URLs from a base URL, the reason for this method is that we want to control
+     * which API is used based on a build variant.
+     * @param baseUrl
+     */
+    public static void generateUrls(final String baseUrl) {
+        API_URL = baseUrl;
+        API_SERVER_LOGIN = baseUrl + "/login";
+        API_SERVER_REGISTER = baseUrl + "/users";
+        API_SERVER_ADD_PASSWORD = API_SERVER_REGISTER + "/add_password";
+        API_SERVER_HAS_PASSWORD = API_SERVER_REGISTER + "/has_password";
+        API_SERVER_CHANGE_PASSWORD = API_SERVER_REGISTER + "/change_password";
+        API_UPLOAD_TRACKS = baseUrl + "/tracks";
+        TRACKING_TERMS_JSON_URL = baseUrl + "/terms";
+    }
 }

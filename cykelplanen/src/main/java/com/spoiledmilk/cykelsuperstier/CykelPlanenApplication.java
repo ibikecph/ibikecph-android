@@ -5,7 +5,6 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.cykelsuperstier;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.util.Config;
 
@@ -23,6 +22,8 @@ public class CykelPlanenApplication extends IbikeApplication {
         this.primaryColor = R.color.CPActionBar;
 
 		initializeGoogleAnalytics(R.xml.global_tracker);
+
+		Config.generateUrls(BuildConfig.API_URL);
 	}
 
 

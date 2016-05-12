@@ -41,6 +41,17 @@ android {
             signingConfig signingConfigs.development
         }
     }
+    productFlavors {
+        staging {
+            applicationIdSuffix ".staging"
+            resValue "string", "app_name", "CykelPlanen (staging)"
+            buildConfigField "String", "API_URL", "\"https://staging.ibikecph.dk/api\""
+        }
+        production {
+            resValue "string", "app_name", "CykelPlanen"
+            buildConfigField "String", "API_URL", "\"https://www.ibikecph.dk/api\""
+        }
+    }
 }
 
 apply plugin: 'de.felixschulze.gradle.hockeyapp'

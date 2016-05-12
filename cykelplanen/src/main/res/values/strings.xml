@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">CykelPlanen</string>
     <string name="app_id">698727926811346</string>
     <string name="account_source">css</string>
     <string name="summary_off">OFF</string>
