@@ -7,9 +7,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
@@ -25,6 +27,7 @@ import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Util;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -245,6 +248,27 @@ public class IBCMapView extends MapView {
 
         // Invalidate the view so the marker gets drawn.
         this.invalidate();
+    }
+
+    @Override
+    public MapView setCenter(ILatLng aCenter, boolean userAction) {
+        MapView result = super.setCenter(aCenter, userAction);
+        // Make sure we are no longer following the user when we explicitly set the center.
+        // TODO: Consider implementing this using a listner pattern.
+        setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.NONE);
+        return result;
+    }
+
+    @Override
+    public MapView setUserLocationTrackingMode(UserLocationOverlay.TrackingMode mode) {
+        MapView result = super.setUserLocationTrackingMode(mode);
+        // TODO: Consider implementing this using a listner pattern.
+        if (getParentActivity() instanceof MapActivity) {
+            MapActivity activity = (MapActivity) getParentActivity();
+            Log.d("MapView", "Set center was called - calling updateCompassIcon");
+            activity.updateCompassIcon();
+        }
+        return result;
     }
 
     /*

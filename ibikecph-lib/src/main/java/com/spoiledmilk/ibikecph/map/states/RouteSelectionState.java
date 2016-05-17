@@ -31,13 +31,19 @@ public class RouteSelectionState extends MapState {
         mapHandler = new NavigationMapHandler(activity.getMapView());
         activity.getMapView().setMapViewListener(mapHandler);
         activity.getMapView().showRoute(source, destination);
+        // Consider moving the transactional manipulation of the fragment here.
         activity.findViewById(R.id.infoPaneContainer).setVisibility(View.VISIBLE);
+        // Enabled the user location, so the compass can be clicked
+        activity.getMapView().setUserLocationEnabled(true);
+        activity.getMapView().getUserLocationOverlay().setDrawAccuracyEnabled(false);
     }
 
     @Override
     public void transitionAway(MapState to) {
         mapHandler.cleanUp();
         activity.findViewById(R.id.infoPaneContainer).setVisibility(View.GONE);
+        // No need for a user location overlay afterwards - the future state will enabled this.
+        activity.getMapView().setUserLocationEnabled(false);
     }
 
     @Override

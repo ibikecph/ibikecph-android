@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.mapbox.mapboxsdk.api.ILatLng;
 
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.Geocoder;
@@ -33,6 +34,7 @@ public class DestinationPreviewState extends MapState {
             activity.getMapView().setMapViewListener(OverviewMapHandler.class);
         }
         activity.getMapView().setUserLocationEnabled(true);
+        activity.getMapView().getUserLocationOverlay().setDrawAccuracyEnabled(true);
         // Hide the info pane container
         activity.findViewById(R.id.infoPaneContainer).setVisibility(View.VISIBLE);
     }

@@ -89,6 +89,8 @@ public class MapActivity extends BaseMapActivity {
     protected MapState state;
 
     public static Context mapActivityContext;
+    // This is used to throttle calls to setting image resource on the compas
+    protected UserLocationOverlay.TrackingMode previousTrackingMode;
 
     protected LeftMenu leftMenu;
     private DrawerLayout drawerLayout;
@@ -761,21 +763,27 @@ public class MapActivity extends BaseMapActivity {
             this.mapView.getUserLocationOverlay().disableFollowLocation();
             this.mapView.setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.NONE);
         }
-
-        updateCompassIcon();
     }
 
     /**
      * Called when the user scrolls the map. Updates the compass.
      */
     public void updateCompassIcon() {
-        UserLocationOverlay.TrackingMode curMode = this.mapView.getUserLocationTrackingMode();
-        ImageButton userTrackingButton = (ImageButton) this.findViewById(R.id.userTrackingButton);
+        UserLocationOverlay.TrackingMode currentTrackingMode = mapView.getUserLocationTrackingMode();
+        // Without follow location enabled, we assume a NONE tracking mode.
+        if(!mapView.getUserLocationOverlay().isFollowLocationEnabled()) {
+            currentTrackingMode = UserLocationOverlay.TrackingMode.NONE;
+        }
 
-        if (curMode == UserLocationOverlay.TrackingMode.NONE) {
-            userTrackingButton.setImageDrawable(getResources().getDrawable(R.drawable.compass_not_tracking));
-        } else {
-            userTrackingButton.setImageDrawable(getResources().getDrawable(R.drawable.compass_tracking));
+        if(previousTrackingMode != currentTrackingMode) {
+            ImageButton userTrackingButton = (ImageButton) this.findViewById(R.id.userTrackingButton);
+
+            if (currentTrackingMode == UserLocationOverlay.TrackingMode.NONE) {
+                userTrackingButton.setImageDrawable(getResources().getDrawable(R.drawable.compass_not_tracking));
+            } else {
+                userTrackingButton.setImageDrawable(getResources().getDrawable(R.drawable.compass_tracking));
+            }
+            previousTrackingMode = currentTrackingMode;
         }
     }
 

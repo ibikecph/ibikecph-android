@@ -21,6 +21,7 @@ public class BrowsingState extends MapState {
     @Override
     public void transitionTowards(MapState from) {
         activity.getMapView().setUserLocationEnabled(true);
+        activity.getMapView().getUserLocationOverlay().setDrawAccuracyEnabled(true);
         activity.getMapView().getUserLocationOverlay().enableFollowLocation();
         activity.getMapView().setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
         activity.updateCompassIcon();
