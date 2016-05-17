@@ -32,24 +32,24 @@
         android:textColor="#A9A9A9" />
 
     <RelativeLayout
-        android:id="@+id/navigationOverviewGoButtonContainer"
+        android:id="@+id/btnStartRoute"
         android:layout_width="33dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="false"
         android:layout_alignParentRight="true">
 
         <ImageView
-            android:id="@+id/btnStartRoute"
+            android:id="@+id/startRouteImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:src="@drawable/btn_route_to" />
 
         <TextView
-            android:id="@+id/newRouteText"
+            android:id="@+id/startRouteText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btnStartRoute"
+            android:layout_below="@id/startRouteImage"
             android:layout_centerHorizontal="true"
             android:text="Rute"
             android:textColor="@color/IBCActionBar"

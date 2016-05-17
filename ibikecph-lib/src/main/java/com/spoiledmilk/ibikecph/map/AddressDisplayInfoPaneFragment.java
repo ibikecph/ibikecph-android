@@ -13,6 +13,7 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
+import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.DB;
 
@@ -71,9 +72,9 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
             ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite);
         }
 
-        ((TextView) v.findViewById(R.id.newRouteText)).setText(IbikeApplication.getString("new_route"));
+        ((TextView) v.findViewById(R.id.startRouteText)).setText(IbikeApplication.getString("new_route"));
         if (IbikeApplication.getAppName().equals("CykelPlanen")) {
-            ((TextView) v.findViewById(R.id.newRouteText)).setTextColor(getResources().getColor(R.color.CPActionBar));
+            ((TextView) v.findViewById(R.id.startRouteText)).setTextColor(getResources().getColor(R.color.CPActionBar));
 
         }
 
@@ -83,11 +84,12 @@ public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements 
 
     public void btnStartRouteClicked(View v) {
         if (IbikeApplication.getService().hasValidLocation()) {
-            OverviewMapHandler.isWatchingAddress = true;
-            MapActivity.isBreakChosen = false;
-            Address a = (Address) getArguments().getSerializable("address");
-
-            ((MapActivity) this.getActivity()).mapView.showRoute(a);
+            if (getActivity() instanceof MapActivity) {
+                Address a = (Address) getArguments().getSerializable("address");
+                RouteSelectionState state = new RouteSelectionState();
+                state.setDestination(a);
+                ((MapActivity) this.getActivity()).changeState(state);
+            }
         } else {
             Toast.makeText(IbikeApplication.getContext(), IbikeApplication.getString("error_no_gps_location"), Toast.LENGTH_LONG).show();
         }
