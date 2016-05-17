@@ -11,9 +11,10 @@ import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.map.MapActivity;
+import com.spoiledmilk.ibikecph.map.states.BrowsingState;
+import com.spoiledmilk.ibikecph.map.states.DestinationPreviewState;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
@@ -95,50 +96,26 @@ public class OverviewMapHandler extends IBCMapHandler {
          */
     }
 
-    public void removeMarker() {
-        if (IBCMapView.curAddressMarker != null) {
-            mapView.removeAddressMarker();
-            IBCMapView.curAddressMarker = null;
-        }
-        if (settings.getTrackingEnabled()) {
-            showStatisticsInfoPane();
-        } else {
-            disableStatisticsInfoPane();
-            isWatchingAddress = false;
-        }
-    }
-
     @Override
     public void onLongPressMarker(MapView mapView, Marker marker) {
     }
 
     @Override
     public void onTapMap(MapView mapView, ILatLng iLatLng) {
-        removeMarker();
+        if(this.mapView.getParentActivity() instanceof MapActivity) {
+            MapActivity activity = (MapActivity) this.mapView.getParentActivity();
+            // Change state to the browsing state.
+            activity.changeState(BrowsingState.class);
+        }
     }
 
     @Override
     public void onLongPressMap(final MapView _mapView, final ILatLng location) {
-        Log.d("JC", "OverviewMapHandler.onLongPressMap");
-
-        Geocoder.getAddressForLocation(location, new Geocoder.GeocoderCallback() {
-            @Override
-            public void onSuccess(Address address) {
-                // This refers to the FIELD, not the argument to the method (which I renamed to _mapView). This is
-                // because we want it to be an IBCMapView.
-                addressBeingWatched = address;
-                MapActivity.frag.setVisibility(View.VISIBLE);
-                mapView.showAddress(address);
-                isWatchingAddress = true;
-            }
-
-            @Override
-            public void onFailure() {
-
-            }
-        });
-
-
+        if(mapView.getParentActivity() instanceof MapActivity) {
+            MapActivity activity = (MapActivity) mapView.getParentActivity();
+            DestinationPreviewState state = (DestinationPreviewState) activity.changeState(DestinationPreviewState.class);
+            state.setDestination(location);
+        }
     }
 
     /**

@@ -43,28 +43,26 @@ import com.mapbox.mapboxsdk.events.RotateEvent;
 import com.mapbox.mapboxsdk.events.ScrollEvent;
 import com.mapbox.mapboxsdk.events.ZoomEvent;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.LeftMenu;
 
 import com.spoiledmilk.ibikecph.TermsManager;
-import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.states.BrowsingState;
+import com.spoiledmilk.ibikecph.map.states.DestinationPreviewState;
 import com.spoiledmilk.ibikecph.map.states.MapState;
+import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackHelper;
 import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
-import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -144,7 +142,7 @@ public class MapActivity extends BaseMapActivity {
 
         // Initialize the map view
         mapView = (IBCMapView) findViewById(R.id.mapView);
-        mapView.init(IBCMapView.MapViewState.DEFAULT, this);
+        mapView.init(this);
 
         changeState(new BrowsingState());
 
@@ -196,6 +194,7 @@ public class MapActivity extends BaseMapActivity {
         // Tell Google Analytics that the user has resumed on this screen.
         IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
+        /*
         LOG.d("Map activity onResume");
         if (IbikeApplication.getSettings().getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
             showStatisticsInfoPane();
@@ -205,6 +204,7 @@ public class MapActivity extends BaseMapActivity {
         } else if (!fromSearch && !OverviewMapHandler.isWatchingAddress) {
             disableStatisticsInfoPane();
         }
+        */
 
         fromSearch = false;
 
@@ -258,6 +258,7 @@ public class MapActivity extends BaseMapActivity {
             }
             intent.removeExtra("deleteUser");
         }
+
         // Ensure all tracks have been geocoded.
         try {
             TrackHelper.ensureAllTracksGeocoded();
@@ -277,14 +278,47 @@ public class MapActivity extends BaseMapActivity {
      * @param toState the new state
      */
     public void changeState(MapState toState) {
+        MapState fromState = state;
+        String logMessage = "Changed state ";
+
         // Give the state a reference back to this activity.
         toState.setMapActivity(this);
-        if(state != null) {
-            state.transitionAway(toState);
+
+        // Transition away from the current state.
+        if(fromState != null) {
+            logMessage += String.format("from %s ", fromState);
+            fromState.transitionAway(toState);
         }
-        MapState fromState = state;
+
+        // Transition to the new state
         state = toState;
-        state.transitionTowards(fromState);
+        logMessage += String.format("to %s", toState);
+        toState.transitionTowards(fromState);
+
+        // Insert this as info in the log
+        Log.i(TAG, logMessage);
+    }
+
+    /**
+     * Transitions state to some state of the class provided. Does nothing if the current state
+     * is already of the requested class.
+     * @param stateClass
+     * @return the existing or new state, useful when chaining.
+     */
+    public MapState changeState(Class<? extends MapState> stateClass) {
+        if(stateClass.isInstance(state)) {
+            // Let's reuse the state
+            changeState(state);
+        } else {
+            try {
+                MapState newState = stateClass.newInstance();
+                changeState(newState);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        // Return the new state for chaining.
+        return state;
     }
 
     /**
@@ -365,7 +399,6 @@ public class MapActivity extends BaseMapActivity {
                     // We cannot simply deregister the listener as this would stop updating the
                     // user's location on the map.
                     if (!hasUpdatedMap) {
-                        mapView.changeState(IBCMapView.MapViewState.DEFAULT);
                         mapView.setCenter(new LatLng(location));
                         hasUpdatedMap = true;
                     }
@@ -431,7 +464,8 @@ public class MapActivity extends BaseMapActivity {
 
         if (id == R.id.ab_search) {
             // to avoid too many not parcelable things, just set the map back to default state
-            this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
+            // this.changeState(BrowsingState.class);
+            // this.mapView.setMapViewListener(new OverviewMapHandler(this.mapView));
             breakFrag.setVisibility(View.GONE);
             progressBarHolder.setVisibility(View.GONE);
             isBreakChosen = false;
@@ -559,14 +593,16 @@ public class MapActivity extends BaseMapActivity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("JC", "onActivityResult, requestCode " + requestCode + " resultCode " + resultCode);
+        Log.d(TAG, "onActivityResult, requestCode " + requestCode + " resultCode " + resultCode);
 
         if (requestCode == LeftMenu.LAUNCH_LOGIN) {
+            /*
             Log.d("JC", "Got back from LAUNCH_LOGIN");
             if (!OverviewMapHandler.isWatchingAddress) {
                 this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
             }
             leftMenu.populateMenu();
+            */
         } else if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
             AlertDialog dialog;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -579,126 +615,82 @@ public class MapActivity extends BaseMapActivity {
             dialog = builder.create();
             dialog.show();
         } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_OK) {
-            Log.d("JC", "Got back from address search, spawning");
+            Log.d(TAG, "Got back from address search, with an OK result");
+            // Change state right away
+            DestinationPreviewState state = (DestinationPreviewState) this.changeState(DestinationPreviewState.class);
+            // What address was selected?
             final Bundle extras = data.getExtras();
             Address address = (Address) extras.getSerializable("addressObject");
+
             if (address != null) {
                 if (address.getAddressSource() == Address.AddressSource.FAVORITE) {
                     address.setHouseNumber("");
                 }
-                MapActivity.frag.setVisibility(View.VISIBLE);
-                mapView.showAddress(address);
-                mapView.setCenter(address.getLocation());
-                fromSearch = true;
-                OverviewMapHandler.isWatchingAddress = true;
+                state.setDestination(address);
             } else {
                 LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
-
-                Geocoder.getAddressForLocation(destination, new Geocoder.GeocoderCallback() {
-                    @Override
-                    public void onSuccess(Address address) {
-                        mapView.showAddress(address);
-                    }
-
-                    @Override
-                    public void onFailure() {
-
-                    }
-                });
-                // Center the map around the search result.
-                this.mapView.setCenter(destination, true);
+                state.setDestination(destination);
             }
         } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_CANCELED) {
-            Log.d("JC", "Got back from address search with RESULT_CANCELED!");
-            if (!OverviewMapHandler.isWatchingAddress) {
-                showStatisticsInfoPane();
-            } else {
-                fromSearch = true;
-                MapActivity.frag.setVisibility(View.VISIBLE);
-            }
+            Log.d(TAG, "Got back from address search were the user canceled!");
+            throw new UnsupportedOperationException("Canceling the search address has not been implemented.");
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
-            this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
-            Log.d("JC", "Got back from address search, spawning");
+            Log.d(TAG, "Got back from address search requested to changing the source address");
+            RouteSelectionState state = (RouteSelectionState) this.changeState(RouteSelectionState.class);
+            // TODO: Implement that the start address was changed
+            throw new UnsupportedOperationException("Not yet changed to use MapStates");
+            /*
             final Bundle extras = data.getExtras();
             Address address = (Address) extras.getSerializable("addressObject");
             if (address != null) {
-                MapActivity.frag.setVisibility(View.VISIBLE);
-                mapView.showAddress(address);
-                mapView.setCenter(address.getLocation());
-                fromSearch = true;
+                state.setSource(address);
             } else {
                 LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
-
-                Geocoder.getAddressForLocation(destination, new Geocoder.GeocoderCallback() {
-                    @Override
-                    public void onSuccess(Address address) {
-                        mapView.showAddress(address);
-                    }
-
-                    @Override
-                    public void onFailure() {
-
-                    }
-                });
-                // Center the map around the search result.
-                this.mapView.setCenter(destination, true);
+                state.setSource(destination);
             }
+            */
         } else if (requestCode == REQUEST_CHANGE_DESTINATION_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
-            this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
+            Log.d(TAG, "Got back from address search requested to changing the destination address");
+            RouteSelectionState state = (RouteSelectionState) this.changeState(RouteSelectionState.class);
             Log.d("JC", "Got back from address search, spawning");
             final Bundle extras = data.getExtras();
             Address address = (Address) extras.getSerializable("addressObject");
             if (address != null) {
-                MapActivity.frag.setVisibility(View.VISIBLE);
-                mapView.showAddress(address);
-                mapView.setCenter(address.getLocation());
-                fromSearch = true;
+                state.setDestination(address);
             } else {
                 LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
-
-                Geocoder.getAddressForLocation(destination, new Geocoder.GeocoderCallback() {
-                    @Override
-                    public void onSuccess(Address address) {
-                        mapView.showAddress(address);
-                    }
-
-                    @Override
-                    public void onFailure() {
-
-                    }
-                });
-                // Center the map around the search result.
-                this.mapView.setCenter(destination, true);
+                state.setDestination(destination);
             }
-        }
-        // We got a favorite to navigate to
-        else if (requestCode == LeftMenu.LAUNCH_FAVORITE) {
+        } else if (requestCode == LeftMenu.LAUNCH_FAVORITE) {
+            // We got a favorite to navigate to
             if (resultCode == RESULT_OK) {
+                throw new UnsupportedOperationException("Launching favorites not yet implemented using MapStates");
+                /*
                 FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
                 mapView.showRoute(fd);
                 Address a = Address.fromFavoritesData(fd);
                 mapView.showAddressFromFavorite(a);
-                OverviewMapHandler.isWatchingAddress = true;
-
-            } else {
-                if (!OverviewMapHandler.isWatchingAddress) {
-                    this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
-                }
+                */
             }
             // Close the LeftMenu
             drawerLayout.closeDrawer(Gravity.LEFT);
         } else if (requestCode == LeftMenu.LAUNCH_TRACKING) {
+            throw new UnsupportedOperationException("Launching favorites not yet implemented using MapStates");
+            /*
             Log.d("JC", "Got back from LAUNCH_TRACKING");
             if (!OverviewMapHandler.isWatchingAddress) {
                 this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
             }
             leftMenu.populateMenu();
+            */
         } else if (requestCode == LeftMenu.LAUNCH_ABOUT) {
-            Log.d("JC", "Got back from T");
+            Log.d("JC", "Got back from the about screen.");
+            /*
             if (!OverviewMapHandler.isWatchingAddress) {
                 this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
             }
             leftMenu.populateMenu();
+            */
         }
     }
 
@@ -719,17 +711,10 @@ public class MapActivity extends BaseMapActivity {
     }
 
     private void disableStatisticsInfoPane() {
-
         frag.setVisibility(View.GONE);
         breakFrag.setVisibility(View.GONE);
         progressBarHolder.setVisibility(View.GONE);
         mapView.removeAllMarkers();
-
-        /*Fragment fragment = mapView.getParentActivity().getFragmentManager().findFragmentByTag("infopane");
-        if (fragment != null)
-            fragment.getFragmentManager().beginTransaction().hide(fragment).commit();
-        Log.d("DV", "Infopanefragment removed!");*/
-        //OverviewMapHandler.isWatchingAddress = false;
     }
 
     /**
@@ -737,6 +722,10 @@ public class MapActivity extends BaseMapActivity {
      * They should return false if they want to do something before letting the user continue back.
      */
     public void onBackPressed() {
+        if(state != null) {
+            state.onBackPressed();
+        }
+        /*
         if (mapView.getMapHandler().onBackPressed()) {
             if (!OverviewMapHandler.isWatchingAddress) {
                 super.onBackPressed();
@@ -757,7 +746,7 @@ public class MapActivity extends BaseMapActivity {
                 }
             }
         }
-
+        */
     }
 
     public void compassClicked(View v) {

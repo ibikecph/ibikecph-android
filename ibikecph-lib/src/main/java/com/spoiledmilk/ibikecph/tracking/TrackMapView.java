@@ -14,6 +14,7 @@ import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.BaseMapActivity;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
+import com.spoiledmilk.ibikecph.map.handlers.TrackDisplayHandler;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 
@@ -37,7 +38,8 @@ public class TrackMapView extends BaseMapActivity {
         int track_position = this.getIntent().getIntExtra("track_position", -1);
 
         mapView = (IBCMapView) findViewById(R.id.mapview);
-        mapView.init(IBCMapView.MapViewState.TRACK_DISPLAY, this);
+        mapView.init(this);
+        mapView.setMapViewListener(new TrackDisplayHandler(mapView));
         //mapView.setMaxZoomLevel(19f);
 
         // Get the route

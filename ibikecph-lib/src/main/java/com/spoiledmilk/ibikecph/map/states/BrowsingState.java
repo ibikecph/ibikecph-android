@@ -2,6 +2,8 @@ package com.spoiledmilk.ibikecph.map.states;
 
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.map.MapActivity;
+import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
+import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 
 /**
  * The initial state, which basically displays the users current location and allows for the user
@@ -10,25 +12,32 @@ import com.spoiledmilk.ibikecph.map.MapActivity;
  */
 public class BrowsingState extends MapState {
 
+    protected IBCMapHandler mapViewHandler;
+
     public BrowsingState() {
         super();
     }
 
     @Override
     public void transitionTowards(MapState from) {
-        if (from == null) {
-            activity.getMapView().setUserLocationEnabled(true);
-            activity.getMapView().getUserLocationOverlay().enableFollowLocation();
-            activity.getMapView().setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
-            activity.updateCompassIcon();
-        } else {
-            throw new UnsupportedOperationException("Not yet implemented");
-        }
+        activity.getMapView().setUserLocationEnabled(true);
+        activity.getMapView().getUserLocationOverlay().enableFollowLocation();
+        activity.getMapView().setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW);
+        activity.updateCompassIcon();
+
+        mapViewHandler = new OverviewMapHandler(activity.getMapView());
+        activity.getMapView().setMapViewListener(mapViewHandler);
     }
 
     @Override
     public void transitionAway(MapState to) {
         activity.getMapView().setUserLocationEnabled(false);
-        // throw new UnsupportedOperationException("Not yet implemented");
+        // TODO: Consider if we even need to destruct the map view at all.
+        mapViewHandler.destructor();
+    }
+
+    @Override
+    public void onBackPressed() {
+        throw new UnsupportedOperationException("Back press has not been implemented yet.");
     }
 }

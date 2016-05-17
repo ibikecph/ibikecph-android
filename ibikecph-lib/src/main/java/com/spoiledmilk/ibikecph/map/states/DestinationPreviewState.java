@@ -10,6 +10,8 @@ import com.mapbox.mapboxsdk.api.ILatLng;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.Geocoder;
+import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
+import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.search.Address;
 
 /**
@@ -26,6 +28,10 @@ public class DestinationPreviewState extends MapState {
 
     @Override
     public void transitionTowards(MapState from) {
+        // Ensure that the correct map handler is active
+        if(!(activity.getMapView().getMapHandler() instanceof OverviewMapHandler)) {
+            activity.getMapView().setMapViewListener(OverviewMapHandler.class);
+        }
         activity.getMapView().setUserLocationEnabled(true);
         // Hide the info pane container
         activity.findViewById(R.id.infoPaneContainer).setVisibility(View.VISIBLE);
@@ -83,6 +89,6 @@ public class DestinationPreviewState extends MapState {
 
     @Override
     public void onBackPressed() {
-        activity.ensureState(BrowsingState.class);
+        activity.changeState(BrowsingState.class);
     }
 }

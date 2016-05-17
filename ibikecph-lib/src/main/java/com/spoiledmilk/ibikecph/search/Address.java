@@ -33,7 +33,7 @@ public class Address implements Serializable {
     private String name;
     private double lat;
     private double lon;
-    private ILatLng location;
+    private LatLng location;
 
     //Shitty solution!
     public static String street_s = "";
@@ -89,7 +89,7 @@ public class Address implements Serializable {
     private AddressSource addressSource;
 
 
-    public ILatLng getLocation() {
+    public LatLng getLocation() {
 
         if (isCurrent) {
             if (IbikeApplication.getService().getLastValidLocation() != null)
@@ -102,7 +102,7 @@ public class Address implements Serializable {
         return location;
     }
 
-    public void setLocation(ILatLng loc) {
+    public void setLocation(LatLng loc) {
         if (!isCurrent) {
             this.location = loc;
             this.lat = loc.getLatitude();
@@ -114,7 +114,7 @@ public class Address implements Serializable {
 
     }
 
-    public Address(ILatLng location) {
+    public Address(LatLng location) {
         this.location = location;
     }
 
@@ -128,7 +128,7 @@ public class Address implements Serializable {
         this.location = new LatLng(lat, lon);
     }
 
-    public Address(String street, String houseNumber, String zip, String city, ILatLng location) {
+    public Address(String street, String houseNumber, String zip, String city, LatLng location) {
         this.street = street;
         this.houseNumber = houseNumber;
         this.zip = zip;

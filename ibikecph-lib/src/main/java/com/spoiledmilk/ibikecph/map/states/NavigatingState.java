@@ -21,4 +21,9 @@ public class NavigatingState extends MapState {
     public void transitionAway(MapState to) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
+    @Override
+    public void onBackPressed() {
+        throw new UnsupportedOperationException("Back press has not been implemented yet.");
+    }
 }

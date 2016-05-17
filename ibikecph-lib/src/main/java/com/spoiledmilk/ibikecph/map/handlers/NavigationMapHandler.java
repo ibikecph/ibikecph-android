@@ -78,9 +78,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
-        Log.d("JC", "Instantiating NavigationMapHandler");
-
-        mapView.setMapViewListener(this);
         startListener();
     }
 
@@ -694,11 +691,12 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         MapActivity.progressBarHolder.setVisibility(View.GONE);
     }
 
-    /**
+    // TODO: Move this the the MapState classes
+    /*
      * Tells the MapView to stop routing, i.e. instantiate an OverviewMapHandler, calling the destructor of this one.
      *
      * @return false because we need the user to
-     */
+     * /
     public boolean onBackPressed() {
         if (!cleanedUp) {
             IbikePreferences settings;
@@ -728,6 +726,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         return true;
     }
+    */
 
     private void removeAnyPathOverlays() {
         // It's suspected that a bug in Mapbox gives trouble when iterating getOverlays and removing

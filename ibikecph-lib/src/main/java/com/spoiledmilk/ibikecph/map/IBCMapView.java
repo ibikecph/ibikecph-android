@@ -1,10 +1,7 @@
 package com.spoiledmilk.ibikecph.map;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -16,17 +13,18 @@ import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
+import com.mapbox.mapboxsdk.views.MapViewListener;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
-import com.spoiledmilk.ibikecph.map.handlers.TrackDisplayHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -41,7 +39,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class IBCMapView extends MapView {
 
-    public static IBCMarker curAddressMarker;
+    public static IBCMarker currentAddressMarker;
     private CopyOnWriteArrayList<IBCMarker> markers = new CopyOnWriteArrayList<IBCMarker>();
 
     public enum MapViewState {
@@ -50,8 +48,7 @@ public class IBCMapView extends MapView {
         NAVIGATION_OVERVIEW
     }
 
-    private MapViewState state = MapViewState.DEFAULT;
-    private IBCMapHandler curHandler;
+    private MapViewListener currentListener;
     private BaseMapActivity parentActivity;
 
     protected IBCMapView(Context aContext, int tileSizePixels, MapTileLayerBase tileProvider, Handler tileRequestCompleteHandler, AttributeSet attrs) {
@@ -70,10 +67,32 @@ public class IBCMapView extends MapView {
         super(aContext, tileSizePixels, aTileProvider);
     }
 
+    @Override
+    public void setMapViewListener(MapViewListener listener) {
+        if(!(listener instanceof IBCMapHandler)) {
+            String msg = String.format("The listener of an %s must be a %s, got %s",
+                                       IBCMapView.class.getSimpleName(),
+                                       IBCMapHandler.class.getSimpleName(),
+                                       listener.getClass().getSimpleName());
+            throw new IllegalArgumentException(msg);
+        }
+        super.setMapViewListener(listener);
+        currentListener = listener;
+    }
+
+    public void setMapViewListener(Class<? extends IBCMapHandler> mapHandlerClass) {
+        try {
+            IBCMapHandler mapHandler = mapHandlerClass.getConstructor(IBCMapView.class).newInstance(this);
+            setMapViewListener(mapHandler);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Do some initializations that are always needed
      */
-    public void init(MapViewState initialState, BaseMapActivity parent) {
+    public void init(BaseMapActivity parent) {
         WebSourceTileLayer ws = new WebSourceTileLayer("ibikecph", "https://tiles.ibikecph.dk/tiles/{z}/{x}/{y}.png");
         ws.setName("OpenStreetMap")
                 .setAttribution("© OpenStreetMap Contributors")
@@ -85,43 +104,6 @@ public class IBCMapView extends MapView {
         this.setCenter(new LatLng(Util.COPENHAGEN));
         this.setZoom(17);
         this.setMaxZoomLevel(19);
-
-        //this.setMapRotationEnabled(true);
-        changeState(initialState);
-
-    }
-
-    /**
-     * Different map contexts have different listener behaviors. We assign the proper one based on the state variable.
-     * This function should be called on every state change.
-     */
-    private void updateListeners() {
-        // Ask the old handler to clean up
-        if (curHandler != null) {
-            curHandler.destructor();
-        }
-
-        // Figure out which one is going to be the new handler.
-        switch (state) {
-            case TRACK_DISPLAY:
-                curHandler = new TrackDisplayHandler(this);
-                break;
-            case NAVIGATION_OVERVIEW:
-                curHandler = new NavigationMapHandler(this);
-                break;
-            case DEFAULT:
-            default:
-                curHandler = new OverviewMapHandler(this);
-                break;
-        }
-
-        // ... and apply it
-        this.setMapViewListener(curHandler);
-    }
-
-    public void changeState(MapViewState newState) {
-        state = newState;
-        updateListeners();
     }
 
     /**
@@ -131,17 +113,19 @@ public class IBCMapView extends MapView {
      * @param route
      */
     public void showRoute(SMRoute route) {
-        changeState(MapViewState.NAVIGATION_OVERVIEW);
-        Log.d("DV_break", "IBCMapView: In ShowRoute!");
-
-        ((NavigationMapHandler) getMapHandler()).showRouteOverview(route);
+        if(currentListener instanceof NavigationMapHandler) {
+            ((NavigationMapHandler) getMapHandler()).showRouteOverview(route);
+        } else {
+            throw new RuntimeException("Cannot show route with the current listner.");
+        }
     }
 
     public void showMultipleRoutes() {
-        changeState(MapViewState.NAVIGATION_OVERVIEW);
-        Log.d("DV_break", "IBCMapView: In ShowRoute, multipleRoutes!");
-
-        ((NavigationMapHandler) getMapHandler()).showRouteOverviewPieces(0);
+        if(currentListener instanceof NavigationMapHandler) {
+            ((NavigationMapHandler) getMapHandler()).showRouteOverviewPieces(0);
+        } else {
+            throw new RuntimeException("Cannot show route with the current listner.");
+        }
     }
 
     public void showRoute(final FavoritesData fd) {
@@ -158,9 +142,9 @@ public class IBCMapView extends MapView {
         Address destination = givenDestination;
 
         // Remove the address marker, because the route draws its own end marker.
-        if (this.curAddressMarker != null) {
-            this.removeMarker(this.curAddressMarker);
-            this.curAddressMarker = null;
+        if (this.currentAddressMarker != null) {
+            this.removeMarker(this.currentAddressMarker);
+            this.currentAddressMarker = null;
         }
 
         // If no source address is provided, assume current location
@@ -223,7 +207,8 @@ public class IBCMapView extends MapView {
 
 
     public IBCMapHandler getMapHandler() {
-        return this.curHandler;
+        // We can always cast this to an IBCMapHandler as it's checked to be one when setting it.
+        return (IBCMapHandler) currentListener;
     }
 
     public BaseMapActivity getParentActivity() {
@@ -247,71 +232,27 @@ public class IBCMapView extends MapView {
         setUserLocationEnabled(false);
     }
 
-    public void showAddressInfoPane(Address a) {
-        // Show the infopane
-        FragmentManager fm = this.getParentActivity().getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-
-        // Prepare the infopane with the address we just got.
-        AddressDisplayInfoPaneFragment adp = new AddressDisplayInfoPaneFragment();
-
-        // Supply the address
-        Bundle arguments = new Bundle();
-        arguments.putSerializable("address", a);
-        adp.setArguments(arguments);
-
-        ft.replace(R.id.infoPaneContainer, adp);
-        ft.commit();
-    }
-
     public void showAddress(Address a) {
-        showAddressInfoPane(a);
-
         removeAddressMarker();
-        //removeAllMarkers();
 
-        // Put a marker on the map. Currently the lat/lon of the Address object corresponds to the position where the
-        // user tapped. In a minute, when we're drawing a route, we have to be wary to draw a line from where the route
-        // ends to this coordinate.
-        try {
-            IBCMarker m = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation(), MarkerType.ADDRESS);
-            Icon markerIcon = new Icon(this.getResources().getDrawable(R.drawable.marker));
-            m.setIcon(markerIcon);
+        IBCMarker m = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), a.getLocation(), MarkerType.ADDRESS);
+        Icon markerIcon = new Icon(this.getResources().getDrawable(R.drawable.marker));
+        m.setIcon(markerIcon);
 
-            this.addMarker(m);
+        this.currentAddressMarker = m;
 
-            this.curAddressMarker = m;
-        } catch (Exception ex) {
-        }
+        this.addMarker(m);
 
         // Invalidate the view so the marker gets drawn.
         this.invalidate();
     }
 
+    /*
     public void showAddressFromFavorite(Address a) {
         showAddressInfoPane(a);
-
         removeAddressMarker();
-        //removeAllMarkers();
-
-        // Put a marker on the map. Currently the lat/lon of the Address object corresponds to the position where the
-        // user tapped. In a minute, when we're drawing a route, we have to be wary to draw a line from where the route
-        // ends to this coordinate.
-      /*  try {
-            IBCMarker m = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), (LatLng) a.getLocation(), MarkerType.ADDRESS);
-            Icon markerIcon = new Icon(this.getResources().getDrawable(R.drawable.marker_finish));
-            m.setIcon(markerIcon);
-
-            this.addMarker(m);
-
-            this.curAddressMarker = m;
-        } catch (Exception ex) {
-        }*/
-
-        // TODO: Consider if this invalidate is even needed - as removeAddressMarker calls this internally.
-        // Invalidate the view so the marker gets drawn.
-        this.invalidate();
     }
+    */
 
     @Override
     public void selectMarker(Marker marker) {
@@ -320,13 +261,11 @@ public class IBCMapView extends MapView {
     }
 
     public void removeAddressMarker() {
-        if (curAddressMarker != null) {
-            this.getOverlays().remove(curAddressMarker);
-            this.removeMarker(curAddressMarker);
-            curAddressMarker = null;
+        if (currentAddressMarker != null) {
+            this.getOverlays().remove(currentAddressMarker);
+            this.removeMarker(currentAddressMarker);
+            currentAddressMarker = null;
         }
-        // TODO: Consider if this invalidate is even needed - as removeMarker calls this internally.
-        this.invalidate();
     }
 
     public IBCMarker addMarker(IBCMarker m) {

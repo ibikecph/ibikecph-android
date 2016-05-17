@@ -8,7 +8,7 @@ import com.spoiledmilk.ibikecph.map.MapActivity;
  */
 public abstract class MapState {
 
-    MapActivity activity;
+    protected MapActivity activity;
 
     public void setMapActivity(MapActivity activity) {
         this.activity = activity;
@@ -25,4 +25,9 @@ public abstract class MapState {
      * @param to
      */
     public abstract void transitionAway(MapState to);
+
+    /**
+     * Called when the user presses the back button.
+     */
+    public abstract void onBackPressed();
 }
