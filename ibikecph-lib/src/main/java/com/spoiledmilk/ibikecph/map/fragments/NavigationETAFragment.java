@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.fragments.DestinationPreviewFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
@@ -22,14 +21,14 @@ import java.util.Date;
 /**
  * Created by jens on 7/15/15.
  */
-public class NavigationFragment extends Fragment {
+public class NavigationETAFragment extends Fragment {
     private TextView durationText, lengthText, etaText;
     private ImageView imgRouteType;
     private TextView textAddress;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).setNavigationFragment(this);
+        ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).setNavigationETAFragment(this);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

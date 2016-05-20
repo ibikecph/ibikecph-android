@@ -32,7 +32,7 @@ import com.spoiledmilk.ibikecph.map.MarkerType;
 import com.spoiledmilk.ibikecph.map.ObservablePageInteger;
 import com.spoiledmilk.ibikecph.map.OnIntegerChangeListener;
 import com.spoiledmilk.ibikecph.map.RouteType;
-import com.spoiledmilk.ibikecph.map.fragments.NavigationFragment;
+import com.spoiledmilk.ibikecph.map.fragments.NavigationETAFragment;
 import com.spoiledmilk.ibikecph.map.fragments.RouteSelectionFragment;
 import com.spoiledmilk.ibikecph.map.states.NavigatingState;
 import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
@@ -55,7 +55,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private static SMRoute[] breakRoute;
     private boolean cleanedUp = true;
     private transient TurnByTurnInstructionFragment turnByTurnFragment;
-    private transient NavigationFragment navigationFragment;
+    private transient NavigationETAFragment navigationETAFragment;
     private transient IBCMarker beginMarker, endMarker;
     private transient ArrayList<IBCMarker> mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker, icMarker, lynMarker, regMarker, exbMarker, nbMarker, tbMarker, fMarker;
     public static boolean isRouting;
@@ -175,11 +175,11 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             }
         }
 
-        if (this.navigationFragment != null) {
+        if (this.navigationETAFragment != null) {
             if (MapActivity.isBreakChosen) {
-                this.navigationFragment.renderForBreakRoute(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
+                this.navigationETAFragment.renderForBreakRoute(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
             } else {
-                this.navigationFragment.render(this);
+                this.navigationETAFragment.render(this);
             }
         }
     }
@@ -681,7 +681,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void initInstructions() {
         Log.d("JC", "initInstructions");
         TurnByTurnInstructionFragment tbtf = new TurnByTurnInstructionFragment();
-        NavigationFragment ref = new NavigationFragment();
+        NavigationETAFragment ref = new NavigationETAFragment();
 
         Bundle b = new Bundle();
         b.putSerializable("NavigationMapHandler", this);
@@ -691,7 +691,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.turnByTurnContainer, tbtf, "TurnByTurnPane");
-        ft.replace(R.id.topFragment, ref, "NavigationFragment");
+        ft.replace(R.id.topFragment, ref, "NavigationETAFragment");
         ft.commit();
         MapActivity.breakFrag.setVisibility(View.GONE);
         MapActivity.progressBarHolder.setVisibility(View.GONE);
@@ -819,12 +819,12 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         return turnByTurnFragment;
     }
 
-    public NavigationFragment getNavigationFragment() {
-        return navigationFragment;
+    public NavigationETAFragment getNavigationETAFragment() {
+        return navigationETAFragment;
     }
 
-    public void setNavigationFragment(NavigationFragment navigationFragment) {
-        this.navigationFragment = navigationFragment;
+    public void setNavigationETAFragment(NavigationETAFragment navigationETAFragment) {
+        this.navigationETAFragment = navigationETAFragment;
     }
 
     /**
