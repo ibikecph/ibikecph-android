@@ -139,7 +139,7 @@ public class SMHttpRequest {
                         break;
                     case BREAK:
                         Log.d("DV_break", "Setting routingServer");
-                        //routingServer = Config.OSRM_SERVER_BREAK;
+                        //routingServer = Config.API_BREAK_ROUTE;
                         routingServer = Config.OSRM_SERVER_FAST;
                         Break = false;
                         break;
@@ -225,11 +225,11 @@ public class SMHttpRequest {
         z10Route = null;
         String url;
         if (startHint != null) {
-            url = String.format(Locale.US, "%s/viaroute?z=10&alt=false&loc=%.6f,%.6f&hint=" + startHint + "", Config.OSRM_SERVER,
+            url = String.format(Locale.US, "%s/viaroute?z=10&alt=false&loc=%.6f,%.6f&hint=" + startHint + "", Config.OSRM_SERVER_DEFAULT,
 
                     start.getLatitude(), start.getLongitude());
         } else {
-            url = String.format(Locale.US, "%s/viaroute?z=10&alt=false&loc=%.6f,%.6f", Config.OSRM_SERVER, start.getLatitude(), start.getLongitude());
+            url = String.format(Locale.US, "%s/viaroute?z=10&alt=false&loc=%.6f,%.6f", Config.OSRM_SERVER_DEFAULT, start.getLatitude(), start.getLongitude());
         }
 
         if (viaPoints != null) {
