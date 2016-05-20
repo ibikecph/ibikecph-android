@@ -85,7 +85,8 @@ public class DestinationPreviewState extends MapState {
     }
 
     @Override
-    public void onBackPressed() {
+    public BackPressBehaviour onBackPressed() {
         activity.changeState(BrowsingState.class);
+        return BackPressBehaviour.STOP_PROPAGATION;
     }
 }

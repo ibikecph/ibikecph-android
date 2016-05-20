@@ -45,10 +45,11 @@ public class RouteSelectionState extends MapState {
     }
 
     @Override
-    public void onBackPressed() {
+    public BackPressBehaviour onBackPressed() {
         DestinationPreviewState state = new DestinationPreviewState();
         activity.changeState(state);
         state.setDestination(destination);
+        return BackPressBehaviour.STOP_PROPAGATION;
     }
 
     public void setDestination(Address destination) {

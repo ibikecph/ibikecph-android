@@ -32,7 +32,9 @@ public class NavigatingState extends MapState {
     }
 
     @Override
-    public void onBackPressed() {
-        throw new UnsupportedOperationException("Back press has not been implemented yet.");
+    public BackPressBehaviour onBackPressed() {
+        activity.changeState(previousState);
+        return BackPressBehaviour.STOP_PROPAGATION;
+    }
     }
 }

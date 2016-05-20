@@ -29,5 +29,10 @@ public abstract class MapState {
     /**
      * Called when the user presses the back button.
      */
-    public abstract void onBackPressed();
+    public abstract BackPressBehaviour onBackPressed();
+
+    public enum BackPressBehaviour {
+        PROPAGATE,
+        STOP_PROPAGATION
+    }
 }

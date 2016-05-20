@@ -1,5 +1,7 @@
 package com.spoiledmilk.ibikecph.map.states;
 
+import android.util.Log;
+
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
@@ -38,7 +40,7 @@ public class BrowsingState extends MapState {
     }
 
     @Override
-    public void onBackPressed() {
-        throw new UnsupportedOperationException("Back press has not been implemented yet.");
+    public BackPressBehaviour onBackPressed() {
+        return BackPressBehaviour.PROPAGATE;
     }
 }
