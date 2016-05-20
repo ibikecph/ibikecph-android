@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.mapbox.mapboxsdk.api.ILatLng;
 
-import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.fragments.DestinationPreviewFragment;
 import com.spoiledmilk.ibikecph.map.Geocoder;
@@ -60,14 +59,11 @@ public class DestinationPreviewState extends MapState {
 
             }
         });
-        // Center the map around the search result.
-        activity.getMapView().setCenter(destinationLatLng, true);
     }
 
     public void setDestination(Address destinationAddress) {
         this.destinationAddress = destinationAddress;
         activity.getMapView().showAddress(destinationAddress);
-        activity.getMapView().setCenter(destinationAddress.getLocation());
         showAddressInfoPane(destinationAddress);
     }
 
