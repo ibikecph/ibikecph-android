@@ -927,11 +927,10 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
-                MapActivity.breakFrag.setVisibility(View.GONE);
-                MapActivity.progressBarHolder.setVisibility(View.GONE);
-                MapActivity.topFragment.setVisibility(View.GONE);
-                mapView.removeAllMarkers();
-                removeAnyPathOverlays();
+                if(mapView.getParentActivity() instanceof MapActivity) {
+                    MapActivity activity = ((MapActivity) mapView.getParentActivity());
+                    activity.changeState(DestinationPreviewState.class);
+                }
             }
         });
         dialog.show();
