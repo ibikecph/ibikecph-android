@@ -595,7 +595,9 @@ public class MapActivity extends BaseMapActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_map_activity, menu);
 
-        menu.findItem(R.id.ab_problem).setVisible(this.problemButtonVisible);
+        // Show the button to report problems, when in the navigating state.
+        boolean navigating = state instanceof NavigatingState;
+        menu.findItem(R.id.ab_problem).setVisible(navigating);
 
         return true;
     }
