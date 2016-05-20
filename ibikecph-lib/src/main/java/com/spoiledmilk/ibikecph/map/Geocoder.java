@@ -97,78 +97,40 @@ public class Geocoder {
 
         // OSRM directive to not ignore small road fragments
         int z = 18;
-        Log.d("DV_break", "Geocoder, getroute!");
-        String osrmServer;
-        Boolean Break = false;
+        String baseURL;
         final String url;
-
 
         switch (type) {
             case CARGO:
-                osrmServer = Config.OSRM_SERVER_CARGO;
+                baseURL = Config.OSRM_SERVER_CARGO;
                 break;
             case GREEN:
-                osrmServer = Config.OSRM_SERVER_GREEN;
+                baseURL = Config.OSRM_SERVER_GREEN;
                 break;
             case BREAK:
-                Log.d("DV_break", "Setting routingServer");
-                osrmServer = Config.OSRM_SERVER_BREAK;
-                Break = true;
+                baseURL = Config.API_BREAK_ROUTE;
                 break;
             case FASTEST:
             default:
-                osrmServer = Config.OSRM_SERVER;
+                baseURL = Config.OSRM_SERVER_DEFAULT;
                 break;
         }
 
-        if (!Break) {
-            url = String.format(Locale.US, "%s/viaroute?z=" + z + "&alt=false&loc=%.6f,%.6f&loc=%.6f,%.6f&instructions=true",
-                    osrmServer,
-                    start.getLatitude(),
-                    start.getLongitude(),
-                    end.getLatitude(),
-                    end.getLongitude());
+        if (type == RouteType.BREAK) {
+            url = String.format(Locale.US,
+                                "%s?loc[]=%.6f,%.6f&loc[]=%.6f,%.6f",
+                                baseURL,
+                                start.getLatitude(),
+                                start.getLongitude(),
+                                end.getLatitude(),
+                                end.getLongitude());
 
-            client.get(url, new JsonHttpResponseHandler() {
-                public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
-                    // Convert the JSONObject into a Jackson JsonNode to make it compatible with SMRoute
-                    try {
-                        ObjectMapper mapper = new ObjectMapper();
-                        JsonNode node = mapper.readTree(response.toString());
-
-                        Log.d("DV_break", "Making route object!");
-                        SMRoute route = new SMRoute();
-                        Log.d("DV_break", "Route object created!");
-                        route.init(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), routeListener, node, type);
-                        Log.d("DV_break", "Route.inti() called!");
-                        // Pass the route back to the caller
-                        callback.onSuccess(route);
-                        Log.d("DV_break", "onSuccess called!");
-                    } catch (IOException e) {
-                        // Couldn't parse the JSON. We pass the exception to the onFailure handler.
-                        Log.d("DV_break", "Error = " + statusCode + " " + headers);
-                        Log.d("DV_break", "Exception = " + e.getMessage());
-                        onFailure(statusCode, headers, null);
-                    }
-                }
-
-                public void onFailure(int statusCode, Header[] headers, JSONObject response) {
-                    callback.onFailure();
-                }
-            });
-
-
-        } else {
-            url = String.format(Locale.US, "%s?&loc[]=%.6f,%.6f&loc[]=%.6f,%.6f", osrmServer, start.getLatitude(), start.getLongitude(), end.getLatitude(),
-                    end.getLongitude());
-
-            final Boolean finalBreak = Break;
             final SMHttpRequest.RouteInfo[] ri = new SMHttpRequest.RouteInfo[1];
 
             new AsyncTask<String, Integer, String>() {
                 @Override
                 protected String doInBackground(String... strings) {
-                    ri[0] = new SMHttpRequest.RouteInfo(HttpUtils.get(url, finalBreak), Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end));
+                    ri[0] = new SMHttpRequest.RouteInfo(HttpUtils.get(url, true), Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end));
                     return null;
                 }
 
@@ -255,8 +217,42 @@ public class Geocoder {
 
                 }
             }.execute();
-        }
+        } else {
+            url = String.format(Locale.US, "%s/viaroute?z=%d&alt=false&loc=%.6f,%.6f&loc=%.6f,%.6f&instructions=true",
+                    baseURL,
+                    z,
+                    start.getLatitude(),
+                    start.getLongitude(),
+                    end.getLatitude(),
+                    end.getLongitude());
 
-        Log.d("JC", url);
+            client.get(url, new JsonHttpResponseHandler() {
+                public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
+                    // Convert the JSONObject into a Jackson JsonNode to make it compatible with SMRoute
+                    try {
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode node = mapper.readTree(response.toString());
+
+                        Log.d("DV_break", "Making route object!");
+                        SMRoute route = new SMRoute();
+                        Log.d("DV_break", "Route object created!");
+                        route.init(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), routeListener, node, type);
+                        Log.d("DV_break", "Route.inti() called!");
+                        // Pass the route back to the caller
+                        callback.onSuccess(route);
+                        Log.d("DV_break", "onSuccess called!");
+                    } catch (IOException e) {
+                        // Couldn't parse the JSON. We pass the exception to the onFailure handler.
+                        Log.d("DV_break", "Error = " + statusCode + " " + headers);
+                        Log.d("DV_break", "Exception = " + e.getMessage());
+                        onFailure(statusCode, headers, null);
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, JSONObject response) {
+                    callback.onFailure();
+                }
+            });
+        }
     }
-    }
+}

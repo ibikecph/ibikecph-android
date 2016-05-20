@@ -16,12 +16,12 @@ public class Config {
     public static String API_SERVER_HAS_PASSWORD;
     public static String API_SERVER_CHANGE_PASSWORD;
     public static String API_UPLOAD_TRACKS;
+    public static String API_BREAK_ROUTE;
 
     // routing
     public static final String OSRM_SERVER_FAST = "http://routes.ibikecph.dk/v1.1/fast";
     public static final String OSRM_SERVER_GREEN = "http://routes.ibikecph.dk/v1.1/green";
     public static final String OSRM_SERVER_CARGO = "http://routes.ibikecph.dk/v1.1/cargo";
-    public static final String OSRM_SERVER_BREAK = API_URL + "/journey";
 
     public static boolean GREEN_ROUTES_ENABLED = true;
 
@@ -32,8 +32,6 @@ public class Config {
     public static final double GEOMETRY_DIGITS_LONGITUDE_RP = 1e5;
 
     public static final String OSRM_SERVER_DEFAULT = OSRM_SERVER_FAST;
-
-    public static String OSRM_SERVER = OSRM_SERVER_DEFAULT;
 
     public static final String GEOCODER = "http://geo.oiorest.dk/adresser";
 
@@ -67,6 +65,7 @@ public class Config {
         API_SERVER_HAS_PASSWORD = API_SERVER_REGISTER + "/has_password";
         API_SERVER_CHANGE_PASSWORD = API_SERVER_REGISTER + "/change_password";
         API_UPLOAD_TRACKS = baseUrl + "/tracks";
+        API_BREAK_ROUTE = baseUrl + "/journey";
         TRACKING_TERMS_JSON_URL = baseUrl + "/terms";
     }
 }
