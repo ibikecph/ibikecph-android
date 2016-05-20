@@ -65,7 +65,7 @@
                 android:layout_alignParentEnd="false"
                 android:layout_alignParentRight="true">
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/startRouteButtonImage"
                     android:layout_height="25dp"
                     android:layout_width="25dp"
