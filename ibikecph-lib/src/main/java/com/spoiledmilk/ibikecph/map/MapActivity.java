@@ -57,6 +57,7 @@ import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.states.BrowsingState;
 import com.spoiledmilk.ibikecph.map.states.DestinationPreviewState;
 import com.spoiledmilk.ibikecph.map.states.MapState;
+import com.spoiledmilk.ibikecph.map.states.NavigatingState;
 import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
@@ -643,7 +644,7 @@ public class MapActivity extends BaseMapActivity {
             }
         } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_CANCELED) {
             Log.d(TAG, "Got back from address search were the user canceled!");
-            throw new UnsupportedOperationException("Canceling the search address has not been implemented.");
+            // throw new UnsupportedOperationException("Canceling the search address has not been implemented.");
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             Log.d(TAG, "Got back from address search requested to changing the source address");
             RouteSelectionState state = (RouteSelectionState) this.changeState(RouteSelectionState.class);
