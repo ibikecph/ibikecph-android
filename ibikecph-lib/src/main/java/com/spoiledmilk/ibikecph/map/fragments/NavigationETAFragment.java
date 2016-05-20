@@ -26,9 +26,12 @@ public class NavigationETAFragment extends Fragment {
     private ImageView imgRouteType;
     private TextView textAddress;
 
+    protected NavigationMapHandler handler;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).setNavigationETAFragment(this);
+        handler = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler"));
+        handler.setNavigationETAFragment(this);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,7 +45,7 @@ public class NavigationETAFragment extends Fragment {
         durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
         etaText = (TextView) v.findViewById(R.id.navigationOverviewRouteETA);
 
-        render((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler"));
+        render(handler);
 
         return v;
     }
