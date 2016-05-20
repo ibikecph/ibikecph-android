@@ -11,9 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.fragments.DestinationPreviewFragment;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
@@ -73,7 +72,7 @@ public class RouteSelectionFragment extends Fragment implements View.OnClickList
         long arrivalTime = 0;
 
         // TODO: Consider moving this to the cykelplanen directory.
-        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
+        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
             breakButton = (ImageButton) v.findViewById(R.id.navigationOverviewBreakButton);
             boolean breakRouteEnabled = getResources().getBoolean(R.bool.breakRouteEnabled);
             Log.d(getClass().getSimpleName(), "breakRouteEnabled = " + breakRouteEnabled);
@@ -87,13 +86,13 @@ public class RouteSelectionFragment extends Fragment implements View.OnClickList
                 distance = Geocoder.totalBikeDistance.get(NavigationMapHandler.obsInt.getPageValue());
                 duration = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
                 arrivalTime = Geocoder.arrivalTime.get(NavigationMapHandler.obsInt.getPageValue());
-                sourceText.setText(IbikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
+                sourceText.setText(IBikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
                 destinationText.setText(DestinationPreviewFragment.name);
 
             } else {
                 distance = route.getEstimatedDistance();
                 duration = route.getEstimatedArrivalTime();
-                sourceText.setText(IbikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
+                sourceText.setText(IBikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
                 destinationText.setText(route.endAddress.getStreetAddress());
             }
         } else {
@@ -174,8 +173,8 @@ public class RouteSelectionFragment extends Fragment implements View.OnClickList
         sourceText.setOnClickListener(this);
         destinationText.setOnClickListener(this);
 
-        ((TextView) v.findViewById(R.id.startRouteButtonText)).setText(IbikeApplication.getString("Start"));
-        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
+        ((TextView) v.findViewById(R.id.startRouteButtonText)).setText(IBikeApplication.getString("Start"));
+        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
             ((TextView) v.findViewById(R.id.startRouteButtonText)).setTextColor(getResources().getColor(R.color.CPActionBar));
 
         }
@@ -240,7 +239,7 @@ public class RouteSelectionFragment extends Fragment implements View.OnClickList
         fastButton.setImageResource(R.drawable.btn_route_fastest_disabled);
         cargoButton.setImageResource(R.drawable.btn_route_cargo_disabled);
         greenButton.setImageResource(R.drawable.btn_route_green_disabled);
-        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
+        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
             MapActivity.progressBarHolder.setVisibility(View.GONE);
             breakButton.setImageResource(R.drawable.btn_train_disabled);
             MapActivity.breakFrag.setVisibility(View.GONE);
@@ -256,7 +255,7 @@ public class RouteSelectionFragment extends Fragment implements View.OnClickList
             for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
                 for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
                     Geocoder.arrayLists.get(i).get(j).setListener(null);
-                    IbikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
+                    IBikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
                 }
             }
         }

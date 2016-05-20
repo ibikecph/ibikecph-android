@@ -6,23 +6,16 @@
 package com.spoiledmilk.cykelsuperstier;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenuItem;
-import com.spoiledmilk.ibikecph.LeftMenuItemAdapter;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
-import io.realm.Realm;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
-import java.util.ArrayList;
+import io.realm.Realm;
 
 public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 
@@ -47,7 +40,7 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 		final View ret = super.onCreateView(inflater, container, savedInstanceState);
 
         Log.d("JC", "CP LeftMenu onCreateView");
-        this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), cpMenuItems));
+        this.menuList.setAdapter(new LeftMenuItemAdapter(IBikeApplication.getContext(), cpMenuItems));
         super.menuList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -69,9 +62,9 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 
     public void spawnTrackingActivity() {
         Intent i;
-        IbikePreferences settings = IbikeApplication.getSettings();
+        IBikePreferences settings = IBikeApplication.getSettings();
         if (!settings.getTrackingEnabled() &&
-                Realm.getInstance(IbikeApplication.getContext()).allObjects(Track.class).size() == 0) {
+                Realm.getInstance(IBikeApplication.getContext()).allObjects(Track.class).size() == 0) {
             i = new Intent(getActivity(), TrackingWelcomeActivity.class);
         } else {
             i = new Intent(getActivity(), TrackingActivity.class);

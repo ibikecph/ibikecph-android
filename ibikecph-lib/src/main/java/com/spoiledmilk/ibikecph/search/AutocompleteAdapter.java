@@ -17,7 +17,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.util.DB;
@@ -182,7 +183,7 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			clear();
 			return;
 		}
-		Location loc = IbikeApplication.getService().hasValidLocation() ? IbikeApplication.getService().getLastValidLocation()
+		Location loc = IBikeApplication.getService().hasValidLocation() ? IBikeApplication.getService().getLastValidLocation()
 				: Util.COPENHAGEN;
 		splitString(searchStr);
 		if (searchStr.length() != stringLength) {
@@ -221,7 +222,7 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			clear();
 			return;
 		}
-		Location loc = IbikeApplication.getService().hasValidLocation() ? IbikeApplication.getService().getLastValidLocation()
+		Location loc = IBikeApplication.getService().hasValidLocation() ? IBikeApplication.getService().getLastValidLocation()
 				: Util.COPENHAGEN;
 		boolean isForPreviousCleared = false, isKMSPreviousCleared = false;
 		splitString(searchStr);

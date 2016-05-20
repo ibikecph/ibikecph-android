@@ -17,9 +17,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.spoiledmilk.cykelsuperstier.CykelPlanenApplication;
 import com.spoiledmilk.cykelsuperstier.R;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.map.OverlayType;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 /**
  * Activity for toggling station overlays on map.
@@ -41,7 +41,7 @@ public class OverlaysActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.overlays_activity);
 
-        IbikePreferences settings = IbikeApplication.getSettings();
+        IBikePreferences settings = IBikeApplication.getSettings();
         isPathSelected       = settings.getOverlay(OverlayType.PATH);
         isServiceSelected    = settings.getOverlay(OverlayType.SERVICE);
 
@@ -63,19 +63,19 @@ public class OverlaysActivity extends Activity {
 
     public void disablePath(){
         updateContainer(OverlayType.PATH, false);
-        IbikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
+        IBikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
     }
 
     public void onPathContainerClick(View v) {
         isPathSelected = !isPathSelected;
         updateContainer(OverlayType.PATH, isPathSelected);
-        IbikeApplication.getSettings().setOverlay(OverlayType.PATH, isPathSelected);
+        IBikeApplication.getSettings().setOverlay(OverlayType.PATH, isPathSelected);
     }
 
     public void onServiceContainerClick(View v) {
         isServiceSelected = !isServiceSelected;
         updateContainer(OverlayType.SERVICE, isServiceSelected);
-        IbikeApplication.getSettings().setOverlay(OverlayType.SERVICE, isServiceSelected);
+        IBikeApplication.getSettings().setOverlay(OverlayType.SERVICE, isServiceSelected);
     }
 
 

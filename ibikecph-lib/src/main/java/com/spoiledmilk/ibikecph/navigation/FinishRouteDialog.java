@@ -18,7 +18,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.map.MapActivity;
@@ -39,8 +39,8 @@ public class FinishRouteDialog extends DialogFragment {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         View view = inflater.inflate(R.layout.dialog_stop, container);
         textReport = (TextView) view.findViewById(R.id.textReport);
-        textReport.setText(IbikeApplication.getString("ride_report_a_problem"));
-        textReport.setTypeface(IbikeApplication.getBoldFont());
+        textReport.setText(IBikeApplication.getString("ride_report_a_problem"));
+        textReport.setTypeface(IBikeApplication.getBoldFont());
         textReport.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -52,10 +52,10 @@ public class FinishRouteDialog extends DialogFragment {
         });
 
         textTitle = (TextView) view.findViewById(R.id.textTitle);
-        textTitle.setText(IbikeApplication.getString("route_stop_title"));
+        textTitle.setText(IBikeApplication.getString("route_stop_title"));
         btnBack = (Button) view.findViewById(R.id.btnBack);
-        btnBack.setText(IbikeApplication.getString("back"));
-        btnBack.setTypeface(IbikeApplication.getBoldFont());
+        btnBack.setText(IBikeApplication.getString("back"));
+        btnBack.setTypeface(IBikeApplication.getBoldFont());
         btnBack.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -65,8 +65,8 @@ public class FinishRouteDialog extends DialogFragment {
         btnStop = (TexturedButton) view.findViewById(R.id.btnStop);
         btnStop.setTextureResource(R.drawable.btn_pattern_repeteable);
         btnStop.setBackgroundResource(R.drawable.btn_blue_selector);
-        btnStop.setText(IbikeApplication.getString("stop_ride"));
-        btnStop.setTypeface(IbikeApplication.getBoldFont());
+        btnStop.setText(IBikeApplication.getString("stop_ride"));
+        btnStop.setTypeface(IBikeApplication.getBoldFont());
         btnStop.setTextColor(Color.WHITE);
         btnStop.setOnClickListener(new OnClickListener() {
             @Override

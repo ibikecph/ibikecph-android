@@ -92,7 +92,7 @@ public class BikeLocationService extends Service implements LocationListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         instance = this;
 
-        Context context = IbikeApplication.getContext();
+        Context context = IBikeApplication.getContext();
         //this.androidLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         /**

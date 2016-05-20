@@ -17,7 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
@@ -89,14 +89,14 @@ public class InstructionListAdapter extends ArrayAdapter<SMTurnInstruction> {
 	private static Pattern specialWaynamePattern = Pattern.compile("\\{.+\\:.+\\}");
 
 	public void setInstructionCell(Context context, ViewHolder holder, SMTurnInstruction instruction, boolean large) {
-		holder.textWayname.setTypeface(IbikeApplication.getBoldFont());
+		holder.textWayname.setTypeface(IBikeApplication.getBoldFont());
 		String wayname = "";
 		if (instruction.drivingDirection == SMTurnInstruction.TurnDirection.ReachingDestination)
-			wayname = IbikeApplication.getString("direction_100");
+			wayname = IBikeApplication.getString("direction_100");
 		else if (instruction.drivingDirection == SMTurnInstruction.TurnDirection.ReachedYourDestination)
-			wayname = IbikeApplication.getString("direction_15");
+			wayname = IBikeApplication.getString("direction_15");
 		else if (specialWaynamePattern.matcher(instruction.wayName).matches()) {
-			wayname = IbikeApplication.getString(instruction.wayName);
+			wayname = IBikeApplication.getString(instruction.wayName);
 		} else {
 			wayname = instruction.wayName;
 		}
@@ -108,7 +108,7 @@ public class InstructionListAdapter extends ArrayAdapter<SMTurnInstruction> {
 		}
 		holder.textWayname.setText(wayname);
 		holder.textDistance.setText(Util.formatDistance(instruction.lengthInMeters));
-		holder.textDistance.setTypeface(IbikeApplication.getBoldFont());
+		holder.textDistance.setTypeface(IBikeApplication.getBoldFont());
 		try {
 			holder.directionIcon.setImageDrawable(large ? getTopImageResource(instruction, context) : instruction
 					.smallDirectionIcon(context));

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 
 public class AddFavoriteActivity extends Activity {
@@ -26,7 +26,7 @@ public class AddFavoriteActivity extends Activity {
 
         // Set the ActionBar
         try {
-            this.getActionBar().setTitle(IbikeApplication.getString("favorites"));
+            this.getActionBar().setTitle(IBikeApplication.getString("favorites"));
         } catch(NullPointerException e) {
             // There was no ActionBar. Oh well...
         }
@@ -36,7 +36,7 @@ public class AddFavoriteActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		// Tell Google Analytics that the user has resumed on this screen.
-		IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+		IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 	}
 
 	@Override

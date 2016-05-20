@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationListener;
@@ -87,7 +87,7 @@ public class FavoritesActivity extends Activity implements SMLocationListener {
 					}
 					launchMainMapActivity();
 				} else {
-					Util.showSimpleMessageDlg(FavoritesActivity.this, IbikeApplication.getString("register_error_fields"));
+					Util.showSimpleMessageDlg(FavoritesActivity.this, IBikeApplication.getString("register_error_fields"));
 				}
 			}
 
@@ -105,7 +105,7 @@ public class FavoritesActivity extends Activity implements SMLocationListener {
 
         // Set the ActionBar
         try {
-            this.getActionBar().setTitle(IbikeApplication.getString("favorites"));
+            this.getActionBar().setTitle(IBikeApplication.getString("favorites"));
         } catch(NullPointerException e) {
             // There was no ActionBar. Oh well...
         }
@@ -123,23 +123,23 @@ public class FavoritesActivity extends Activity implements SMLocationListener {
 		super.onResume();
 
 		// Tell Google Analytics that the user has resumed on this screen.
-		IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+		IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
 		SMLocationManager locManager = SMLocationManager.getInstance();
 		locManager.init(this, this);
 
-		textTitle.setText(IbikeApplication.getString("favorites_title"));
-		textTitle.setTypeface(IbikeApplication.getBoldFont());
-		textAddFavorite.setText(IbikeApplication.getString("favorites_text"));
-		textAddFavorite.setTypeface(IbikeApplication.getBoldFont());
-		textHome.setHint(Html.fromHtml("<i>" + IbikeApplication.getString("favorites_home_placeholder") + "</i>"));
+		textTitle.setText(IBikeApplication.getString("favorites_title"));
+		textTitle.setTypeface(IBikeApplication.getBoldFont());
+		textAddFavorite.setText(IBikeApplication.getString("favorites_text"));
+		textAddFavorite.setTypeface(IBikeApplication.getBoldFont());
+		textHome.setHint(Html.fromHtml("<i>" + IBikeApplication.getString("favorites_home_placeholder") + "</i>"));
 		textHome.setHintTextColor(getResources().getColor(R.color.HintColor));
-		textWork.setHint(Html.fromHtml("<i>" + IbikeApplication.getString("favorites_work_placeholder") + "</i>"));
+		textWork.setHint(Html.fromHtml("<i>" + IBikeApplication.getString("favorites_work_placeholder") + "</i>"));
 		textWork.setHintTextColor(getResources().getColor(R.color.HintColor));
-		btnSave.setText(IbikeApplication.getString("save_favorites"));
-		btnSave.setTypeface(IbikeApplication.getBoldFont());
-		textSkip.setText(IbikeApplication.getString("skip"));
-		textSkip.setTypeface(IbikeApplication.getBoldFont());
+		btnSave.setText(IBikeApplication.getString("save_favorites"));
+		btnSave.setTypeface(IBikeApplication.getBoldFont());
+		textSkip.setText(IBikeApplication.getString("skip"));
+		textSkip.setTypeface(IBikeApplication.getBoldFont());
 		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
 				RelativeLayout.LayoutParams.WRAP_CONTENT);
 		params.addRule(RelativeLayout.ALIGN_TOP, btnSkip.getId());
@@ -164,11 +164,11 @@ public class FavoritesActivity extends Activity implements SMLocationListener {
 			if (data != null && data.containsKey("address")) {
 				String address = AddressParser.textFromBundle(data);
 				if (requestCode == REQUEST_CODE_HOME) {
-					homeFavorite = new FavoritesData(IbikeApplication.getString("Home"), address, FavoritesData.favHome,
+					homeFavorite = new FavoritesData(IBikeApplication.getString("Home"), address, FavoritesData.favHome,
 							data.getDouble("lat"), data.getDouble("lon"), -1);
 					textHome.setText(address);
 				} else if (requestCode == REQUEST_CODE_WORK) {
-					workFavorite = new FavoritesData(IbikeApplication.getString("Work"), address, FavoritesData.favWork,
+					workFavorite = new FavoritesData(IBikeApplication.getString("Work"), address, FavoritesData.favWork,
 							data.getDouble("lat"), data.getDouble("lon"), -1);
 					textWork.setText(address);
 				}

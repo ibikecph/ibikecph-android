@@ -31,10 +31,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mapbox.mapboxsdk.api.ILatLng;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.iLanguageListener;
-import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
+import com.spoiledmilk.ibikecph.util.IBikePreferences.Language;
 
 import java.io.*;
 import java.util.Date;
@@ -173,7 +173,7 @@ public class Util {
 
     public static void showSimpleMessageDlg(Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage(message).setPositiveButton(IbikeApplication.getString("OK"), new DialogInterface.OnClickListener() {
+        builder.setMessage(message).setPositiveButton(IBikeApplication.getString("OK"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -232,7 +232,7 @@ public class Util {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_no_connection);
         TextView text = (TextView) dialog.findViewById(R.id.textNetworkError);
-        text.setText(IbikeApplication.getString("network_error_text"));
+        text.setText(IBikeApplication.getString("network_error_text"));
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.show();
         final Handler handler = new Handler();
@@ -250,15 +250,15 @@ public class Util {
 
     public static void showLanguageDialog(final Activity activity) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(IbikeApplication.getString("choose_language"));
-        builder.setItems(IbikePreferences.getLanguageNames(), new DialogInterface.OnClickListener() {
+        builder.setTitle(IBikeApplication.getString("choose_language"));
+        builder.setItems(IBikePreferences.getLanguageNames(), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
-                ((IbikeApplication) activity.getApplication()).changeLanguage(Language.values()[item + 1]);
+                ((IBikeApplication) activity.getApplication()).changeLanguage(Language.values()[item + 1]);
                 ((iLanguageListener) activity).reloadStrings();
                 dialog.dismiss();
             }
         });
-        builder.setPositiveButton(IbikeApplication.getString("Cancel"), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(IBikeApplication.getString("Cancel"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.cancel();
             }

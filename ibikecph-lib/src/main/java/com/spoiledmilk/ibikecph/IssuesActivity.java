@@ -17,8 +17,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
@@ -88,21 +86,21 @@ public class IssuesActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		spinner.setPrompt(IbikeApplication.getString("choose_a_route_step"));
+		spinner.setPrompt(IBikeApplication.getString("choose_a_route_step"));
 
-        this.getActionBar().setTitle(IbikeApplication.getString("describe_problem"));
-		textOption1.setText(IbikeApplication.getString("report_wrong_address"));
-		textOption2.setText(IbikeApplication.getString("report_road_closed"));
-		textOption3.setText(IbikeApplication.getString("report_one_way"));
-		textOption4.setText(IbikeApplication.getString("report_illegal_turn"));
-		textOption5.setText(IbikeApplication.getString("report_wrong_instruction"));
-		textOption6.setText(IbikeApplication.getString("report_other"));
-		btnSend.setText(IbikeApplication.getString("report_send"));
+        this.getActionBar().setTitle(IBikeApplication.getString("describe_problem"));
+		textOption1.setText(IBikeApplication.getString("report_wrong_address"));
+		textOption2.setText(IBikeApplication.getString("report_road_closed"));
+		textOption3.setText(IBikeApplication.getString("report_one_way"));
+		textOption4.setText(IBikeApplication.getString("report_illegal_turn"));
+		textOption5.setText(IBikeApplication.getString("report_wrong_instruction"));
+		textOption6.setText(IBikeApplication.getString("report_other"));
+		btnSend.setText(IBikeApplication.getString("report_send"));
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
         // TODO: Consider if this double event tracking is needed.
-        IbikeApplication.sendGoogleAnalyticsEvent(this, "Report", "Start");
+        IBikeApplication.sendGoogleAnalyticsEvent(this, "Report", "Start");
 	}
 	
 	// TODO: Don't repeat yourself /jc 
@@ -203,22 +201,22 @@ public class IssuesActivity extends Activity {
 				public void run() {
 					JsonNode response = null;
 					JSONObject jsonPost = new JSONObject();
-					String auth_token = IbikeApplication.getAuthToken();
+					String auth_token = IBikeApplication.getAuthToken();
 					try {
 						jsonPost.put("auth_token", auth_token);
 						JSONObject jsonIssue = new JSONObject();
 						jsonIssue.put("route_segment", spinner.getSelectedItem().toString());
 						jsonIssue.put("error_type", currentOption.getText().toString());
 						String comment = "";
-						comment += IbikeApplication.getString("report_from") + "\n";
+						comment += IBikeApplication.getString("report_from") + "\n";
 						comment += startName + "\n" + startLoc + "\n\n";
-						comment += IbikeApplication.getString("report_to") + "\n";
+						comment += IBikeApplication.getString("report_to") + "\n";
 						comment += endName + "\n" + endLoc + "\n\n";
-						comment += IbikeApplication.getString("report_reason") + "\n";
+						comment += IBikeApplication.getString("report_reason") + "\n";
 						comment += currentOption.getText().toString() + "\n\n";
 						comment += (currentComment == null ? "" : currentComment.getText().toString()) + "\n\n";
 						comment += spinner.getSelectedItem().toString() + "\n\n";
-						comment += IbikeApplication.getString("report_tbt_instructions") + "\n";
+						comment += IBikeApplication.getString("report_tbt_instructions") + "\n";
 						for (String turn : turns) {
 							comment += turn + "\n";
 						}
@@ -226,7 +224,7 @@ public class IssuesActivity extends Activity {
 						jsonPost.put("issue", jsonIssue);
 						response = HttpUtils.postToServer(Config.API_URL + "/issues", jsonPost);
 
-                        IbikeApplication.sendGoogleAnalyticsEvent(IssuesActivity.this, "Report", "Completed");
+                        IBikeApplication.sendGoogleAnalyticsEvent(IssuesActivity.this, "Report", "Completed");
 					} catch (JSONException e) {
 						LOG.e(e.getLocalizedMessage());
 					} finally {
@@ -234,7 +232,7 @@ public class IssuesActivity extends Activity {
 						IssuesActivity.this.runOnUiThread(new Runnable() {
 							@Override
 							public void run() {
-								String message = IbikeApplication.getString("Error");
+								String message = IBikeApplication.getString("Error");
 								if (responseTemp != null && responseTemp.has("info")) {
 									message = responseTemp.get("info").asText();
 									LOG.d("issues response message = " + message);

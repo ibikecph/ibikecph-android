@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.persist.Track;
 
@@ -32,7 +32,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
     RealmResults<Track> tracks;
 
     SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
-    SimpleDateFormat headerFormat = new SimpleDateFormat(IbikeApplication.getString("track_list_date_format"));
+    SimpleDateFormat headerFormat = new SimpleDateFormat(IBikeApplication.getString("track_list_date_format"));
     Context context;
 
     public TrackListAdapter(Context context) {
@@ -73,7 +73,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
      * @return A view to put into the TrackListView
      */
     public View getView(final int position, final View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) IbikeApplication.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) IBikeApplication.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View rowView = inflater.inflate(R.layout.track_list_row_view, parent, false);
 
         final Track track = this.getItem(position);
@@ -108,7 +108,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(IbikeApplication.getContext(), TrackMapView.class);
+                Intent i = new Intent(IBikeApplication.getContext(), TrackMapView.class);
                 i.putExtra("track_position", position);
                 context.startActivity(i);
             }
@@ -119,9 +119,9 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                String[] options = {IbikeApplication.getString("Delete")};
+                String[] options = {IBikeApplication.getString("Delete")};
 
-                builder.setTitle(IbikeApplication.getString("Delete"))
+                builder.setTitle(IBikeApplication.getString("Delete"))
                         .setItems(options, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -187,18 +187,18 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
         // SET THE TEENYWEENY "TO" LABEL
         /*
         TextView trackToTextView = (TextView) rowView.findViewById(R.id.trackToTextView);
-        trackToTextView.setText(" " + IbikeApplication.getString("to"));
+        trackToTextView.setText(" " + IBikeApplication.getString("to"));
         */
         return rowView;
     }
 
     public static String durationToFormattedTime(double seconds) {
-        return String.format(IbikeApplication.getString("hour_minute_format"), (int) (seconds / 60 / 60), (int) ((seconds / 60) % 60));
+        return String.format(IBikeApplication.getString("hour_minute_format"), (int) (seconds / 60 / 60), (int) ((seconds / 60) % 60));
     }
 
     @Override
     public View getHeaderView(int i, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) IbikeApplication.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) IBikeApplication.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View headerView = inflater.inflate(R.layout.track_list_row_header_view, parent, false);
 
         TextView headerHeader = (TextView) headerView.findViewById(R.id.dayView);
@@ -216,9 +216,9 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
             headerHeader.setText(headerFormat.format(cal.getTime()));
 
         } else if (timestamp == today) {
-            headerHeader.setText(IbikeApplication.getString("Today"));
+            headerHeader.setText(IBikeApplication.getString("Today"));
         } else if (timestamp == yesterday) {
-            headerHeader.setText(IbikeApplication.getString("Yesterday"));
+            headerHeader.setText(IBikeApplication.getString("Yesterday"));
         }
 
         return headerView;

@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
@@ -26,8 +25,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.search.SearchListItem.nodeType;
@@ -140,8 +138,8 @@ public class SearchAutocompleteActivity extends Activity {
             isFinishing = true;
             finishAndPutData();
         } else if (currentSelection.type == SearchListItem.nodeType.CURRENT_POSITION) {
-            //currentSelection.setLatitude(IbikeApplication.getService().getLastValidLocation().getLatitude());
-            //currentSelection.setLongitude(IbikeApplication.getService().getLastValidLocation().getLongitude());
+            //currentSelection.setLatitude(IBikeApplication.getService().getLastValidLocation().getLatitude());
+            //currentSelection.setLongitude(IBikeApplication.getService().getLastValidLocation().getLongitude());
             //Log.d("DV", "currentLat = " + currentSelection.getLatitude());
             //Log.d("DV", "currentLon = " + currentSelection.getLongitude());
             isFinishing = true;
@@ -151,8 +149,8 @@ public class SearchAutocompleteActivity extends Activity {
                 public void run() {
                     JsonNode node = null;
                     try {
-                        node = HTTPAutocompleteHandler.getOiorestAddress(IbikeApplication.getService().getLastValidLocation().getLatitude(),
-                                IbikeApplication.getService().getLastValidLocation().getLongitude());
+                        node = HTTPAutocompleteHandler.getOiorestAddress(IBikeApplication.getService().getLastValidLocation().getLatitude(),
+                                IBikeApplication.getService().getLastValidLocation().getLongitude());
                     } catch (Exception ex) {
                     }
                     if (node != null) {
@@ -336,10 +334,10 @@ public class SearchAutocompleteActivity extends Activity {
                 adapter.clear();
                 if (textSrch.getText().toString().length() >= 2) {
                     final Location loc1;
-                    if (IbikeApplication.getService().hasValidLocation()) {
-                        loc1 = IbikeApplication.getService().getLastValidLocation();
-                    } else if (IbikeApplication.getService().getLastKnownLocation() != null) {
-                        loc1 = IbikeApplication.getService().getLastKnownLocation();
+                    if (IBikeApplication.getService().hasValidLocation()) {
+                        loc1 = IBikeApplication.getService().getLastValidLocation();
+                    } else if (IBikeApplication.getService().getLastKnownLocation() != null) {
+                        loc1 = IBikeApplication.getService().getLastKnownLocation();
                     } else {
                         loc1 = Util.COPENHAGEN;
                     }

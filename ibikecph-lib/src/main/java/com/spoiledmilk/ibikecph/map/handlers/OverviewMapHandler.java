@@ -9,7 +9,7 @@ import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.views.MapView;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
 import com.spoiledmilk.ibikecph.map.MapActivity;
@@ -17,7 +17,7 @@ import com.spoiledmilk.ibikecph.map.states.BrowsingState;
 import com.spoiledmilk.ibikecph.map.states.DestinationPreviewState;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.tracking.TrackingStatisticsFragment;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 /**
  * Created by jens on 5/29/15.
@@ -27,12 +27,12 @@ public class OverviewMapHandler extends IBCMapHandler {
     public static boolean isWatchingAddress = false;
     public static Address addressBeingWatched = null;
     private IBCMapView mapView;
-    private IbikePreferences settings;
+    private IBikePreferences settings;
 
     public OverviewMapHandler(IBCMapView mapView) {
         super(mapView);
         this.mapView = mapView;
-        settings = IbikeApplication.getSettings();
+        settings = IBikeApplication.getSettings();
 
         for (Overlay o : mapView.getOverlays()) {
             Log.d("JC", "Overlay of type: " + o.getClass().getName());

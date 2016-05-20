@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.TexturedButton;
 
@@ -34,7 +34,7 @@ public class NoGPSDialog extends DialogFragment {
 		View view = inflater.inflate(R.layout.dialog_no_gps, container);
 
 		Button btnCancel = (Button) view.findViewById(R.id.btnCancel);
-		btnCancel.setText(IbikeApplication.getString("leave_no_gps"));
+		btnCancel.setText(IBikeApplication.getString("leave_no_gps"));
 		btnCancel.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -47,7 +47,7 @@ public class NoGPSDialog extends DialogFragment {
 		btnGPS.setBackgroundResource(R.drawable.btn_blue_selector);
 		btnGPS.setTextureResource(R.drawable.pattern_btn);
 		btnGPS.setTextColor(Color.WHITE);
-		btnGPS.setText(IbikeApplication.getString("activate_gps"));
+		btnGPS.setText(IBikeApplication.getString("activate_gps"));
 		btnGPS.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -56,8 +56,8 @@ public class NoGPSDialog extends DialogFragment {
 			}
 		});
 
-		((TextView) view.findViewById(R.id.textTitle)).setText(IbikeApplication.getString("gps_off"));
-		((TextView) view.findViewById(R.id.textTitle)).setTypeface(IbikeApplication.getBoldFont());
+		((TextView) view.findViewById(R.id.textTitle)).setText(IBikeApplication.getString("gps_off"));
+		((TextView) view.findViewById(R.id.textTitle)).setTypeface(IBikeApplication.getBoldFont());
 		getDialog().getWindow().requestFeature(STYLE_NO_TITLE);
 
 		return view;

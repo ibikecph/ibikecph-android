@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.persist.Track;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -38,7 +38,7 @@ public class TrackingStatisticsFragment extends Fragment {
         midnight = cal.getTime();
 
         // We use that Date object to get all Tracks whose timestamps are set after midnight
-        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        Realm realm = Realm.getInstance(IBikeApplication.getContext());
         RealmResults<Track> tracks = realm.where(Track.class).greaterThan("timestamp", midnight).findAll();
 
         double totalDistance = 0;
@@ -51,7 +51,7 @@ public class TrackingStatisticsFragment extends Fragment {
 
         // Set the labels
         TextView todayTextView = (TextView) v.findViewById(R.id.todayTextView);
-        todayTextView.setText(IbikeApplication.getString("Today"));
+        todayTextView.setText(IBikeApplication.getString("Today"));
 
         TextView totalDurationTextView = (TextView) v.findViewById(R.id.totalDurationTextView);
         totalDurationTextView.setText(TrackListAdapter.durationToFormattedTime(totalDuration));
@@ -68,9 +68,9 @@ public class TrackingStatisticsFragment extends Fragment {
             public void onClick(View v) {
                 // TODO: This is not DRY -- copied from LeftMenu code.
                 Intent i;
-                IbikePreferences settings = IbikeApplication.getSettings();
+                IBikePreferences settings = IBikeApplication.getSettings();
                 if (!settings.getTrackingEnabled() &&
-                        Realm.getInstance(IbikeApplication.getContext()).allObjects(Track.class).size() == 0) {
+                        Realm.getInstance(IBikeApplication.getContext()).allObjects(Track.class).size() == 0) {
 
                     i = new Intent(getActivity(), TrackingWelcomeActivity.class);
 

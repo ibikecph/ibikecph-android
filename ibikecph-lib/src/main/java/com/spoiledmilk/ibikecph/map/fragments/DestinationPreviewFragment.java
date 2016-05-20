@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.map.MapActivity;
@@ -73,8 +73,8 @@ public class DestinationPreviewFragment extends Fragment implements View.OnClick
             ((ImageButton) v.findViewById(R.id.btnAddFavorite)).setImageResource(R.drawable.btn_add_favorite);
         }
 
-        ((TextView) v.findViewById(R.id.startRouteText)).setText(IbikeApplication.getString("new_route"));
-        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
+        ((TextView) v.findViewById(R.id.startRouteText)).setText(IBikeApplication.getString("new_route"));
+        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
             ((TextView) v.findViewById(R.id.startRouteText)).setTextColor(getResources().getColor(R.color.CPActionBar));
 
         }
@@ -84,7 +84,7 @@ public class DestinationPreviewFragment extends Fragment implements View.OnClick
     }
 
     public void btnStartRouteClicked(View v) {
-        if (IbikeApplication.getService().hasValidLocation()) {
+        if (IBikeApplication.getService().hasValidLocation()) {
             if (getActivity() instanceof MapActivity) {
                 Address a = (Address) getArguments().getSerializable("address");
                 RouteSelectionState state = new RouteSelectionState();
@@ -92,7 +92,7 @@ public class DestinationPreviewFragment extends Fragment implements View.OnClick
                 ((MapActivity) this.getActivity()).changeState(state);
             }
         } else {
-            Toast.makeText(IbikeApplication.getContext(), IbikeApplication.getString("error_no_gps_location"), Toast.LENGTH_LONG).show();
+            Toast.makeText(IBikeApplication.getContext(), IBikeApplication.getString("error_no_gps_location"), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -117,7 +117,7 @@ public class DestinationPreviewFragment extends Fragment implements View.OnClick
                     @Override
                     public void run() {
                         (new DB(getActivity())).deleteFavorite(favoritesData, getActivity());
-                        (new DB(IbikeApplication.getContext())).getFavoritesFromServer(IbikeApplication.getContext(), null);
+                        (new DB(IBikeApplication.getContext())).getFavoritesFromServer(IBikeApplication.getContext(), null);
                     }
                 });
                 saveThread.start();

@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 
 
@@ -39,7 +39,7 @@ public class EditFavoriteActivity extends Activity {
 
         // Set the ActionBar
         try {
-            this.getActionBar().setTitle(IbikeApplication.getString("favorites"));
+            this.getActionBar().setTitle(IBikeApplication.getString("favorites"));
         } catch (NullPointerException e) {
             // There was no ActionBar. Oh well...
         }
@@ -49,7 +49,7 @@ public class EditFavoriteActivity extends Activity {
     public void onResume() {
         super.onResume();
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class EditFavoriteActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.edit_favorite, menu);
 
-        menu.getItem(0).setTitle(IbikeApplication.getString("new_route"));
+        menu.getItem(0).setTitle(IBikeApplication.getString("new_route"));
 
         return true;
     }

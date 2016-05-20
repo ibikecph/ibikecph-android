@@ -5,10 +5,10 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.cykelsuperstier;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.util.Config;
 
-public class CykelPlanenApplication extends IbikeApplication {
+public class CykelPlanenApplication extends IBikeApplication {
 
 	public static final int ALARM_REQUEST_CODE = 202837;
 	
@@ -18,7 +18,7 @@ public class CykelPlanenApplication extends IbikeApplication {
 		Config.GREEN_ROUTES_ENABLED = false; 
 		Config.EXTENDED_PULL_TOUCH = false;
 
-        IbikeApplication.APP_NAME = "CykelPlanen";
+        IBikeApplication.APP_NAME = "CykelPlanen";
         this.primaryColor = R.color.CPActionBar;
 
 		initializeGoogleAnalytics(R.xml.global_tracker);

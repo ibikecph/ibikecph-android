@@ -6,18 +6,14 @@
 
 package com.spoiledmilk.ibikecph;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.text.Spanned;
 import android.util.Log;
 
@@ -29,9 +25,8 @@ import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.tracking.MilestoneManager;
 import com.spoiledmilk.ibikecph.tracking.TrackHelper;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
-import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
-import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
+import com.spoiledmilk.ibikecph.util.IBikePreferences.Language;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.SMDictionary;
 
@@ -39,10 +34,10 @@ import java.util.Calendar;
 
 import io.realm.exceptions.RealmMigrationNeededException;
 
-public class IbikeApplication extends Application {
+public class IBikeApplication extends Application {
     protected static String APP_NAME = "I Bike CPH";
-    private static IbikeApplication instance = null;
-    public IbikePreferences prefs;
+    private static IBikeApplication instance = null;
+    public IBikePreferences prefs;
     public SMDictionary dictionary;
     private static Typeface normalFont, boldFont, italicFont;
 
@@ -56,7 +51,7 @@ public class IbikeApplication extends Application {
         LOG.d("Creating Application");
         super.onCreate();
         instance = this;
-        prefs = new IbikePreferences(this);
+        prefs = new IBikePreferences(this);
         prefs.load();
         dictionary = new SMDictionary(this);
         dictionary.init();
@@ -134,7 +129,7 @@ public class IbikeApplication extends Application {
         return instance.prefs.language == Language.DAN ? "da" : "en";
     }
 
-    public static IbikePreferences getSettings() {
+    public static IBikePreferences getSettings() {
         return instance.prefs;
     }
 
@@ -201,12 +196,12 @@ public class IbikeApplication extends Application {
     }
 
     public static void logout() {
-        IbikeApplication.setIsFacebookLogin(false);
+        IBikeApplication.setIsFacebookLogin(false);
 
         // Disable tracking
-        IbikeApplication.getSettings().setTrackingEnabled(false);
-        IbikeApplication.getSettings().setNotifyMilestone(false);
-        IbikeApplication.getSettings().setNotifyWeekly(false);
+        IBikeApplication.getSettings().setTrackingEnabled(false);
+        IBikeApplication.getSettings().setNotifyMilestone(false);
+        IBikeApplication.getSettings().setNotifyWeekly(false);
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("email").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
@@ -221,12 +216,12 @@ public class IbikeApplication extends Application {
     }
 
     public static void logoutWrongToken() {
-        IbikeApplication.setIsFacebookLogin(false);
+        IBikeApplication.setIsFacebookLogin(false);
 
         // Disable tracking
-        IbikeApplication.getSettings().setTrackingEnabled(false);
-        IbikeApplication.getSettings().setNotifyMilestone(false);
-        IbikeApplication.getSettings().setNotifyWeekly(false);
+        IBikeApplication.getSettings().setTrackingEnabled(false);
+        IBikeApplication.getSettings().setNotifyMilestone(false);
+        IBikeApplication.getSettings().setNotifyWeekly(false);
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("email").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
@@ -243,12 +238,12 @@ public class IbikeApplication extends Application {
     }
 
     public static void logoutDeleteUser() {
-        IbikeApplication.setIsFacebookLogin(false);
+        IBikeApplication.setIsFacebookLogin(false);
 
         // Disable tracking
-        IbikeApplication.getSettings().setTrackingEnabled(false);
-        IbikeApplication.getSettings().setNotifyMilestone(false);
-        IbikeApplication.getSettings().setNotifyWeekly(false);
+        IBikeApplication.getSettings().setTrackingEnabled(false);
+        IBikeApplication.getSettings().setNotifyMilestone(false);
+        IBikeApplication.getSettings().setNotifyWeekly(false);
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("email").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
@@ -273,7 +268,7 @@ public class IbikeApplication extends Application {
         // TODO: Consider also checking for the tracking preference to be enabled.
         boolean trackingEnabled = getContext().getResources().getBoolean(R.bool.trackingEnabled);
         if (trackingEnabled) {
-            Context ctx = IbikeApplication.getContext();
+            Context ctx = IBikeApplication.getContext();
             AlarmManager alarmMgr = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
             Intent intent = new Intent(ctx, MilestoneManager.class);
             intent.putExtra("weekly", true);
@@ -317,12 +312,12 @@ public class IbikeApplication extends Application {
     }
 
     public static void sendGoogleAnalyticsEvent(Activity activity, String category, String action) {
-        Tracker gaTracker = ((IbikeApplication) activity.getApplication()).getDefaultTracker();
+        Tracker gaTracker = ((IBikeApplication) activity.getApplication()).getDefaultTracker();
         gaTracker.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).build());
     }
 
     public static void sendGoogleAnalyticsActivityEvent(Activity activity) {
-        Tracker gaTracker = ((IbikeApplication) activity.getApplication()).getDefaultTracker();
+        Tracker gaTracker = ((IBikeApplication) activity.getApplication()).getDefaultTracker();
         gaTracker.setScreenName(activity.getClass().getSimpleName());
         gaTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }

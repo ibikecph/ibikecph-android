@@ -7,7 +7,6 @@ package com.spoiledmilk.ibikecph.login;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -17,7 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.Session;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.ReadMoreActivity;
 import com.spoiledmilk.ibikecph.favorites.FavoritesActivity;
@@ -43,7 +42,7 @@ public class LoginSplashActivity extends Activity {
         this.setContentView(R.layout.login_splash_activity);
         this.savedInstanceState = savedInstanceState;
 
-        this.findViewById(R.id.rootLayout).setBackgroundColor(getResources().getColor(IbikeApplication.getPrimaryColor()));
+        this.findViewById(R.id.rootLayout).setBackgroundColor(getResources().getColor(IBikeApplication.getPrimaryColor()));
 
         TextView welcomeTextView = (TextView) findViewById(R.id.welcomeTextView);
         TextView welcomeExplanationTextView = (TextView) findViewById(R.id.welcomeExplanationTextView);
@@ -52,13 +51,13 @@ public class LoginSplashActivity extends Activity {
         logInButton = (Button) findViewById(R.id.logInButton);
         enableTrackingButton = (Button) findViewById(R.id.enableTrackingButton);
 
-        welcomeTextView.setText(IbikeApplication.getString("launch_activate_tracking_title"));
-        welcomeExplanationTextView.setText(IbikeApplication.getString("launch_activate_tracking_description"));
-        readMoreButton.setText(IbikeApplication.getString("launch_activate_tracking_read_more"));
+        welcomeTextView.setText(IBikeApplication.getString("launch_activate_tracking_title"));
+        welcomeExplanationTextView.setText(IBikeApplication.getString("launch_activate_tracking_description"));
+        readMoreButton.setText(IBikeApplication.getString("launch_activate_tracking_read_more"));
 
-        skipButton.setText(IbikeApplication.getString("no_thanks"));
-        logInButton.setText(IbikeApplication.getString("log_in"));
-        enableTrackingButton.setText(IbikeApplication.getString("enable"));
+        skipButton.setText(IBikeApplication.getString("no_thanks"));
+        logInButton.setText(IBikeApplication.getString("log_in"));
+        enableTrackingButton.setText(IBikeApplication.getString("enable"));
     }
 
     protected int getLayoutId() {
@@ -78,10 +77,10 @@ public class LoginSplashActivity extends Activity {
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         boolean trackingEnabled = getResources().getBoolean(R.bool.trackingEnabled);
-        if (IbikeApplication.isWelcomeScreenSeen() || !trackingEnabled) {
+        if (IBikeApplication.isWelcomeScreenSeen() || !trackingEnabled) {
             launchMainMapActivity();
         }
     }
@@ -105,7 +104,7 @@ public class LoginSplashActivity extends Activity {
     }
 
     public void launchMainMapActivity() {
-        IbikeApplication.setWelcomeScreenSeen(true);
+        IBikeApplication.setWelcomeScreenSeen(true);
         Intent i = new Intent(LoginSplashActivity.this, getMapActivityClass());
         LoginSplashActivity.this.startActivity(i);
         finish();
@@ -139,7 +138,7 @@ public class LoginSplashActivity extends Activity {
                     LoginSplashActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            IbikeApplication.setWelcomeScreenSeen(true);
+                            IBikeApplication.setWelcomeScreenSeen(true);
                             Intent i = new Intent(LoginSplashActivity.this, FavoritesActivity.class);
                             startActivity(i);
                             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -168,22 +167,22 @@ public class LoginSplashActivity extends Activity {
 
     public void onEnableTrackingClick(View v) {
 
-        if (IbikeApplication.getSignature().equals("")) {
-            if (IbikeApplication.isFacebookLogin()) {
+        if (IBikeApplication.getSignature().equals("")) {
+            if (IBikeApplication.isFacebookLogin()) {
                 Log.d("DV", "Prompting Facebookuser to create a password!");
                 Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.putExtra("fromSplashScreen", true);
-                IbikeApplication.setWelcomeScreenSeen(true);
+                IBikeApplication.setWelcomeScreenSeen(true);
                 startActivity(i);
-            } else if (IbikeApplication.isUserLogedIn()) {
+            } else if (IBikeApplication.isUserLogedIn()) {
                 Log.d("DV", "Prompting login for user!");
                 Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                IbikeApplication.setWelcomeScreenSeen(true);
+                IBikeApplication.setWelcomeScreenSeen(true);
                 startActivity(i);
             }
         } else {
             Log.d("DV", "We got a signature, enabling tracking!");
-            IbikeApplication.getSettings().setTrackingEnabled(true);
+            IBikeApplication.getSettings().setTrackingEnabled(true);
             launchMainMapActivity();
         }
 

@@ -33,7 +33,7 @@ import com.facebook.*;
 import com.facebook.Session.NewPermissionsRequest;
 import com.facebook.model.GraphUser;
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.AsyncImageFetcher;
 import com.spoiledmilk.ibikecph.util.ImageData;
@@ -121,14 +121,14 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
                             Message message = HTTPAccountHandler.performRegister(userData, RegisterActivity.this);
                             Boolean success = message.getData().getBoolean("success", false);
                             if (success) {
-                                IbikeApplication.saveEmail(userData.getEmail());
-                                //IbikeApplication.savePassword(userData.getPassword());
+                                IBikeApplication.saveEmail(userData.getEmail());
+                                //IBikeApplication.savePassword(userData.getPassword());
                             }
                             handler.sendMessage(message);
 
                             // TODO: Change this to the implementation described here
                             // https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
-                            // IbikeApplication.getTracker().sendEvent("Register", "Completed", userData.getEmail(), (long) 0);
+                            // IBikeApplication.getTracker().sendEvent("Register", "Completed", userData.getEmail(), (long) 0);
 
                             RegisterActivity.this.runOnUiThread(new Runnable() {
                                 @Override
@@ -168,7 +168,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
                             }
                             break;
                         case HTTPAccountHandler.ERROR:
-                            launchAlertDialog(IbikeApplication.getString("Error"));
+                            launchAlertDialog(IBikeApplication.getString("Error"));
                             break;
                     }
                     return true;
@@ -281,7 +281,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         initStrings();
     }
@@ -325,32 +325,32 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
 
     private void initStrings() {
 
-        this.getActionBar().setTitle(IbikeApplication.getString("create_account"));
+        this.getActionBar().setTitle(IBikeApplication.getString("create_account"));
 
         // Pick out the "Terms of Service" part of the "Accept the ..." string
-        this.termsAcceptanceLabel.setText(IbikeApplication.getString("accept_user_terms").replace(IbikeApplication.getString("accept_user_terms_link_highlight"), ""));
+        this.termsAcceptanceLabel.setText(IBikeApplication.getString("accept_user_terms").replace(IBikeApplication.getString("accept_user_terms_link_highlight"), ""));
 
         // Construct a link in HTML and make it clickable
-        this.termsAcceptanceLink.setText(Html.fromHtml("<a href='" + IbikeApplication.getString("accept_user_terms_link") + "'>" + IbikeApplication.getString("accept_user_terms_link_highlight") + "</a>"));
+        this.termsAcceptanceLink.setText(Html.fromHtml("<a href='" + IBikeApplication.getString("accept_user_terms_link") + "'>" + IBikeApplication.getString("accept_user_terms_link_highlight") + "</a>"));
         this.termsAcceptanceLink.setMovementMethod(LinkMovementMethod.getInstance());
 
-        textOr.setText(IbikeApplication.getString("or"));
-        textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
+        textOr.setText(IBikeApplication.getString("or"));
+        textNewPassword.setHint(IBikeApplication.getString("register_password_placeholder"));
         textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textPasswordConfirm.setHint(IbikeApplication.getString("register_password_repeat_placeholder"));
+        textPasswordConfirm.setHint(IBikeApplication.getString("register_password_repeat_placeholder"));
         textPasswordConfirm.setHintTextColor(getResources().getColor(R.color.HintColor));
-        btnRegister.setText(IbikeApplication.getString("register_save"));
-        textName.setHint(IbikeApplication.getString("register_name_placeholder"));
+        btnRegister.setText(IBikeApplication.getString("register_save"));
+        textName.setHint(IBikeApplication.getString("register_name_placeholder"));
         textName.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textEmail.setHint(IbikeApplication.getString("register_email_placeholder"));
+        textEmail.setHint(IBikeApplication.getString("register_email_placeholder"));
         textEmail.setHintTextColor(getResources().getColor(R.color.HintColor));
-        btnFacebookLogin.setText(IbikeApplication.getString("create_with_fb"));
+        btnFacebookLogin.setText(IBikeApplication.getString("create_with_fb"));
 
     }
 
     private void launchAlertDialog(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-        builder.setMessage(msg).setTitle(IbikeApplication.getString("Error"));
+        builder.setMessage(msg).setTitle(IBikeApplication.getString("Error"));
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
@@ -369,29 +369,29 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     private boolean validateInput() {
         boolean ret = true;
         if (textName.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("register_error_fields");
+            validationMessage = IBikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textEmail.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("register_error_fields");
+            validationMessage = IBikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textNewPassword.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("register_error_fields");
+            validationMessage = IBikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textPasswordConfirm.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("register_error_fields");
+            validationMessage = IBikeApplication.getString("register_error_fields");
             ret = false;
         } else if (!textNewPassword.getText().toString().equals(textPasswordConfirm.getText().toString())) {
-            validationMessage = IbikeApplication.getString("register_error_passwords");
+            validationMessage = IBikeApplication.getString("register_error_passwords");
             ret = false;
         } else {
             int atIndex = textEmail.getText().toString().indexOf('@');
             if (atIndex < 1) {
-                validationMessage = IbikeApplication.getString("register_error_invalid_email");
+                validationMessage = IBikeApplication.getString("register_error_invalid_email");
                 ret = false;
             }
             int pointIndex = textEmail.getText().toString().indexOf('.', atIndex);
             if (pointIndex < atIndex || pointIndex == textEmail.getText().toString().length() - 1) {
-                validationMessage = IbikeApplication.getString("register_error_invalid_email");
+                validationMessage = IBikeApplication.getString("register_error_invalid_email");
                 ret = false;
             }
         }
@@ -403,19 +403,19 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
     private boolean validatePasswords() {
         boolean ret = true;
         if (textNewPassword.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("register_error_fields");
+            validationMessage = IBikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textPasswordConfirm.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("register_error_fields");
+            validationMessage = IBikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textPasswordConfirm.getText().toString().length() < 3) {
-            validationMessage = IbikeApplication.getString("register_error_passwords_short");
+            validationMessage = IBikeApplication.getString("register_error_passwords_short");
             ret = false;
         } else if (!textNewPassword.getText().toString().equals(textPasswordConfirm.getText().toString())) {
-            validationMessage = IbikeApplication.getString("register_error_passwords");
+            validationMessage = IBikeApplication.getString("register_error_passwords");
             ret = false;
         } else if (textNewPassword.getText().toString().length() < 3) {
-            validationMessage = IbikeApplication.getString("register_error_passwords_short");
+            validationMessage = IBikeApplication.getString("register_error_passwords_short");
             ret = false;
         }
         userData = new UserData(textNewPassword.getText().toString(), textPasswordConfirm.getText().toString());
@@ -432,8 +432,8 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         }
         if (resultCode == RegisterActivity.RESULT_ACCOUNT_REGISTERED) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(IbikeApplication.getString("register_successful"));
-            builder.setPositiveButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+            builder.setMessage(IBikeApplication.getString("register_successful"));
+            builder.setPositiveButton(IBikeApplication.getString("close"), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                 }
@@ -494,7 +494,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             if (!title.equals("")) {
                 builder.setTitle(title);
             } else {
-                builder.setTitle(IbikeApplication.getString("Error"));
+                builder.setTitle(IBikeApplication.getString("Error"));
             }
             builder.setMessage(info);
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -512,7 +512,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                IbikeApplication.setIsFacebookLogin(true);
+                IBikeApplication.setIsFacebookLogin(true);
                 login();
             }
         });

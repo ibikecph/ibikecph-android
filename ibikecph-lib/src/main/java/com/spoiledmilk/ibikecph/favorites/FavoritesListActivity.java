@@ -18,21 +18,16 @@ import android.widget.ListAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.SortableListView;
-import com.spoiledmilk.ibikecph.login.UserData;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
-import com.spoiledmilk.ibikecph.persist.Track;
-import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
 import java.util.ArrayList;
-
-import io.realm.Realm;
 
 public class FavoritesListActivity extends Activity {
     public static final int ADD_FAVORITE = 510;
@@ -56,10 +51,10 @@ public class FavoritesListActivity extends Activity {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         textLogin = (TextView) findViewById(R.id.textLogin);
-        textLogin.setText(IbikeApplication.getString("favorites_login"));
+        textLogin.setText(IBikeApplication.getString("favorites_login"));
 
         try {
-            this.getActionBar().setTitle(IbikeApplication.getString("favorites"));
+            this.getActionBar().setTitle(IBikeApplication.getString("favorites"));
         } catch (NullPointerException e) {
             // If we have no action bar, then whatever.
         }
@@ -79,8 +74,8 @@ public class FavoritesListActivity extends Activity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(FavoritesListActivity.this);
-                String[] options = {IbikeApplication.getString("Delete")};
-                builder.setTitle(IbikeApplication.getString("Delete"))
+                String[] options = {IBikeApplication.getString("Delete")};
+                builder.setTitle(IBikeApplication.getString("Delete"))
                         .setItems(options, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -123,11 +118,11 @@ public class FavoritesListActivity extends Activity {
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         Log.d("DV", "Onresume Favorites!");
 
-        if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
+        if (IBikeApplication.isUserLogedIn() || IBikeApplication.isFacebookLogin()) {
             reloadFavorites();
 
             favoritesList.setVisibility(View.VISIBLE);
@@ -137,7 +132,7 @@ public class FavoritesListActivity extends Activity {
     }
 
     public void reloadFavorites() {
-        if (IbikeApplication.isUserLogedIn()) {
+        if (IBikeApplication.isUserLogedIn()) {
             fetchFavorites = new tFetchFavorites();
             fetchFavorites.start();
         }
@@ -147,10 +142,10 @@ public class FavoritesListActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Only show the Add button if the user is logged in
-        if (IbikeApplication.isFacebookLogin() || IbikeApplication.isUserLogedIn()) {
+        if (IBikeApplication.isFacebookLogin() || IBikeApplication.isUserLogedIn()) {
             // Inflate the menu; this adds items to the action bar if it is present.
             getMenuInflater().inflate(R.menu.favorites_list, menu);
-            menu.getItem(0).setTitle(IbikeApplication.getString("new_favorite"));
+            menu.getItem(0).setTitle(IBikeApplication.getString("new_favorite"));
         }
         return true;
     }
@@ -173,7 +168,7 @@ public class FavoritesListActivity extends Activity {
 
     protected FavoritesAdapter getAdapter() {
         if (adapter == null) {
-            adapter = new FavoritesAdapter(IbikeApplication.getContext(), favorites, null);
+            adapter = new FavoritesAdapter(IBikeApplication.getContext(), favorites, null);
         }
         return adapter;
     }
@@ -198,11 +193,11 @@ public class FavoritesListActivity extends Activity {
 
     public void showRouteNotFoundDlg() {
         if (dialog == null) {
-            String message = IbikeApplication.getString("error_route_not_found");
+            String message = IBikeApplication.getString("error_route_not_found");
             if (!SMLocationManager.getInstance().hasValidLocation())
-                message = IbikeApplication.getString("error_no_gps");
+                message = IBikeApplication.getString("error_no_gps");
             Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(message).setPositiveButton(IbikeApplication.getString("OK"), new DialogInterface.OnClickListener() {
+            builder.setMessage(message).setPositiveButton(IBikeApplication.getString("OK"), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
@@ -252,7 +247,7 @@ public class FavoritesListActivity extends Activity {
 
                 @Override
                 protected String doInBackground(String... strings) {
-                    favs = (new DB(IbikeApplication.getContext())).getFavoritesFromServer(IbikeApplication.getContext(), null);
+                    favs = (new DB(IBikeApplication.getContext())).getFavoritesFromServer(IBikeApplication.getContext(), null);
                     return null;
                 }
 
@@ -270,7 +265,7 @@ public class FavoritesListActivity extends Activity {
             }.execute();
 
 
-            if (Util.isNetworkConnected(IbikeApplication.getContext())) {
+            if (Util.isNetworkConnected(IBikeApplication.getContext())) {
                 // favorites have been fetched
             }
 
@@ -288,7 +283,7 @@ public class FavoritesListActivity extends Activity {
             Log.d("JC", "FavFetcher started");
             while (!interrupted()) {
                 LOG.d("fetching the favorites");
-                final ArrayList<FavoritesData> favs = (new DB(IbikeApplication.getContext())).getFavoritesFromServer(IbikeApplication.getContext(), null);
+                final ArrayList<FavoritesData> favs = (new DB(IBikeApplication.getContext())).getFavoritesFromServer(IBikeApplication.getContext(), null);
                 runOnUiThread(new Runnable() {
                     public void run() {
                         Log.d("JC", "Got some favorites");
@@ -302,7 +297,7 @@ public class FavoritesListActivity extends Activity {
                     }
                 });
 
-                if (Util.isNetworkConnected(IbikeApplication.getContext())) {
+                if (Util.isNetworkConnected(IBikeApplication.getContext())) {
                     // favorites have been fetched
                     break;
                 }

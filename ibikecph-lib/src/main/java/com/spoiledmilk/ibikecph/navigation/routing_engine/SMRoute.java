@@ -6,7 +6,6 @@
 package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
 import android.location.Location;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
@@ -14,7 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest;
@@ -113,7 +112,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         waypointStation1 = -1;
         waypointStation2 = -1;
 
-        //IbikeApplication.getService().addLocationListener(this);
+        //IBikeApplication.getService().addLocationListener(this);
     }
 
     public void init(Location start, Location end, SMRouteListener listener, JsonNode routeJSON, RouteType type) {
@@ -207,8 +206,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                                     if (visitedLocations != null && visitedLocations.size() > 0) {
                                         // visitLocation(visitedLocations.get(visitedLocations.size() - 1));
                                     }
-                                    if (IbikeApplication.getService().hasValidLocation()) {
-                                        updateDistances(IbikeApplication.getService().getLastValidLocation());
+                                    if (IBikeApplication.getService().hasValidLocation()) {
+                                        updateDistances(IBikeApplication.getService().getLastValidLocation());
                                     }
                                     if (listener != null) {
                                         if (type.toString().equals("BREAK")) {
@@ -282,11 +281,11 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             approachingTurn = false;
             tripDistance = 0.0f;
 
-            if (IbikeApplication.getService().hasValidLocation()) {
-                Log.d("DV_break", " ValidLocation = " + IbikeApplication.getService().hasValidLocation());
-                updateDistances(IbikeApplication.getService().getLastValidLocation());
+            if (IBikeApplication.getService().hasValidLocation()) {
+                Log.d("DV_break", " ValidLocation = " + IBikeApplication.getService().hasValidLocation());
+                updateDistances(IBikeApplication.getService().getLastValidLocation());
             }
-            Log.d("DV_break", " ValidLocation = " + IbikeApplication.getService().hasValidLocation());
+            Log.d("DV_break", " ValidLocation = " + IBikeApplication.getService().hasValidLocation());
         }
     }
 
@@ -295,8 +294,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         if (ok) {
             approachingTurn = false;
             tripDistance = 0.0f;
-            if (IbikeApplication.getService().hasValidLocation()) {
-                updateDistances(IbikeApplication.getService().getLastValidLocation());
+            if (IBikeApplication.getService().hasValidLocation()) {
+                updateDistances(IBikeApplication.getService().getLastValidLocation());
             }
         }
     }
@@ -361,7 +360,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
                         instruction.wayName = instructionNode.get(1).asText();
                         if (instruction.wayName.matches("\\{.+\\:.+\\}"))
-                            instruction.wayName = IbikeApplication.getString(instruction.wayName);
+                            instruction.wayName = IBikeApplication.getString(instruction.wayName);
                         instruction.wayName = instruction.wayName.replaceAll("&#39;", "'");
                         instruction.lengthInMeters = prevlengthInMeters;
                         prevlengthInMeters = instructionNode.get(2).asInt();
@@ -675,7 +674,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     approachingTurn = false;
                     // removeTurn();
                     if (listener != null) {
-                        IbikeApplication.getService().removeLocationListener(this);
+                        IBikeApplication.getService().removeLocationListener(this);
                         reachedDestination = true;
                         listener.reachedDestination();
                     }
@@ -684,7 +683,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     // we have somehow skipped most of the route (going through a
                     // park or unknown street)
                     if (listener != null) {
-                        IbikeApplication.getService().removeLocationListener(this);
+                        IBikeApplication.getService().removeLocationListener(this);
                         reachedDestination = true;
                         listener.reachedDestination();
                     }
@@ -1112,7 +1111,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         if (this.cleanedUp) {
-            IbikeApplication.getService().removeLocationListener(this);
+            IBikeApplication.getService().removeLocationListener(this);
             return;
         }
 
@@ -1124,7 +1123,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
      * Severs any connections with this SMRoute object, since we're not gonna need it anymore.
      */
     public void cleanUp() {
-        IbikeApplication.getService().removeLocationListener(this);
+        IBikeApplication.getService().removeLocationListener(this);
         this.setListener(null);
         this.cleanedUp = true;
     }
@@ -1158,7 +1157,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         String json = null;
         try {
 
-            InputStream is = IbikeApplication.getContext().getAssets().open("Dummy_JSON.js");
+            InputStream is = IBikeApplication.getContext().getAssets().open("Dummy_JSON.js");
 
             int size = is.available();
 

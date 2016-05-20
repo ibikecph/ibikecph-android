@@ -5,19 +5,10 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 
 import com.spoiledmilk.ibikecph.login.LoginSplashActivity;
 import com.spoiledmilk.ibikecph.map.MapActivity;
@@ -47,14 +38,14 @@ public class SplashActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		// Tell Google Analytics that the user has resumed on this screen.
-		IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+		IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
 		final Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
 				Intent i;
-				if (IbikeApplication.isUserLogedIn()) {
+				if (IBikeApplication.isUserLogedIn()) {
 					i = new Intent(SplashActivity.this, getMapActivityClass());
 				} else {
 					i = new Intent(SplashActivity.this, getLoginActivityClass());

@@ -1,6 +1,7 @@
 package com.spoiledmilk.ibikecph.map;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.util.AttributeSet;
@@ -16,18 +17,15 @@ import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.mapbox.mapboxsdk.views.MapViewListener;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
-import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Util;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -157,8 +155,8 @@ public class IBCMapView extends MapView {
             // If we don't have a GPS coordinate, we cannot get the current address. Let the user know and return.
             if (loc == null) {
                 Toast.makeText(
-                        IbikeApplication.getContext(),
-                        IbikeApplication.getString("error_no_gps_location"),
+                        IBikeApplication.getContext(),
+                        IBikeApplication.getString("error_no_gps_location"),
                         Toast.LENGTH_LONG).show();
                 return;
             }
@@ -218,14 +216,16 @@ public class IBCMapView extends MapView {
         return parentActivity;
     }
 
-    /**
-     * Adds a GPS location dot.
-     */
-    public void addUserLocationOverlay() {
-        this.setUserLocationEnabled(true);
-        this.getUserLocationOverlay().setDrawAccuracyEnabled(true);
-        this.getUserLocationOverlay().enableFollowLocation();
-        this.getUserLocationOverlay().setPersonBitmap(BitmapFactory.decodeResource(this.getResources(), R.drawable.tracking_dot));
+    @Override
+    public MapView setUserLocationEnabled(boolean value) {
+        MapView result = super.setUserLocationEnabled(value);
+        if (value) {
+            getUserLocationOverlay().setDrawAccuracyEnabled(true);
+
+            Bitmap person = BitmapFactory.decodeResource(this.getResources(), R.drawable.tracking_dot);
+            getUserLocationOverlay().setPersonBitmap(person);
+        }
+        return result;
     }
 
     /**

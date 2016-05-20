@@ -18,19 +18,19 @@ public class ReadMoreActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_read_more);
 
-        this.findViewById(R.id.rootLayout).setBackgroundColor(getResources().getColor(IbikeApplication.getPrimaryColor()));
+        this.findViewById(R.id.rootLayout).setBackgroundColor(getResources().getColor(IBikeApplication.getPrimaryColor()));
 
         readMoreText = (TextView) findViewById(R.id.readMoreText);
-        readMoreText.setText(IbikeApplication.getString("launch_activate_tracking_read_more_description"));
+        readMoreText.setText(IBikeApplication.getString("launch_activate_tracking_read_more_description"));
 
-        this.getActionBar().setTitle(IbikeApplication.getString("launch_activate_tracking_read_more"));
+        this.getActionBar().setTitle(IBikeApplication.getString("launch_activate_tracking_read_more"));
     }
 
     @Override
     public void onResume() {
         super.onResume();
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
     }
 

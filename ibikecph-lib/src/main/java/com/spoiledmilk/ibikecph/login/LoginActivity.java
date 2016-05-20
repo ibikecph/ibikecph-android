@@ -29,7 +29,7 @@ import android.widget.TextView;
 import com.facebook.*;
 import com.facebook.Session.NewPermissionsRequest;
 import com.facebook.model.GraphUser;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -79,7 +79,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                 }
                 if (textEmail.getText() == null || ("" + textEmail.getText().toString().trim()).equals("") || textPassword.getText() == null
                         || ("" + textPassword.getText().toString()).trim().equals("")) {
-                    launchErrorDialog("", IbikeApplication.getString("login_error_fields"));
+                    launchErrorDialog("", IBikeApplication.getString("login_error_fields"));
                 } else {
                     new Thread(new Runnable() {
                         @Override
@@ -116,7 +116,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                         String isFacebookUser = data.getString("provider");
                         if (isFacebookUser.equals("facebook")) {
                             Log.d("DV", "Bruger markeret som Facebook-user!");
-                            IbikeApplication.setIsFacebookLogin(true);
+                            IBikeApplication.setIsFacebookLogin(true);
                         } else {
                             Log.d("DV", "Bruger ikke markeret som Facebook-user!");
                         }
@@ -176,7 +176,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
-        textEmail.setText(IbikeApplication.getEmail());
+        textEmail.setText(IBikeApplication.getEmail());
         Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
 
         textEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -249,23 +249,23 @@ public class LoginActivity extends Activity implements FBLoginListener {
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         initStrings();
     }
 
     private void initStrings() {
-        actionBar.setTitle(IbikeApplication.getString("log_in"));
-        textLoginTitle.setText(IbikeApplication.getString("please_login"));
-        textLoginTitle.setTypeface(IbikeApplication.getItalicFont());
-        textOr.setText(IbikeApplication.getString("or"));
-        textEmail.setHint(IbikeApplication.getString("register_email_placeholder"));
+        actionBar.setTitle(IBikeApplication.getString("log_in"));
+        textLoginTitle.setText(IBikeApplication.getString("please_login"));
+        textLoginTitle.setTypeface(IBikeApplication.getItalicFont());
+        textOr.setText(IBikeApplication.getString("or"));
+        textEmail.setHint(IBikeApplication.getString("register_email_placeholder"));
         textEmail.setHintTextColor(getResources().getColor(R.color.HintColor));
-        textPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
+        textPassword.setHint(IBikeApplication.getString("register_password_placeholder"));
         textPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
-        btnLogin.setText(IbikeApplication.getString("log_in"));
-        btnFacebookLogin.setText(IbikeApplication.getString("login_with_fb"));
-        btnRegister.setText(IbikeApplication.getString("register_with_mail"));
+        btnLogin.setText(IBikeApplication.getString("log_in"));
+        btnFacebookLogin.setText(IBikeApplication.getString("login_with_fb"));
+        btnRegister.setText(IBikeApplication.getString("register_with_mail"));
     }
 
     public void showProgressDialog() {
@@ -292,7 +292,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
             if (!title.equals("")) {
                 builder.setTitle(title);
             } else {
-                builder.setTitle(IbikeApplication.getString("Error"));
+                builder.setTitle(IBikeApplication.getString("Error"));
             }
             builder.setMessage(info);
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -310,8 +310,8 @@ public class LoginActivity extends Activity implements FBLoginListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RegisterActivity.RESULT_ACCOUNT_REGISTERED) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(IbikeApplication.getString("register_successful"));
-            builder.setPositiveButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+            builder.setMessage(IBikeApplication.getString("register_successful"));
+            builder.setPositiveButton(IBikeApplication.getString("close"), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                 }
@@ -373,7 +373,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                IbikeApplication.setIsFacebookLogin(true);
+                IBikeApplication.setIsFacebookLogin(true);
                 login();
             }
         });

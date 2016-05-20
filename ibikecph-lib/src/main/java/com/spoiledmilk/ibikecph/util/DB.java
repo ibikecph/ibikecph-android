@@ -16,26 +16,18 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
-import com.spoiledmilk.ibikecph.persist.Track;
-import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import com.spoiledmilk.ibikecph.search.HistoryData;
 import com.spoiledmilk.ibikecph.search.SearchListItem;
-import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import io.realm.Realm;
-import io.realm.RealmList;
-import io.realm.RealmResults;
 
 public class DB extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
@@ -267,7 +259,7 @@ public class DB extends SQLiteOpenHelper {
                 postObject.put("auth_token", authToken);
                 JSONObject routeObject = new JSONObject();
                 if (from.getName() == null || from.getName().trim().equals("")) {
-                    from.setName(IbikeApplication.getString("current_position"));
+                    from.setName(IBikeApplication.getString("current_position"));
                 }
                 routeObject.put("from_name", from.getName());
                 routeObject.put("from_lattitude", from.getLatitude());
@@ -294,12 +286,12 @@ public class DB extends SQLiteOpenHelper {
 
     public ArrayList<SearchListItem> getSearchHistoryFromServer(Context context) {
         ArrayList<SearchListItem> ret = new ArrayList<SearchListItem>();
-        if (IbikeApplication.isUserLogedIn()) {
-            String authToken = IbikeApplication.getAuthToken();
+        if (IBikeApplication.isUserLogedIn()) {
+            String authToken = IBikeApplication.getAuthToken();
             try {
                 JsonNode getObject = HttpUtils.getFromServer(Config.API_URL + "/routes?auth_token=" + authToken);
                 if (getObject != null) {
-                    IbikeApplication.setHistoryFetched(true);
+                    IBikeApplication.setHistoryFetched(true);
                     boolean success = getObject.get("success").asBoolean();
                     if (success) {
                         JsonNode historyList = getObject.get("data");
@@ -346,8 +338,8 @@ public class DB extends SQLiteOpenHelper {
     }
 
     private void postFavoriteToServer(final FavoritesData fd, Context context, boolean spawnThread) {
-        if (IbikeApplication.isUserLogedIn()) {
-            String authToken = IbikeApplication.getAuthToken();
+        if (IBikeApplication.isUserLogedIn()) {
+            String authToken = IBikeApplication.getAuthToken();
             final JSONObject postObject = new JSONObject();
             try {
                 JSONObject favouriteObject = new JSONObject();
@@ -442,13 +434,13 @@ public class DB extends SQLiteOpenHelper {
         } else {
             ret.clear();
         }
-        if (IbikeApplication.isUserLogedIn()) {
-            String authToken = IbikeApplication.getAuthToken();
+        if (IBikeApplication.isUserLogedIn()) {
+            String authToken = IBikeApplication.getAuthToken();
             try {
                 JsonNode getObject = HttpUtils.getFromServer(Config.API_URL + "/favourites?auth_token=" + authToken);
                 if (getObject != null && getObject.has("invalid_token")) {
                     if (getObject.get("invalid_token").asBoolean()) {
-                        IbikeApplication.logoutWrongToken();
+                        IBikeApplication.logoutWrongToken();
                     }
                 }
                 if (getObject != null && getObject.has("data")) {
@@ -456,7 +448,7 @@ public class DB extends SQLiteOpenHelper {
                     if (db != null) {
                         db.delete(TABLE_FAVORITES, null, null);
                     }
-                    IbikeApplication.setFavoritesFetched(true);
+                    IBikeApplication.setFavoritesFetched(true);
                     JsonNode favoritesList = getObject.get("data");
                     for (int i = 0; i < favoritesList.size(); i++) {
                         JsonNode data = favoritesList.get(i);
@@ -484,7 +476,7 @@ public class DB extends SQLiteOpenHelper {
             return;
         db.delete(TABLE_FAVORITES, null, null);
         db.close();
-        IbikeApplication.setFavoritesFetched(false);
+        IBikeApplication.setFavoritesFetched(false);
     }
 
     public ArrayList<SearchListItem> getFavorites2() {
@@ -692,8 +684,8 @@ public class DB extends SQLiteOpenHelper {
 
     private void updateFavoriteToServer(final FavoritesData fd, Context context, final APIListener listener) {
 
-        if (IbikeApplication.isUserLogedIn()) {
-            String authToken = IbikeApplication.getAuthToken();
+        if (IBikeApplication.isUserLogedIn()) {
+            String authToken = IBikeApplication.getAuthToken();
             final JSONObject postObject = new JSONObject();
             try {
                 JSONObject favouriteObject = new JSONObject();
@@ -723,8 +715,8 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public void deleteFavoriteFromServer(final FavoritesData fd, Context context) {
-        if (IbikeApplication.isUserLogedIn()) {
-            String authToken = IbikeApplication.getAuthToken();
+        if (IBikeApplication.isUserLogedIn()) {
+            String authToken = IBikeApplication.getAuthToken();
             final JSONObject postObject = new JSONObject();
             try {
                 postObject.put("auth_token", authToken);
@@ -739,8 +731,8 @@ public class DB extends SQLiteOpenHelper {
 
     public void saveFinishedRoute(Location startLocation, Location endLocation, String startName, String endName, String startDate,
                                   String endDate, String visitedLocations) {
-        if (IbikeApplication.isUserLogedIn()) {
-            String authToken = IbikeApplication.getAuthToken();
+        if (IBikeApplication.isUserLogedIn()) {
+            String authToken = IBikeApplication.getAuthToken();
             final JSONObject postObject = new JSONObject();
             try {
                 postObject.put("auth_token", authToken);

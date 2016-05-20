@@ -18,7 +18,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -28,10 +27,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.Session;
-import com.facebook.android.Facebook;
-import com.facebook.widget.ProfilePictureView;
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
@@ -100,8 +97,8 @@ public class FacebookProfileActivity extends Activity {
                                 PreferenceManager.getDefaultSharedPreferences(FacebookProfileActivity.this).edit().remove("auth_token").commit();
                                 PreferenceManager.getDefaultSharedPreferences(FacebookProfileActivity.this).edit().remove("id").commit();
                                 PreferenceManager.getDefaultSharedPreferences(FacebookProfileActivity.this).edit().remove("signature").commit();
-                                //IbikeApplication.setIsFacebookLogin(false);
-                                IbikeApplication.logoutDeleteUser();
+                                //IBikeApplication.setIsFacebookLogin(false);
+                                IBikeApplication.logoutDeleteUser();
                                 //logout();
                                 setResult(RESULT_USER_DELETED);
                                 (new DB(FacebookProfileActivity.this)).deleteFavorites();
@@ -127,7 +124,7 @@ public class FacebookProfileActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final Message message = HTTPAccountHandler.performGetUser(new UserData(IbikeApplication.getAuthToken(), PreferenceManager
+                final Message message = HTTPAccountHandler.performGetUser(new UserData(IBikeApplication.getAuthToken(), PreferenceManager
                         .getDefaultSharedPreferences(FacebookProfileActivity.this).getInt("id", -1)));
                 final Bundle data = message.getData();
                 Boolean success = false;
@@ -142,7 +139,7 @@ public class FacebookProfileActivity extends Activity {
                             logout();
                             /*Util.showSimpleMessageDlg(FacebookProfileActivity.this, "Error fetching the user id = "
                                     + PreferenceManager.getDefaultSharedPreferences(FacebookProfileActivity.this).getInt("id", -1) + " auth token = "
-                                    + IbikeApplication.getAuthToken() + (message != null ? message.toString() : ""));*/
+                                    + IBikeApplication.getAuthToken() + (message != null ? message.toString() : ""));*/
                             progressBar.setVisibility(View.GONE);
                         }
                     });
@@ -152,14 +149,14 @@ public class FacebookProfileActivity extends Activity {
     }
 
     private void logout() {
-        IbikeApplication.logout();
+        IBikeApplication.logout();
         (new DB(FacebookProfileActivity.this)).deleteFavorites();
-        IbikeApplication.setIsFacebookLogin(false);
+        IBikeApplication.setIsFacebookLogin(false);
 
         // Disable tracking
-        IbikeApplication.getSettings().setTrackingEnabled(false);
-        IbikeApplication.getSettings().setNotifyMilestone(false);
-        IbikeApplication.getSettings().setNotifyWeekly(false);
+        IBikeApplication.getSettings().setTrackingEnabled(false);
+        IBikeApplication.getSettings().setNotifyMilestone(false);
+        IBikeApplication.getSettings().setNotifyWeekly(false);
 
         Session session = Session.getActiveSession();
         if (session != null) { // && !session.isClosed()
@@ -172,19 +169,19 @@ public class FacebookProfileActivity extends Activity {
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         initStrings();
     }
 
     private void initStrings() {
-        actionBar.setTitle(IbikeApplication.getString("account"));
-        btnLogout.setText(IbikeApplication.getString("logout"));
-        textLogedIn.setText(IbikeApplication.getString("track_token_subtitle_facebook"));
-        textLogedIn.setTypeface(IbikeApplication.getItalicFont());
-        textLinked.setText(IbikeApplication.getString("account_is_linked_to_facebook"));
-        textLinked.setTypeface(IbikeApplication.getItalicFont());
-        btnDelete.setText(IbikeApplication.getString("delete_my_account"));
+        actionBar.setTitle(IBikeApplication.getString("account"));
+        btnLogout.setText(IBikeApplication.getString("logout"));
+        textLogedIn.setText(IBikeApplication.getString("track_token_subtitle_facebook"));
+        textLogedIn.setTypeface(IBikeApplication.getItalicFont());
+        textLinked.setText(IBikeApplication.getString("account_is_linked_to_facebook"));
+        textLinked.setTypeface(IBikeApplication.getItalicFont());
+        btnDelete.setText(IBikeApplication.getString("delete_my_account"));
 
     }
 
@@ -232,9 +229,9 @@ public class FacebookProfileActivity extends Activity {
 
     private void launchDeleteDialogWithoutPassword() {
         AlertDialog.Builder builder = new AlertDialog.Builder(FacebookProfileActivity.this);
-        builder.setMessage(IbikeApplication.getString("delete_account_text")).setTitle(IbikeApplication.getString("delete_account_title"));
+        builder.setMessage(IBikeApplication.getString("delete_account_text")).setTitle(IBikeApplication.getString("delete_account_title"));
 
-        builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(IBikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
                 if (!Util.isNetworkConnected(FacebookProfileActivity.this)) {
@@ -244,7 +241,7 @@ public class FacebookProfileActivity extends Activity {
 
                 // TODO: Change this to the implementation described here
                 // https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
-                //IbikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
+                //IBikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
 
                 new Thread(new Runnable() {
                     @Override
@@ -259,7 +256,7 @@ public class FacebookProfileActivity extends Activity {
                             }
                         });
 
-                        Message message = HTTPAccountHandler.performDeleteUser(new UserData(IbikeApplication.getAuthToken(), PreferenceManager
+                        Message message = HTTPAccountHandler.performDeleteUser(new UserData(IBikeApplication.getAuthToken(), PreferenceManager
                                 .getDefaultSharedPreferences(FacebookProfileActivity.this).getInt("id", 0)));
                         handler.sendMessage(message);
 
@@ -275,7 +272,7 @@ public class FacebookProfileActivity extends Activity {
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(IBikeApplication.getString("close"), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
             }
@@ -286,14 +283,14 @@ public class FacebookProfileActivity extends Activity {
 
     private void launchDeleteDialogWithPassword() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(IbikeApplication.getString("delete_account_text_facebook_tracking")).setTitle(IbikeApplication.getString("delete_account_title"));
+        builder.setMessage(IBikeApplication.getString("delete_account_text_facebook_tracking")).setTitle(IBikeApplication.getString("delete_account_title"));
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        input.setHint(IbikeApplication.getString("register_password_placeholder"));
+        input.setHint(IBikeApplication.getString("register_password_placeholder"));
         builder.setView(input);
 
-        builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(IBikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -306,7 +303,7 @@ public class FacebookProfileActivity extends Activity {
 
                 // TODO: Change this to the implementation described here
                 // https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
-                //IbikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
+                //IBikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
 
                 new Thread(new Runnable() {
                     @Override
@@ -320,7 +317,7 @@ public class FacebookProfileActivity extends Activity {
                             }
                         });
 
-                        Message message = HTTPAccountHandler.performDeleteUser(new UserData(IbikeApplication.getAuthToken(), PreferenceManager
+                        Message message = HTTPAccountHandler.performDeleteUser(new UserData(IBikeApplication.getAuthToken(), PreferenceManager
                                 .getDefaultSharedPreferences(FacebookProfileActivity.this).getInt("id", 0), input.getText().toString()));
                         handler.sendMessage(message);
                         FacebookProfileActivity.this.runOnUiThread(new Runnable() {
@@ -334,7 +331,7 @@ public class FacebookProfileActivity extends Activity {
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(IBikeApplication.getString("close"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
@@ -346,7 +343,7 @@ public class FacebookProfileActivity extends Activity {
 
     private void launchAlertDialog(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(FacebookProfileActivity.this);
-        builder.setMessage(msg).setTitle(IbikeApplication.getString("Error"));
+        builder.setMessage(msg).setTitle(IBikeApplication.getString("Error"));
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
@@ -381,7 +378,7 @@ public class FacebookProfileActivity extends Activity {
                         @Override
                         public void run() {
                             progressBar.setVisibility(View.GONE);
-                            textName.setTypeface(IbikeApplication.getItalicFont());
+                            textName.setTypeface(IBikeApplication.getItalicFont());
                             textName.setText(username);
                         }
                     });

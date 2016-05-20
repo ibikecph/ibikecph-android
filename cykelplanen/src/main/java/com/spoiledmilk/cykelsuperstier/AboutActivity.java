@@ -6,7 +6,8 @@
 package com.spoiledmilk.cykelsuperstier;
 
 import android.widget.TextView;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 
 /**
@@ -21,8 +22,8 @@ public class AboutActivity extends com.spoiledmilk.ibikecph.AboutActivity {
 	public void onResume() {
 		super.onResume();
 
-        this.getActionBar().setTitle(IbikeApplication.getString("about_app_cp"));
-        ((TextView) findViewById(R.id.textAboutText)).setText(IbikeApplication.getString("about_text_cp"));
+        this.getActionBar().setTitle(IBikeApplication.getString("about_app_cp"));
+        ((TextView) findViewById(R.id.textAboutText)).setText(IBikeApplication.getString("about_text_cp"));
 
 	}
 

@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.search.AddressParser;
 import com.spoiledmilk.ibikecph.util.*;
@@ -118,8 +118,8 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
     }
 
     private static boolean isPredefinedName(final String name) {
-        if (name.equals(IbikeApplication.getString("Favorite")) || name.equals(IbikeApplication.getString("School"))
-                || name.equals(IbikeApplication.getString("Work")) || name.equals(IbikeApplication.getString("Home")) || name.equals(""))
+        if (name.equals(IBikeApplication.getString("Favorite")) || name.equals(IBikeApplication.getString("School"))
+                || name.equals(IBikeApplication.getString("Work")) || name.equals(IBikeApplication.getString("Home")) || name.equals(""))
             return true;
         else
             return false;
@@ -144,7 +144,7 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Error");
                     builder.setMessage(msg);
-                    builder.setPositiveButton(IbikeApplication.getString("ok"), new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(IBikeApplication.getString("ok"), new DialogInterface.OnClickListener() {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -195,8 +195,8 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
                     updateThread.start();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage(IbikeApplication.getString("name_used"));
-                    builder.setTitle(IbikeApplication.getString("Error"));
+                    builder.setMessage(IBikeApplication.getString("name_used"));
+                    builder.setTitle(IBikeApplication.getString("Error"));
                     builder.setCancelable(false);
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
@@ -208,7 +208,7 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
                     dialog.show();
                 }
             } else if (getActivity() != null) {
-                Util.showSimpleMessageDlg(getActivity(), IbikeApplication.getString("register_error_fields"));
+                Util.showSimpleMessageDlg(getActivity(), IBikeApplication.getString("register_error_fields"));
             }
         } else {
             Util.launchNoConnectionDialog(getActivity());
@@ -225,7 +225,7 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
                 public void run() {
                     try {
                         final JSONObject postObject = new JSONObject();
-                        postObject.put("auth_token", IbikeApplication.getAuthToken());
+                        postObject.put("auth_token", IBikeApplication.getAuthToken());
                         if (temp.getApiId() < 0) {
                             int apiId = new DB(getActivity()).getApiId(temp.getId());
                             if (apiId != -1) {
@@ -244,7 +244,7 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
                                                     + favoritesData.getLongitude() + ")";
                                             // TODO: Change this to the implementation described here
                                             // https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
-                                            // IbikeApplication.getTracker().sendEvent("Favorites", "Delete", st, (long) 0);
+                                            // IBikeApplication.getTracker().sendEvent("Favorites", "Delete", st, (long) 0);
                                             (new DB(getActivity())).deleteFavorite(favoritesData, getActivity());
                                             popFragment();
                                         }

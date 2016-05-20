@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
@@ -103,7 +103,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
                 String from = MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_name").get(0).textValue();
                 String take = MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_summary").path("name").textValue();
                 String to = MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_name").get(1).textValue();
-                fromTakeTo = IbikeApplication.getString("direction_18");
+                fromTakeTo = IBikeApplication.getString("direction_18");
                 fromTakeTo = fromTakeTo.replace("%@", "%s");
                 fromTakeTo = String.format(fromTakeTo, from, take, to);
                 depatureTime = timeStampFormat(MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_summary").path("departure_time").asLong());
@@ -118,7 +118,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
             String arrivalTime = "";
             try {
                 String to = MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_name").get(1).textValue();
-                NavigationMapHandler.getOffAt = IbikeApplication.getString("direction_19");
+                NavigationMapHandler.getOffAt = IBikeApplication.getString("direction_19");
                 NavigationMapHandler.getOffAt = NavigationMapHandler.getOffAt.replace("%@", "%s");
                 NavigationMapHandler.getOffAt = String.format(NavigationMapHandler.getOffAt, to);
                 NavigationMapHandler.lastType = MapActivity.breakRouteJSON.get(NavigationMapHandler.obsInt.getPageValue()).path("journey").get(NavigationMapHandler.routePos).path("route_summary").path("type").textValue();
@@ -139,7 +139,7 @@ public class TurnByTurnInstructionFragment extends Fragment {
 
     public void reachedDestination() {
         Log.d("DV", "turnbyturn reacheddestination");
-        this.textWayname.setText(IbikeApplication.getString("direction_15"));
+        this.textWayname.setText(IBikeApplication.getString("direction_15"));
         this.textDistance.setText("");
         this.imgDirectionIcon.setImageResource(R.drawable.flag);
     }

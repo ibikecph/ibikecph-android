@@ -9,13 +9,13 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.login.SignatureActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 public class TrackingSettingsActivity extends Activity {
 
@@ -33,7 +33,7 @@ public class TrackingSettingsActivity extends Activity {
     private TextView shareDataUsageText;
     private TextView shareDataTermsText;
 
-    private IbikePreferences settings;
+    private IBikePreferences settings;
     private boolean loggedIn;
     private boolean checkedFromResume = false;
 
@@ -41,9 +41,9 @@ public class TrackingSettingsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking_settings);
-        setTitle(IbikeApplication.getString("settings"));
+        setTitle(IBikeApplication.getString("settings"));
 
-        this.settings = IbikeApplication.getSettings();
+        this.settings = IBikeApplication.getSettings();
         this.trackingEnableText = (TextView) findViewById(R.id.tracking_enable_text);
         this.trackingEnableSwitch = (Switch) findViewById(R.id.tracking_enable_switch);
         this.notifyMilestoneText = (TextView) findViewById(R.id.notify_milestone_text);
@@ -59,7 +59,7 @@ public class TrackingSettingsActivity extends Activity {
         this.shareDataTermsText      = (TextView) findViewById(R.id.share_data_terms_text);
         */
 
-        loggedIn = IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin();
+        loggedIn = IBikeApplication.isUserLogedIn() || IBikeApplication.isFacebookLogin();
 
         this.trackingEnableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -67,12 +67,12 @@ public class TrackingSettingsActivity extends Activity {
                 Log.d("DV", "isChecked = " + isChecked);
                 if (loggedIn && !checkedFromResume) {
                     if (isChecked) {
-                        if (IbikeApplication.getSignature().equals("")) {
-                            if (IbikeApplication.isFacebookLogin()) {
+                        if (IBikeApplication.getSignature().equals("")) {
+                            if (IBikeApplication.isFacebookLogin()) {
                                 Log.d("DV", "Prompting Facebookuser to create a password!");
                                 Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(i);
-                            } else if (IbikeApplication.isUserLogedIn()) {
+                            } else if (IBikeApplication.isUserLogedIn()) {
                                 Log.d("DV", "Prompting login for user!");
                                 Intent i = new Intent(TrackingSettingsActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(i);
@@ -120,10 +120,10 @@ public class TrackingSettingsActivity extends Activity {
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         if (trackingEnableSwitch.isChecked()) {
-            if (IbikeApplication.getSignature().equals("")) {
+            if (IBikeApplication.getSignature().equals("")) {
                 checkedFromResume = true;
                 trackingEnableSwitch.setChecked(false);
                 notifyMilestoneCheckbox.setChecked(false);
@@ -193,21 +193,21 @@ public class TrackingSettingsActivity extends Activity {
     }
 
     private void initStrings() {
-        this.trackingEnableText.setText(IbikeApplication.getString("enable_tracking"));
+        this.trackingEnableText.setText(IBikeApplication.getString("enable_tracking"));
         this.trackingEnableSwitch.setChecked(loggedIn && settings.getTrackingEnabled());
-        this.notifyMilestoneText.setText(IbikeApplication.getString("tracking_milestone_notifications"));
+        this.notifyMilestoneText.setText(IBikeApplication.getString("tracking_milestone_notifications"));
         this.notifyMilestoneCheckbox.setChecked(loggedIn && settings.getNotifyMilestone());
 
-        this.notifyWeeklyText.setText(IbikeApplication.getString("tracking_weekly_status_notifications"));
+        this.notifyWeeklyText.setText(IBikeApplication.getString("tracking_weekly_status_notifications"));
         this.notifyWeeklyCheckbox.setChecked(loggedIn && settings.getNotifyWeekly());
 
         /*
-        this.shareDataText.setText(IbikeApplication.getString("tracking_share_data"));
+        this.shareDataText.setText(IBikeApplication.getString("tracking_share_data"));
         this.shareDataSwitch.setChecked(settings.getShareData());
-        this.shareDataInfoText.setText(IbikeApplication.getString("tracking_share_data_info"));
-        this.shareDataUsageText.setText(IbikeApplication.getString("tracking_share_data_usage"));
+        this.shareDataInfoText.setText(IBikeApplication.getString("tracking_share_data_info"));
+        this.shareDataUsageText.setText(IBikeApplication.getString("tracking_share_data_usage"));
         this.shareDataUsageText.setPaintFlags(this.shareDataUsageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        this.shareDataTermsText.setText(IbikeApplication.getString("tracking_terms_link"));
+        this.shareDataTermsText.setText(IBikeApplication.getString("tracking_terms_link"));
         this.shareDataTermsText.setPaintFlags(this.shareDataTermsText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         */
     }
@@ -216,7 +216,7 @@ public class TrackingSettingsActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // If we got back from a login box AND the used successfully logged in, go on.
         if (requestCode == LeftMenu.LAUNCH_LOGIN && resultCode == RESULT_OK) {
-            this.loggedIn = IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin();
+            this.loggedIn = IBikeApplication.isUserLogedIn() || IBikeApplication.isFacebookLogin();
         }
 
         if (requestCode == 10) {

@@ -9,12 +9,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.location.LocationListener;
 import com.spoiledmilk.ibikecph.BikeLocationService;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.util.LOG;
 
 public class SMLocationManager implements LocationListener {
@@ -63,7 +62,7 @@ public class SMLocationManager implements LocationListener {
 
         Log.i("JC", "LocationServicesEnabled = " + locationServicesEnabled);
 
-        IbikeApplication.getService().addLocationListener(this);
+        IBikeApplication.getService().addLocationListener(this);
 
         if (locationServicesEnabled) {
             Intent subscriptionIntent = new Intent(getContext(), BikeLocationService.class);
@@ -84,19 +83,19 @@ public class SMLocationManager implements LocationListener {
     public boolean hasValidLocation() {
         Log.e("JC", "FIXME: SMLocationManager.hasValidLocation()");
 
-        return IbikeApplication.getService().hasValidLocation();
+        return IBikeApplication.getService().hasValidLocation();
     }
 
     public Location getLastValidLocation() {
         Log.e("JC", "FIXME: SMLocationManager.getLastValidLocation()");
 
-        return IbikeApplication.getService().getLastValidLocation();
+        return IBikeApplication.getService().getLastValidLocation();
     }
 
     public Location getLastKnownLocation() {
         Log.e("JC", "FIXME: SMLocationManager.getLastKnownLocation()");
 
-        return IbikeApplication.getService().getLastKnownLocation();
+        return IBikeApplication.getService().getLastKnownLocation();
     }
 
     @Override

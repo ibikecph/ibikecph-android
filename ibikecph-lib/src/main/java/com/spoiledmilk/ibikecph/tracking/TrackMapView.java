@@ -10,7 +10,7 @@ import android.view.View;
 import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.BaseMapActivity;
 import com.spoiledmilk.ibikecph.map.IBCMapView;
@@ -121,7 +121,7 @@ public class TrackMapView extends BaseMapActivity {
 
         // Set the ActionBar
         try {
-            this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
+            this.getActionBar().setTitle(IBikeApplication.getString("tracking"));
         } catch (NullPointerException e) {
             // There was no ActionBar. Oh well...
         }

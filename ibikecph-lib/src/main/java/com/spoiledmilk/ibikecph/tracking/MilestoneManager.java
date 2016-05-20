@@ -7,7 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.util.Pair;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
@@ -40,11 +41,11 @@ public class MilestoneManager extends IntentService {
     }
 
     public static void checkForMilestones() {
-        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        Realm realm = Realm.getInstance(IBikeApplication.getContext());
 
         // Total length
         int totalLength = getTotalLength();
-        int lengthMilestoneOrdinal = IbikeApplication.getSettings().getLengthNotificationOrdinal();
+        int lengthMilestoneOrdinal = IBikeApplication.getSettings().getLengthNotificationOrdinal();
         LengthNotification notificationToCreate  = null;
 
         // We compare the lengthMilestoneOrdinal to the ordinal of the potential milestones. If we don't have a milestone
@@ -67,12 +68,12 @@ public class MilestoneManager extends IntentService {
             makeLengthNotification(notificationToCreate);
 
             // Update the settings so we get persistence
-            IbikeApplication.getSettings().setLengthNotificationOrdinal(notificationToCreate.ordinal());
+            IBikeApplication.getSettings().setLengthNotificationOrdinal(notificationToCreate.ordinal());
         }
 
         // Streak
         int curStreak = daysInARow();
-        int maxStreak = IbikeApplication.getSettings().getMaxStreakLength();
+        int maxStreak = IBikeApplication.getSettings().getMaxStreakLength();
 
         if (curStreak > maxStreak) {
             switch(curStreak) {
@@ -90,7 +91,7 @@ public class MilestoneManager extends IntentService {
                     break;
             }
 
-            IbikeApplication.getSettings().setMaxStreakLength(curStreak);
+            IBikeApplication.getSettings().setMaxStreakLength(curStreak);
         }
 
         Log.d("JC", "Current streak: " + curStreak);
@@ -101,7 +102,7 @@ public class MilestoneManager extends IntentService {
      * Pop up a notification on Sunday evening with a summary of the bicycling activity.
      */
     public Pair<Double, Pair<Integer,Integer>> getSundaySummary() {
-        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        Realm realm = Realm.getInstance(IBikeApplication.getContext());
 
         // We want to find all TrackLocation objects during this week, then figure out what Track objects they belong
         // to, and then sum the distances and times of those.
@@ -158,34 +159,34 @@ public class MilestoneManager extends IntentService {
 
     // TODO: DRY
     private static void makeStreakNotification(int streakLength) {
-        Context context = IbikeApplication.getContext();
+        Context context = IBikeApplication.getContext();
 
         Notification.Builder notificationBuilder = new Notification.Builder(context);
-        notificationBuilder.setContentTitle(IbikeApplication.getAppName());
+        notificationBuilder.setContentTitle(IBikeApplication.getAppName());
 
         String message = "";
 
         switch(streakLength) {
             case 3:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_1_description"), streakLength));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_daystreak_1_description"), streakLength));
                 break;
             case 5:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_2_description"), streakLength));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_daystreak_2_description"), streakLength));
                 break;
             case 10:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_3_description"), streakLength));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_daystreak_3_description"), streakLength));
                 break;
             case 15:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_4_description"), streakLength));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_daystreak_4_description"), streakLength));
                 break;
             case 20:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_5_description"), streakLength));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_daystreak_5_description"), streakLength));
                 break;
             case 25:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_6_description"), streakLength));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_daystreak_6_description"), streakLength));
                 break;
             case 30:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_daystreak_7_description"), streakLength));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_daystreak_7_description"), streakLength));
                 break;
             default:
                 break;
@@ -196,35 +197,35 @@ public class MilestoneManager extends IntentService {
 
         Notification n = notificationBuilder.build();
         NotificationManager mNotificationManager =
-                (NotificationManager) IbikeApplication.getContext().getSystemService(context.NOTIFICATION_SERVICE);
+                (NotificationManager) IBikeApplication.getContext().getSystemService(context.NOTIFICATION_SERVICE);
 
         mNotificationManager.notify(1, n);
     }
 
     public static void makeLengthNotification(LengthNotification length) {
-        Context context = IbikeApplication.getContext();
+        Context context = IBikeApplication.getContext();
 
         Notification.Builder notificationBuilder = new Notification.Builder(context);
-        notificationBuilder.setContentTitle(IbikeApplication.getAppName());
+        notificationBuilder.setContentTitle(IBikeApplication.getAppName());
 
         switch (length) {
             case KM_10:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_distance_1_description"), 10));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_distance_1_description"), 10));
                 break;
             case KM_50:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_distance_2_description"), 50));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_distance_2_description"), 50));
                 break;
             case KM_100:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_distance_3_description"), 100));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_distance_3_description"), 100));
                 break;
             case KM_250:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_distance_4_description"), 250));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_distance_4_description"), 250));
                 break;
             case KM_500:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_distance_5_description"), 500));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_distance_5_description"), 500));
                 break;
             case KM_750:
-                notificationBuilder.setContentText(String.format(IbikeApplication.getString("milestone_distance_6_description"), 750));
+                notificationBuilder.setContentText(String.format(IBikeApplication.getString("milestone_distance_6_description"), 750));
                 break;
         }
 
@@ -232,14 +233,14 @@ public class MilestoneManager extends IntentService {
 
         Notification n = notificationBuilder.build();
         NotificationManager mNotificationManager =
-                (NotificationManager) IbikeApplication.getContext().getSystemService(context.NOTIFICATION_SERVICE);
+                (NotificationManager) IBikeApplication.getContext().getSystemService(context.NOTIFICATION_SERVICE);
 
         mNotificationManager.notify(0, n);
     }
 
 
     public static int getTotalLength() {
-        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        Realm realm = Realm.getInstance(IBikeApplication.getContext());
         RealmResults<Track> results = realm.allObjects(Track.class);
 
         double totalDist = 0;
@@ -253,7 +254,7 @@ public class MilestoneManager extends IntentService {
 
     public static int daysInARow() {
         // Go though all TrackLocation objects
-        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        Realm realm = Realm.getInstance(IBikeApplication.getContext());
 
         int curStreak = 0;
         boolean stop = false;
@@ -312,20 +313,20 @@ public class MilestoneManager extends IntentService {
         Log.d("JC", "MilestoneManager got intent");
 
         // If we get the right type of intent and we've enabled the weekly notifications
-        if (intent.hasExtra("weekly") && IbikeApplication.getSettings().getNotifyWeekly()) {
-            Context context = IbikeApplication.getContext();
+        if (intent.hasExtra("weekly") && IBikeApplication.getSettings().getNotifyWeekly()) {
+            Context context = IBikeApplication.getContext();
 
             Notification.Builder notificationBuilder = new Notification.Builder(context);
-            notificationBuilder.setContentTitle(IbikeApplication.getAppName());
+            notificationBuilder.setContentTitle(IBikeApplication.getAppName());
             notificationBuilder.setSmallIcon(R.drawable.logo);
 
             Pair<Double, Pair<Integer,Integer>> sundaySummary = getSundaySummary();
 
-            notificationBuilder.setContentText(String.format(IbikeApplication.getString("weekly_status_description"), sundaySummary.first, sundaySummary.second.first, sundaySummary.second.second));
+            notificationBuilder.setContentText(String.format(IBikeApplication.getString("weekly_status_description"), sundaySummary.first, sundaySummary.second.first, sundaySummary.second.second));
 
             Notification n = notificationBuilder.build();
             NotificationManager mNotificationManager =
-                    (NotificationManager) IbikeApplication.getContext().getSystemService(context.NOTIFICATION_SERVICE);
+                    (NotificationManager) IBikeApplication.getContext().getSystemService(context.NOTIFICATION_SERVICE);
 
             mNotificationManager.notify(2, n);
         }

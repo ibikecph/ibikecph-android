@@ -9,7 +9,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.LOG;
 
@@ -138,17 +138,17 @@ public class SMTurnInstruction {
 			descriptionString = wayName;
 			break;
 		case EnterRoundAbout:
-			descriptionString = String.format(IbikeApplication.getString("direction_" + drivingDirection.ordinal()).replace("%@", "@s"),
-					IbikeApplication.getString("direction_number_" + ordinalDirection));
+			descriptionString = String.format(IBikeApplication.getString("direction_" + drivingDirection.ordinal()).replace("%@", "@s"),
+					IBikeApplication.getString("direction_number_" + ordinalDirection));
 			break;
 		default:
-			descriptionString = IbikeApplication.getString("direction_" + drivingDirection.ordinal());
+			descriptionString = IBikeApplication.getString("direction_" + drivingDirection.ordinal());
 
 		}
 
 		if (vehicle > kVehicleBike) {
 			String v = "vehicle_" + vehicle;
-			descriptionString = IbikeApplication.getString(v) + ": " + descriptionString;
+			descriptionString = IBikeApplication.getString(v) + ": " + descriptionString;
 		}
 	}
 
@@ -160,25 +160,25 @@ public class SMTurnInstruction {
 		case NoTurn:
 		case ReachedYourDestination:
 		case ReachingDestination:
-			descriptionString = IbikeApplication.getString("first_direction_" + drivingDirection.ordinal());
+			descriptionString = IBikeApplication.getString("first_direction_" + drivingDirection.ordinal());
 			break;
 		case EnterRoundAbout:
 			descriptionString = String.format(
-					IbikeApplication.getString("first_direction_" + drivingDirection.ordinal()).replace("%@", "@s"), IbikeApplication
-							.getString("direction_" + directionAbrevation).replace("%@", "@s"), IbikeApplication
+					IBikeApplication.getString("first_direction_" + drivingDirection.ordinal()).replace("%@", "@s"), IBikeApplication
+							.getString("direction_" + directionAbrevation).replace("%@", "@s"), IBikeApplication
 							.getString("direction_number_" + ordinalDirection));
 			break;
 		default:
-			String firstDirection = IbikeApplication.getString("first_direction_" + drivingDirection.ordinal());
+			String firstDirection = IBikeApplication.getString("first_direction_" + drivingDirection.ordinal());
 			firstDirection = firstDirection.replace("%@", "%s");
-			String secondDirection = IbikeApplication.getString("direction_" + directionAbrevation);
+			String secondDirection = IBikeApplication.getString("direction_" + directionAbrevation);
 			LOG.d("First direction = " + firstDirection + " Second direction = " + secondDirection);
 			descriptionString = String.format(firstDirection, secondDirection);
 		}
 
 		if (vehicle > kVehicleBike) {
 			String v = "vehicle_" + vehicle;
-			descriptionString = IbikeApplication.getString(v) + ": " + descriptionString;
+			descriptionString = IBikeApplication.getString(v) + ": " + descriptionString;
 		}
 	}
 
@@ -187,7 +187,7 @@ public class SMTurnInstruction {
 		if (drivingDirection == TurnDirection.Station)
 			fullDescriptionString = wayName;
 		else {
-			fullDescriptionString = IbikeApplication.getString("direction_" + drivingDirection.ordinal());
+			fullDescriptionString = IBikeApplication.getString("direction_" + drivingDirection.ordinal());
 
 			if (drivingDirection != TurnDirection.NoTurn && drivingDirection != TurnDirection.ReachedYourDestination
 					&& drivingDirection != TurnDirection.ReachingDestination) {
@@ -196,12 +196,12 @@ public class SMTurnInstruction {
 			// else if (drivingDirection == TurnDirection.ReachedYourDestination
 			// || drivingDirection ==
 			// TurnDirection.ReachingDestination) {
-			// fullDescriptionString = IbikeApplication.getString("arrival");
+			// fullDescriptionString = IBikeApplication.getString("arrival");
 			// }
 
 			if (vehicle > kVehicleBike) {
 				String v = "vehicle_" + vehicle;
-				fullDescriptionString = IbikeApplication.getString(v) + ": " + fullDescriptionString;
+				fullDescriptionString = IBikeApplication.getString(v) + ": " + fullDescriptionString;
 			}
 		}
 		return fullDescriptionString;
@@ -218,7 +218,7 @@ public class SMTurnInstruction {
 			}
 			if (vehicle > kVehicleBike) {
 				String v = "vehicle_" + vehicle;
-				ret = IbikeApplication.getString(v) + ": " + ret;
+				ret = IBikeApplication.getString(v) + ": " + ret;
 			}
 		}
 		return ret;
@@ -239,7 +239,7 @@ public class SMTurnInstruction {
 		String ret = "";
 		if (vehicle > kVehicleBike) {
 			String v = "vehicle_" + vehicle;
-			ret = IbikeApplication.getString(v) + ": ";
+			ret = IBikeApplication.getString(v) + ": ";
 		}
 		return ret;
 	}

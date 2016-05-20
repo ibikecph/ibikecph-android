@@ -9,7 +9,7 @@ import android.content.Context;
 import android.os.Message;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
@@ -104,7 +104,7 @@ public class HTTPAccountHandler {
         JSONObject jsonUser = new JSONObject();
 
         try {
-            jsonPOST.put("auth_token", IbikeApplication.getAuthToken());
+            jsonPOST.put("auth_token", IBikeApplication.getAuthToken());
             jsonUser.put("password", userData.getPassword());
             jsonPOST.put("user", jsonUser);
 
@@ -123,7 +123,7 @@ public class HTTPAccountHandler {
         JSONObject jsonPOST = new JSONObject();
 
         try {
-            jsonPOST.put("auth_token", IbikeApplication.getAuthToken());
+            jsonPOST.put("auth_token", IBikeApplication.getAuthToken());
 
             result = HttpUtils.postToServer(Config.API_SERVER_HAS_PASSWORD, jsonPOST);
             message = HttpUtils.JSONtoMessage(result);
@@ -141,7 +141,7 @@ public class HTTPAccountHandler {
         JSONObject jsonUser = new JSONObject();
 
         try {
-            jsonPOST.put("auth_token", IbikeApplication.getAuthToken());
+            jsonPOST.put("auth_token", IBikeApplication.getAuthToken());
             jsonUser.put("email", userData.getEmail());
             jsonUser.put("current_password", userData.getPassword());
             jsonUser.put("password", userData.getNewPassword());
@@ -242,7 +242,7 @@ public class HTTPAccountHandler {
                             ret = false;
                         } else if (response.has("id")) {
                             try {
-                                IbikeApplication.saveEmail(response.get("email").asText());
+                                IBikeApplication.saveEmail(response.get("email").asText());
                             } catch (Exception ex) {
                             }
                             ret = true;

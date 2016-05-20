@@ -7,7 +7,7 @@ package com.spoiledmilk.ibikecph.search;
 
 import android.location.Location;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMLocationManager;
 
 /**
@@ -41,7 +41,7 @@ public class CurrentLocation extends SearchListItem {
 
 	@Override
 	public String getName() {
-		return IbikeApplication.getString("current_position");
+		return IBikeApplication.getString("current_position");
 	}
 
 	@Override

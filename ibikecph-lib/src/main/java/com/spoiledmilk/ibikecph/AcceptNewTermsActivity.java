@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 
 public class AcceptNewTermsActivity extends Activity {
@@ -25,7 +25,7 @@ public class AcceptNewTermsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accept_new_terms);
 
-        this.getActionBar().setTitle(IbikeApplication.getString("user_terms_title"));
+        this.getActionBar().setTitle(IBikeApplication.getString("user_terms_title"));
 
         version = this.getIntent().getIntExtra("version", 0);
         importantNews = this.getIntent().getStringExtra("important_news");
@@ -35,19 +35,19 @@ public class AcceptNewTermsActivity extends Activity {
         TextView termsText = (TextView) findViewById(R.id.termsText);
         TextView read_terms = (TextView) findViewById(R.id.read_terms);
 
-        user_terms_description.setText(IbikeApplication.getString("user_terms_description"));
-        most_important_terms_are.setText(IbikeApplication.getString("most_important_terms_are"));
+        user_terms_description.setText(IBikeApplication.getString("user_terms_description"));
+        most_important_terms_are.setText(IBikeApplication.getString("most_important_terms_are"));
         termsText.setText(importantNews);
-        read_terms.setText(Html.fromHtml("<a href=\"" + Config.TRACKING_TERMS_URL + "\">" + IbikeApplication.getString("read_terms") + "</a>"));
+        read_terms.setText(Html.fromHtml("<a href=\"" + Config.TRACKING_TERMS_URL + "\">" + IBikeApplication.getString("read_terms") + "</a>"));
         read_terms.setMovementMethod(LinkMovementMethod.getInstance());
 
         Button btnNoThanks = (Button) findViewById(R.id.btnNoThanks);
         Button btnAcceptTerms = (Button) findViewById(R.id.btnAcceptTerms);
 
-        btnNoThanks.setText(IbikeApplication.getString("no_thanks"));
-        btnAcceptTerms.setText(IbikeApplication.getString("accept"));
+        btnNoThanks.setText(IBikeApplication.getString("no_thanks"));
+        btnAcceptTerms.setText(IBikeApplication.getString("accept"));
 
-        if (IbikeApplication.getSettings().getNewestTermsAccepted() == version)
+        if (IBikeApplication.getSettings().getNewestTermsAccepted() == version)
             finish();
     }
 
@@ -56,7 +56,7 @@ public class AcceptNewTermsActivity extends Activity {
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
     }
 
     @Override
@@ -85,18 +85,18 @@ public class AcceptNewTermsActivity extends Activity {
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle(IbikeApplication.getString("user_terms_title"));
-        builder.setMessage(IbikeApplication.getString("accept_user_terms_or_log_out"));
+        builder.setTitle(IBikeApplication.getString("user_terms_title"));
+        builder.setMessage(IBikeApplication.getString("accept_user_terms_or_log_out"));
 
-        builder.setPositiveButton(IbikeApplication.getString("logout"), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(IBikeApplication.getString("logout"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                IbikeApplication.logout();
+                IBikeApplication.logout();
                 finish();
             }
         });
 
-        builder.setNegativeButton(IbikeApplication.getString("back"), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(IBikeApplication.getString("back"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // dismiss the dialog.
@@ -112,7 +112,7 @@ public class AcceptNewTermsActivity extends Activity {
     }
 
     public  void onAcceptButtonClick(View v) {
-        IbikePreferences prefs = IbikeApplication.getSettings();
+        IBikePreferences prefs = IBikeApplication.getSettings();
 
         prefs.setNewestTermsAccepted(this.version);
 

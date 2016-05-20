@@ -36,7 +36,7 @@ public class LeftMenuItemAdapter extends ArrayAdapter<LeftMenuItem> {
 		ImageView iv = (ImageView) row.findViewById(R.id.menuItemIcon);
 		
 		// Set the label of the button to the string denoted in the item.
-		tv.setText(IbikeApplication.getString(item.getLabelID()));
+		tv.setText(IBikeApplication.getString(item.getLabelID()));
 		
 		if (item.getIconResource() != -1) {
 			iv.setImageResource(item.getIconResource());

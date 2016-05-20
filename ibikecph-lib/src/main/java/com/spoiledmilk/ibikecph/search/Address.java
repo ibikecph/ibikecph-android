@@ -8,9 +8,8 @@ package com.spoiledmilk.ibikecph.search;
 import android.location.Location;
 import android.util.Log;
 
-import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 
 import java.io.Serializable;
@@ -92,11 +91,11 @@ public class Address implements Serializable {
     public LatLng getLocation() {
 
         if (isCurrent) {
-            if (IbikeApplication.getService().getLastValidLocation() != null)
-                return new LatLng(IbikeApplication.getService().getLastValidLocation());
+            if (IBikeApplication.getService().getLastValidLocation() != null)
+                return new LatLng(IBikeApplication.getService().getLastValidLocation());
 
-            if (IbikeApplication.getService().getLastKnownLocation() != null)
-                return new LatLng(IbikeApplication.getService().getLastKnownLocation());
+            if (IBikeApplication.getService().getLastKnownLocation() != null)
+                return new LatLng(IBikeApplication.getService().getLastKnownLocation());
         }
 
         return location;
@@ -140,7 +139,7 @@ public class Address implements Serializable {
 
     public String getStreetAddress() {
         if (isCurrent) {
-            return IbikeApplication.getString("current_position");
+            return IBikeApplication.getString("current_position");
             //Checks and trims and returns name + housenumber if != null, otherwise just the name
         } else if (this.name != null && this.houseNumber != null && !this.name.trim().equals("") && !this.houseNumber.trim().equals("")) {
             return this.name + " " + this.houseNumber;
@@ -215,11 +214,11 @@ public class Address implements Serializable {
     public static Address fromCurLoc() {
 
         // First we need an SMRoute. Let's create one from the address
-        Location curLoc = IbikeApplication.getService().getLastValidLocation();
+        Location curLoc = IBikeApplication.getService().getLastValidLocation();
 
         // If we don't have a fresh GPS coordinate, go with the best that we have.
         if (curLoc == null) {
-            curLoc = IbikeApplication.getService().getLastKnownLocation();
+            curLoc = IBikeApplication.getService().getLastKnownLocation();
         }
 
         // If we still don't have a fix, we cannot do anything for them.

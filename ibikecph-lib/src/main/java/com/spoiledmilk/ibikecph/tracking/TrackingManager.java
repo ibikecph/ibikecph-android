@@ -1,14 +1,13 @@
 package com.spoiledmilk.ibikecph.tracking;
 
 import android.location.Location;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.android.gms.location.DetectedActivity;
 import com.google.android.gms.location.LocationListener;
 import com.spoiledmilk.ibikecph.BikeLocationService;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import com.spoiledmilk.ibikecph.util.Config;
@@ -95,7 +94,7 @@ public class TrackingManager implements LocationListener {
             // we came from an overridden state or not.
             this.manualOverride = false;
 
-            if (IbikeApplication.getSettings().getNotifyMilestone()) {
+            if (IBikeApplication.getSettings().getNotifyMilestone()) {
                 Log.d("JC", "Sending notification!");
                 // Check if we should notify the user of milestones reached
                 MilestoneManager.checkForMilestones();
@@ -108,7 +107,7 @@ public class TrackingManager implements LocationListener {
      */
     private void makeAndSaveTrack() {
         // Save the track to the DB
-        realm = Realm.getInstance(IbikeApplication.getContext());
+        realm = Realm.getInstance(IBikeApplication.getContext());
         realm.beginTransaction();
 
         Log.d("MF", "############## makeAndSaveTrack ##############");
@@ -230,7 +229,7 @@ public class TrackingManager implements LocationListener {
             @Override
             public void run() {
 
-                Realm realm = Realm.getInstance(IbikeApplication.getContext());
+                Realm realm = Realm.getInstance(IBikeApplication.getContext());
                 realm.beginTransaction();
                 RealmResults<Track> tracksToUpload = null;
 
@@ -255,9 +254,9 @@ public class TrackingManager implements LocationListener {
                 if (tracksToUpload.size() > 0) {
 
                     JSONObject postObject = null;
-                    String signature = IbikeApplication.getSignature();
-                    if (IbikeApplication.isUserLogedIn() && !signature.equals("")) {
-                        String authToken = IbikeApplication.getAuthToken();
+                    String signature = IBikeApplication.getSignature();
+                    if (IBikeApplication.isUserLogedIn() && !signature.equals("")) {
+                        String authToken = IBikeApplication.getAuthToken();
                         try {
                             // Loop and pack JSON for each track we want to upload!
                             for (int i = 0; i < tracksToUpload.size(); i++) {
@@ -302,7 +301,7 @@ public class TrackingManager implements LocationListener {
                                 if (responseNode != null && responseNode.has("invalid_token")) {
                                     if (responseNode.get("invalid_token").asBoolean()) {
                                         Log.d("DV", "invalid token - logout the user!");
-                                        IbikeApplication.logoutWrongToken();
+                                        IBikeApplication.logoutWrongToken();
                                     }
                                 } else {
                                     if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
@@ -350,7 +349,7 @@ public class TrackingManager implements LocationListener {
 
     public static void deleteTrack(final int id) {
 
-        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        Realm realm = Realm.getInstance(IBikeApplication.getContext());
         realm.beginTransaction();
         RealmResults<Track> trackToDelete = null;
 
@@ -361,9 +360,9 @@ public class TrackingManager implements LocationListener {
         }
 
         try {
-            if (IbikeApplication.isUserLogedIn()) {
-                String authToken = IbikeApplication.getAuthToken();
-                String signature = IbikeApplication.getSignature();
+            if (IBikeApplication.isUserLogedIn()) {
+                String authToken = IBikeApplication.getAuthToken();
+                String signature = IBikeApplication.getSignature();
                 JSONObject postObject = new JSONObject();
                 postObject.put("auth_token", authToken);
                 postObject.put("signature", signature);
@@ -374,7 +373,7 @@ public class TrackingManager implements LocationListener {
                         Log.d("DV", "invalid token - logout the user!");
                         realm.cancelTransaction();
                         realm.close();
-                        IbikeApplication.logoutWrongToken();
+                        IBikeApplication.logoutWrongToken();
                     }
                 } else {
                     if (responseNode != null) {
@@ -411,7 +410,7 @@ public class TrackingManager implements LocationListener {
     //Test method
     public static void createFakeTrack() {
         Log.d("DV", "Creating fake track!");
-        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        Realm realm = Realm.getInstance(IBikeApplication.getContext());
         realm.beginTransaction();
 
         Track track;
@@ -444,7 +443,7 @@ public class TrackingManager implements LocationListener {
             @Override
             public void run() {
 
-                Realm realm = Realm.getInstance(IbikeApplication.getContext());
+                Realm realm = Realm.getInstance(IBikeApplication.getContext());
                 realm.beginTransaction();
                 RealmResults<Track> tracksToUpload = null;
 
@@ -469,9 +468,9 @@ public class TrackingManager implements LocationListener {
                 if (tracksToUpload.size() > 0) {
 
                     JSONObject postObject = null;
-                    String signature = IbikeApplication.getSignature();
-                    if (IbikeApplication.isUserLogedIn() && !signature.equals("")) {
-                        String authToken = IbikeApplication.getAuthToken();
+                    String signature = IBikeApplication.getSignature();
+                    if (IBikeApplication.isUserLogedIn() && !signature.equals("")) {
+                        String authToken = IBikeApplication.getAuthToken();
                         try {
 
                             // Loop and pack JSON for each track we want to upload!
@@ -508,7 +507,7 @@ public class TrackingManager implements LocationListener {
                                 if (responseNode != null && responseNode.has("invalid_token")) {
                                     if (responseNode.get("invalid_token").asBoolean()) {
                                         Log.d("DV", "invalid token - logout the user!");
-                                        IbikeApplication.logoutWrongToken();
+                                        IBikeApplication.logoutWrongToken();
                                     }
                                 } else {
                                     if (responseNode != null && responseNode.has("data") && responseNode.get("data").has("id")) {
@@ -554,7 +553,7 @@ public class TrackingManager implements LocationListener {
     }
 
     public static void printAllTracks() {
-        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        Realm realm = Realm.getInstance(IBikeApplication.getContext());
         realm.beginTransaction();
         RealmResults<Track> tracksToUpload = null;
         try {
@@ -586,7 +585,7 @@ public class TrackingManager implements LocationListener {
     @Override
     public void onLocationChanged(Location givenLocation) {
         // TODO: The `realm` field would be nice to have on the class instead of potentially constructing it on each GPS update
-        realm = Realm.getInstance(IbikeApplication.getContext());
+        realm = Realm.getInstance(IBikeApplication.getContext());
 
         if (isTracking && givenLocation.getAccuracy() <= MAX_INACCURACY) {
             Log.d("JC", "Got new GPS coord");
@@ -597,7 +596,7 @@ public class TrackingManager implements LocationListener {
     public void onActivityChanged(int activityType, int confidence) {
         //Log.d("JC", "TrackingManager new activity");
         if (
-                IbikeApplication.getSettings().getTrackingEnabled() &&
+                IBikeApplication.getSettings().getTrackingEnabled() &&
                         ((!this.isTracking && activityType == DetectedActivity.ON_BICYCLE) ||
                                 (!this.isTracking() && DEBUG && activityType == DetectedActivity.TILTING))
                 ) {

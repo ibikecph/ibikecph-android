@@ -3,7 +3,7 @@ package com.spoiledmilk.cykelsuperstier.map;
 import android.graphics.Color;
 import android.util.Log;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.util.Util;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,7 +24,7 @@ public class SupercykelstiPathOverlay extends PathOverlay {
         ArrayList<SupercykelstiPathOverlay> ret = new ArrayList<SupercykelstiPathOverlay>();
 
         try {
-            String routesStr = Util.stringFromJsonAssets(IbikeApplication.getContext(), "stations/farum-route.json");
+            String routesStr = Util.stringFromJsonAssets(IBikeApplication.getContext(), "stations/farum-route.json");
 
             JSONArray routesArray = (JSONArray) (new JSONObject(routesStr)).getJSONArray("coordinates");
             for (int i = 0; i < routesArray.length(); i++) {

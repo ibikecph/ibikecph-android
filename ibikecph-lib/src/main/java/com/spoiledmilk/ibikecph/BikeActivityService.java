@@ -40,12 +40,12 @@ public class BikeActivityService extends WakefulIntentService {
 
 
                 // We're in the context of an Intent, so we need to run the subscription on the main thread.
-                Handler mainHandler = new Handler(IbikeApplication.getContext().getMainLooper());
+                Handler mainHandler = new Handler(IBikeApplication.getContext().getMainLooper());
 
                 Runnable broadcastActivityChange = new Runnable() {
                     @Override
                     public void run() {
-                        IbikeApplication.getTrackingManager().onActivityChanged(activityType, confidence);
+                        IBikeApplication.getTrackingManager().onActivityChanged(activityType, confidence);
                     }
                 };
 

@@ -35,7 +35,8 @@ public class AboutActivity extends Activity {
 		textAboutText.setMovementMethod(LinkMovementMethod.getInstance());
 		textAboutText.setClickable(true);
 
-        this.getActionBar().setTitle(IbikeApplication.getString("about_app_ibc"));
+        this.getActionBar().setTitle(IBikeApplication.getString("about_app_ibc"));
+
 
 		//getBuildInfo();
 	}
@@ -45,13 +46,17 @@ public class AboutActivity extends Activity {
 		super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
+
+		IBikePreferences preferences = IBikeApplication.getSettings();
+		CheckBox crashReportingCheckBox = (CheckBox) findViewById(R.id.crashReportingCheckBox);
+		crashReportingCheckBox.setChecked(preferences.isCrashReportingEnabled());
 
 		initStrings();
 	}
 
 	private void initStrings() {
-		String text = IbikeApplication.getString("about_text_ibc");
+		String text = IBikeApplication.getString("about_text_ibc");
 		textAboutText.setText(text);
 	}
 

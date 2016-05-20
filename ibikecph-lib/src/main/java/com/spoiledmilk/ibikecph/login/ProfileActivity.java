@@ -25,7 +25,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.*;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.*;
 
@@ -64,14 +64,14 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         btnLogout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                IbikeApplication.logout();
+                IBikeApplication.logout();
                 (new DB(ProfileActivity.this)).deleteFavorites();
-                IbikeApplication.setIsFacebookLogin(false);
+                IBikeApplication.setIsFacebookLogin(false);
 
                 // Disable tracking
-                IbikeApplication.getSettings().setTrackingEnabled(false);
-                IbikeApplication.getSettings().setNotifyMilestone(false);
-                IbikeApplication.getSettings().setNotifyWeekly(false);
+                IBikeApplication.getSettings().setTrackingEnabled(false);
+                IBikeApplication.getSettings().setNotifyMilestone(false);
+                IBikeApplication.getSettings().setNotifyWeekly(false);
 
                 // Set the result so the MapActivity causes the LeftMenu to reload 
                 setResult(RESULT_OK);
@@ -172,9 +172,9 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                                 PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("signature").commit();
                                 PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("id").commit();
                                 setResult(RESULT_USER_DELETED);
-                                IbikeApplication.setIsFacebookLogin(false);
+                                IBikeApplication.setIsFacebookLogin(false);
                                 (new DB(ProfileActivity.this)).deleteFavorites();
-                                IbikeApplication.logoutDeleteUser();
+                                IBikeApplication.logoutDeleteUser();
                                 //finish();
                                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                             } else {
@@ -199,7 +199,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
         //actionbar.show();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         super.onResume();
         initStrings();
@@ -227,23 +227,23 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
     }
 
     private void initStrings() {
-        //textTitle.setText(IbikeApplication.getString("account"));
-        //textTitle.setTypeface(IbikeApplication.getNormalFont());
+        //textTitle.setText(IBikeApplication.getString("account"));
+        //textTitle.setTypeface(IBikeApplication.getNormalFont());
         //textLogedIn.setText();
-        btnLogout.setText(IbikeApplication.getString("logout"));
-        btnDelete.setText(IbikeApplication.getString("delete_my_account"));
-        btnEdit.setText(IbikeApplication.getString("edit_account"));
+        btnLogout.setText(IBikeApplication.getString("logout"));
+        btnDelete.setText(IBikeApplication.getString("delete_my_account"));
+        btnEdit.setText(IBikeApplication.getString("edit_account"));
     }
 
     private void updateControls() {
         textName.setText(userData.getName());
-        textLoggedInAs.setText(IbikeApplication.getString("track_token_subtitle_native"));
+        textLoggedInAs.setText(IBikeApplication.getString("track_token_subtitle_native"));
         textEmail.setText(userData.getEmail());
     }
 
     private void launchAlertDialog(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
-        builder.setMessage(msg).setTitle(IbikeApplication.getString("Error"));
+        builder.setMessage(msg).setTitle(IBikeApplication.getString("Error"));
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
@@ -255,14 +255,14 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
 
     private void launchDeleteDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(IbikeApplication.getString("delete_account_text")).setTitle(IbikeApplication.getString("delete_account_title"));
+        builder.setMessage(IBikeApplication.getString("delete_account_text")).setTitle(IBikeApplication.getString("delete_account_title"));
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        input.setHint(IbikeApplication.getString("register_password_placeholder"));
+        input.setHint(IBikeApplication.getString("register_password_placeholder"));
         builder.setView(input);
 
-        builder.setPositiveButton(IbikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(IBikeApplication.getString("Delete"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 runOnUiThread(new Runnable() {
@@ -287,7 +287,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
 
                 // TODO: Change this to the implementation described here
                 // https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
-                // IbikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
+                // IBikeApplication.getTracker().sendEvent("Account", "Delete", "", Long.valueOf(0));
 
                 new Thread(new Runnable() {
                     @Override
@@ -315,7 +315,7 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
                 dialog.dismiss();
             }
         });
-        builder.setNegativeButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(IBikeApplication.getString("close"), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();

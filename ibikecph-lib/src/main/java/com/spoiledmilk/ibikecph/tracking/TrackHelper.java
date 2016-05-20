@@ -3,7 +3,7 @@ package com.spoiledmilk.ibikecph.tracking;
 import android.location.Location;
 import android.util.Log;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.map.SMHttpRequest;
 import com.spoiledmilk.ibikecph.map.SMHttpRequestListener;
 import com.spoiledmilk.ibikecph.persist.Track;
@@ -59,7 +59,7 @@ public class TrackHelper implements SMHttpRequestListener {
              */
 
             // Get the most recent track
-            Realm realm = Realm.getInstance(IbikeApplication.getContext());
+            Realm realm = Realm.getInstance(IBikeApplication.getContext());
             realm.beginTransaction();
 
             TrackLocation start = _track.getLocations().first();
@@ -127,9 +127,9 @@ public class TrackHelper implements SMHttpRequestListener {
     }
 
     public static void ensureAllTracksGeocoded() {
-        Realm realm = Realm.getInstance(IbikeApplication.getContext());
+        Realm realm = Realm.getInstance(IBikeApplication.getContext());
 
-        for (Track t : Realm.getInstance(IbikeApplication.getContext()).allObjects(Track.class)) {
+        for (Track t : Realm.getInstance(IBikeApplication.getContext()).allObjects(Track.class)) {
             if (!t.getHasBeenGeocoded()) {
                 TrackHelper th = new TrackHelper(t);
                 th.geocodeTrack();

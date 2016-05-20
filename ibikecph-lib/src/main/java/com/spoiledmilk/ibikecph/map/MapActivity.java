@@ -44,7 +44,7 @@ import com.mapbox.mapboxsdk.events.ScrollEvent;
 import com.mapbox.mapboxsdk.events.ZoomEvent;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.LeftMenu;
 
@@ -64,6 +64,7 @@ import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackHelper;
 import com.spoiledmilk.ibikecph.tracking.TrackingStatisticsFragment;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 import com.spoiledmilk.ibikecph.util.Util;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -131,7 +132,7 @@ public class MapActivity extends BaseMapActivity {
         // Create the drawer menu to the left.
         createMenu();
 
-        // TODO: Remove this after reimplementing the logout* methods of the IbikeApplication class
+        // TODO: Remove this after reimplementing the logout* methods of the IBikeApplication class
         mapActivityContext = this;
 
         // Finding the sub-components of the activity's view, consider if these need to be static
@@ -183,7 +184,7 @@ public class MapActivity extends BaseMapActivity {
         });
 
         // Disable pathoverlay for super roads until this functionality is ready to be used.
-        IbikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
+        IBikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
 
         // Uploads tracks to the server - TODO: consider removing this call and class entirely.
         TrackingManager.uploadTracksToServer();
@@ -195,11 +196,11 @@ public class MapActivity extends BaseMapActivity {
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         /*
         LOG.d("Map activity onResume");
-        if (IbikeApplication.getSettings().getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
+        if (IBikeApplication.getSettings().getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
             showStatisticsInfoPane();
         } else if (!fromSearch && OverviewMapHandler.isWatchingAddress) {
             MapActivity.topFragment.setVisibility(View.VISIBLE);
@@ -227,8 +228,8 @@ public class MapActivity extends BaseMapActivity {
 
             if (intent.getExtras().getBoolean("loggedOut")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(IbikeApplication.getString("invalid_token_user_logged_out"));
-                builder.setPositiveButton(IbikeApplication.getString("log_in"), new DialogInterface.OnClickListener() {
+                builder.setMessage(IBikeApplication.getString("invalid_token_user_logged_out"));
+                builder.setPositiveButton(IBikeApplication.getString("log_in"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(MapActivity.this, LoginActivity.class);
@@ -236,7 +237,7 @@ public class MapActivity extends BaseMapActivity {
                         dialog.dismiss();
                     }
                 });
-                builder.setNegativeButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(IBikeApplication.getString("close"), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -250,7 +251,7 @@ public class MapActivity extends BaseMapActivity {
 
             if (intent.getExtras().getBoolean("deleteUser")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
-                builder.setMessage(IbikeApplication.getString("account_deleted"));
+                builder.setMessage(IBikeApplication.getString("account_deleted"));
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
@@ -410,7 +411,7 @@ public class MapActivity extends BaseMapActivity {
 
             Log.d("MapActivity", "Adding map's locationListener to the LocationService.");
             // We need a LocationListener to have the service be able to provide GPS coordinates.
-            IbikeApplication.getService().addLocationListener(locationListener);
+            IBikeApplication.getService().addLocationListener(locationListener);
         }
     }
 
@@ -419,7 +420,7 @@ public class MapActivity extends BaseMapActivity {
      */
     private void deregisterLocationListener() {
         if (locationListener != null) {
-            IbikeApplication.getService().removeLocationListener(locationListener);
+            IBikeApplication.getService().removeLocationListener(locationListener);
             // Null this - as this is how we know if we've already added it to the location service.
             locationListener = null;
         }
@@ -545,10 +546,10 @@ public class MapActivity extends BaseMapActivity {
     private void launchLoginDialog() {
         if (loginDlg == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(IbikeApplication.getString("login"));
-            builder.setMessage(IbikeApplication.getString("error_not_logged_in"));
+            builder.setTitle(IBikeApplication.getString("login"));
+            builder.setMessage(IBikeApplication.getString("error_not_logged_in"));
 
-            builder.setPositiveButton(IbikeApplication.getString("login"), new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(IBikeApplication.getString("login"), new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -556,7 +557,7 @@ public class MapActivity extends BaseMapActivity {
                     startActivity(i);
                 }
             });
-            builder.setNegativeButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(IBikeApplication.getString("close"), new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -609,8 +610,8 @@ public class MapActivity extends BaseMapActivity {
         } else if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
             AlertDialog dialog;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(IbikeApplication.getString("account_deleted"));
-            builder.setPositiveButton(IbikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+            builder.setMessage(IBikeApplication.getString("account_deleted"));
+            builder.setPositiveButton(IBikeApplication.getString("close"), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                 }

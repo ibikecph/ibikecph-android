@@ -5,9 +5,7 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.favorites;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.Config;
@@ -100,7 +98,7 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
 
             final JSONObject postObject = new JSONObject();
             try {
-                postObject.put("auth_token", IbikeApplication.getAuthToken());
+                postObject.put("auth_token", IBikeApplication.getAuthToken());
                 JSONArray favorites = new JSONArray();
                 for (int i = 0; i < data.size(); i++) {
                     JSONObject item = new JSONObject();

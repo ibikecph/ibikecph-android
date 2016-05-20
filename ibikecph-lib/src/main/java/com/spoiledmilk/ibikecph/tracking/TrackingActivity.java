@@ -10,12 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.login.SignatureActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 import com.spoiledmilk.ibikecph.util.Util;
 
 import io.realm.Realm;
@@ -64,10 +64,10 @@ public class TrackingActivity extends Activity {
         this.calUnitText = (TextView) findViewById(R.id.calUnitText);
         this.hoursText = (TextView) findViewById(R.id.hoursText);
 
-        ((Button) findViewById(R.id.reactivateButton)).setText(IbikeApplication.getString("reenable_tracking"));
+        ((Button) findViewById(R.id.reactivateButton)).setText(IBikeApplication.getString("reenable_tracking"));
 
         try {
-            this.getActionBar().setTitle(IbikeApplication.getString("tracking"));
+            this.getActionBar().setTitle(IBikeApplication.getString("tracking"));
             this.getActionBar().setDisplayHomeAsUpEnabled(false);
         } catch (NullPointerException e) {
             // There was no ActionBar. Oh well...
@@ -91,12 +91,12 @@ public class TrackingActivity extends Activity {
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         updateSummaryStatistics();
         updateStrings();
         updateListOfTracks();
-        if(!IbikeApplication.getSettings().getTrackingEnabled() && trackListAdapter.getCount() == 0){
+        if(!IBikeApplication.getSettings().getTrackingEnabled() && trackListAdapter.getCount() == 0){
             finish();
         }
         updateReactivateButtonVisibility();
@@ -136,13 +136,13 @@ public class TrackingActivity extends Activity {
     public void updateStrings() {
         this.trackingStatusTextView.setText("Tracking: " + trackingManager.isTracking());
 
-        this.kmText.setText(IbikeApplication.getString("unit_km"));
-        this.kmtText.setText(IbikeApplication.getString("unit_km_pr_h"));
-        this.calUnitText.setText(IbikeApplication.getString("unit_kcal_pr_day"));
+        this.kmText.setText(IBikeApplication.getString("unit_km"));
+        this.kmtText.setText(IBikeApplication.getString("unit_km_pr_h"));
+        this.calUnitText.setText(IBikeApplication.getString("unit_kcal_pr_day"));
 
-        this.hoursText.setText(IbikeApplication.getString("unit_h_long"));
+        this.hoursText.setText(IBikeApplication.getString("unit_h_long"));
 
-        this.activityText.setText(IbikeApplication.getString("stats_description"));
+        this.activityText.setText(IBikeApplication.getString("stats_description"));
 
         // Get the timestamp of the first recorded TrackLocation
         Realm realm = Realm.getInstance(this);
@@ -151,7 +151,7 @@ public class TrackingActivity extends Activity {
         try {
             Date firstActivity = results.first().getTimestamp();
             String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(firstActivity);
-            this.sinceText.setText(IbikeApplication.getString("Since") + " " + formattedDate);
+            this.sinceText.setText(IBikeApplication.getString("Since") + " " + formattedDate);
         } catch (ArrayIndexOutOfBoundsException e) {
             this.sinceText.setText("");
         }
@@ -161,7 +161,7 @@ public class TrackingActivity extends Activity {
 
     public int getNumberOfDaysSinceFirstCycled() {
         try {
-            Realm realm = Realm.getInstance(IbikeApplication.getContext());
+            Realm realm = Realm.getInstance(IBikeApplication.getContext());
             RealmResults<Track> results = realm.allObjects(Track.class);
             results.sort("timestamp", Sort.ASCENDING);
 
@@ -214,13 +214,13 @@ public class TrackingActivity extends Activity {
         timeTextView.setText(String.format("%d", totalHours));
 
         if (totalHours == 1) {
-            this.hoursText.setText(IbikeApplication.getString("unit_h_long_singular"));
+            this.hoursText.setText(IBikeApplication.getString("unit_h_long_singular"));
         }
     }
 
     public void printDebugInfo() {
-        Log.d("JC", "Current max streak: " + IbikeApplication.getSettings().getMaxStreakLength());
-        Log.d("JC", "Current max length ordinal: " + IbikeApplication.getSettings().getLengthNotificationOrdinal());
+        Log.d("JC", "Current max streak: " + IBikeApplication.getSettings().getMaxStreakLength());
+        Log.d("JC", "Current max length ordinal: " + IBikeApplication.getSettings().getLengthNotificationOrdinal());
     }
 
     public void onReactivateButtonClick(View v) {
@@ -229,29 +229,29 @@ public class TrackingActivity extends Activity {
             return;
         }
         // IF the user is not logged in, spawn a dialog saying so.
-        if (!IbikeApplication.isUserLogedIn() && !IbikeApplication.isFacebookLogin()) {
+        if (!IBikeApplication.isUserLogedIn() && !IBikeApplication.isFacebookLogin()) {
             TrackingWelcomeActivity.MustLogInDialogFragment loginDialog = new TrackingWelcomeActivity.MustLogInDialogFragment();
             loginDialog.show(getFragmentManager(), "MustLoginDialog");
 
         } else {
-            if (IbikeApplication.getSignature().equals("")) {
-                if (IbikeApplication.isFacebookLogin()) {
+            if (IBikeApplication.getSignature().equals("")) {
+                if (IBikeApplication.isFacebookLogin()) {
                     Log.d("DV", "Prompting Facebookuser to create a password!");
                     Intent i = new Intent(TrackingActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     Log.d("DV", "Starting activity with resultcode = 99");
                     startActivityForResult(i, 99);
-                } else if (IbikeApplication.isUserLogedIn()) {
+                } else if (IBikeApplication.isUserLogedIn()) {
                     Log.d("DV", "Prompting login for user!");
                     Intent i = new Intent(TrackingActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivityForResult(i, 10);
                 }
             } else {
                 Log.d("DV", "We got a signature, enabling tracking!");
-                Log.d("DV", "Tracking signature = " + IbikeApplication.getSignature());
+                Log.d("DV", "Tracking signature = " + IBikeApplication.getSignature());
                 // Remove the button and spacer
                 findViewById(R.id.reactivateButton).setVisibility(View.GONE);
                 findViewById(R.id.reactivateButtonSpacer).setVisibility(View.GONE);
-                IbikePreferences settings = IbikeApplication.getSettings();
+                IBikePreferences settings = IBikeApplication.getSettings();
                 settings.setTrackingEnabled(true);
                 settings.setNotifyMilestone(true);
                 settings.setNotifyWeekly(true);
@@ -264,7 +264,7 @@ public class TrackingActivity extends Activity {
 
     void updateReactivateButtonVisibility() {
 
-        if (!IbikeApplication.getSettings().getTrackingEnabled()) {
+        if (!IBikeApplication.getSettings().getTrackingEnabled()) {
             findViewById(R.id.reactivateButton).setVisibility(View.VISIBLE);
             findViewById(R.id.reactivateButtonSpacer).setVisibility(View.VISIBLE);
         } else {

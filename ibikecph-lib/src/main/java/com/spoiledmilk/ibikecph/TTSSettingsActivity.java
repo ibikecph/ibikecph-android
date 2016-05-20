@@ -23,10 +23,10 @@ public class TTSSettingsActivity extends Activity {
 
 
 
-		this.getActionBar().setTitle(IbikeApplication.getString("voice"));
+		this.getActionBar().setTitle(IBikeApplication.getString("voice"));
 		this.enableSwitch = (Switch) findViewById(R.id.ttsEnabledSwitch);
 		
-		this.enableSwitch.setText(IbikeApplication.getString("voice_option"));
+		this.enableSwitch.setText(IBikeApplication.getString("voice_option"));
 		
 		this.enableSwitch.setChecked(Config.TTS_ENABLED);
 	}
@@ -35,7 +35,7 @@ public class TTSSettingsActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 		// Tell Google Analytics that the user has resumed on this screen.
-		IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+		IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 	}
 
 	@Override

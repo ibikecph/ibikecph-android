@@ -8,7 +8,6 @@ package com.spoiledmilk.ibikecph.search;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.AnimationDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +19,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.controls.ObservableScrollView;
 import com.spoiledmilk.ibikecph.controls.ScrollViewListener;
@@ -112,7 +111,7 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         textFavorites = (TextView) findViewById(R.id.textFavorites);
         textRecent = (TextView) findViewById(R.id.textRecent);
 
-        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
+        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
             (findViewById(R.id.line)).setBackgroundColor(getResources().getColor(R.color.CPActionBar));
         }
     }
@@ -137,9 +136,9 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         // Start routing
         Intent intent = new Intent();
         if (ALatitude == -1 || ALongitude == -1) {
-            Location start = IbikeApplication.getService().getLastValidLocation();
+            Location start = IBikeApplication.getService().getLastValidLocation();
             if (start == null) {
-                start = IbikeApplication.getService().getLastKnownLocation();
+                start = IBikeApplication.getService().getLastKnownLocation();
             }
             if (start != null) {
                 ALatitude = start.getLatitude();
@@ -213,14 +212,14 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         initStrings();
         if (textCurrentLoc.getVisibility() == View.VISIBLE
-                && (IbikeApplication.getService().getLastValidLocation() != null || IbikeApplication.getService().getLastKnownLocation() != null)) {
-            Location loc = IbikeApplication.getService().getLastValidLocation();
+                && (IBikeApplication.getService().getLastValidLocation() != null || IBikeApplication.getService().getLastKnownLocation() != null)) {
+            Location loc = IBikeApplication.getService().getLastValidLocation();
             if (loc == null) {
-                loc = IbikeApplication.getService().getLastKnownLocation();
+                loc = IBikeApplication.getService().getLastKnownLocation();
             }
             ALatitude = loc.getLatitude();
             ALongitude = loc.getLongitude();
@@ -301,13 +300,13 @@ public class SearchActivity extends Activity implements ScrollViewListener {
     }
 
     private void initStrings() {
-        textCurrentLoc.setText(IbikeApplication.getString("current_position"));
-        textB.setHint(IbikeApplication.getString("search_to_placeholder"));
-        textFavorites.setText(IbikeApplication.getString("favorites"));
-        textFavorites.setTypeface(IbikeApplication.getBoldFont());
-        textRecent.setText(IbikeApplication.getString("recent_results"));
-        textRecent.setTypeface(IbikeApplication.getBoldFont());
-        ((TextView) findViewById(R.id.textOverviewHeader)).setTypeface(IbikeApplication.getBoldFont());
+        textCurrentLoc.setText(IBikeApplication.getString("current_position"));
+        textB.setHint(IBikeApplication.getString("search_to_placeholder"));
+        textFavorites.setText(IBikeApplication.getString("favorites"));
+        textFavorites.setTypeface(IBikeApplication.getBoldFont());
+        textRecent.setText(IBikeApplication.getString("recent_results"));
+        textRecent.setTypeface(IBikeApplication.getBoldFont());
+        ((TextView) findViewById(R.id.textOverviewHeader)).setTypeface(IBikeApplication.getBoldFont());
     }
 
     @Override
@@ -352,13 +351,13 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
         @Override
         public void run() {
-            final ArrayList<SearchListItem> searchHistory = IbikeApplication.isUserLogedIn() ? new DB(SearchActivity.this)
+            final ArrayList<SearchListItem> searchHistory = IBikeApplication.isUserLogedIn() ? new DB(SearchActivity.this)
                     .getSearchHistoryFromServer(SearchActivity.this) : null;
             if (SearchActivity.this != null && !isDestroyed) {
                 SearchActivity.this.runOnUiThread(new Runnable() {
                     public void run() {
                         ArrayList<SearchListItem> searchHistory2 = searchHistory;
-                        if (searchHistory == null || !IbikeApplication.isUserLogedIn()) {
+                        if (searchHistory == null || !IBikeApplication.isUserLogedIn()) {
                             searchHistory2 = (new DB(SearchActivity.this)).getSearchHistory();
                             if (searchHistory2 != null) {
                                 final HistoryAdapter adapter = new HistoryAdapter(SearchActivity.this, searchHistory2);
@@ -467,9 +466,9 @@ public class SearchActivity extends Activity implements ScrollViewListener {
                 textOverviewHeader.setVisibility(View.GONE);
             }
             if (y <= (listFavorites.getAdapter().getCount() + 2) * listItemHeight) {
-                textOverviewHeader.setText(IbikeApplication.getString("favorites"));
+                textOverviewHeader.setText(IBikeApplication.getString("favorites"));
             } else {
-                textOverviewHeader.setText(IbikeApplication.getString("recent_results"));
+                textOverviewHeader.setText(IBikeApplication.getString("recent_results"));
             }
         }
     }

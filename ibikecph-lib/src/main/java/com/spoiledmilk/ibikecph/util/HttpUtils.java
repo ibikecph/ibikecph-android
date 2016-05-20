@@ -14,7 +14,7 @@ import android.util.Log;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.login.HTTPDeleteWithBody;
 import com.spoiledmilk.ibikecph.login.UserData;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
@@ -139,7 +139,7 @@ public class HttpUtils {
             httppost = new HttpPost(url.toString());
             httppost.setHeader("Content-type", "application/json");
             httppost.setHeader("Accept", ACCEPT);
-            httppost.setHeader("LANGUAGE_CODE", IbikeApplication.getLanguageString());
+            httppost.setHeader("LANGUAGE_CODE", IBikeApplication.getLanguageString());
             StringEntity se = new StringEntity(objectToPost.toString(), HTTP.UTF_8);// , HTTP.UTF_8
             se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
             httppost.setEntity(se);
@@ -171,7 +171,7 @@ public class HttpUtils {
             httpget = new HttpGet(url.toString());
             httpget.setHeader("Content-type", "application/json");
             httpget.setHeader("Accept", ACCEPT);
-            httpget.setHeader("LANGUAGE_CODE", IbikeApplication.getLanguageString());
+            httpget.setHeader("LANGUAGE_CODE", IBikeApplication.getLanguageString());
             HttpResponse response = httpclient.execute(httpget);
             String serverResponse = EntityUtils.toString(response.getEntity());
             LOG.d("API response = " + serverResponse);
@@ -199,7 +199,7 @@ public class HttpUtils {
             httput = new HttpPut(url.toString());
             httput.setHeader("Content-type", "application/json");
             httput.setHeader("Accept", ACCEPT);
-            httput.setHeader("LANGUAGE_CODE", IbikeApplication.getLanguageString());
+            httput.setHeader("LANGUAGE_CODE", IBikeApplication.getLanguageString());
             StringEntity se = new StringEntity(objectToPost.toString(), HTTP.UTF_8);
             se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
             httput.setEntity(se);
@@ -230,7 +230,7 @@ public class HttpUtils {
             httpdelete = new HTTPDeleteWithBody(url.toString());
             httpdelete.setHeader("Content-type", "application/json");
             httpdelete.setHeader("Accept", ACCEPT);
-            httpdelete.setHeader("LANGUAGE_CODE", IbikeApplication.getLanguageString());
+            httpdelete.setHeader("LANGUAGE_CODE", IBikeApplication.getLanguageString());
             StringEntity se = new StringEntity(objectToPost.toString(), HTTP.UTF_8);
             se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
             httpdelete.setEntity(se);
@@ -259,7 +259,7 @@ public class HttpUtils {
             if (result.has("invalid_token")) {
                 if (result.get("invalid_token").asBoolean()) {
                     data.putBoolean("invalid_token", result.get("invalid_token").asBoolean());
-                    IbikeApplication.logoutWrongToken();
+                    IBikeApplication.logoutWrongToken();
                 }
             }
             /*if (result.has("errors"))
@@ -294,7 +294,7 @@ public class HttpUtils {
             if (result.has("invalid_token")) {
                 if (result.get("invalid_token").asBoolean()) {
                     data.putBoolean("invalid_token", result.get("invalid_token").asBoolean());
-                    IbikeApplication.logoutWrongToken();
+                    IBikeApplication.logoutWrongToken();
                 }
             }
             if (result != null && result.has("data")) {

@@ -1,6 +1,8 @@
 package com.spoiledmilk.ibikecph.map.states;
 
+import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.map.MapActivity;
+import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 
 /**
  * The user is navigating a particular route from the current location towards a destination.
@@ -14,11 +16,17 @@ public class NavigatingState extends MapState {
 
     @Override
     public void transitionTowards(MapState from) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        activity.getMapView().setUserLocationEnabled(true);
+        UserLocationOverlay userLocationOverlay = activity.getMapView().getUserLocationOverlay();
+        userLocationOverlay.enableFollowLocation();
+        userLocationOverlay.setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
+
+        activity.getMapView().setMapViewListener(NavigationMapHandler.class);
     }
 
     @Override
     public void transitionAway(MapState to) {
+        activity.getMapView().setUserLocationEnabled(false);
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

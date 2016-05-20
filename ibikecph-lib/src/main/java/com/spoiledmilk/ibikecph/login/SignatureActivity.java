@@ -21,11 +21,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -105,7 +105,7 @@ public class SignatureActivity extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            textName.setTypeface(IbikeApplication.getItalicFont());
+                            textName.setTypeface(IBikeApplication.getItalicFont());
                             textName.setText(userData.getEmail());
                         }
                     });
@@ -152,7 +152,7 @@ public class SignatureActivity extends Activity {
                                     }
                                     Log.d("DV", "Vi har modtaget signature = " + signature);
                                     PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).edit().putString("signature", signature).commit();
-                                    IbikePreferences settings = IbikeApplication.getSettings();
+                                    IBikePreferences settings = IBikeApplication.getSettings();
                                     settings.setTrackingEnabled(true);
                                     settings.setNotifyMilestone(true);
                                     settings.setNotifyWeekly(true);
@@ -178,7 +178,7 @@ public class SignatureActivity extends Activity {
                             }
                         }).start();
                     } else {
-                        launchAlertDialog(IbikeApplication.getString("register_error_fields"));
+                        launchAlertDialog(IBikeApplication.getString("register_error_fields"));
                     }
                 }
             });
@@ -244,7 +244,7 @@ public class SignatureActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final Message message = HTTPAccountHandler.performGetUser(new UserData(IbikeApplication.getAuthToken(), PreferenceManager
+                final Message message = HTTPAccountHandler.performGetUser(new UserData(IBikeApplication.getAuthToken(), PreferenceManager
                         .getDefaultSharedPreferences(SignatureActivity.this).getInt("id", -1)));
                 final Bundle data = message.getData();
                 Boolean success = false;
@@ -259,7 +259,7 @@ public class SignatureActivity extends Activity {
 
                             /*Util.showSimpleMessageDlg(SignatureActivity.this, "Error fetching the user id = "
                                     + PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).getInt("id", -1) + " auth token = "
-                                    + IbikeApplication.getAuthToken() + (message != null ? message.toString() : ""));*/
+                                    + IBikeApplication.getAuthToken() + (message != null ? message.toString() : ""));*/
 
                             progressBar.setVisibility(View.GONE);
                             inProgress = false;
@@ -283,7 +283,7 @@ public class SignatureActivity extends Activity {
                             Looper.myLooper();
                             Looper.prepare();
                             showProgressDialog();
-                            userData = new UserData(IbikeApplication.getEmail(), textNewPassword.getText().toString());
+                            userData = new UserData(IBikeApplication.getEmail(), textNewPassword.getText().toString());
                             Message message = HTTPAccountHandler.performLogin(userData, true);
                             Bundle data = message.getData();
                             boolean success = data.getBoolean("success");
@@ -294,7 +294,7 @@ public class SignatureActivity extends Activity {
                                 }
                                 Log.d("DV", "Vi har modtaget signature = " + signature);
                                 PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).edit().putString("signature", signature).commit();
-                                IbikePreferences settings = IbikeApplication.getSettings();
+                                IBikePreferences settings = IBikeApplication.getSettings();
                                 settings.setTrackingEnabled(true);
                                 settings.setNotifyMilestone(true);
                                 settings.setNotifyWeekly(true);
@@ -360,7 +360,7 @@ public class SignatureActivity extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                final Message message = HTTPAccountHandler.performGetUser(new UserData(IbikeApplication.getAuthToken(), PreferenceManager
+                final Message message = HTTPAccountHandler.performGetUser(new UserData(IBikeApplication.getAuthToken(), PreferenceManager
                         .getDefaultSharedPreferences(SignatureActivity.this).getInt("id", -1)));
                 final Bundle data = message.getData();
                 Boolean success = false;
@@ -376,7 +376,7 @@ public class SignatureActivity extends Activity {
                             /*
                             Util.showSimpleMessageDlg(SignatureActivity.this, "Error fetching the user id = "
                                     + PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).getInt("id", -1) + " auth token = "
-                                    + IbikeApplication.getAuthToken() + (message != null ? message.toString() : ""));*/
+                                    + IBikeApplication.getAuthToken() + (message != null ? message.toString() : ""));*/
                             progressBar.setVisibility(View.GONE);
                         }
                     });
@@ -436,7 +436,7 @@ public class SignatureActivity extends Activity {
                                 String signature = data.getString("signature");
                                 PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).edit().putString("signature", signature).commit();
                                 Log.d("DV", "We got a signature, enabling tracking!");
-                                IbikePreferences settings = IbikeApplication.getSettings();
+                                IBikePreferences settings = IBikeApplication.getSettings();
                                 settings.setTrackingEnabled(true);
                                 settings.setNotifyMilestone(true);
                                 settings.setNotifyWeekly(true);
@@ -486,7 +486,7 @@ public class SignatureActivity extends Activity {
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
     }
 
     @Override
@@ -499,39 +499,39 @@ public class SignatureActivity extends Activity {
         lockIcon.setBackground(getResources().getDrawable(R.drawable.hanglock));
         //Load resources and text in relation to the server response
         if (hasPassword) {
-            headLine.setText(IbikeApplication.getString("track_token_headline"));
-            explainingText.setText(IbikeApplication.getString("track_token_description_facebook_has_token"));
-            savePassword.setText(IbikeApplication.getString("use_password"));
-            textLogedIn.setText(IbikeApplication.getString("track_token_subtitle_facebook"));
-            textLogedIn.setTypeface(IbikeApplication.getItalicFont());
-            textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
+            headLine.setText(IBikeApplication.getString("track_token_headline"));
+            explainingText.setText(IBikeApplication.getString("track_token_description_facebook_has_token"));
+            savePassword.setText(IBikeApplication.getString("use_password"));
+            textLogedIn.setText(IBikeApplication.getString("track_token_subtitle_facebook"));
+            textLogedIn.setTypeface(IBikeApplication.getItalicFont());
+            textNewPassword.setHint(IBikeApplication.getString("register_password_placeholder"));
             textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
         } else if (!hasPassword && !normalUser) {
-            this.getActionBar().setTitle(IbikeApplication.getString("track_token_title"));
-            textLogedIn.setText(IbikeApplication.getString("track_token_subtitle_facebook"));
-            textLogedIn.setTypeface(IbikeApplication.getItalicFont());
-            headLine.setText(IbikeApplication.getString("track_token_headline"));
-            explainingText.setText(IbikeApplication.getString("track_token_description_facebook_new"));
-            savePassword.setText(IbikeApplication.getString("save_password"));
-            textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
+            this.getActionBar().setTitle(IBikeApplication.getString("track_token_title"));
+            textLogedIn.setText(IBikeApplication.getString("track_token_subtitle_facebook"));
+            textLogedIn.setTypeface(IBikeApplication.getItalicFont());
+            headLine.setText(IBikeApplication.getString("track_token_headline"));
+            explainingText.setText(IBikeApplication.getString("track_token_description_facebook_new"));
+            savePassword.setText(IBikeApplication.getString("save_password"));
+            textNewPassword.setHint(IBikeApplication.getString("register_password_placeholder"));
             textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
-            textPasswordConfirm.setHint(IbikeApplication.getString("register_password_repeat_placeholder"));
+            textPasswordConfirm.setHint(IBikeApplication.getString("register_password_repeat_placeholder"));
             textPasswordConfirm.setHintTextColor(getResources().getColor(R.color.HintColor));
         } else if (normalUser) {
-            headLine.setText(IbikeApplication.getString("track_token_headline"));
-            textLogedIn.setText(IbikeApplication.getString("track_token_subtitle_native"));
-            textLogedIn.setTypeface(IbikeApplication.getItalicFont());
-            explainingText.setText(IbikeApplication.getString("track_token_description_native"));
-            textNewPassword.setHint(IbikeApplication.getString("register_password_placeholder"));
+            headLine.setText(IBikeApplication.getString("track_token_headline"));
+            textLogedIn.setText(IBikeApplication.getString("track_token_subtitle_native"));
+            textLogedIn.setTypeface(IBikeApplication.getItalicFont());
+            explainingText.setText(IBikeApplication.getString("track_token_description_native"));
+            textNewPassword.setHint(IBikeApplication.getString("register_password_placeholder"));
             textNewPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
-            savePassword.setText(IbikeApplication.getString("use_password"));
+            savePassword.setText(IBikeApplication.getString("use_password"));
         }
 
     }
 
     private void launchAlertDialog(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(SignatureActivity.this);
-        builder.setMessage(msg).setTitle(IbikeApplication.getString("Error"));
+        builder.setMessage(msg).setTitle(IBikeApplication.getString("Error"));
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
@@ -544,13 +544,13 @@ public class SignatureActivity extends Activity {
     private boolean validatePasswords() {
         boolean ret = true;
         if (textNewPassword.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("register_error_fields");
+            validationMessage = IBikeApplication.getString("register_error_fields");
             ret = false;
         } else if (textPasswordConfirm.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("register_error_fields");
+            validationMessage = IBikeApplication.getString("register_error_fields");
             ret = false;
         } else if (!textNewPassword.getText().toString().equals(textPasswordConfirm.getText().toString())) {
-            validationMessage = IbikeApplication.getString("register_error_passwords");
+            validationMessage = IBikeApplication.getString("register_error_passwords");
             ret = false;
         }
         userData = new UserData(textNewPassword.getText().toString(), textPasswordConfirm.getText().toString());
@@ -560,7 +560,7 @@ public class SignatureActivity extends Activity {
     private boolean validatePassword() {
         boolean ret = true;
         if (textNewPassword.getText().toString().length() == 0) {
-            validationMessage = IbikeApplication.getString("register_error_fields");
+            validationMessage = IBikeApplication.getString("register_error_fields");
             ret = false;
         }
         userData = new UserData(textNewPassword.getText().toString(), textPasswordConfirm.getText().toString());
@@ -583,7 +583,7 @@ public class SignatureActivity extends Activity {
             if (!title.equals("")) {
                 builder.setTitle(title);
             } else {
-                builder.setTitle(IbikeApplication.getString("Error"));
+                builder.setTitle(IBikeApplication.getString("Error"));
             }
             builder.setMessage(info);
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -640,7 +640,7 @@ public class SignatureActivity extends Activity {
                         @Override
                         public void run() {
                             progressBar.setVisibility(View.GONE);
-                            textName.setTypeface(IbikeApplication.getItalicFont());
+                            textName.setTypeface(IBikeApplication.getItalicFont());
                             textName.setText(username);
                         }
                     });

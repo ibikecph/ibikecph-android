@@ -36,7 +36,7 @@ public class ActivityRecognitionClient implements GoogleApiClient.ConnectionCall
      */
     protected synchronized void buildGoogleApiClient() {
         Log.d("JC", "Building Google API Client");
-        mGoogleApiClient = new GoogleApiClient.Builder(IbikeApplication.getContext())
+        mGoogleApiClient = new GoogleApiClient.Builder(IBikeApplication.getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(ActivityRecognition.API)
@@ -63,17 +63,17 @@ public class ActivityRecognitionClient implements GoogleApiClient.ConnectionCall
      */
     private PendingIntent getActivityDetectionPendingIntent() {
 
-        Context context = IbikeApplication.getContext();
+        Context context = IBikeApplication.getContext();
         boolean trackingEnabled = context.getResources().getBoolean(R.bool.trackingEnabled);
 
         // Reuse the PendingIntent if we already have it.
         if (trackingEnabled && this.mActivityDetectionPendingIntent == null) {
-            Intent intent = new Intent(IbikeApplication.getContext(), BikeActivityService.class);
+            Intent intent = new Intent(IBikeApplication.getContext(), BikeActivityService.class);
 
             // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
             // requestActivityUpdates() and removeActivityUpdates().
             this.mActivityDetectionPendingIntent =
-                    PendingIntent.getService(IbikeApplication.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent.getService(IBikeApplication.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
         return mActivityDetectionPendingIntent;
@@ -88,7 +88,7 @@ public class ActivityRecognitionClient implements GoogleApiClient.ConnectionCall
     public void onConnected(Bundle bundle) {
         Log.d("JC", "Connected to Google API");
 
-        if (IbikeApplication.getSettings().getTrackingEnabled()) {
+        if (IBikeApplication.getSettings().getTrackingEnabled()) {
             requestActivityUpdates();
         }
     }
@@ -145,20 +145,20 @@ public class ActivityRecognitionClient implements GoogleApiClient.ConnectionCall
     public static void showPlayServiceVersionDialog() {
         //Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gms"));
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.gms&hl=en"));
-        PendingIntent googlePlayStoreIntent = PendingIntent.getActivity(IbikeApplication.getContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent googlePlayStoreIntent = PendingIntent.getActivity(IBikeApplication.getContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification.Builder builder = new Notification.Builder(IbikeApplication.getContext());
-        builder.setContentText(IbikeApplication.getString("play_services_version_error")).setContentTitle(IbikeApplication.getAppName());
+        Notification.Builder builder = new Notification.Builder(IBikeApplication.getContext());
+        builder.setContentText(IBikeApplication.getString("play_services_version_error")).setContentTitle(IBikeApplication.getAppName());
         builder.setContentIntent(googlePlayStoreIntent);
         builder.setSmallIcon(R.drawable.logo);
 
-        NotificationManager notificationManager = (NotificationManager) IbikeApplication.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) IBikeApplication.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(3, builder.build());
     }
 
     public void disableTracking() {
         this.releaseActivityUpdates();
-        IbikeApplication.getSettings().setTrackingEnabled(false);
+        IBikeApplication.getSettings().setTrackingEnabled(false);
     }
 
     /**

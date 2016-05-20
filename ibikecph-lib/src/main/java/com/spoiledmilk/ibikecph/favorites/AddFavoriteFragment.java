@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.AddressParser;
@@ -80,15 +80,15 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
             }
         });
 
-        textFavoriteName.setText(IbikeApplication.getString("Favorite"));
+        textFavoriteName.setText(IBikeApplication.getString("Favorite"));
 
-        ((TextView) ret.findViewById(R.id.labelName)).setText(IbikeApplication.getString("Name"));
-        ((TextView) ret.findViewById(R.id.labelAddress)).setText(IbikeApplication.getString("Address"));
+        ((TextView) ret.findViewById(R.id.labelName)).setText(IBikeApplication.getString("Name"));
+        ((TextView) ret.findViewById(R.id.labelAddress)).setText(IBikeApplication.getString("Address"));
 
-        ((RadioButton) ret.findViewById(R.id.radioButtonFavorite)).setText(IbikeApplication.getString("Favorite"));
-        ((RadioButton) ret.findViewById(R.id.radioButtonHome)).setText(IbikeApplication.getString("Home"));
-        ((RadioButton) ret.findViewById(R.id.radioButtonSchool)).setText(IbikeApplication.getString("School"));
-        ((RadioButton) ret.findViewById(R.id.radioButtonWork)).setText(IbikeApplication.getString("Work"));
+        ((RadioButton) ret.findViewById(R.id.radioButtonFavorite)).setText(IBikeApplication.getString("Favorite"));
+        ((RadioButton) ret.findViewById(R.id.radioButtonHome)).setText(IBikeApplication.getString("Home"));
+        ((RadioButton) ret.findViewById(R.id.radioButtonSchool)).setText(IBikeApplication.getString("School"));
+        ((RadioButton) ret.findViewById(R.id.radioButtonWork)).setText(IBikeApplication.getString("Work"));
 
         ((RadioGroup) ret.findViewById(R.id.favoriteTypeRadioGroup)).setOnCheckedChangeListener(this);
 
@@ -111,7 +111,7 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
 
                     // TODO: Change this to the implementation described here
                     // https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
-                    // IbikeApplication.getTracker().sendEvent("Favorites", "Save", st, (long) 0);
+                    // IBikeApplication.getTracker().sendEvent("Favorites", "Save", st, (long) 0);
 
                     Thread saveThread = new Thread(new Runnable() {
                         @Override
@@ -135,8 +135,8 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
 
                 } else {
                     Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setMessage(IbikeApplication.getString("name_used"));
-                    builder.setTitle(IbikeApplication.getString("Error"));
+                    builder.setMessage(IBikeApplication.getString("name_used"));
+                    builder.setTitle(IBikeApplication.getString("Error"));
                     builder.setCancelable(false);
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
@@ -148,7 +148,7 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
                     dialog.show();
                 }
             } else if (getActivity() != null) {
-                Util.showSimpleMessageDlg(getActivity(), IbikeApplication.getString("register_error_fields"));
+                Util.showSimpleMessageDlg(getActivity(), IBikeApplication.getString("register_error_fields"));
             }
         } else {
             Util.launchNoConnectionDialog(getActivity());
@@ -166,10 +166,10 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
     }
 
     private void initStrings() {
-        textAddress.setHint(IbikeApplication.getString("add_favorite_address_placeholder"));
-        btnSave.setText(IbikeApplication.getString("save_favorite"));
+        textAddress.setHint(IBikeApplication.getString("add_favorite_address_placeholder"));
+        btnSave.setText(IBikeApplication.getString("save_favorite"));
         if (currentFavoriteType.equals(""))
-            currentFavoriteType = IbikeApplication.getString("Favorite");
+            currentFavoriteType = IBikeApplication.getString("Favorite");
     }
 
     @Override
@@ -233,10 +233,10 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
 
     private static boolean isPredefinedName(final String name) {
         if (
-                name.equals(IbikeApplication.getString("Favorite")) ||
-                        name.equals(IbikeApplication.getString("School")) ||
-                        name.equals(IbikeApplication.getString("Work")) ||
-                        name.equals(IbikeApplication.getString("Home")) ||
+                name.equals(IBikeApplication.getString("Favorite")) ||
+                        name.equals(IBikeApplication.getString("School")) ||
+                        name.equals(IBikeApplication.getString("Work")) ||
+                        name.equals(IBikeApplication.getString("Home")) ||
                         name.equals(""))
             return true;
         else
@@ -254,22 +254,22 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         if (checkedId == R.id.radioButtonFavorite) {
             if (isPredefinedName(textFavoriteName.getText().toString()))
-                textFavoriteName.setText(IbikeApplication.getString("Favorite"));
+                textFavoriteName.setText(IBikeApplication.getString("Favorite"));
 
             currentFavoriteType = FavoritesData.favFav;
         } else if (checkedId == R.id.radioButtonHome) {
             if (isPredefinedName(textFavoriteName.getText().toString()))
-                textFavoriteName.setText(IbikeApplication.getString("Home"));
+                textFavoriteName.setText(IBikeApplication.getString("Home"));
 
             currentFavoriteType = FavoritesData.favHome;
         } else if (checkedId == R.id.radioButtonSchool) {
             if (isPredefinedName(textFavoriteName.getText().toString()))
-                textFavoriteName.setText(IbikeApplication.getString("School"));
+                textFavoriteName.setText(IBikeApplication.getString("School"));
 
             currentFavoriteType = FavoritesData.favSchool;
         } else if (checkedId == R.id.radioButtonWork) {
             if (isPredefinedName(textFavoriteName.getText().toString()))
-                textFavoriteName.setText(IbikeApplication.getString("Work"));
+                textFavoriteName.setText(IBikeApplication.getString("Work"));
 
             currentFavoriteType = FavoritesData.favWork;
         }

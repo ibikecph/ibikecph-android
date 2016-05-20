@@ -21,7 +21,7 @@ import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.IssuesActivity;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.Geocoder;
@@ -34,6 +34,7 @@ import com.spoiledmilk.ibikecph.map.OnIntegerChangeListener;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.fragments.NavigationFragment;
 import com.spoiledmilk.ibikecph.map.fragments.RouteSelectionFragment;
+import com.spoiledmilk.ibikecph.map.states.NavigatingState;
 import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
@@ -139,7 +140,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 displayGetOffAt = false;
                 routePos = routePos + 1;
                 Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(this);
-                IbikeApplication.getService().addLocationListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
+                IBikeApplication.getService().addLocationListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
                 Log.d("DV", "NavigationMapHandler reachedDestination, ny listener er sat med index = " + routePos);
                 if (Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
                     isPublic = true;
@@ -206,7 +207,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         Log.d("JC", "NavigationMapHandler routeRecalculationDone");
         removeAnyPathOverlays();
         PathOverlay path = null;
-        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
+        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
             path = new PathOverlay(Color.parseColor("#FF6600"), 10);
         } else {
             path = new PathOverlay(Color.RED, 10);
@@ -259,7 +260,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         if (this.route != null) {
             route.cleanUp();
             route.setListener(null);
-            IbikeApplication.getService().removeLocationListener(route);
+            IBikeApplication.getService().removeLocationListener(route);
             //route = null;
         }
 
@@ -311,13 +312,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
                 for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
                     Geocoder.arrayLists.get(i).get(j).setListener(null);
-                    IbikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
+                    IBikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
                 }
             }
         }
 
         this.route = route;
-        IbikeApplication.getService().addLocationListener(route);
+        IBikeApplication.getService().addLocationListener(route);
         this.mapView.removeAllMarkers();
         this.cleanUp();
 
@@ -330,7 +331,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // TODO: Fix confusion between Location and LatLng objects
         PathOverlay path = null;
-        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
+        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
             path = new PathOverlay(Color.parseColor("#FF6600"), 10);
         } else {
             path = new PathOverlay(Color.RED, 10);
@@ -340,7 +341,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // Add a waypoint at the user's current position
         if (route.startAddress != null && route.startAddress.isCurrentLocation() && !route.waypoints.isEmpty()) {
-            beginWalkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
+            beginWalkingPath.addPoint(new LatLng(IBikeApplication.getService().getLastValidLocation()));
             beginWalkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
         }
 
@@ -425,20 +426,20 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
                     for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
                         Geocoder.arrayLists.get(i).get(j).setListener(null);
-                        IbikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
+                        IBikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
                     }
                 }
             }
 
             Log.d("DV", "Setting listener from showBreakRouteOverview");
             route.setListener(this);
-            IbikeApplication.getService().addLocationListener(route);
+            IBikeApplication.getService().addLocationListener(route);
         }
 
         removeAnyPathOverlays();
 
         // TODO: Fix confusion between Location and LatLng objects
-        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
+        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
             if (route.transportType != null && route.transportType.equals("BIKE")) {
                 // Only draw an orange line for bike route pieces
                 path[position] = new PathOverlay(Color.parseColor("#FF6600"), 10);
@@ -456,7 +457,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             beginWalkingPath = new PathOverlay(Color.GRAY, 10);
             // Add a waypoint at the user's current position
             if (route.startAddress != null) {
-                beginWalkingPath.addPoint(new LatLng(IbikeApplication.getService().getLastValidLocation()));
+                beginWalkingPath.addPoint(new LatLng(IBikeApplication.getService().getLastValidLocation()));
                 beginWalkingPath.addPoint(route.waypoints.get(0).getLatitude(), route.waypoints.get(0).getLongitude());
             }
         }
@@ -613,26 +614,33 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         cleanedUp = false;
     }
 
-    public void goButtonClicked() {
-        Log.d("JC", "Go button clicked");
-
+    public void startNavigation() {
+        if (mapView.getParentActivity() instanceof MapActivity) {
+            MapActivity activity = (MapActivity) mapView.getParentActivity();
+            activity.changeState(NavigatingState.class);
+        } else {
+            throw new RuntimeException("The map view must be child of a MapActivity");
+        }
+        /*
+        // TODO: Move this to the map state
         // Zoom to the first waypoint
         Location start = route.getWaypoints().get(0);
         mapView.setCenter(new LatLng(start), true);
         mapView.setZoom(17f);
 
-        mapView.addUserLocationOverlay();
+        mapView.setUserLocationEnabled(true);
         mapView.getUserLocationOverlay().setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
 
         //registerBearingRotation();
 
-        IbikeApplication.getService().addLocationListener(this);
+        IBikeApplication.getService().addLocationListener(this);
 
         isRouting = true;
 
         showProblemButton();
 
         initInstructions();
+        */
     }
 
     private void registerBearingRotation() {
@@ -697,8 +705,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
      * /
     public boolean onBackPressed() {
         if (!cleanedUp) {
-            IbikePreferences settings;
-            settings = IbikeApplication.getSettings();
+            IBikePreferences settings;
+            settings = IBikeApplication.getSettings();
             // Navigation happens in two steps. First is showing the route, second is actually following it turn-by-turn
             // If we're in turn-by-turn mode, go back to showing the route. If we're seeing the route, go back to
             // showing the overview.
@@ -762,7 +770,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // Return the orientation to normal.
         this.mapView.setMapOrientation(0);
-        IbikeApplication.getService().removeLocationListener(this);
+        IBikeApplication.getService().removeLocationListener(this);
 
         // TODO: Consider if this is needed - removing markers invalidates the MapView internally.
         this.mapView.invalidate();
@@ -897,8 +905,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     public void displayTryAgain() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.mapActivityContext);
-        String[] options = {IbikeApplication.getString("Cancel"), IbikeApplication.getString("Try_again")};
-        builder.setTitle(IbikeApplication.getString("error_route_not_found"))
+        String[] options = {IBikeApplication.getString("Cancel"), IBikeApplication.getString("Try_again")};
+        builder.setTitle(IBikeApplication.getString("error_route_not_found"))
                 .setItems(options, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

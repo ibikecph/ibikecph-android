@@ -2,7 +2,7 @@ package com.spoiledmilk.cykelsuperstier.map;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.map.IBCMarker;
 import com.spoiledmilk.ibikecph.map.MarkerType;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
  */
 public class ServiceStationMarker extends IBCMarker {
 
-    public static final Icon serviceStationIcon = new Icon(IbikeApplication.getContext().getResources().getDrawable(com.spoiledmilk.ibikecph.R.drawable.service_pin));
+    public static final Icon serviceStationIcon = new Icon(IBikeApplication.getContext().getResources().getDrawable(com.spoiledmilk.ibikecph.R.drawable.service_pin));
 
     public ServiceStationMarker(String title, LatLng latLng) {
         super(title, "", latLng, MarkerType.OVERLAY);
@@ -30,7 +30,7 @@ public class ServiceStationMarker extends IBCMarker {
         ArrayList<ServiceStationMarker> serviceStations = new ArrayList<ServiceStationMarker>();
 
         try {
-            String stationsStr = Util.stringFromJsonAssets(IbikeApplication.getContext(), "stations/stations.json");
+            String stationsStr = Util.stringFromJsonAssets(IBikeApplication.getContext(), "stations/stations.json");
             JSONArray stationsJson = (new JSONObject(stationsStr)).getJSONArray("stations");
             for (int i = 0; i < stationsJson.length(); i++) {
                 JSONObject stationJson = (JSONObject) stationsJson.get(i);

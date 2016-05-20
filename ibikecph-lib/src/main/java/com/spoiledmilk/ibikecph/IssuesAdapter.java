@@ -41,7 +41,7 @@ public class IssuesAdapter extends ArrayAdapter<String> implements SpinnerAdapte
 		final View view = inflater.inflate(spinnerLayoutResource, parent, false);
 		TextView textTitle = (TextView) view.findViewById(R.id.textTitle);
 		textTitle.setText(getItem(position));
-		textTitle.setTypeface(IbikeApplication.getBoldFont());
+		textTitle.setTypeface(IBikeApplication.getBoldFont());
 		return view;
 	}
 

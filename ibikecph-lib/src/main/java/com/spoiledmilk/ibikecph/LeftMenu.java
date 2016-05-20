@@ -26,7 +26,7 @@ import com.spoiledmilk.ibikecph.map.OverlaysActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -72,7 +72,7 @@ public class LeftMenu extends Fragment {
 
         // Initialize the menu
         this.menuList = (ListView) ret.findViewById(R.id.menuListView);
-        this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), menuItems));
+        this.menuList.setAdapter(new LeftMenuItemAdapter(IBikeApplication.getContext(), menuItems));
 
         // This is kind of magical. Each LeftMenuItem has a handler field that describes
         // a method to be called when that element is tapped. Here we read out that field
@@ -102,7 +102,7 @@ public class LeftMenu extends Fragment {
         menuItems.add(new LeftMenuItem("favorites", R.drawable.fav_star, "spawnFavoritesListActivity"));
         //menuItems.add(new LeftMenuItem("voice", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
         // Kortlag
-        if (IbikeApplication.getAppName().equals("CykelPlanen")) {
+        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
             menuItems.add(new LeftMenuItem("map_overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
         }
         // Rutetype
@@ -114,7 +114,7 @@ public class LeftMenu extends Fragment {
         }
         // Påmindelser
 
-        if (IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin()) {
+        if (IBikeApplication.isUserLogedIn() || IBikeApplication.isFacebookLogin()) {
             menuItems.add(new LeftMenuItem("account", R.drawable.ic_menu_profile, "spawnLoginActivity"));
         } else {
             menuItems.add(new LeftMenuItem("log_in", R.drawable.ic_menu_profile, "spawnLoginActivity"));
@@ -125,7 +125,7 @@ public class LeftMenu extends Fragment {
         // updating the view
         if (this.menuList != null && this.menuList.getAdapter() != null) {
             Log.d("JC", "updating leftmenu");
-            this.menuList.setAdapter(new LeftMenuItemAdapter(IbikeApplication.getContext(), menuItems));
+            this.menuList.setAdapter(new LeftMenuItemAdapter(IBikeApplication.getContext(), menuItems));
         }
     }
 
@@ -163,10 +163,10 @@ public class LeftMenu extends Fragment {
             Intent i;
 
             // If the user is not logged in, show her a login screen, otherwise show the relevant profile activity.
-            if (!IbikeApplication.isUserLogedIn() && !IbikeApplication.isFacebookLogin()) {
+            if (!IBikeApplication.isUserLogedIn() && !IBikeApplication.isFacebookLogin()) {
                 i = new Intent(getActivity(), LoginActivity.class);
             } else {
-                if (IbikeApplication.isFacebookLogin())
+                if (IBikeApplication.isFacebookLogin())
                     i = new Intent(getActivity(), FacebookProfileActivity.class);
                 else
                     i = new Intent(getActivity(), ProfileActivity.class);
@@ -178,9 +178,9 @@ public class LeftMenu extends Fragment {
     @SuppressWarnings("UnusedDeclaration")
     public void spawnTrackingActivity() {
         Intent i;
-        IbikePreferences settings = IbikeApplication.getSettings();
+        IBikePreferences settings = IBikeApplication.getSettings();
         if (!settings.getTrackingEnabled() &&
-                Realm.getInstance(IbikeApplication.getContext()).allObjects(Track.class).size() == 0) {
+                Realm.getInstance(IBikeApplication.getContext()).allObjects(Track.class).size() == 0) {
 
             i = new Intent(getActivity(), TrackingWelcomeActivity.class);
 

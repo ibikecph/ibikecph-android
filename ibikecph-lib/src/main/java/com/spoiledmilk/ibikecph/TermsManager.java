@@ -19,7 +19,7 @@ public class TermsManager {
     public static void checkTerms(final Activity hostActivity) {
 
         // If folks are not logged in, then we don't care.
-        if (!(IbikeApplication.isUserLogedIn() || IbikeApplication.isFacebookLogin())) {
+        if (!(IBikeApplication.isUserLogedIn() || IBikeApplication.isFacebookLogin())) {
             return;
         }
 
@@ -30,11 +30,11 @@ public class TermsManager {
 
                 try {
                     int version = response.getInt("version");
-                    String importantNews = response.getString("important_parts_description_"+IbikeApplication.getLanguageString());
+                    String importantNews = response.getString("important_parts_description_"+ IBikeApplication.getLanguageString());
 
                     // If the most recent terms we read turns out to be older than the current one, then spawn a dialog.
-                    if (IbikeApplication.getSettings().getNewestTermsAccepted() < version) {
-                        Intent i = new Intent(hostActivity, IbikeApplication.getTermsAcceptanceClass());
+                    if (IBikeApplication.getSettings().getNewestTermsAccepted() < version) {
+                        Intent i = new Intent(hostActivity, IBikeApplication.getTermsAcceptanceClass());
 
                         i.putExtra("important_news", importantNews);
                         i.putExtra("version", version);

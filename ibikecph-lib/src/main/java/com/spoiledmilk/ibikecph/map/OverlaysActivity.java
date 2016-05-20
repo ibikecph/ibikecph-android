@@ -16,9 +16,9 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.spoiledmilk.ibikecph.IbikeApplication;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 /**
  * Activity for toggling station overlays on map.
@@ -40,7 +40,7 @@ public class OverlaysActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.overlays_activity);
 
-        IbikePreferences settings = IbikeApplication.getSettings();
+        IBikePreferences settings = IBikeApplication.getSettings();
         isPathSelected       = settings.getOverlay(OverlayType.PATH);
         isServiceSelected    = settings.getOverlay(OverlayType.SERVICE);
 
@@ -59,26 +59,26 @@ public class OverlaysActivity extends Activity {
         super.onResume();
 
         // Tell Google Analytics that the user has resumed on this screen.
-        IbikeApplication.sendGoogleAnalyticsActivityEvent(this);
+        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         initStrings();
     }
 
     public void disablePath(){
         updateContainer(OverlayType.PATH, false);
-        IbikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
+        IBikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
     }
 
     public void onPathContainerClick(View v) {
         isPathSelected = !isPathSelected;
         updateContainer(OverlayType.PATH, isPathSelected);
-        IbikeApplication.getSettings().setOverlay(OverlayType.PATH, isPathSelected);
+        IBikeApplication.getSettings().setOverlay(OverlayType.PATH, isPathSelected);
     }
 
     public void onServiceContainerClick(View v) {
         isServiceSelected = !isServiceSelected;
         updateContainer(OverlayType.SERVICE, isServiceSelected);
-        IbikeApplication.getSettings().setOverlay(OverlayType.SERVICE, isServiceSelected);
+        IBikeApplication.getSettings().setOverlay(OverlayType.SERVICE, isServiceSelected);
     }
 
 
@@ -124,8 +124,8 @@ public class OverlaysActivity extends Activity {
     }
 
     private void initStrings() {
-        actionBar.setTitle(IbikeApplication.getString("map_overlays"));
-        textPath.setText(IbikeApplication.getString("cycle_super_highways"));
-        textService.setText(IbikeApplication.getString("service_stations"));
+        actionBar.setTitle(IBikeApplication.getString("map_overlays"));
+        textPath.setText(IBikeApplication.getString("cycle_super_highways"));
+        textService.setText(IBikeApplication.getString("service_stations"));
     }
 }

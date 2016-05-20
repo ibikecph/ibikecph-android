@@ -10,8 +10,9 @@ import android.content.res.AssetManager;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import com.spoiledmilk.ibikecph.IbikeApplication;
-import com.spoiledmilk.ibikecph.util.IbikePreferences.Language;
+
+import com.spoiledmilk.ibikecph.IBikeApplication;
+import com.spoiledmilk.ibikecph.util.IBikePreferences.Language;
 
 import java.io.*;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class SMDictionary {
 		pattern = Pattern
 				.compile("\\\"([a-zA-Z0-9_\\{\\}\\:]+)\\\"\\s*=\\s*\\\"(([^\\\"]|\\\\\")*)\\\";");
 
-		changeLanguage(IbikeApplication.getSettings().getLanguage());
+		changeLanguage(IBikeApplication.getSettings().getLanguage());
 	}
 
 	public static String getDictFile(Language language) {
