@@ -34,13 +34,13 @@ import com.spoiledmilk.ibikecph.map.OnIntegerChangeListener;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.fragments.NavigationETAFragment;
 import com.spoiledmilk.ibikecph.map.fragments.RouteSelectionFragment;
+import com.spoiledmilk.ibikecph.map.states.DestinationPreviewState;
 import com.spoiledmilk.ibikecph.map.states.NavigatingState;
 import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 import com.spoiledmilk.ibikecph.search.Address;
-import com.spoiledmilk.ibikecph.util.bearing.BearingToNorthProvider;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -617,44 +617,11 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void startNavigation() {
         if (mapView.getParentActivity() instanceof MapActivity) {
             MapActivity activity = (MapActivity) mapView.getParentActivity();
-            activity.changeState(NavigatingState.class);
+            NavigatingState state = (NavigatingState) activity.changeState(NavigatingState.class);
+            state.setRoute(route);
         } else {
             throw new RuntimeException("The map view must be child of a MapActivity");
         }
-        /*
-        // TODO: Move this to the map state
-        // Zoom to the first waypoint
-        Location start = route.getWaypoints().get(0);
-        mapView.setCenter(new LatLng(start), true);
-        mapView.setZoom(17f);
-
-        mapView.setUserLocationEnabled(true);
-        mapView.getUserLocationOverlay().setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
-
-        //registerBearingRotation();
-
-        IBikeApplication.getService().addLocationListener(this);
-
-        isRouting = true;
-
-        showProblemButton();
-
-        initInstructions();
-        */
-    }
-
-    private void registerBearingRotation() {
-        BearingToNorthProvider bearingToNorthProvider = new BearingToNorthProvider(this.mapView.getContext()/*, 1, 0.1, 10*/);
-        final IBCMapView finalMapView = this.mapView;
-
-        bearingToNorthProvider.setChangeEventListener(new BearingToNorthProvider.ChangeEventListener() {
-            @Override
-            public void onBearingChanged(double bearing) {
-                finalMapView.setMapOrientation(360 - ((float) bearing) - 90);
-            }
-        });
-
-        bearingToNorthProvider.start();
     }
 
     /**
@@ -697,43 +664,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         MapActivity.progressBarHolder.setVisibility(View.GONE);
     }
 
-    // TODO: Move this the the MapState classes
-    /*
-     * Tells the MapView to stop routing, i.e. instantiate an OverviewMapHandler, calling the destructor of this one.
-     *
-     * @return false because we need the user to
-     * /
-    public boolean onBackPressed() {
-        if (!cleanedUp) {
-            IBikePreferences settings;
-            settings = IBikeApplication.getSettings();
-            // Navigation happens in two steps. First is showing the route, second is actually following it turn-by-turn
-            // If we're in turn-by-turn mode, go back to showing the route. If we're seeing the route, go back to
-            // showing the overview.
-            if (isRouting) {
-                this.showRouteOverview(this.route);
-                isRouting = false;
-            } else {
-
-                if (settings.getTrackingEnabled()) {
-                    FragmentManager fm = mapView.getParentActivity().getFragmentManager();
-                    FragmentTransaction ft = fm.beginTransaction();
-                    ft.replace(R.id.infoPaneContainer, new TrackingStatisticsFragment());
-                    ft.commit();
-                    MapActivity.topFragment.setVisibility(View.VISIBLE);
-                } else {
-                    MapActivity.topFragment.setVisibility(View.GONE);
-                }
-                this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
-            }
-            return false;
-        }
-
-
-        return true;
-    }
-    */
-
     private void removeAnyPathOverlays() {
         // It's suspected that a bug in Mapbox gives trouble when iterating getOverlays and removing
         // from it at the same time. Therefore we use an iterator to remove overlays.
@@ -755,7 +685,10 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     }
 
     public void cleanUp() {
-        if (cleanedUp) return;
+        if (cleanedUp) {
+            Log.d("NavigationMapHandler", "Skipping clean up - as we're already clean.");
+            return;
+        }
 
         removeAnyPathOverlays();
         // this.mapView.removeAllMarkers();
@@ -785,18 +718,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         }
         transaction.commit();
 
-        // Remove the problem button
-        hideProblemButton();
-
         cleanedUp = true;
-    }
-
-    public void hideProblemButton() {
-        this.mapView.getParentActivity().hideProblemButton();
-    }
-
-    public void showProblemButton() {
-        this.mapView.getParentActivity().showProblemButton();
     }
 
     public RouteSelectionFragment getInfoPane() {
