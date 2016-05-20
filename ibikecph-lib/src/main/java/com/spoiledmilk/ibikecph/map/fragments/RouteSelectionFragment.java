@@ -51,13 +51,8 @@ public class RouteSelectionFragment extends Fragment implements View.OnClickList
 
         TextView destinationText = (TextView) v.findViewById(R.id.navigationOverviewDestination);
 
-        View goButton = (View) v.findViewById(R.id.startRouteButton);
-        goButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                parent.goButtonClicked();
-            }
-        });
+        View startRouteButton = (View) v.findViewById(R.id.startRouteButton);
+        startRouteButton.setOnClickListener(this);
 
         fastButton = (ImageButton) v.findViewById(R.id.navigationOverviewFastButton);
         cargoButton = (ImageButton) v.findViewById(R.id.navigationOverviewCargoButton);
@@ -193,8 +188,9 @@ public class RouteSelectionFragment extends Fragment implements View.OnClickList
      */
     @Override
     public void onClick(View v) {
-
-        if (v.getId() == R.id.navigationOverviewFastButton) {
+        if (v.getId() == R.id.startRouteButton) {
+            parent.startNavigation();
+        } else if (v.getId() == R.id.navigationOverviewFastButton) {
             disableAllRouteButtons();
             fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
             MapActivity.isBreakChosen = false;
