@@ -730,8 +730,14 @@ public class MapActivity extends BaseMapActivity {
      * They should return false if they want to do something before letting the user continue back.
      */
     public void onBackPressed() {
-        if(state != null) {
-            state.onBackPressed();
+        if(drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            drawerLayout.closeDrawer(Gravity.LEFT);
+        } else if(state != null) {
+            if(state.onBackPressed() == MapState.BackPressBehaviour.PROPAGATE) {
+                super.onBackPressed();
+            }
+        } else {
+            super.onBackPressed();
         }
         /*
         if (mapView.getMapHandler().onBackPressed()) {
