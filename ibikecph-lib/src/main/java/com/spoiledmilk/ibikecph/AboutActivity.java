@@ -10,7 +10,15 @@ import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
+
+import net.hockeyapp.android.CrashManager;
 
 import java.text.SimpleDateFormat;
 import java.util.zip.ZipEntry;
@@ -37,6 +45,26 @@ public class AboutActivity extends Activity {
 
         this.getActionBar().setTitle(IBikeApplication.getString("about_app_ibc"));
 
+		// Create the debugging controls if we've build an app in debug mode.
+		View debuggingControls = findViewById(R.id.debuggingControls);
+		Log.d("AboutActivity", "Are we debugging? " + IBikeApplication.isDebugging(this));
+		if (IBikeApplication.isDebugging(this)) {
+			final IBikePreferences preferences = IBikeApplication.getSettings();
+			CheckBox crashReportingCheckBox = (CheckBox) findViewById(R.id.crashReportingCheckBox);
+			debuggingControls.setVisibility(View.VISIBLE);
+
+			crashReportingCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					preferences.setCrashReporting(isChecked);
+					if(isChecked) {
+						CrashManager.register(AboutActivity.this);
+					}
+				}
+			});
+		} else {
+			debuggingControls.setVisibility(View.GONE);
+		}
 
 		//getBuildInfo();
 	}

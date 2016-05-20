@@ -11,4 +11,9 @@ public class IBikeCPHApplication extends IBikeApplication {
         initializeGoogleAnalytics(R.xml.global_tracker);
         Config.generateUrls(BuildConfig.API_URL);
     }
+
+    @Override
+    public boolean isDebugging() {
+        return BuildConfig.DEBUG;
+    }
 }

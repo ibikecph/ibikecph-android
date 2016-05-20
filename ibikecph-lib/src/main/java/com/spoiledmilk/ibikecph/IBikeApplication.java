@@ -46,6 +46,14 @@ public class IBikeApplication extends Application {
 
     protected Tracker gaTracker;
 
+    public boolean isDebugging() {
+        return BuildConfig.DEBUG;
+    }
+
+    public static boolean isDebugging(AboutActivity activity) {
+        return ((IBikeApplication) activity.getApplication()).isDebugging();
+    }
+
     @Override
     public void onCreate() {
         LOG.d("Creating Application");
@@ -333,5 +341,4 @@ public class IBikeApplication extends Application {
     public static int getPrimaryColor() {
         return primaryColor;
     }
-
 }

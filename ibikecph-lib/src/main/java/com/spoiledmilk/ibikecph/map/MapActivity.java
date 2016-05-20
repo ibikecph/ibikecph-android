@@ -525,7 +525,11 @@ public class MapActivity extends BaseMapActivity {
      */
     protected void checkForCrashes() {
         try {
-            CrashManager.register(this);
+            if(IBikeApplication.getSettings().isCrashReportingEnabled()) {
+                CrashManager.register(this);
+            } else {
+                Log.i("HockeyApp", "User turned off crash reporting - HockeyApp is disabled");
+            }
         } catch (IllegalArgumentException e) {
             Log.i("HockeyApp", "No HockeyApp app identifier provided - HockeyApp is disabled");
         }

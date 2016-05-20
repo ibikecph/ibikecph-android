@@ -31,4 +31,9 @@ public class CykelPlanenApplication extends IBikeApplication {
         return com.spoiledmilk.cykelsuperstier.AcceptNewTermsActivity.class;
     }
 
+	@Override
+	public boolean isDebugging() {
+		return BuildConfig.DEBUG;
+	}
+
 }
