@@ -8,17 +8,4 @@ import android.support.v4.app.FragmentActivity;
 
 public abstract class BaseMapActivity extends FragmentActivity {
 
-    protected boolean problemButtonVisible;
-
-    public void showProblemButton() {
-        this.problemButtonVisible = true;
-        invalidateOptionsMenu();
-    }
-
-    public void hideProblemButton() {
-        this.problemButtonVisible = false;
-        invalidateOptionsMenu();
-    }
-
-
 }
