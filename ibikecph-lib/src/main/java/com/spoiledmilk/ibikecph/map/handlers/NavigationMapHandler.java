@@ -32,15 +32,13 @@ import com.spoiledmilk.ibikecph.map.MarkerType;
 import com.spoiledmilk.ibikecph.map.ObservablePageInteger;
 import com.spoiledmilk.ibikecph.map.OnIntegerChangeListener;
 import com.spoiledmilk.ibikecph.map.RouteType;
-import com.spoiledmilk.ibikecph.navigation.NavigationOverviewInfoPane;
-import com.spoiledmilk.ibikecph.navigation.RouteETAFragment;
+import com.spoiledmilk.ibikecph.map.fragments.NavigationFragment;
+import com.spoiledmilk.ibikecph.map.fragments.RouteSelectionFragment;
 import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 import com.spoiledmilk.ibikecph.search.Address;
-import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
-import com.spoiledmilk.ibikecph.util.IbikePreferences;
 import com.spoiledmilk.ibikecph.util.bearing.BearingToNorthProvider;
 
 import java.io.Serializable;
@@ -56,7 +54,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private static SMRoute[] breakRoute;
     private boolean cleanedUp = true;
     private transient TurnByTurnInstructionFragment turnByTurnFragment;
-    private transient RouteETAFragment routeETAFragment;
+    private transient NavigationFragment navigationFragment;
     private transient IBCMarker beginMarker, endMarker;
     private transient ArrayList<IBCMarker> mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker, icMarker, lynMarker, regMarker, exbMarker, nbMarker, tbMarker, fMarker;
     public static boolean isRouting;
@@ -176,11 +174,11 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             }
         }
 
-        if (this.routeETAFragment != null) {
+        if (this.navigationFragment != null) {
             if (MapActivity.isBreakChosen) {
-                this.routeETAFragment.renderForBreakRoute(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
+                this.navigationFragment.renderForBreakRoute(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
             } else {
-                this.routeETAFragment.render(this);
+                this.navigationFragment.render(this);
             }
         }
     }
@@ -328,7 +326,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         route.setListener(this);
 
         // Set up the infoPane
-        initInfopane();
+        initRouteSelectionFragment();
 
         // TODO: Fix confusion between Location and LatLng objects
         PathOverlay path = null;
@@ -453,7 +451,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         if (position == 0) {
             // Set up the infoPane
-            initInfopane(); //Should only be run once.
+            initRouteSelectionFragment(); //Should only be run once.
             waypoints = new ArrayList<LatLng>();
             beginWalkingPath = new PathOverlay(Color.GRAY, 10);
             // Add a waypoint at the user's current position
@@ -652,30 +650,30 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     }
 
     /**
-     * Sets up a NavigationOverviewInfoPane that shows the destination of the route and allows the user to press "go"
+     * Sets up a RouteSelectionFragment that shows the destination of the route and allows the user to press "go"
      */
-    public void initInfopane() {
-        NavigationOverviewInfoPane ifp;
+    public void initRouteSelectionFragment() {
+        RouteSelectionFragment fragment;
 
         // Add info to the infoPane
-        ifp = new NavigationOverviewInfoPane();
+        fragment = new RouteSelectionFragment();
 
-        ifp.setParent(this);
+        fragment.setParent(this);
 
         Bundle b = new Bundle();
         b.putSerializable("NavigationMapHandler", this);
-        ifp.setArguments(b);
+        fragment.setArguments(b);
 
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.infoPaneContainer, ifp, "NavigationOverviewInfoPane");
+        ft.replace(R.id.topFragment, fragment, "RouteSelectionFragment");
         ft.commit();
     }
 
     public void initInstructions() {
         Log.d("JC", "initInstructions");
         TurnByTurnInstructionFragment tbtf = new TurnByTurnInstructionFragment();
-        RouteETAFragment ref = new RouteETAFragment();
+        NavigationFragment ref = new NavigationFragment();
 
         Bundle b = new Bundle();
         b.putSerializable("NavigationMapHandler", this);
@@ -685,7 +683,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         ft.add(R.id.turnByTurnContainer, tbtf, "TurnByTurnPane");
-        ft.replace(R.id.infoPaneContainer, ref, "RouteETAFragment");
+        ft.replace(R.id.topFragment, ref, "NavigationFragment");
         ft.commit();
         MapActivity.breakFrag.setVisibility(View.GONE);
         MapActivity.progressBarHolder.setVisibility(View.GONE);
@@ -712,11 +710,11 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                 if (settings.getTrackingEnabled()) {
                     FragmentManager fm = mapView.getParentActivity().getFragmentManager();
                     FragmentTransaction ft = fm.beginTransaction();
-                    ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
+                    ft.replace(R.id.infoPaneContainer, new TrackingStatisticsFragment());
                     ft.commit();
-                    MapActivity.frag.setVisibility(View.VISIBLE);
+                    MapActivity.topFragment.setVisibility(View.VISIBLE);
                 } else {
-                    MapActivity.frag.setVisibility(View.GONE);
+                    MapActivity.topFragment.setVisibility(View.GONE);
                 }
                 this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
             }
@@ -793,8 +791,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.mapView.getParentActivity().showProblemButton();
     }
 
-    public NavigationOverviewInfoPane getInfoPane() {
-        return (NavigationOverviewInfoPane) mapView.getParentActivity().getFragmentManager().findFragmentByTag("NavigationOverviewInfoPane");
+    public RouteSelectionFragment getInfoPane() {
+        return (RouteSelectionFragment) mapView.getParentActivity().getFragmentManager().findFragmentByTag("RouteSelectionFragment");
     }
 
     public static SMRoute getRoute() {
@@ -813,12 +811,12 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         return turnByTurnFragment;
     }
 
-    public RouteETAFragment getRouteETAFragment() {
-        return routeETAFragment;
+    public NavigationFragment getNavigationFragment() {
+        return navigationFragment;
     }
 
-    public void setRouteETAFragment(RouteETAFragment routeETAFragment) {
-        this.routeETAFragment = routeETAFragment;
+    public void setNavigationFragment(NavigationFragment navigationFragment) {
+        this.navigationFragment = navigationFragment;
     }
 
     /**
@@ -908,7 +906,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
                         if (which == 0) {
                             MapActivity.breakFrag.setVisibility(View.GONE);
                             MapActivity.progressBarHolder.setVisibility(View.GONE);
-                            MapActivity.frag.setVisibility(View.GONE);
+                            MapActivity.topFragment.setVisibility(View.GONE);
                             mapView.removeAllMarkers();
                             removeAnyPathOverlays();
                         } else {
@@ -923,7 +921,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             public void onCancel(DialogInterface dialogInterface) {
                 MapActivity.breakFrag.setVisibility(View.GONE);
                 MapActivity.progressBarHolder.setVisibility(View.GONE);
-                MapActivity.frag.setVisibility(View.GONE);
+                MapActivity.topFragment.setVisibility(View.GONE);
                 mapView.removeAllMarkers();
                 removeAnyPathOverlays();
             }

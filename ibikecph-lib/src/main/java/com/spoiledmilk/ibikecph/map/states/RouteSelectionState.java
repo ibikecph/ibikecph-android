@@ -5,9 +5,7 @@ import android.view.View;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
-import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.search.Address;
 
 /**
@@ -32,7 +30,7 @@ public class RouteSelectionState extends MapState {
         activity.getMapView().setMapViewListener(mapHandler);
         activity.getMapView().showRoute(source, destination);
         // Consider moving the transactional manipulation of the fragment here.
-        activity.findViewById(R.id.infoPaneContainer).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.topFragment).setVisibility(View.VISIBLE);
         // Enabled the user location, so the compass can be clicked
         activity.getMapView().setUserLocationEnabled(true);
         activity.getMapView().getUserLocationOverlay().setDrawAccuracyEnabled(false);
@@ -41,7 +39,7 @@ public class RouteSelectionState extends MapState {
     @Override
     public void transitionAway(MapState to) {
         mapHandler.cleanUp();
-        activity.findViewById(R.id.infoPaneContainer).setVisibility(View.GONE);
+        activity.findViewById(R.id.topFragment).setVisibility(View.GONE);
         // No need for a user location overlay afterwards - the future state will enabled this.
         activity.getMapView().setUserLocationEnabled(false);
     }

@@ -1,5 +1,6 @@
 package com.spoiledmilk.ibikecph.tracking;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +10,6 @@ import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 
@@ -22,11 +22,11 @@ import java.util.Date;
 /**
  * Shows summary statistics on the main map view
  */
-public class TrackingInfoPaneFragment extends InfoPaneFragment {
+public class TrackingStatisticsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.infopane_tracking_statistics, container, false);
+        View v = inflater.inflate(R.layout.tracking_statistics_fragment, container, false);
 
         // Get ridden distance and duration for tracks today: Start up by getting a Date object representing midnight
         Date midnight;

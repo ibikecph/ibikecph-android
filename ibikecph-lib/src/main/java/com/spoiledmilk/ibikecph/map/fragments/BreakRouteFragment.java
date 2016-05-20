@@ -1,4 +1,4 @@
-package com.spoiledmilk.ibikecph.map;
+package com.spoiledmilk.ibikecph.map.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
 import java.text.SimpleDateFormat;

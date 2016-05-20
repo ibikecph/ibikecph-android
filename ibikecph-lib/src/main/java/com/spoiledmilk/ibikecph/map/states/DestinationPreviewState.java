@@ -9,9 +9,8 @@ import com.mapbox.mapboxsdk.api.ILatLng;
 
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
+import com.spoiledmilk.ibikecph.map.fragments.DestinationPreviewFragment;
 import com.spoiledmilk.ibikecph.map.Geocoder;
-import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.search.Address;
 
@@ -36,7 +35,7 @@ public class DestinationPreviewState extends MapState {
         activity.getMapView().setUserLocationEnabled(true);
         activity.getMapView().getUserLocationOverlay().setDrawAccuracyEnabled(true);
         // Hide the info pane container
-        activity.findViewById(R.id.infoPaneContainer).setVisibility(View.VISIBLE);
+        activity.findViewById(R.id.topFragment).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -46,7 +45,7 @@ public class DestinationPreviewState extends MapState {
         // TODO: Consider renaming the method from the generic "address marker" to "temporary .."
         activity.getMapView().removeAddressMarker();
         // Hide the info pane container
-        activity.findViewById(R.id.infoPaneContainer).setVisibility(View.GONE);
+        activity.findViewById(R.id.topFragment).setVisibility(View.GONE);
     }
 
     public void setDestination(ILatLng destinationLatLng) {
@@ -78,14 +77,14 @@ public class DestinationPreviewState extends MapState {
         FragmentTransaction ft = fm.beginTransaction();
 
         // Prepare the infopane with the address we just got.
-        AddressDisplayInfoPaneFragment adp = new AddressDisplayInfoPaneFragment();
+        DestinationPreviewFragment adp = new DestinationPreviewFragment();
 
         // Supply the address
         Bundle arguments = new Bundle();
         arguments.putSerializable("address", a);
         adp.setArguments(arguments);
 
-        ft.replace(R.id.infoPaneContainer, adp);
+        ft.replace(R.id.topFragment, adp);
         ft.commit();
     }
 

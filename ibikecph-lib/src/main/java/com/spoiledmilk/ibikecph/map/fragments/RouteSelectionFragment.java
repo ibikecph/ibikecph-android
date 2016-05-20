@@ -1,5 +1,6 @@
-package com.spoiledmilk.ibikecph.navigation;
+package com.spoiledmilk.ibikecph.map.fragments;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -12,9 +13,8 @@ import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
+import com.spoiledmilk.ibikecph.map.fragments.DestinationPreviewFragment;
 import com.spoiledmilk.ibikecph.map.Geocoder;
-import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
@@ -29,7 +29,7 @@ import java.util.Date;
 /**
  * Created by jens on 6/1/15.
  */
-public class NavigationOverviewInfoPane extends InfoPaneFragment implements View.OnClickListener {
+public class RouteSelectionFragment extends Fragment implements View.OnClickListener {
     private NavigationMapHandler parent;
     private ImageButton fastButton, cargoButton, greenButton, breakButton;
 
@@ -46,13 +46,13 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
             route = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).getRoute();
         }
 
-        View v = inflater.inflate(R.layout.infopane_navigation_overview, container, false);
+        View v = inflater.inflate(R.layout.route_selection_fragment, container, false);
 
         TextView sourceText = (TextView) v.findViewById(R.id.navigationOverviewSource);
 
         TextView destinationText = (TextView) v.findViewById(R.id.navigationOverviewDestination);
 
-        ImageButton goButton = (ImageButton) v.findViewById(R.id.navigationOverviewGoButton);
+        View goButton = (View) v.findViewById(R.id.startRouteButton);
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +88,7 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
                 duration = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
                 arrivalTime = Geocoder.arrivalTime.get(NavigationMapHandler.obsInt.getPageValue());
                 sourceText.setText(IbikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
-                destinationText.setText(AddressDisplayInfoPaneFragment.name);
+                destinationText.setText(DestinationPreviewFragment.name);
 
             } else {
                 distance = route.getEstimatedDistance();
@@ -146,11 +146,11 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
 
         // Only show the go button if the route starts at the current location
         if (parent.getRoute() != null && parent.getRoute().startAddress.isCurrentLocation()) {
-            v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.VISIBLE);
+            v.findViewById(R.id.startRouteButton).setVisibility(View.VISIBLE);
         } else if (MapActivity.isBreakChosen) {
-            v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.VISIBLE);
+            v.findViewById(R.id.startRouteButton).setVisibility(View.VISIBLE);
         } else {
-            v.findViewById(R.id.navigationOverviewGoButtonContainer).setVisibility(View.GONE);
+            v.findViewById(R.id.startRouteButton).setVisibility(View.GONE);
         }
 
         // Highlight the relevant route type button
@@ -174,9 +174,9 @@ public class NavigationOverviewInfoPane extends InfoPaneFragment implements View
         sourceText.setOnClickListener(this);
         destinationText.setOnClickListener(this);
 
-        ((TextView) v.findViewById(R.id.newRouteText)).setText(IbikeApplication.getString("Start"));
+        ((TextView) v.findViewById(R.id.startRouteButtonText)).setText(IbikeApplication.getString("Start"));
         if (IbikeApplication.getAppName().equals("CykelPlanen")) {
-            ((TextView) v.findViewById(R.id.newRouteText)).setTextColor(getResources().getColor(R.color.CPActionBar));
+            ((TextView) v.findViewById(R.id.startRouteButtonText)).setTextColor(getResources().getColor(R.color.CPActionBar));
 
         }
 

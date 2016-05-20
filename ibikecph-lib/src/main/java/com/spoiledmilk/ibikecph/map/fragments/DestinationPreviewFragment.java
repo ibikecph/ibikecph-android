@@ -1,5 +1,6 @@
-package com.spoiledmilk.ibikecph.map;
+package com.spoiledmilk.ibikecph.map.fragments;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +13,7 @@ import android.widget.Toast;
 import com.spoiledmilk.ibikecph.IbikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
-import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
+import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.DB;
@@ -21,18 +22,18 @@ import com.spoiledmilk.ibikecph.util.DB;
  * This is the Fragment that appears when a user long-presses on the map. It shows the address that the user long-
  * pressed on, and allows her to 1) save a favorite on that address, and 2) navigate to it.
  */
-public class AddressDisplayInfoPaneFragment extends InfoPaneFragment implements View.OnClickListener {
+public class DestinationPreviewFragment extends Fragment implements View.OnClickListener {
 
     private TextView addressView;
     private Address address;
     public static String name = "";
 
-    public AddressDisplayInfoPaneFragment() {
+    public DestinationPreviewFragment() {
         super();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.infopane_address_display, container, false);
+        View v = inflater.inflate(R.layout.destination_preview_fragment, container, false);
 
         this.address = (Address) getArguments().getSerializable("address");
 

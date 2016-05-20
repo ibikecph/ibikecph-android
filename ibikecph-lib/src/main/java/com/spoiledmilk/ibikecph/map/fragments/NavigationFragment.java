@@ -1,5 +1,6 @@
-package com.spoiledmilk.ibikecph.navigation;
+package com.spoiledmilk.ibikecph.map.fragments;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,8 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.AddressDisplayInfoPaneFragment;
-import com.spoiledmilk.ibikecph.map.InfoPaneFragment;
+import com.spoiledmilk.ibikecph.map.fragments.DestinationPreviewFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
@@ -22,19 +22,19 @@ import java.util.Date;
 /**
  * Created by jens on 7/15/15.
  */
-public class RouteETAFragment extends InfoPaneFragment {
+public class NavigationFragment extends Fragment {
     private TextView durationText, lengthText, etaText;
     private ImageView imgRouteType;
     private TextView textAddress;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).setRouteETAFragment(this);
+        ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).setNavigationFragment(this);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View v = inflater.inflate(R.layout.infopane_navigation, container, false);
+        View v = inflater.inflate(R.layout.navigation_fragment, container, false);
 
         imgRouteType = (ImageView) v.findViewById(R.id.imgRouteType);
         textAddress = (TextView) v.findViewById(R.id.textAddress);
@@ -90,7 +90,7 @@ public class RouteETAFragment extends InfoPaneFragment {
             Log.d("DV", "Render dist left = " + getFormattedDistance((int) route.getDistanceLeft()));
 
         // Set the address text
-        textAddress.setText(AddressDisplayInfoPaneFragment.name);
+        textAddress.setText(DestinationPreviewFragment.name);
 
         // Set the duration label
         durationText.setText(TrackListAdapter.durationToFormattedTime(secondsToFinish));

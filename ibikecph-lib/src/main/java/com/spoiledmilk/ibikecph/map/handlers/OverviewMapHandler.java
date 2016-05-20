@@ -16,7 +16,7 @@ import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.states.BrowsingState;
 import com.spoiledmilk.ibikecph.map.states.DestinationPreviewState;
 import com.spoiledmilk.ibikecph.search.Address;
-import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
+import com.spoiledmilk.ibikecph.tracking.TrackingStatisticsFragment;
 import com.spoiledmilk.ibikecph.util.IbikePreferences;
 
 /**
@@ -49,10 +49,10 @@ public class OverviewMapHandler extends IBCMapHandler {
     }
 
     private void showStatisticsInfoPane() {
-        MapActivity.frag.setVisibility(View.VISIBLE);
+        MapActivity.topFragment.setVisibility(View.VISIBLE);
         FragmentManager fm = mapView.getParentActivity().getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
+        ft.replace(R.id.topFragment, new TrackingStatisticsFragment());
         ft.commit();
 
         isWatchingAddress = false;
@@ -60,7 +60,7 @@ public class OverviewMapHandler extends IBCMapHandler {
 
 
     private void disableStatisticsInfoPane() {
-        MapActivity.frag.setVisibility(View.GONE);
+        MapActivity.topFragment.setVisibility(View.GONE);
         Log.d("DV", "Infopanefragment removed!");
         //OverviewMapHandler.isWatchingAddress = false;
     }

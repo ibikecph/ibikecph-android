@@ -51,6 +51,7 @@ import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.TermsManager;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
+import com.spoiledmilk.ibikecph.map.fragments.BreakRouteFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.states.BrowsingState;
@@ -61,7 +62,7 @@ import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackHelper;
-import com.spoiledmilk.ibikecph.tracking.TrackingInfoPaneFragment;
+import com.spoiledmilk.ibikecph.tracking.TrackingStatisticsFragment;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 import com.spoiledmilk.ibikecph.util.Util;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -98,7 +99,7 @@ public class MapActivity extends BaseMapActivity {
     protected IBCMapView mapView;
 
     // TODO: Consider if these need to be static members of the class.
-    public static View frag;
+    public static View topFragment;
     public static View breakFrag;
     public static CirclePageIndicator tabs;
     public static ViewPager pager;
@@ -135,7 +136,7 @@ public class MapActivity extends BaseMapActivity {
 
         // Finding the sub-components of the activity's view, consider if these need to be static
         // or if we could pass a reference to this activity to the components that needs access
-        frag = findViewById(R.id.infoPaneContainer);
+        topFragment = findViewById(R.id.topFragment);
         breakFrag = findViewById(R.id.breakRouteContainer);
         tabs = (CirclePageIndicator) findViewById(R.id.tabs);
         pager = (ViewPager) findViewById(R.id.pager);
@@ -201,7 +202,7 @@ public class MapActivity extends BaseMapActivity {
         if (IbikeApplication.getSettings().getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
             showStatisticsInfoPane();
         } else if (!fromSearch && OverviewMapHandler.isWatchingAddress) {
-            MapActivity.frag.setVisibility(View.VISIBLE);
+            MapActivity.topFragment.setVisibility(View.VISIBLE);
             //mapView.showAddress(OverviewMapHandler.addressBeingWatched);
         } else if (!fromSearch && !OverviewMapHandler.isWatchingAddress) {
             disableStatisticsInfoPane();
@@ -699,10 +700,10 @@ public class MapActivity extends BaseMapActivity {
     private void showStatisticsInfoPane() {
         boolean trackingEnabled = getResources().getBoolean(R.bool.trackingEnabled);
         if (trackingEnabled) {
-            frag.setVisibility(View.VISIBLE);
+            topFragment.setVisibility(View.VISIBLE);
             FragmentManager fm = mapView.getParentActivity().getFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.infoPaneContainer, new TrackingInfoPaneFragment());
+            ft.replace(R.id.topFragment, new TrackingStatisticsFragment());
             ft.commit();
             Log.d("DV", "Infopanefragment added!");
 
@@ -713,7 +714,7 @@ public class MapActivity extends BaseMapActivity {
     }
 
     private void disableStatisticsInfoPane() {
-        frag.setVisibility(View.GONE);
+        topFragment.setVisibility(View.GONE);
         breakFrag.setVisibility(View.GONE);
         progressBarHolder.setVisibility(View.GONE);
         mapView.removeAllMarkers();
