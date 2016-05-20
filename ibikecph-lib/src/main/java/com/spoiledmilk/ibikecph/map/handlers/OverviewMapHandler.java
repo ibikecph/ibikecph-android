@@ -34,15 +34,6 @@ public class OverviewMapHandler extends IBCMapHandler {
         this.mapView = mapView;
         settings = IbikeApplication.getSettings();
 
-        Log.d("JC", "Instantiating OverviewMapHandler");
-
-        mapView.addUserLocationOverlay();
-
-        View userTrackingButton = mapView.getParentActivity().findViewById(R.id.userTrackingButton);
-        if (userTrackingButton != null) {
-            userTrackingButton.setVisibility(View.VISIBLE);
-        }
-
         for (Overlay o : mapView.getOverlays()) {
             Log.d("JC", "Overlay of type: " + o.getClass().getName());
         }
