@@ -341,4 +341,8 @@ public class IBikeApplication extends Application {
     public static int getPrimaryColor() {
         return primaryColor;
     }
+
+    public boolean breakRouteIsEnabled() {
+        return false;
+    }
 }
