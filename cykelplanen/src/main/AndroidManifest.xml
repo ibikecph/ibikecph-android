@@ -72,9 +72,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/CykelsuperstierTheme.ActionBar" />
         <activity
-            android:name="com.spoiledmilk.cykelsuperstier.map.OverlaysActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
