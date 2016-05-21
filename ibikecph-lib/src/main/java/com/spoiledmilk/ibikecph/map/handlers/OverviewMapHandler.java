@@ -33,10 +33,6 @@ public class OverviewMapHandler extends IBCMapHandler {
         super(mapView);
         this.mapView = mapView;
         settings = IBikeApplication.getSettings();
-
-        for (Overlay o : mapView.getOverlays()) {
-            Log.d("JC", "Overlay of type: " + o.getClass().getName());
-        }
     }
 
     private void showStatisticsInfoPane() {
@@ -96,7 +92,9 @@ public class OverviewMapHandler extends IBCMapHandler {
         if(this.mapView.getParentActivity() instanceof MapActivity) {
             MapActivity activity = (MapActivity) this.mapView.getParentActivity();
             // Change state to the browsing state.
-            activity.changeState(BrowsingState.class);
+            if(!(activity.getState() instanceof BrowsingState)) {
+                activity.changeState(BrowsingState.class);
+            }
         }
     }
 

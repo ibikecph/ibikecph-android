@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+@Deprecated()
 public class BreakRouteActivity extends Activity implements
 		SMHttpRequestListener {
 
