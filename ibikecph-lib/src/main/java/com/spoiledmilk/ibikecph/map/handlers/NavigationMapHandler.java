@@ -45,6 +45,7 @@ import com.spoiledmilk.ibikecph.search.Address;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by jens on 5/30/15.
@@ -72,8 +73,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public static String getOffAt = "";
     public static String lastType = "";
     public static float dist = 0;
-    private Address tryAgainSrc, tryAgainDst;
-
 
     public NavigationMapHandler(IBCMapView mapView) {
         super(mapView);
@@ -205,7 +204,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     @Override
     public void routeRecalculationDone() {
         Log.d("JC", "NavigationMapHandler routeRecalculationDone");
-        removeAnyPathOverlays();
+        mapView.removeAllRouteOverlays();
+
         PathOverlay path = null;
         if (IBikeApplication.getAppName().equals("CykelPlanen")) {
             path = new PathOverlay(Color.parseColor("#FF6600"), 10);
@@ -217,15 +217,15 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             for (Location loc : this.route.waypoints) {
                 path.addPoint(loc.getLatitude(), loc.getLongitude());
             }
-
-            this.mapView.getOverlays().add(path);
+            mapView.addRouteOverlay(path);
         }
     }
 
     @Override
     public void routeRecalculationDone(String type) {
         Log.d("JC", "NavigationMapHandler routeRecalculationDone");
-        removeAnyPathOverlays();
+        mapView.removeAllRouteOverlays();
+
         PathOverlay[] path = new PathOverlay[Geocoder.arrayLists.get(obsInt.getPageValue()).size()];
 
         // Redraw the whole route
@@ -242,7 +242,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         }
 
         for (int i = 0; i < path.length; i++) {
-            this.mapView.getOverlays().add(path[i]);
+            mapView.addRouteOverlay(path[i]);
         }
 
     }
@@ -373,9 +373,9 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         Log.d("JC", "distance: " + lastPoint.distanceTo(realLastPoint));
 
         // Show the whole route, zooming to make it fit
-        this.mapView.addOverlay(beginWalkingPath);
-        this.mapView.addOverlay(endWalkingPath);
-        this.mapView.addOverlay(path);
+        mapView.addRouteOverlay(beginWalkingPath);
+        mapView.addRouteOverlay(endWalkingPath);
+        mapView.addRouteOverlay(path);
 
         // Put markers at the beginning and end of the route. We use the "real" end location, which means the place that
         // the user tapped.
@@ -427,7 +427,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             IBikeApplication.getService().addLocationListener(route);
         }
 
-        removeAnyPathOverlays();
+        mapView.removeAllRouteOverlays();
 
         // TODO: Fix confusion between Location and LatLng objects
         if (IBikeApplication.getAppName().equals("CykelPlanen")) {
@@ -472,15 +472,15 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         // Show the whole route, zooming to make it fit
         if (amount - 1 == position) {
-            this.mapView.getOverlays().add(beginWalkingPath);
-            this.mapView.getOverlays().add(endWalkingPath);
+            mapView.addRouteOverlay(beginWalkingPath);
+            mapView.addRouteOverlay(endWalkingPath);
         }
 
         // Loop and add lines to be drawn
         if (amount - 1 == position) {
             Log.d("DV", "Sidste position!");
             for (int i = 0; i < path.length; i++) {
-                this.mapView.getOverlays().add(path[i]);
+                mapView.addRouteOverlay(path[i]);
             }
         }
 
@@ -606,34 +606,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         cleanedUp = false;
     }
 
-    private void removeAnyPathOverlays() {
-        // It's suspected that a bug in Mapbox gives trouble when iterating getOverlays and removing
-        // from it at the same time. Therefore we use an iterator to remove overlays.
-        //Log.d("NavigationMapHandler", "Before removal " + this.mapView.getOverlays().size() + " overlays exists.");
-        Iterator<Overlay> overlays = this.mapView.getOverlays().iterator();
-        while(overlays.hasNext()) {
-            Overlay overlay = overlays.next();
-            if (overlay instanceof PathOverlay) {
-                //Log.d("NavigationMapHandler", "\tRemoving " + overlay);
-                overlays.remove();
-            }
-        }
-        /*
-        Log.d("NavigationMapHandler", "After removal " + this.mapView.getOverlays().size() + " overlays exists.");
-        for(Overlay o: this.mapView.getOverlays()) {
-            Log.d("NavigationMapHandler", "\tOverlay: " + o);
-        }
-        */
-    }
-
     public void cleanUp() {
         if (cleanedUp) {
             Log.d("NavigationMapHandler", "Skipping clean up - as we're already clean.");
             return;
         }
 
-        removeAnyPathOverlays();
-        // this.mapView.removeAllMarkers();
+        mapView.removeAllRouteOverlays();
 
         if (beginMarker != null) {
             this.mapView.removeMarker(beginMarker);

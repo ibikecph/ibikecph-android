@@ -12,6 +12,8 @@ import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
+import com.mapbox.mapboxsdk.overlay.Overlay;
+import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
@@ -26,6 +28,9 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Util;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -42,6 +47,8 @@ public class IBCMapView extends MapView {
 
     public static IBCMarker currentAddressMarker;
     private CopyOnWriteArrayList<IBCMarker> markers = new CopyOnWriteArrayList<IBCMarker>();
+
+    protected List<Overlay> routeOverlays = new ArrayList<>();
 
     public enum MapViewState {
         DEFAULT,
@@ -311,13 +318,23 @@ public class IBCMapView extends MapView {
         }
     }
 
-    public void removeAllMarkersOfType(MarkerType t) {
-        for (IBCMarker m : markers) {
+    /**
+     * Adds a PathOverlay representing a route to the map.
+     * @param path
+     */
+    public void addRouteOverlay(PathOverlay path) {
+        routeOverlays.add(path);
+        addOverlay(path);
+    }
 
-            if (m.getType() == t) {
-                this.removeMarker(m);
-            }
-        }
+    /**
+     * Adds a PathOverlay representing a route to the map.
+     * @param path
+     */
+    public void removeAllRouteOverlays() {
+        // Remove all route overlays from the map and from the list of overlays.
+        getOverlays().removeAll(routeOverlays);
+        routeOverlays.removeAll(routeOverlays);
     }
 
 }
