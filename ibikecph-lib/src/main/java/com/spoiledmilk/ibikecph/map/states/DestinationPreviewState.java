@@ -3,7 +3,6 @@ package com.spoiledmilk.ibikecph.map.states;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.view.View;
 
 import com.mapbox.mapboxsdk.api.ILatLng;
 
@@ -21,30 +20,31 @@ public class DestinationPreviewState extends MapState {
 
     Address destinationAddress;
 
+    DestinationPreviewFragment destinationPreviewFragment;
+
     public DestinationPreviewState() {
         super();
     }
 
     @Override
-    public void transitionTowards(MapState from) {
+    public void transitionTowards(MapState from, FragmentTransaction fragmentTransaction) {
         // Ensure that the correct map handler is active
         if(!(activity.getMapView().getMapHandler() instanceof OverviewMapHandler)) {
             activity.getMapView().setMapViewListener(OverviewMapHandler.class);
         }
         activity.getMapView().setUserLocationEnabled(true);
         activity.getMapView().getUserLocationOverlay().setDrawAccuracyEnabled(true);
-        // Hide the info pane container
-        activity.findViewById(R.id.topFragment).setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void transitionAway(MapState to) {
+    public void transitionAway(MapState to, FragmentTransaction fragmentTransaction) {
         activity.getMapView().setUserLocationEnabled(false);
         // Remove the address marker
         // TODO: Consider renaming the method from the generic "address marker" to "temporary .."
         activity.getMapView().removeAddressMarker();
-        // Hide the info pane container
-        activity.findViewById(R.id.topFragment).setVisibility(View.GONE);
+        if(destinationPreviewFragment != null) {
+            fragmentTransaction.remove(destinationPreviewFragment);
+        }
     }
 
     public void setDestination(ILatLng destinationLatLng) {
@@ -64,24 +64,24 @@ public class DestinationPreviewState extends MapState {
     public void setDestination(Address destinationAddress) {
         this.destinationAddress = destinationAddress;
         activity.getMapView().showAddress(destinationAddress);
-        showAddressInfoPane(destinationAddress);
+        updateDestinationPreviewFragment(destinationAddress);
     }
 
-    public void showAddressInfoPane(Address a) {
+    public void updateDestinationPreviewFragment(Address a) {
         // Show the infopane
-        FragmentManager fm = activity.getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
+        FragmentManager fragmentManager = activity.getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         // Prepare the infopane with the address we just got.
-        DestinationPreviewFragment adp = new DestinationPreviewFragment();
+        destinationPreviewFragment = new DestinationPreviewFragment();
+        fragmentTransaction.add(R.id.topFragment, destinationPreviewFragment);
 
         // Supply the address
         Bundle arguments = new Bundle();
         arguments.putSerializable("address", a);
-        adp.setArguments(arguments);
+        destinationPreviewFragment.setArguments(arguments);
 
-        ft.replace(R.id.topFragment, adp);
-        ft.commit();
+        fragmentTransaction.commit();
     }
 
     @Override

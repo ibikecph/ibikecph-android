@@ -149,7 +149,7 @@ public class MapActivity extends BaseMapActivity {
         mapView = (IBCMapView) findViewById(R.id.mapView);
         mapView.init(this);
 
-        changeState(new BrowsingState());
+        changeState(BrowsingState.class);
 
         // Check for HockeyApp updates
         try {
@@ -283,6 +283,7 @@ public class MapActivity extends BaseMapActivity {
      * @param toState the new state
      */
     public void changeState(MapState toState) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         MapState fromState = state;
         String logMessage = "Changed state ";
 
@@ -292,13 +293,15 @@ public class MapActivity extends BaseMapActivity {
         // Transition away from the current state.
         if(fromState != null) {
             logMessage += String.format("from %s ", fromState);
-            fromState.transitionAway(toState);
+            fromState.transitionAway(toState, fragmentTransaction);
         }
 
         // Transition to the new state
         state = toState;
         logMessage += String.format("to %s", toState);
-        toState.transitionTowards(fromState);
+        toState.transitionTowards(fromState, fragmentTransaction);
+
+        fragmentTransaction.commit();
 
         // Insert this as info in the log
         Log.i(TAG, logMessage);
@@ -310,19 +313,17 @@ public class MapActivity extends BaseMapActivity {
      * @param stateClass
      * @return the existing or new state, useful when chaining.
      */
-    public MapState changeState(Class<? extends MapState> stateClass) {
-        if(stateClass.isInstance(state)) {
-            // Let's reuse the state
-            changeState(state);
-        } else {
-            try {
-                MapState newState = stateClass.newInstance();
-                changeState(newState);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+    public <MS extends MapState> MS changeState(Class<? extends MapState> stateClass) {
+        try {
+            MS newState = (MS) stateClass.newInstance();
+            changeState(newState);
+            return newState;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        // Return the new state for chaining.
+    }
+
+    public MapState getState() {
         return state;
     }
 
@@ -646,31 +647,26 @@ public class MapActivity extends BaseMapActivity {
             Log.d(TAG, "Got back from address search were the user canceled!");
             // throw new UnsupportedOperationException("Canceling the search address has not been implemented.");
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
-            Log.d(TAG, "Got back from address search requested to changing the source address");
-            RouteSelectionState state = (RouteSelectionState) this.changeState(RouteSelectionState.class);
-            // TODO: Implement that the start address was changed
-            throw new UnsupportedOperationException("Not yet changed to use MapStates");
-            /*
-            final Bundle extras = data.getExtras();
-            Address address = (Address) extras.getSerializable("addressObject");
-            if (address != null) {
-                state.setSource(address);
-            } else {
-                LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
-                state.setSource(destination);
+            if(state instanceof RouteSelectionState) {
+                final Bundle extras = data.getExtras();
+                Address address = (Address) extras.getSerializable("addressObject");
+                if (address != null) {
+                    ((RouteSelectionState) state).setSource(address);
+                } else {
+                    LatLng location = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
+                    ((RouteSelectionState) state).setSource(location);
+                }
             }
-            */
         } else if (requestCode == REQUEST_CHANGE_DESTINATION_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
-            Log.d(TAG, "Got back from address search requested to changing the destination address");
-            RouteSelectionState state = (RouteSelectionState) this.changeState(RouteSelectionState.class);
-            Log.d("JC", "Got back from address search, spawning");
-            final Bundle extras = data.getExtras();
-            Address address = (Address) extras.getSerializable("addressObject");
-            if (address != null) {
-                state.setDestination(address);
-            } else {
-                LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
-                state.setDestination(destination);
+            if(state instanceof RouteSelectionState) {
+                final Bundle extras = data.getExtras();
+                Address address = (Address) extras.getSerializable("addressObject");
+                if (address != null) {
+                    ((RouteSelectionState) state).setDestination(address);
+                } else {
+                    LatLng location = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
+                    ((RouteSelectionState) state).setDestination(location);
+                }
             }
         } else if (requestCode == LeftMenu.LAUNCH_FAVORITE) {
             // We got a favorite to navigate to

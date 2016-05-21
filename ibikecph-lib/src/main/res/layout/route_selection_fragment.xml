@@ -96,7 +96,7 @@
             android:gravity="center_horizontal">
 
             <ImageButton
-                android:id="@+id/navigationOverviewFastButton"
+                android:id="@+id/routeSelectionFastButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/White"
@@ -105,31 +105,31 @@
                 android:src="@drawable/btn_route_fastest_disabled" />
 
             <ImageButton
-                android:id="@+id/navigationOverviewCargoButton"
+                android:id="@+id/routeSelectionCargoButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/navigationOverviewFastButton"
+                android:layout_toRightOf="@+id/routeSelectionFastButton"
                 android:background="@color/White"
                 android:paddingLeft="22dp"
                 android:paddingRight="22dp"
                 android:src="@drawable/btn_route_cargo_disabled" />
 
             <ImageButton
-                android:id="@+id/navigationOverviewGreenButton"
+                android:id="@+id/routeSelectionGreenButton"
                 android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/navigationOverviewCargoButton"
+                android:layout_toRightOf="@+id/routeSelectionCargoButton"
                 android:background="@color/White"
                 android:paddingLeft="22dp"
                 android:paddingRight="22dp"
                 android:src="@drawable/btn_route_green_disabled" />
 
             <ImageButton
-                android:id="@+id/navigationOverviewBreakButton"
+                android:id="@+id/routeSelectionBreakButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/navigationOverviewGreenButton"
+                android:layout_toRightOf="@+id/routeSelectionGreenButton"
                 android:background="@color/White"
                 android:paddingLeft="22dp"
                 android:paddingRight="22dp"
@@ -144,7 +144,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/navigationOverviewCargoButton"
+        android:layout_below="@+id/routeSelectionCargoButton"
         android:background="#f7f7f7"
         android:orientation="horizontal"
         android:paddingBottom="8dp"

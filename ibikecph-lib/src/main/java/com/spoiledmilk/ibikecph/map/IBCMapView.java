@@ -129,6 +129,7 @@ public class IBCMapView extends MapView {
         }
     }
 
+    /*
     public void showRoute(final FavoritesData fd) {
         Address a = Address.fromFavoritesData(fd);
         showRoute(a);
@@ -137,6 +138,7 @@ public class IBCMapView extends MapView {
     public void showRoute(final Address destination) {
         showRoute(null, destination);
     }
+    */
 
     public void showRoute(final Address givenSource, final Address givenDestination) {
         Address source = givenSource;
@@ -273,7 +275,7 @@ public class IBCMapView extends MapView {
 
     /*
     public void showAddressFromFavorite(Address a) {
-        showAddressInfoPane(a);
+        showDestinationPreviewFragment(a);
         removeAddressMarker();
     }
     */

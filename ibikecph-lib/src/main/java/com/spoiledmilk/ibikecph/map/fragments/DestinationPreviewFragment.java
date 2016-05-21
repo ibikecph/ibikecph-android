@@ -87,9 +87,9 @@ public class DestinationPreviewFragment extends Fragment implements View.OnClick
         if (IBikeApplication.getService().hasValidLocation()) {
             if (getActivity() instanceof MapActivity) {
                 Address a = (Address) getArguments().getSerializable("address");
-                RouteSelectionState state = new RouteSelectionState();
+                MapActivity activity = (MapActivity) getActivity();
+                RouteSelectionState state = (RouteSelectionState) activity.changeState(RouteSelectionState.class);
                 state.setDestination(a);
-                ((MapActivity) this.getActivity()).changeState(state);
             }
         } else {
             Toast.makeText(IBikeApplication.getContext(), IBikeApplication.getString("error_no_gps_location"), Toast.LENGTH_LONG).show();

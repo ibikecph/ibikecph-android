@@ -307,16 +307,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
      * @param route
      */
     public void showRouteOverview(SMRoute route) {
-
-        if (Geocoder.arrayLists != null) {
-            for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
-                for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
-                    Geocoder.arrayLists.get(i).get(j).setListener(null);
-                    IBikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
-                }
-            }
-        }
-
         this.route = route;
         IBikeApplication.getService().addLocationListener(route);
         this.mapView.removeAllMarkers();
@@ -327,7 +317,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         route.setListener(this);
 
         // Set up the infoPane
-        initRouteSelectionFragment();
+        // initRouteSelectionFragment();
+        // FIXME: initRouteSelectionFragment used to be called here ...
 
         // TODO: Fix confusion between Location and LatLng objects
         PathOverlay path = null;
@@ -452,7 +443,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         if (position == 0) {
             // Set up the infoPane
-            initRouteSelectionFragment(); //Should only be run once.
+            // initRouteSelectionFragment(); //Should only be run once.
+            // FIXME: initRouteSelectionFragment used to be called here!
             waypoints = new ArrayList<LatLng>();
             beginWalkingPath = new PathOverlay(Color.GRAY, 10);
             // Add a waypoint at the user's current position
@@ -614,56 +606,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         cleanedUp = false;
     }
 
-    public void startNavigation() {
-        if (mapView.getParentActivity() instanceof MapActivity) {
-            MapActivity activity = (MapActivity) mapView.getParentActivity();
-            NavigatingState state = (NavigatingState) activity.changeState(NavigatingState.class);
-            state.setRoute(route);
-        } else {
-            throw new RuntimeException("The map view must be child of a MapActivity");
-        }
-    }
-
-    /**
-     * Sets up a RouteSelectionFragment that shows the destination of the route and allows the user to press "go"
-     */
-    public void initRouteSelectionFragment() {
-        RouteSelectionFragment fragment;
-
-        // Add info to the infoPane
-        fragment = new RouteSelectionFragment();
-
-        fragment.setParent(this);
-
-        Bundle b = new Bundle();
-        b.putSerializable("NavigationMapHandler", this);
-        fragment.setArguments(b);
-
-        FragmentManager fm = mapView.getParentActivity().getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.topFragment, fragment, "RouteSelectionFragment");
-        ft.commit();
-    }
-
-    public void initInstructions() {
-        Log.d("JC", "initInstructions");
-        TurnByTurnInstructionFragment tbtf = new TurnByTurnInstructionFragment();
-        NavigationETAFragment ref = new NavigationETAFragment();
-
-        Bundle b = new Bundle();
-        b.putSerializable("NavigationMapHandler", this);
-        tbtf.setArguments(b);
-        ref.setArguments(b);
-
-        FragmentManager fm = mapView.getParentActivity().getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.add(R.id.turnByTurnContainer, tbtf, "TurnByTurnPane");
-        ft.replace(R.id.topFragment, ref, "NavigationETAFragment");
-        ft.commit();
-        MapActivity.breakFrag.setVisibility(View.GONE);
-        MapActivity.progressBarHolder.setVisibility(View.GONE);
-    }
-
     private void removeAnyPathOverlays() {
         // It's suspected that a bug in Mapbox gives trouble when iterating getOverlays and removing
         // from it at the same time. Therefore we use an iterator to remove overlays.
@@ -747,132 +689,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
     public void setNavigationETAFragment(NavigationETAFragment navigationETAFragment) {
         this.navigationETAFragment = navigationETAFragment;
-    }
-
-    /**
-     * Calculates a new route from either a new source point, a new destination point,  or both. If null supplied, then
-     * we assume the user to leave the other field unchanged.
-     *
-     * @param givenSrc
-     * @param givenDst
-     */
-    private void changeAddress(Address givenSrc, Address givenDst, RouteType routeType) {
-        Address newSrc, newDst;
-        RouteType newRouteType;
-
-        if (givenSrc == null) {
-            newSrc = this.getRoute().startAddress;
-        } else {
-            newSrc = givenSrc;
-        }
-
-        if (givenDst == null) {
-            newDst = this.getRoute().endAddress;
-        } else {
-            newDst = givenDst;
-        }
-
-        if (routeType == null) {
-            newRouteType = this.getRoute().getType();
-        } else {
-            newRouteType = routeType;
-        }
-
-        final Address finalSource = newSrc;
-        final Address finalDestination = newDst;
-        tryAgainSrc = finalSource;
-        tryAgainDst = finalDestination;
-
-
-        Log.d("DV_break", "NavigationMaphandler: Geocoder.getroute!");
-        Geocoder.getRoute(finalSource.getLocation(), finalDestination.getLocation(), new Geocoder.RouteCallback() {
-            @Override
-            public void onSuccess(SMRoute route) {
-                route.startStationName = finalSource.getStreetAddress();
-                route.endStationName = finalDestination.getStreetAddress();
-                route.startAddress = finalSource;
-                route.endAddress = finalDestination;
-
-                Log.d("DV_break", "NavigationMaphandler: Calling showRoute!");
-                mapView.showRoute(route);
-            }
-
-            @Override
-            public void onSuccess(boolean isBreak) {
-                Log.d("DV", "isRouting = " + isRouting);
-                if (MapActivity.isBreakChosen && !isRouting) {
-                    //Måske fjern route helt herfra og sæt de her ting i Geocoder?
-                /*route.startStationName = finalSource.getStreetAddress();
-                route.endStationName = finalDestination.getStreetAddress();
-                route.startAddress = finalSource;
-                route.endAddress = finalDestination;*/
-
-                    Log.d("DV_break", "NavigationMaphandler: Calling showRoute with breakRoute!");
-                    mapView.showMultipleRoutes();
-                } else {
-                    MapActivity.breakFrag.setVisibility(View.GONE);
-                }
-
-            }
-
-            @Override
-            public void onFailure() {
-                Log.d("DV_break", "IBCMapView, onFailure!");
-                displayTryAgain();
-            }
-
-        }, null, newRouteType);
-
-    }
-
-    public void displayTryAgain() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.mapActivityContext);
-        String[] options = {IBikeApplication.getString("Cancel"), IBikeApplication.getString("Try_again")};
-        builder.setTitle(IBikeApplication.getString("error_route_not_found"))
-                .setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        if (which == 0) {
-                            MapActivity.breakFrag.setVisibility(View.GONE);
-                            MapActivity.progressBarHolder.setVisibility(View.GONE);
-                            MapActivity.topFragment.setVisibility(View.GONE);
-                            mapView.removeAllMarkers();
-                            removeAnyPathOverlays();
-                        } else {
-                            changeAddress(tryAgainSrc, tryAgainDst, RouteType.BREAK);
-                        }
-
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                if(mapView.getParentActivity() instanceof MapActivity) {
-                    MapActivity activity = ((MapActivity) mapView.getParentActivity());
-                    activity.changeState(DestinationPreviewState.class);
-                }
-            }
-        });
-        dialog.show();
-    }
-
-    public void changeDestinationAddress(Address a) {
-        changeAddress(null, a, null);
-    }
-
-    public void changeSourceAddress(Address a) {
-        changeAddress(a, null, null);
-    }
-
-    public void changeRouteType(RouteType routeType) {
-        changeAddress(null, null, routeType);
-    }
-
-    public void flipRoute() {
-        Log.d("JC", "Flipping route");
-        changeAddress(this.getRoute().endAddress, this.getRoute().startAddress, null);
     }
 
     /**

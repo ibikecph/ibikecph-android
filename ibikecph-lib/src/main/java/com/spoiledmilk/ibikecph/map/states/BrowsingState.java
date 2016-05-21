@@ -1,9 +1,8 @@
 package com.spoiledmilk.ibikecph.map.states;
 
-import android.util.Log;
+import android.app.FragmentTransaction;
 
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
-import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 
@@ -21,7 +20,7 @@ public class BrowsingState extends MapState {
     }
 
     @Override
-    public void transitionTowards(MapState from) {
+    public void transitionTowards(MapState from, FragmentTransaction fragmentTransaction) {
         activity.getMapView().setUserLocationEnabled(true);
         activity.getMapView().getUserLocationOverlay().setDrawAccuracyEnabled(true);
         activity.getMapView().getUserLocationOverlay().enableFollowLocation();
@@ -33,7 +32,7 @@ public class BrowsingState extends MapState {
     }
 
     @Override
-    public void transitionAway(MapState to) {
+    public void transitionAway(MapState to, FragmentTransaction fragmentTransaction) {
         activity.getMapView().setUserLocationEnabled(false);
         // TODO: Consider if we even need to destruct the map view at all.
         mapViewHandler.destructor();

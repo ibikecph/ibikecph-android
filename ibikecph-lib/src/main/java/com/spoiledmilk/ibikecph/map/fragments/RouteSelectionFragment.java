@@ -1,10 +1,8 @@
 package com.spoiledmilk.ibikecph.map.fragments;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +15,7 @@ import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
+import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
@@ -28,143 +27,49 @@ import java.util.Date;
 /**
  * Created by jens on 6/1/15.
  */
-public class RouteSelectionFragment extends Fragment implements View.OnClickListener {
-    private NavigationMapHandler parent;
+public class RouteSelectionFragment extends MapStateFragment implements View.OnClickListener {
     private ImageButton fastButton, cargoButton, greenButton, breakButton;
+
+    protected RouteSelectionState mapState;
+
+    protected View v;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.parent = (NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler");
+        mapState = getMapState(RouteSelectionState.class);
     }
 
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        SMRoute route;
-        if (MapActivity.isBreakChosen && Geocoder.totalDistance != null) {
-            route = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).getBreakRoute(NavigationMapHandler.obsInt.getPageValue());
-        } else {
-            route = ((NavigationMapHandler) getArguments().getSerializable("NavigationMapHandler")).getRoute();
-        }
-
-        View v = inflater.inflate(R.layout.route_selection_fragment, container, false);
-
-        TextView sourceText = (TextView) v.findViewById(R.id.navigationOverviewSource);
-
-        TextView destinationText = (TextView) v.findViewById(R.id.navigationOverviewDestination);
+        v = inflater.inflate(R.layout.route_selection_fragment, container, false);
 
         View startRouteButton = (View) v.findViewById(R.id.startRouteButton);
         startRouteButton.setOnClickListener(this);
 
-        fastButton = (ImageButton) v.findViewById(R.id.navigationOverviewFastButton);
-        cargoButton = (ImageButton) v.findViewById(R.id.navigationOverviewCargoButton);
-        greenButton = (ImageButton) v.findViewById(R.id.navigationOverviewGreenButton);
+        fastButton = (ImageButton) v.findViewById(R.id.routeSelectionFastButton);
+        cargoButton = (ImageButton) v.findViewById(R.id.routeSelectionCargoButton);
+        greenButton = (ImageButton) v.findViewById(R.id.routeSelectionGreenButton);
+        breakButton = (ImageButton) v.findViewById(R.id.routeSelectionBreakButton);
 
         fastButton.setOnClickListener(this);
         cargoButton.setOnClickListener(this);
         greenButton.setOnClickListener(this);
+        breakButton.setOnClickListener(this);
 
-        float distance;
-        float duration;
-        long arrivalTime = 0;
-
-        // TODO: Consider moving this to the cykelplanen directory.
-        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
-            breakButton = (ImageButton) v.findViewById(R.id.navigationOverviewBreakButton);
-            boolean breakRouteEnabled = getResources().getBoolean(R.bool.breakRouteEnabled);
-            Log.d(getClass().getSimpleName(), "breakRouteEnabled = " + breakRouteEnabled);
-            breakButton.setVisibility(breakRouteEnabled ? View.VISIBLE : View.GONE);
-            breakButton.setOnClickListener(this);
-
-            cargoButton.setVisibility(View.GONE);
-
-            // Set the distance label
-            if (MapActivity.isBreakChosen && Geocoder.totalBikeDistance != null) {
-                distance = Geocoder.totalBikeDistance.get(NavigationMapHandler.obsInt.getPageValue());
-                duration = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
-                arrivalTime = Geocoder.arrivalTime.get(NavigationMapHandler.obsInt.getPageValue());
-                sourceText.setText(IBikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
-                destinationText.setText(DestinationPreviewFragment.name);
-
-            } else {
-                distance = route.getEstimatedDistance();
-                duration = route.getEstimatedArrivalTime();
-                sourceText.setText(IBikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
-                destinationText.setText(route.endAddress.getStreetAddress());
-            }
-        } else {
-            // Set the distance label
-            distance = route.getEstimatedDistance();
-            duration = route.getEstimatedArrivalTime();
-            sourceText.setText(route.startAddress.getStreetAddress());
-            destinationText.setText(route.endAddress.getStreetAddress());
-        }
-
-        TextView durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
-        TextView lengthText = (TextView) v.findViewById(R.id.navigationOverviewRouteLength);
-        TextView etaText = (TextView) v.findViewById(R.id.navigationOverviewRouteETA);
-
-        if (distance > 1000) {
-            distance /= 1000;
-            lengthText.setText(String.format("%.1f km", distance));
-        } else {
-            lengthText.setText(String.format("%d m", (int) distance));
-        }
-
-        // Set the duration label
-        durationText.setText(TrackListAdapter.durationToFormattedTime(duration));
-
-        SimpleDateFormat sdf = null;
-        if (DateFormat.is24HourFormat(this.getActivity())) {
-            sdf = new SimpleDateFormat("HH:mm");
-        } else {
-            sdf = new SimpleDateFormat("HH:mm a");
-        }
-
-        if (arrivalTime > 0) {
-            arrivalTime = arrivalTime * 1000;
-            etaText.setText(sdf.format(arrivalTime).toString());
-        } else {
-            Calendar c = Calendar.getInstance();
-            c.add(Calendar.SECOND, (int) duration);
-            Date arrivalTimee = c.getTime();
-            etaText.setText(sdf.format(arrivalTimee));
-        }
-
+        // Show or hide the break route button based on the setting
+        boolean breakRouteEnabled = getResources().getBoolean(R.bool.breakRouteEnabled);
+        breakButton.setVisibility(breakRouteEnabled ? View.VISIBLE : View.GONE);
 
         // Add the ability to flip the route
         ((ImageButton) v.findViewById(R.id.btnAddressSwap)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                parent.flipRoute();
+                mapState.flipRoute();
             }
         });
 
-        // Only show the go button if the route starts at the current location
-        if (parent.getRoute() != null && parent.getRoute().startAddress.isCurrentLocation()) {
-            v.findViewById(R.id.startRouteButton).setVisibility(View.VISIBLE);
-        } else if (MapActivity.isBreakChosen) {
-            v.findViewById(R.id.startRouteButton).setVisibility(View.VISIBLE);
-        } else {
-            v.findViewById(R.id.startRouteButton).setVisibility(View.GONE);
-        }
-
-        // Highlight the relevant route type button
-        switch (route.getType()) {
-            case GREEN:
-                greenButton.setImageResource(R.drawable.btn_route_green_enabled);
-                break;
-            case CARGO:
-                cargoButton.setImageResource(R.drawable.btn_route_cargo_enabled);
-                break;
-            case FASTEST:
-                fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
-                break;
-            case BREAK:
-                breakButton.setImageResource(R.drawable.btn_train_enabled);
-                break;
-            default:
-                break;
-        }
-
+        TextView sourceText = (TextView) v.findViewById(R.id.navigationOverviewSource);
+        TextView destinationText = (TextView) v.findViewById(R.id.navigationOverviewDestination);
         sourceText.setOnClickListener(this);
         destinationText.setOnClickListener(this);
 
@@ -177,10 +82,6 @@ public class RouteSelectionFragment extends Fragment implements View.OnClickList
         return v;
     }
 
-    public void setParent(NavigationMapHandler parent) {
-        this.parent = parent;
-    }
-
     /**
      * This is the click handler for the fast/cargo/green route buttons
      *
@@ -189,27 +90,28 @@ public class RouteSelectionFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.startRouteButton) {
-            parent.startNavigation();
-        } else if (v.getId() == R.id.navigationOverviewFastButton) {
+            mapState.startNavigation();
+        } else if (v.getId() == R.id.routeSelectionFastButton) {
             disableAllRouteButtons();
             fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
             MapActivity.isBreakChosen = false;
-            this.parent.changeRouteType(RouteType.FASTEST);
+            mapState.setType(RouteType.FASTEST);
 
-        } else if (v.getId() == R.id.navigationOverviewCargoButton) {
+        } else if (v.getId() == R.id.routeSelectionCargoButton) {
             disableAllRouteButtons();
             cargoButton.setImageResource(R.drawable.btn_route_cargo_enabled);
 
-            this.parent.changeRouteType(RouteType.CARGO);
+            mapState.setType(RouteType.CARGO);
 
-        } else if (v.getId() == R.id.navigationOverviewGreenButton) {
+        } else if (v.getId() == R.id.routeSelectionGreenButton) {
             disableAllRouteButtons();
             MapActivity.isBreakChosen = false;
             greenButton.setImageResource(R.drawable.btn_route_green_enabled);
 
-            this.parent.changeRouteType(RouteType.GREEN);
+            mapState.setType(RouteType.GREEN);
 
-        } else if (v.getId() == R.id.navigationOverviewBreakButton) {
+        } else if (v.getId() == R.id.routeSelectionBreakButton) {
+            // TODO: Move all this controller code to the map state
             disableAllRouteButtons();
             breakButton.setImageResource(R.drawable.btn_train_enabled);
             MapActivity.isBreakChosen = true;
@@ -218,7 +120,7 @@ public class RouteSelectionFragment extends Fragment implements View.OnClickList
             MapActivity.tabs.setVisibility(View.GONE);
             MapActivity.progressBarHolder.setVisibility(View.VISIBLE);
 
-            this.parent.changeRouteType(RouteType.BREAK);
+            mapState.setType(RouteType.BREAK);
         } else if (v.getId() == R.id.navigationOverviewSource) {
             MapActivity activity = (MapActivity) this.getActivity();
             Intent i = new Intent(activity, SearchAutocompleteActivity.class);
@@ -258,4 +160,113 @@ public class RouteSelectionFragment extends Fragment implements View.OnClickList
 
     }
 
+    public void refreshView() {
+        SMRoute route = mapState.getRoute();
+
+        float distance;
+        float duration;
+        long arrivalTime = 0;
+
+        boolean breakRouteEnabled = getResources().getBoolean(R.bool.breakRouteEnabled);
+        if(breakRouteEnabled) {
+            throw new RuntimeException("Break route needs to be refactored.");
+        }
+        /*
+        // TODO: Move this to the cykelplanen directory.
+        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
+            breakButton = (ImageButton) v.findViewById(R.id.navigationOverviewBreakButton);
+            boolean breakRouteEnabled = getResources().getBoolean(R.bool.breakRouteEnabled);
+            Log.d(getClass().getSimpleName(), "breakRouteEnabled = " + breakRouteEnabled);
+            breakButton.setVisibility(breakRouteEnabled ? View.VISIBLE : View.GONE);
+
+            cargoButton.setVisibility(View.GONE);
+
+            // Set the distance label
+            if (MapActivity.isBreakChosen && Geocoder.totalBikeDistance != null) {
+                distance = Geocoder.totalBikeDistance.get(NavigationMapHandler.obsInt.getPageValue());
+                duration = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
+                arrivalTime = Geocoder.arrivalTime.get(NavigationMapHandler.obsInt.getPageValue());
+                sourceText.setText(IBikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
+                destinationText.setText(DestinationPreviewFragment.name);
+            } else {
+                distance = route.getEstimatedDistance();
+                duration = route.getEstimatedArrivalTime();
+                sourceText.setText(IBikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
+                destinationText.setText(route.endAddress.getStreetAddress());
+            }
+        } else {
+            // Set the distance label
+            distance = route.getEstimatedDistance();
+            duration = route.getEstimatedArrivalTime();
+            sourceText.setText(route.startAddress.getStreetAddress());
+            destinationText.setText(route.endAddress.getStreetAddress());
+        }
+        */
+
+        TextView sourceText = (TextView) v.findViewById(R.id.navigationOverviewSource);
+        TextView destinationText = (TextView) v.findViewById(R.id.navigationOverviewDestination);
+        sourceText.setText(route.startAddress.getStreetAddress());
+        destinationText.setText(route.endAddress.getStreetAddress());
+
+        distance = route.getEstimatedDistance();
+        duration = route.getEstimatedArrivalTime();
+
+        TextView durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
+        TextView lengthText = (TextView) v.findViewById(R.id.navigationOverviewRouteLength);
+        TextView etaText = (TextView) v.findViewById(R.id.navigationOverviewRouteETA);
+
+        if (distance > 1000) {
+            distance /= 1000;
+            lengthText.setText(String.format("%.1f km", distance));
+        } else {
+            lengthText.setText(String.format("%d m", (int) distance));
+        }
+
+        // Set the duration label
+        durationText.setText(TrackListAdapter.durationToFormattedTime(duration));
+
+        SimpleDateFormat sdf = null;
+        if (DateFormat.is24HourFormat(this.getActivity())) {
+            sdf = new SimpleDateFormat("HH:mm");
+        } else {
+            sdf = new SimpleDateFormat("HH:mm a");
+        }
+
+        if (arrivalTime > 0) {
+            // TODO: Move this the the Cykelplanen directory.
+            arrivalTime = arrivalTime * 1000;
+            etaText.setText(sdf.format(arrivalTime).toString());
+        } else {
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.SECOND, (int) duration);
+            Date arrivalTimee = c.getTime();
+            etaText.setText(sdf.format(arrivalTimee));
+        }
+        // Only show the go button if the route starts at the current location
+        if (route != null && route.startAddress.isCurrentLocation()) {
+            v.findViewById(R.id.startRouteButton).setVisibility(View.VISIBLE);
+        } else if (MapActivity.isBreakChosen) {
+            v.findViewById(R.id.startRouteButton).setVisibility(View.VISIBLE);
+        } else {
+            v.findViewById(R.id.startRouteButton).setVisibility(View.GONE);
+        }
+
+        // Highlight the relevant route type button
+        switch (route.getType()) {
+            case GREEN:
+                greenButton.setImageResource(R.drawable.btn_route_green_enabled);
+                break;
+            case CARGO:
+                cargoButton.setImageResource(R.drawable.btn_route_cargo_enabled);
+                break;
+            case FASTEST:
+                fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
+                break;
+            case BREAK:
+                breakButton.setImageResource(R.drawable.btn_train_enabled);
+                break;
+            default:
+                break;
+        }
+    }
 }

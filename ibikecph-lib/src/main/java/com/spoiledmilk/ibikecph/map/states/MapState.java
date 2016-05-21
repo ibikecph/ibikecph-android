@@ -1,5 +1,7 @@
 package com.spoiledmilk.ibikecph.map.states;
 
+import android.app.FragmentTransaction;
+
 import com.spoiledmilk.ibikecph.map.MapActivity;
 
 /**
@@ -17,14 +19,16 @@ public abstract class MapState {
     /**
      * Transition the activity from some state to this state.
      * @param from
+     * @param fragmentTransaction
      */
-    public abstract void transitionTowards(MapState from);
+    public abstract void transitionTowards(MapState from, FragmentTransaction fragmentTransaction);
 
     /**
      * Transition the activity to some other state from this state.
      * @param to
+     * @param fragmentTransaction
      */
-    public abstract void transitionAway(MapState to);
+    public abstract void transitionAway(MapState to, FragmentTransaction fragmentTransaction);
 
     /**
      * Called when the user presses the back button.
