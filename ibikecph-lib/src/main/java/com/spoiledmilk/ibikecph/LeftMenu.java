@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 
 import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
@@ -22,7 +23,7 @@ import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
-import com.spoiledmilk.ibikecph.map.OverlaysActivity;
+import com.spoiledmilk.ibikecph.map.overlays.OverlaysActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity;
@@ -150,7 +151,7 @@ public class LeftMenu extends Fragment {
     public void spawnOverlaysActivity() {
         Intent i = new Intent(getActivity(), OverlaysActivity.class);
         getActivity().startActivity(i);
-        getActivity().overridePendingTransition(com.spoiledmilk.ibikecph.R.anim.slide_in_right, com.spoiledmilk.ibikecph.R.anim.slide_out_left);
+        //getActivity().overridePendingTransition(com.spoiledmilk.ibikecph.R.anim.slide_in_right, com.spoiledmilk.ibikecph.R.anim.slide_out_left);
     }
 
     @SuppressWarnings("UnusedDeclaration")

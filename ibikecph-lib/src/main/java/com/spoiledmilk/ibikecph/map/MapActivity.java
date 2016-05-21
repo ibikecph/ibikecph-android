@@ -43,6 +43,7 @@ import com.mapbox.mapboxsdk.events.RotateEvent;
 import com.mapbox.mapboxsdk.events.ScrollEvent;
 import com.mapbox.mapboxsdk.events.ZoomEvent;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
@@ -54,6 +55,8 @@ import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.fragments.BreakRouteFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
+import com.spoiledmilk.ibikecph.map.overlays.SelectableOverlayFactory;
+import com.spoiledmilk.ibikecph.map.overlays.SelectableOverlay;
 import com.spoiledmilk.ibikecph.map.states.BrowsingState;
 import com.spoiledmilk.ibikecph.map.states.DestinationPreviewState;
 import com.spoiledmilk.ibikecph.map.states.MapState;
@@ -65,12 +68,13 @@ import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackHelper;
 import com.spoiledmilk.ibikecph.tracking.TrackingStatisticsFragment;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
-import com.spoiledmilk.ibikecph.util.IBikePreferences;
 import com.spoiledmilk.ibikecph.util.Util;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
+
+import java.util.List;
 
 import io.realm.exceptions.RealmMigrationNeededException;
 
@@ -151,6 +155,8 @@ public class MapActivity extends BaseMapActivity {
 
         changeState(BrowsingState.class);
 
+        initializeSelectableOverlays();
+
         // Check for HockeyApp updates
         try {
             UpdateManager.register(this);
@@ -184,11 +190,23 @@ public class MapActivity extends BaseMapActivity {
             }
         });
 
-        // Disable pathoverlay for super roads until this functionality is ready to be used.
-        IBikeApplication.getSettings().setOverlay(OverlayType.PATH, false);
-
         // Uploads tracks to the server - TODO: consider removing this call and class entirely.
         TrackingManager.uploadTracksToServer();
+    }
+
+    protected void initializeSelectableOverlays() {
+        final SelectableOverlayFactory factory = SelectableOverlayFactory.getInstance();
+        factory.addOnOverlaysLoadedListener(new SelectableOverlayFactory.OnOverlaysLoadedListener() {
+            @Override
+            public void onOverlaysLoaded(List<SelectableOverlay> selectableOverlays) {
+                // Add all the overlays to the map view
+                for(SelectableOverlay selectableOverlay: factory.getSelectableOverlays()) {
+                    for(Overlay overlay: selectableOverlay.getOverlays()) {
+                        mapView.addOverlay(overlay);
+                    }
+                }
+            }
+        });
     }
 
     @SuppressWarnings("deprecation")
@@ -671,6 +689,7 @@ public class MapActivity extends BaseMapActivity {
         } else if (requestCode == LeftMenu.LAUNCH_FAVORITE) {
             // We got a favorite to navigate to
             if (resultCode == RESULT_OK) {
+                // TODO: Re-implement launching of favorites
                 throw new UnsupportedOperationException("Launching favorites not yet implemented using MapStates");
                 /*
                 FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
@@ -692,12 +711,6 @@ public class MapActivity extends BaseMapActivity {
             */
         } else if (requestCode == LeftMenu.LAUNCH_ABOUT) {
             Log.d("JC", "Got back from the about screen.");
-            /*
-            if (!OverviewMapHandler.isWatchingAddress) {
-                this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
-            }
-            leftMenu.populateMenu();
-            */
         }
     }
 

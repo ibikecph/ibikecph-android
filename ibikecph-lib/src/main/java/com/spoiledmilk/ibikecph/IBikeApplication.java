@@ -22,6 +22,8 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.GoogleAnalytics;
 
 import com.spoiledmilk.ibikecph.map.MapActivity;
+import com.spoiledmilk.ibikecph.map.overlays.SelectableOverlayFactory;
+import com.spoiledmilk.ibikecph.map.overlays.RefreshOverlaysTask;
 import com.spoiledmilk.ibikecph.tracking.MilestoneManager;
 import com.spoiledmilk.ibikecph.tracking.TrackHelper;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
@@ -72,6 +74,8 @@ public class IBikeApplication extends Application {
 
         this.startService(new Intent(this, BikeLocationService.class));
 
+        initializeSelectableOverlays();
+
         trackingManager = TrackingManager.getInstance();
 
         // Register a weekly notification
@@ -89,6 +93,14 @@ public class IBikeApplication extends Application {
             // Might be useful: https://realm.io/docs/java/latest/api/io/realm/Realm.html#deleteRealm-io.realm.RealmConfiguration-
             // Realm.deleteRealmFile(this);
         }
+    }
+
+    protected void initializeSelectableOverlays() {
+        // Checks if new overlays are available on the server and downloads any updated overlays.
+        final SelectableOverlayFactory selectableOverlayFactory = SelectableOverlayFactory.getInstance();
+        selectableOverlayFactory.setPreferences(getSettings());
+        // Let's try to load the overlays from the server - and not hang the UI thread meanwhile
+        new RefreshOverlaysTask(this).execute();
     }
 
     /**

@@ -13,7 +13,7 @@ import android.util.Log;
 
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.OverlayType;
+import com.spoiledmilk.ibikecph.map.overlays.SelectableOverlay;
 
 import java.util.Locale;
 
@@ -151,16 +151,16 @@ public class IBikePreferences {
         getPreferences().edit().putBoolean(PREFS_SHARE_DATA, shareData).commit();
     }
 
-    public void setOverlay(OverlayType type, boolean value) {
-        getPreferences().edit().putBoolean(getPrefOverlayKey(type), value).commit();
+    public void setOverlay(SelectableOverlay overlay, boolean value) {
+        getPreferences().edit().putBoolean(getOverlayKey(overlay), value).commit();
     }
 
-    public boolean getOverlay(OverlayType type) {
-        return getPreferences().getBoolean(getPrefOverlayKey(type), false);
+    public boolean getOverlay(SelectableOverlay overlay) {
+        return getPreferences().getBoolean(getOverlayKey(overlay), false);
     }
 
-    public String getPrefOverlayKey(OverlayType type) {
-        return String.format("%s_%s", PREFS_OVERLAYS, type.toString().toLowerCase());
+    public String getOverlayKey(SelectableOverlay overlay) {
+        return String.format("%s_%s", PREFS_OVERLAYS, overlay.getClass().getName());
     }
     public int getLengthNotificationOrdinal() {
         return getPreferences().getInt(LENGTH_NOTIFICATION, -1);

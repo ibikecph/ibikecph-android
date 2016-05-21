@@ -19,20 +19,7 @@ import java.util.ArrayList;
 
 public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 
-	@Override
-	public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d("MapActivity", "The CykelPlanen MapActivity got created.");
-        plotOverlays();
-
-    }
-
-	@Override
-	public void onResume() {
-		super.onResume();
-        plotOverlays();
-	}
-
+    /*
     // TODO: Refactor this into the super MapActivity and keep the actual overlays a part of CykelPlanen
     private void plotOverlays() {
         Log.d("JC", "MapActivity.plotOverlays");
@@ -67,6 +54,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
         }
         this.mapView.invalidate();
     }
+    */
 
     @Override
     protected com.spoiledmilk.ibikecph.LeftMenu instantiateLeftMenu() {
