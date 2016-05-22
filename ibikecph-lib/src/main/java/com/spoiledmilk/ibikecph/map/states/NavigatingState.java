@@ -67,7 +67,7 @@ public class NavigatingState extends MapState {
             fragmentTransaction.remove(navigationETAFragment);
         }
         // TODO: Remove the destructor call, when the handler has been refactored away.
-        // mapHandler.destructor();
+        mapHandler.destructor();
 
         activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
