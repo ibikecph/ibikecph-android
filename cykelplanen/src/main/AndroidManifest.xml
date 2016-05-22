@@ -62,6 +62,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/CykelsuperstierTheme" />
         <activity
+            android:name="com.spoiledmilk.ibikecph.introduction.GreenPathsIntroductionActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.spoiledmilk.cykelsuperstier.map.MapActivity"
             android:configChanges="keyboard|keyboardHidden"
             android:label="@string/app_name"

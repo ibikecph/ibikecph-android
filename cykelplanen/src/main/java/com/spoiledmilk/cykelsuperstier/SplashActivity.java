@@ -27,12 +27,12 @@ public class SplashActivity extends com.spoiledmilk.ibikecph.SplashActivity {
 	}
 
 	@Override
-	protected Class<?> getMapActivityClass() {
+	protected Class<? extends Activity> getMapActivityClass() {
 		return MapActivity.class;
 	}
 
 	@Override
-	protected Class<?> getLoginActivityClass() {
+	protected Class<? extends Activity> getLoginActivityClass() {
 		return LoginSplashActivity.class;
 	}
 

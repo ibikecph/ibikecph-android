@@ -45,8 +45,10 @@
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity
             android:name=".SplashActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".introduction.GreenPathsIntroductionActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".login.LoginSplashActivity"
             android:screenOrientation="portrait" />

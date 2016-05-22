@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.spoiledmilk.ibikecph.introduction.IntroductionActivity;
 import com.spoiledmilk.ibikecph.login.LoginSplashActivity;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -40,28 +41,39 @@ public class SplashActivity extends Activity {
 		// Tell Google Analytics that the user has resumed on this screen.
 		IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
+
 		final Handler handler = new Handler();
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				Intent i;
-				if (IBikeApplication.isUserLogedIn()) {
-					i = new Intent(SplashActivity.this, getMapActivityClass());
+				Class<? extends Activity> nextActivity = IntroductionActivity.nextIntroduction(getApplication());
+				if(nextActivity == null) {
+					nextActivity = getMapActivityClass();
+					Intent i = new Intent(SplashActivity.this, nextActivity);
+					startActivity(i);
+					finish();
 				} else {
-					i = new Intent(SplashActivity.this, getLoginActivityClass());
+					Intent i = new Intent(SplashActivity.this, nextActivity);
+					startActivity(i);
 				}
-				startActivity(i);
-				finish();
+
+				/*
+				if (IBikeApplication.isUserLogedIn()) {
+					nextActivity = getMapActivityClass();
+				} else {
+					nextActivity = getLoginActivityClass();
+				}
+				*/
 			}
 		}, timeout);
 
 	}
 
-	protected Class<?> getMapActivityClass() {
+	protected Class<? extends Activity> getMapActivityClass() {
 		return MapActivity.class;
 	}
 
-	protected Class<?> getLoginActivityClass() {
+	protected Class<? extends Activity> getLoginActivityClass() {
 		return LoginSplashActivity.class;
 	}
 
