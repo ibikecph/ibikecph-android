@@ -2,13 +2,16 @@ package com.spoiledmilk.ibikecph.map.states;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.fragments.NavigationETAFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
@@ -47,6 +50,8 @@ public class NavigatingState extends MapState {
         activity.getMapView().setMapViewListener(NavigationMapHandler.class);
         // Hang onto this for later use - transition it's behaviour to this class over time
         mapHandler = (NavigationMapHandler) activity.getMapView().getMapHandler();
+
+        activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -63,6 +68,8 @@ public class NavigatingState extends MapState {
         }
         // TODO: Remove the destructor call, when the handler has been refactored away.
         // mapHandler.destructor();
+
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
