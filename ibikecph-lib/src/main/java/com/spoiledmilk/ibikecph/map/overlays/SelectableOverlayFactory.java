@@ -48,11 +48,15 @@ public class SelectableOverlayFactory {
         this.preferences = preferences;
     }
 
-    public int loadOverlays(Context context) throws IOException {
-        for(DownloadedOverlay overlay: downloadedOverlays) {
-            overlay.load(context);
+    public void loadOverlays(Context context) throws IOException {
+        for(DownloadedOverlay downloadedOverlay: downloadedOverlays) {
+            downloadedOverlay.load(context);
+            // Make sure the overlays adhere to the selection when just initialized
+            boolean selected = isSelected(downloadedOverlay);
+            for(Overlay overlay: downloadedOverlay.getOverlays()) {
+                overlay.setEnabled(selected);
+            }
         }
-        return downloadedOverlays.size();
     }
 
     public List<SelectableOverlay> getSelectableOverlays() {
