@@ -17,6 +17,10 @@ public class SelectableOverlayFactory {
 
     private static SelectableOverlayFactory ourInstance = new SelectableOverlayFactory();
 
+    /**
+     * Get the singleton instance.
+     * @return
+     */
     public static SelectableOverlayFactory getInstance() {
         return ourInstance;
     }
@@ -48,6 +52,12 @@ public class SelectableOverlayFactory {
         this.preferences = preferences;
     }
 
+    /**
+     * Loads all overlays from the local file system, or downloads them from the remote server.
+     * Call this on a different thread than the UI thread.
+     * @param context Used to access local files
+     * @throws IOException
+     */
     public void loadOverlays(Context context) throws IOException {
         for(DownloadedOverlay downloadedOverlay: downloadedOverlays) {
             downloadedOverlay.load(context);
@@ -59,6 +69,10 @@ public class SelectableOverlayFactory {
         }
     }
 
+    /**
+     * Get a list of all the overlays that are selectable by the user.
+     * @return
+     */
     public List<SelectableOverlay> getSelectableOverlays() {
         List<SelectableOverlay> result = new ArrayList<>();
         result.addAll(downloadedOverlays);
