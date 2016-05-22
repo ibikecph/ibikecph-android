@@ -50,6 +50,7 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.LeftMenu;
 
 import com.spoiledmilk.ibikecph.TermsManager;
+import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.fragments.BreakRouteFragment;
@@ -326,8 +327,7 @@ public class MapActivity extends BaseMapActivity {
     }
 
     /**
-     * Transitions state to some state of the class provided. Does nothing if the current state
-     * is already of the requested class.
+     * Transitions state to some state of the class provided.
      * @param stateClass
      * @return the existing or new state, useful when chaining.
      */
@@ -341,13 +341,14 @@ public class MapActivity extends BaseMapActivity {
         }
     }
 
+    /**
+     * Get the current state of the MapActivity.
+     * @return
+     */
     public MapState getState() {
         return state;
     }
 
-    /**
-     *
-     */
     public IBCMapView getMapView() {
         if(mapView == null) {
             throw new RuntimeException("The mapView has not yet been initialized.");
@@ -626,6 +627,7 @@ public class MapActivity extends BaseMapActivity {
         Log.d(TAG, "onActivityResult, requestCode " + requestCode + " resultCode " + resultCode);
 
         if (requestCode == LeftMenu.LAUNCH_LOGIN) {
+            Log.d(TAG, "Got back from the user login");
             /*
             Log.d("JC", "Got back from LAUNCH_LOGIN");
             if (!OverviewMapHandler.isWatchingAddress) {
@@ -634,6 +636,7 @@ public class MapActivity extends BaseMapActivity {
             leftMenu.populateMenu();
             */
         } else if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
+            Log.d(TAG, "Got back from deleting the user");
             AlertDialog dialog;
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(IBikeApplication.getString("account_deleted"));
@@ -665,6 +668,7 @@ public class MapActivity extends BaseMapActivity {
             Log.d(TAG, "Got back from address search were the user canceled!");
             // throw new UnsupportedOperationException("Canceling the search address has not been implemented.");
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
+            Log.d(TAG, "Got back from setting the source");
             if(state instanceof RouteSelectionState) {
                 final Bundle extras = data.getExtras();
                 Address address = (Address) extras.getSerializable("addressObject");
@@ -676,6 +680,7 @@ public class MapActivity extends BaseMapActivity {
                 }
             }
         } else if (requestCode == REQUEST_CHANGE_DESTINATION_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
+            Log.d(TAG, "Got back from setting the destination");
             if(state instanceof RouteSelectionState) {
                 final Bundle extras = data.getExtras();
                 Address address = (Address) extras.getSerializable("addressObject");
@@ -687,30 +692,24 @@ public class MapActivity extends BaseMapActivity {
                 }
             }
         } else if (requestCode == LeftMenu.LAUNCH_FAVORITE) {
+            Log.d(TAG, "Got back from the favorite screen.");
             // We got a favorite to navigate to
             if (resultCode == RESULT_OK) {
                 // TODO: Re-implement launching of favorites
-                throw new UnsupportedOperationException("Launching favorites not yet implemented using MapStates");
-                /*
+                // throw new UnsupportedOperationException("Launching favorites not yet implemented using MapStates");
                 FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
-                mapView.showRoute(fd);
-                Address a = Address.fromFavoritesData(fd);
-                mapView.showAddressFromFavorite(a);
-                */
+                Address address = Address.fromFavoritesData(fd);
+                RouteSelectionState state = changeState(RouteSelectionState.class);
+                state.setDestination(address);
+                // mapView.showRoute(fd);
+                //mapView.showAddressFromFavorite(a);
             }
             // Close the LeftMenu
             drawerLayout.closeDrawer(Gravity.LEFT);
         } else if (requestCode == LeftMenu.LAUNCH_TRACKING) {
-            throw new UnsupportedOperationException("Launching favorites not yet implemented using MapStates");
-            /*
-            Log.d("JC", "Got back from LAUNCH_TRACKING");
-            if (!OverviewMapHandler.isWatchingAddress) {
-                this.mapView.changeState(IBCMapView.MapViewState.DEFAULT);
-            }
-            leftMenu.populateMenu();
-            */
+            Log.d(TAG, "Got back from the tracking screen.");
         } else if (requestCode == LeftMenu.LAUNCH_ABOUT) {
-            Log.d("JC", "Got back from the about screen.");
+            Log.d(TAG, "Got back from the about screen.");
         }
     }
 
