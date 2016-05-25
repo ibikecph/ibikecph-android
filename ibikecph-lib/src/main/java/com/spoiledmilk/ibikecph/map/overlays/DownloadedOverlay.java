@@ -3,6 +3,7 @@ package com.spoiledmilk.ibikecph.map.overlays;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,8 +21,12 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by kraen on 21-05-16.
@@ -32,6 +37,9 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
     protected Paint paint;
 
     protected List<Overlay> overlays = new ArrayList<>();
+
+    protected static final DateFormat HTTP_DATE =
+            new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
 
     public DownloadedOverlay() {
         // Check the existence of the downloaded geojson data
@@ -50,55 +58,51 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
      * @param context
      */
     public void load(Context context) throws IOException {
-        boolean shouldDownload = false;
-
         URL url = getURL();
 
         // Check if the geojson file has already been downloaded
         File file = new File(context.getFilesDir(), getFilename());
-        if(file.exists()) {
-            long localLastModified = file.lastModified();
-            Log.d("DownloadedOverlay", "Local file last modified: " + localLastModified);
-            // Check the server's modified date
+
+        InputStream input = null;
+        OutputStream output = null;
+
+        try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("HEAD");
-            long remoteLastModified = connection.getHeaderFieldDate("Last-Modified", localLastModified + 1000);
-            Log.d("DownloadedOverlay", "Remote file last modified: " + remoteLastModified);
-            if (remoteLastModified > localLastModified) {
-                shouldDownload = true;
+
+            if(file.exists()) {
+                long localLastModified = file.lastModified();
+                String ifModifiedSince = HTTP_DATE.format(new Date(localLastModified));
+                connection.setRequestProperty("If-Modified-Since", ifModifiedSince);
+                Log.d("DownloadedOverlay", "Requested " + url + " if-modified-since: " + ifModifiedSince);
+            } else {
+                Log.d("DownloadedOverlay", "Requested " + url);
             }
-        } else {
-            shouldDownload = true;
-        }
 
-        if(shouldDownload) {
-            Log.d("DownloadedOverlay", "Downloading " + url);
-
-            InputStream input = null;
-            OutputStream output = null;
-
-            try {
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
+            if(connection.getResponseCode() == 200) { // OK
+                Log.d("DownloadedOverlay", "The remote file was modified!");
+                // Download the content of the updated overlay
                 input = connection.getInputStream();
                 output = new FileOutputStream(file);
 
                 byte[] buffer = new byte[1024];
                 int bytesWritten;
-                while((bytesWritten = input.read(buffer)) > 0) {
+                while ((bytesWritten = input.read(buffer)) > 0) {
                     output.write(buffer, 0, bytesWritten);
                 }
-
-                connection.disconnect();
-            } finally {
-                if(input != null) {
-                    input.close();
-                }
-                if(output != null) {
-                    output.close();
-                }
+            } else if(connection.getResponseCode() == 304) { // Not Modified
+                // Let's do nothing ...
+                Log.d("DownloadedOverlay", "The remote file has not been modified.");
+            } else {
+                throw new RuntimeException("Unexpected response code: " + connection.getResponseCode());
             }
-
+            connection.disconnect();
+        } finally {
+            if(input != null) {
+                input.close();
+            }
+            if(output != null) {
+                output.close();
+            }
         }
 
         // Read directly from the local file
