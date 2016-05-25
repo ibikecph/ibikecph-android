@@ -46,24 +46,22 @@ public class SplashActivity extends Activity {
 		handler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
-				Class<? extends Activity> nextActivity = IntroductionActivity.nextIntroduction(getApplication());
-				if(nextActivity == null) {
-					nextActivity = getMapActivityClass();
-					Intent i = new Intent(SplashActivity.this, nextActivity);
-					startActivity(i);
-					finish();
-				} else {
-					Intent i = new Intent(SplashActivity.this, nextActivity);
-					startActivity(i);
-				}
-
-				/*
+				Class<? extends Activity> nextActivity;
 				if (IBikeApplication.isUserLogedIn()) {
 					nextActivity = getMapActivityClass();
 				} else {
 					nextActivity = getLoginActivityClass();
 				}
-				*/
+
+				// First - let's launch the map activity class or login activity.
+				Intent i = new Intent(SplashActivity.this, nextActivity);
+				startActivity(i);
+
+				// Then, let's launch all relevant introduction activities
+				IntroductionActivity.startIntroductionActivities(SplashActivity.this);
+
+				// Finally - let's kill this SplashActivity.
+				finish();
 			}
 		}, timeout);
 

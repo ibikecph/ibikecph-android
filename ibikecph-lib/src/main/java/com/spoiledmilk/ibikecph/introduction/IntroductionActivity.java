@@ -2,6 +2,7 @@ package com.spoiledmilk.ibikecph.introduction;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,12 +10,15 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.SplashActivity;
 import com.spoiledmilk.ibikecph.map.overlays.GreenPathsOverlay;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,6 +30,7 @@ public abstract class IntroductionActivity extends Activity {
     static List<Class<? extends IntroductionActivity>> availableIntroductions = new ArrayList<>();
 
     static {
+        // The order in which activities are added to the list is the order in which they are shown.
         availableIntroductions.add(GreenPathsIntroductionActivity.class);
     }
 
@@ -34,23 +39,22 @@ public abstract class IntroductionActivity extends Activity {
         super.onCreate(savedInstanceState);
         getActionBar().hide();
         setContentView(R.layout.introduction_activity);
-        Log.d("IntroductionActivity", "Created from " + getParent());
 
-        findViewById(R.id.introductionLayout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setHasBeenIntroducedTo(getApplication(), IntroductionActivity.this.getClass(), true);
-                finish();
-            }
-        });
+        Button continueButton = (Button) findViewById(R.id.continueButton);
+        continueButton.setText(IBikeApplication.getString("continue_button_text"));
+    }
+
+    public void continueClicked(View v) {
+        setHasBeenIntroducedTo(getApplication(), IntroductionActivity.this.getClass(), true);
+        finish();
     }
 
     public static String getPreferencesKey(Class<? extends IntroductionActivity> activity) {
         return String.format("%s-%s", "was-introduced-to", activity.getSimpleName());
     }
 
-    public static boolean hasBeenIntroducedTo(Application application, Class<? extends IntroductionActivity> activity) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(application);
+    public static boolean hasBeenIntroducedTo(Context context, Class<? extends IntroductionActivity> activity) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         return preferences.getBoolean(getPreferencesKey(activity), false);
     }
 
@@ -59,13 +63,23 @@ public abstract class IntroductionActivity extends Activity {
         preferences.edit().putBoolean(getPreferencesKey(activity), introduced).commit();
     }
 
-    public static Class<? extends IntroductionActivity> nextIntroduction(Application application) {
+    public static void startIntroductionActivities(Context context) {
+        // Let's launch all introductions that the user has not seen, in reverse order.
+        List<Class<? extends IntroductionActivity>> relevantIntroductions = new ArrayList<>();
+
         for(Class<? extends IntroductionActivity> introduction: availableIntroductions) {
-            if(!IntroductionActivity.hasBeenIntroducedTo(application, introduction)) {
-                return introduction;
+            if(!IntroductionActivity.hasBeenIntroducedTo(context, introduction)) {
+                relevantIntroductions.add(introduction);
             }
         }
-        return null;
-    }
 
+        // The activities started are added to a stack, so we need to add the first to be shown last
+        Collections.reverse(relevantIntroductions);
+
+        // Start all the relevant activities
+        for(Class<? extends IntroductionActivity> introduction: relevantIntroductions) {
+            Intent i = new Intent(context, introduction);
+            context.startActivity(i);
+        }
+    }
 }
