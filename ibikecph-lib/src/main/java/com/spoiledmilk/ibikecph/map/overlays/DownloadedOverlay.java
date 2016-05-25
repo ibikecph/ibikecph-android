@@ -147,7 +147,7 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
             paint = new Paint();
             paint.setColor(color);
             paint.setAntiAlias(true);
-            paint.setStrokeWidth(20);
+            paint.setStrokeWidth(4);
             paint.setAlpha(170); // 66%
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeJoin(Paint.Join.ROUND);
