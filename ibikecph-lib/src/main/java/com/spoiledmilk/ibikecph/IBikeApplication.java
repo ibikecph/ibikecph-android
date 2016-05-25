@@ -22,7 +22,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.GoogleAnalytics;
 
 import com.spoiledmilk.ibikecph.map.MapActivity;
-import com.spoiledmilk.ibikecph.map.overlays.SelectableOverlayFactory;
+import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlayFactory;
 import com.spoiledmilk.ibikecph.map.overlays.RefreshOverlaysTask;
 import com.spoiledmilk.ibikecph.tracking.MilestoneManager;
 import com.spoiledmilk.ibikecph.tracking.TrackHelper;
@@ -97,8 +97,8 @@ public class IBikeApplication extends Application {
 
     protected void initializeSelectableOverlays() {
         // Checks if new overlays are available on the server and downloads any updated overlays.
-        final SelectableOverlayFactory selectableOverlayFactory = SelectableOverlayFactory.getInstance();
-        selectableOverlayFactory.setPreferences(getSettings());
+        final TogglableOverlayFactory togglableOverlayFactory = TogglableOverlayFactory.getInstance();
+        togglableOverlayFactory.setPreferences(getSettings());
         // Let's try to load the overlays from the server - and not hang the UI thread meanwhile
         new RefreshOverlaysTask(this).execute();
     }

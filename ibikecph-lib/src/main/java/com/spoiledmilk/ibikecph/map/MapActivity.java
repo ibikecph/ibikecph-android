@@ -56,8 +56,8 @@ import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.fragments.BreakRouteFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
-import com.spoiledmilk.ibikecph.map.overlays.SelectableOverlayFactory;
-import com.spoiledmilk.ibikecph.map.overlays.SelectableOverlay;
+import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlayFactory;
+import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlay;
 import com.spoiledmilk.ibikecph.map.states.BrowsingState;
 import com.spoiledmilk.ibikecph.map.states.DestinationPreviewState;
 import com.spoiledmilk.ibikecph.map.states.MapState;
@@ -196,13 +196,13 @@ public class MapActivity extends BaseMapActivity {
     }
 
     protected void initializeSelectableOverlays() {
-        final SelectableOverlayFactory factory = SelectableOverlayFactory.getInstance();
-        factory.addOnOverlaysLoadedListener(new SelectableOverlayFactory.OnOverlaysLoadedListener() {
+        final TogglableOverlayFactory factory = TogglableOverlayFactory.getInstance();
+        factory.addOnOverlaysLoadedListener(new TogglableOverlayFactory.OnOverlaysLoadedListener() {
             @Override
-            public void onOverlaysLoaded(List<SelectableOverlay> selectableOverlays) {
+            public void onOverlaysLoaded(List<TogglableOverlay> togglableOverlays) {
                 // Add all the overlays to the map view
-                for(SelectableOverlay selectableOverlay: factory.getSelectableOverlays()) {
-                    for(Overlay overlay: selectableOverlay.getOverlays()) {
+                for(TogglableOverlay togglableOverlay: factory.getTogglableOverlays()) {
+                    for(Overlay overlay: togglableOverlay.getOverlays()) {
                         mapView.addOverlay(overlay);
                     }
                 }

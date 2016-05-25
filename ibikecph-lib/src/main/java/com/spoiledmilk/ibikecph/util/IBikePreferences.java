@@ -13,7 +13,7 @@ import android.util.Log;
 
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.overlays.SelectableOverlay;
+import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlay;
 
 import java.util.Locale;
 
@@ -151,15 +151,15 @@ public class IBikePreferences {
         getPreferences().edit().putBoolean(PREFS_SHARE_DATA, shareData).commit();
     }
 
-    public void setOverlay(SelectableOverlay overlay, boolean value) {
+    public void setOverlay(TogglableOverlay overlay, boolean value) {
         getPreferences().edit().putBoolean(getOverlayKey(overlay), value).commit();
     }
 
-    public boolean getOverlay(SelectableOverlay overlay) {
+    public boolean getOverlay(TogglableOverlay overlay) {
         return getPreferences().getBoolean(getOverlayKey(overlay), false);
     }
 
-    public String getOverlayKey(SelectableOverlay overlay) {
+    public String getOverlayKey(TogglableOverlay overlay) {
         return String.format("%s_%s", PREFS_OVERLAYS, overlay.getClass().getName());
     }
     public int getLengthNotificationOrdinal() {

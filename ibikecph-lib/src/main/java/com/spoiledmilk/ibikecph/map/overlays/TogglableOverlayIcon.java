@@ -9,20 +9,20 @@ import android.view.View;
 /**
  * Created by kraen on 21-05-16.
  */
-public class SelectableOverlayIcon extends View {
+public class TogglableOverlayIcon extends View {
 
-    protected SelectableOverlay overlay;
+    protected TogglableOverlay overlay;
     protected Paint paint = new Paint();
 
-    public SelectableOverlayIcon(Context context) {
+    public TogglableOverlayIcon(Context context) {
         super(context);
     }
 
-    public SelectableOverlayIcon(Context context, AttributeSet attrs) {
+    public TogglableOverlayIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void setOverlay(SelectableOverlay overlay) {
+    public void setOverlay(TogglableOverlay overlay) {
         this.overlay = overlay;
         paint = overlay.getPaint();
     }

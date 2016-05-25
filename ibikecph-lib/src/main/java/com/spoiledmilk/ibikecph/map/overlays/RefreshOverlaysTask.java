@@ -19,7 +19,7 @@ public class RefreshOverlaysTask extends AsyncTask<Void, Void, Boolean> {
         this.context = context;
     }
 
-    SelectableOverlayFactory factory = SelectableOverlayFactory.getInstance();
+    TogglableOverlayFactory factory = TogglableOverlayFactory.getInstance();
 
     @Override
     protected Boolean doInBackground(Void... params) {
@@ -35,7 +35,7 @@ public class RefreshOverlaysTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         if (success) {
-            factory.notifyOnOverlaysLoadedListeners(factory.getSelectableOverlays());
+            factory.notifyOnOverlaysLoadedListeners(factory.getTogglableOverlays());
         } else {
             // TODO: Translate the message
             Toast.makeText(context, "Error occurred when loading overlays", Toast.LENGTH_SHORT).show();

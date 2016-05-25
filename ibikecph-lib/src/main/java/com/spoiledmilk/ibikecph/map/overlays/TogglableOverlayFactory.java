@@ -10,18 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class can create any selectable overlay
+ * This class can create any togglable overlay
  * Created by kraen on 21-05-16.
  */
-public class SelectableOverlayFactory {
+public class TogglableOverlayFactory {
 
-    private static SelectableOverlayFactory ourInstance = new SelectableOverlayFactory();
+    private static TogglableOverlayFactory ourInstance = new TogglableOverlayFactory();
 
     /**
      * Get the singleton instance.
      * @return
      */
-    public static SelectableOverlayFactory getInstance() {
+    public static TogglableOverlayFactory getInstance() {
         return ourInstance;
     }
 
@@ -32,12 +32,12 @@ public class SelectableOverlayFactory {
     boolean overlaysLoaded = false;
 
     public interface OnOverlaysLoadedListener {
-        void onOverlaysLoaded(List<SelectableOverlay> selectableOverlays);
+        void onOverlaysLoaded(List<TogglableOverlay> togglableOverlays);
     }
 
     protected List<OnOverlaysLoadedListener> overlaysLoadedListeners = new ArrayList<>();
 
-    private SelectableOverlayFactory() {
+    private TogglableOverlayFactory() {
         // Add new downloaded overlays to this list
         downloadedOverlays.add(new GreenPathsOverlay());
         downloadedOverlays.add(new HarborRingOverlay());
@@ -70,11 +70,11 @@ public class SelectableOverlayFactory {
     }
 
     /**
-     * Get a list of all the overlays that are selectable by the user.
+     * Get a list of all the overlays that are togglable by the user.
      * @return
      */
-    public List<SelectableOverlay> getSelectableOverlays() {
-        List<SelectableOverlay> result = new ArrayList<>();
+    public List<TogglableOverlay> getTogglableOverlays() {
+        List<TogglableOverlay> result = new ArrayList<>();
         result.addAll(downloadedOverlays);
         // Add any other selectable overlays
         return result;
@@ -85,19 +85,18 @@ public class SelectableOverlayFactory {
      * @param overlay The overlay to check
      * @return if true, the overlay is selected and should be drawn.
      */
-    public boolean isSelected(SelectableOverlay overlay) {
+    public boolean isSelected(TogglableOverlay overlay) {
         return preferences.getOverlay(overlay);
     }
 
     /**
      * Sets if an overlay is selected and should be visible on the map.
-     * TODO: Consider toggling the actual overlays if enabled instead of using the observer pattern.
-     * @param selectableOverlay The overlay that should have its selection updated.
+     * @param togglableOverlay The overlay that should have its selection updated.
      * @param selected if true, the overlay should be drawn.
      */
-    public void setSelected(SelectableOverlay selectableOverlay, boolean selected) {
-        preferences.setOverlay(selectableOverlay, selected);
-        for(Overlay overlay: selectableOverlay.getOverlays()) {
+    public void setSelected(TogglableOverlay togglableOverlay, boolean selected) {
+        preferences.setOverlay(togglableOverlay, selected);
+        for(Overlay overlay: togglableOverlay.getOverlays()) {
             overlay.setEnabled(selected);
         }
     }
@@ -110,7 +109,7 @@ public class SelectableOverlayFactory {
         overlaysLoadedListeners.add(listener);
         // If the loaded event was already fired - notify directly
         if(overlaysLoaded) {
-            listener.onOverlaysLoaded(getSelectableOverlays());
+            listener.onOverlaysLoaded(getTogglableOverlays());
         }
     }
 
@@ -123,13 +122,13 @@ public class SelectableOverlayFactory {
     }
 
     /**
-     * * Notified all the listners that all the overlays has loaded.
-     * @param selectableOverlays
+     * * Notified all the listeners that all the overlays has loaded.
+     * @param togglableOverlays
      */
-    public void notifyOnOverlaysLoadedListeners(List<SelectableOverlay> selectableOverlays) {
+    public void notifyOnOverlaysLoadedListeners(List<TogglableOverlay> togglableOverlays) {
         overlaysLoaded = true;
         for(OnOverlaysLoadedListener listener: overlaysLoadedListeners) {
-            listener.onOverlaysLoaded(selectableOverlays);
+            listener.onOverlaysLoaded(togglableOverlays);
         }
     }
 }

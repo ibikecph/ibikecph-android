@@ -12,10 +12,10 @@ import java.util.List;
  * interface.
  * Created by kraen on 21-05-16.
  */
-public interface SelectableOverlay {
+public interface TogglableOverlay {
 
     /**
-     * The name of the selectable overlay, used when presented in the user interface.
+     * The name of the overlay, used when presented in the user interface.
      * @return
      */
     String getName();
@@ -27,7 +27,7 @@ public interface SelectableOverlay {
     Paint getPaint();
 
     /**
-     * Getter for all the actual MapBox overlays that this selectable overlay is composed of.
+     * Getter for all the actual MapBox overlays that this togglable overlay is composed of.
      * @return
      */
     List<Overlay> getOverlays();

@@ -6,7 +6,6 @@
 
 package com.spoiledmilk.ibikecph.map.overlays;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -44,14 +42,14 @@ public class OverlaysActivity extends Activity {
         setContentView(R.layout.overlays_activity);
 
         // Initializes the list of overlays
-        List<SelectableOverlay> overlays = SelectableOverlayFactory.getInstance().getSelectableOverlays();
+        List<TogglableOverlay> overlays = TogglableOverlayFactory.getInstance().getTogglableOverlays();
         ListView overlaysList = (ListView) findViewById(R.id.overlaysList);
-        ListAdapter overlaysListAdapter = new ArrayAdapter<SelectableOverlay>(this, R.layout.overlays_list_item, overlays) {
+        ListAdapter overlaysListAdapter = new ArrayAdapter<TogglableOverlay>(this, R.layout.overlays_list_item, overlays) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
 
             @Override
             public View getView(int position, View view, ViewGroup parent) {
-                final SelectableOverlay overlay = getItem(position);
+                final TogglableOverlay overlay = getItem(position);
                 if(view == null) {
                     view = inflater.inflate(R.layout.overlays_list_item, parent, false);
                 }
@@ -59,7 +57,7 @@ public class OverlaysActivity extends Activity {
                 TextView name = (TextView) view.findViewById(R.id.overlayName);
                 name.setText(overlay.getName());
 
-                SelectableOverlayIcon icon = (SelectableOverlayIcon) view.findViewById(R.id.overlayIcon);
+                TogglableOverlayIcon icon = (TogglableOverlayIcon) view.findViewById(R.id.overlayIcon);
                 icon.setOverlay(overlay);
 
                 // Set a colored stroke on an icon instead, using the overlay.getColor();

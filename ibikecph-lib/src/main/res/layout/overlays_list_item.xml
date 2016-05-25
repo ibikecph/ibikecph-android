@@ -4,7 +4,7 @@
     android:layout_height="56dp"
     android:padding="13dp">
 
-    <com.spoiledmilk.ibikecph.map.overlays.SelectableOverlayIcon
+    <com.spoiledmilk.ibikecph.map.overlays.TogglableOverlayIcon
         android:id="@+id/overlayIcon"
         android:layout_width="30dp"
         android:layout_height="match_parent"
