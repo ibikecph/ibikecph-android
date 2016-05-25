@@ -26,7 +26,7 @@ public class GreenPathsIntroductionActivity extends IntroductionActivity {
         body.setText(IBikeApplication.getString("introduction_greenest_route_body_ibc"));
 
         ImageView footerImage = (ImageView) findViewById(R.id.introductionFooterImage);
-        footerImage.setImageResource(R.drawable.leaf_black_large);
+        footerImage.setImageResource(R.drawable.btn_route_green_enabled);
 
         TextView footer = (TextView) findViewById(R.id.introductionFooter);
         footer.setText(IBikeApplication.getString("introduction_greenest_route_footer_ibc"));
