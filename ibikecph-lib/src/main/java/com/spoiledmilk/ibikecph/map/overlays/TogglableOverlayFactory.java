@@ -75,7 +75,12 @@ public class TogglableOverlayFactory {
      */
     public List<TogglableOverlay> getTogglableOverlays() {
         List<TogglableOverlay> result = new ArrayList<>();
-        result.addAll(downloadedOverlays);
+        for(DownloadedOverlay overlay: downloadedOverlays) {
+            if(overlay.getOverlays().size() > 0) {
+                // If it actually has overlays
+                result.add(overlay);
+            }
+        }
         // Add any other selectable overlays
         return result;
     }

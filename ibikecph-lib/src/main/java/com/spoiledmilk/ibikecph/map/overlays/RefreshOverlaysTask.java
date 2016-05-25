@@ -6,6 +6,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  * This task refreshes overlays in the background.
@@ -26,8 +28,11 @@ public class RefreshOverlaysTask extends AsyncTask<Void, Void, Boolean> {
         try {
             factory.loadOverlays(context);
             return true;
-        } catch (IOException e) {
-            Log.e("RefreshOverlaysTask", e.getMessage());
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            Log.e("RefreshOverlaysTask", sw.toString());
             return false;
         }
     }

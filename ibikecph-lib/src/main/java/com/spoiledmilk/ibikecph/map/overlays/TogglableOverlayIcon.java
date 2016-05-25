@@ -30,8 +30,8 @@ public class TogglableOverlayIcon extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        float margin = paint.getStrokeWidth() / 2.f;
-        if (overlay != null) {
+        if (overlay != null && paint != null) {
+            float margin = paint.getStrokeWidth() / 2.f;
             canvas.drawLine(0.f + margin,
                             0.f + margin,
                             canvas.getWidth() - margin,

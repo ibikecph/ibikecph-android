@@ -58,9 +58,12 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
      * @param context
      */
     public void load(Context context) throws IOException {
+        load(context, false);
+    }
+
+    public void load(Context context, boolean retrying) throws IOException {
         URL url = getURL();
 
-        // Check if the geojson file has already been downloaded
         File file = new File(context.getFilesDir(), getFilename());
 
         InputStream input = null;
@@ -69,6 +72,7 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
         try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
+            // If the GeoJSON has already been downloaded, we add the if-modified-since header
             if(file.exists()) {
                 long localLastModified = file.lastModified();
                 String ifModifiedSince = HTTP_DATE.format(new Date(localLastModified));
@@ -79,7 +83,8 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
             }
 
             if(connection.getResponseCode() == 200) { // OK
-                Log.d("DownloadedOverlay", "The remote file was modified!");
+                Log.d("DownloadedOverlay", "Local file didn't exist or remote file was modified!");
+
                 // Download the content of the updated overlay
                 input = connection.getInputStream();
                 output = new FileOutputStream(file);
@@ -106,12 +111,25 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
         }
 
         // Read directly from the local file
-        Log.d("DownloadedOverlay", "Reading from local file " + file.getAbsolutePath());
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode rootNode = mapper.readValue(file, JsonNode.class);
-        Log.d("DownloadedOverlay", "Loaded " + rootNode);
+        try {
+            Log.d("DownloadedOverlay", "Reading from local file " + file.getAbsolutePath());
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readValue(file, JsonNode.class);
+            Log.d("DownloadedOverlay", "Loaded " + rootNode);
 
-        parseGeoJson(rootNode);
+            parseGeoJson(rootNode);
+        } catch (Exception e) {
+            // Assuming that the file has been corrupted somehow.
+            if(retrying) {
+                throw new RuntimeException("Retried but error loading overlay", e);
+            } else {
+                Log.e("DownloadedOverlay", "Error loading overlay: '" + e.getMessage() + "' trying again.");
+                // Let's delete it
+                file.delete();
+                // And try again
+                load(context, true);
+            }
+        }
     }
 
     protected void parseGeoJson(JsonNode rootNode) {
