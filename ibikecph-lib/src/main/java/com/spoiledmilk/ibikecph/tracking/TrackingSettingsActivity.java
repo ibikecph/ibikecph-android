@@ -185,11 +185,15 @@ public class TrackingSettingsActivity extends Activity {
     }
 
     public void onUsageClick(View v) {
-        HttpUtils.openLinkInBrowser(this, Config.TRACKING_USAGE_URL);
+        // Open the terms for now - the privacy link is broken at the moment.
+        onTermsClick(v);
     }
 
     public void onTermsClick(View v) {
-        HttpUtils.openLinkInBrowser(this, Config.TRACKING_TERMS_URL);
+        String termsURL = IBikeApplication.getLanguageString().equals("da") ?
+                          Config.ABOUT_TERMS_URL_DA :
+                          Config.ABOUT_TERMS_URL_EN;
+        HttpUtils.openLinkInBrowser(this, termsURL);
     }
 
     private void initStrings() {

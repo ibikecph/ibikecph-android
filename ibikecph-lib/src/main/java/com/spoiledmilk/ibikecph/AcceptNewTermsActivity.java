@@ -38,7 +38,11 @@ public class AcceptNewTermsActivity extends Activity {
         user_terms_description.setText(IBikeApplication.getString("user_terms_description"));
         most_important_terms_are.setText(IBikeApplication.getString("most_important_terms_are"));
         termsText.setText(importantNews);
-        read_terms.setText(Html.fromHtml("<a href=\"" + Config.TRACKING_TERMS_URL + "\">" + IBikeApplication.getString("read_terms") + "</a>"));
+
+        String termsURL = IBikeApplication.getLanguageString().equals("da") ?
+                          Config.ABOUT_TERMS_URL_DA :
+                          Config.ABOUT_TERMS_URL_EN;
+        read_terms.setText(Html.fromHtml("<a href=\"" + termsURL + "\">" + IBikeApplication.getString("read_terms") + "</a>"));
         read_terms.setMovementMethod(LinkMovementMethod.getInstance());
 
         Button btnNoThanks = (Button) findViewById(R.id.btnNoThanks);

@@ -47,8 +47,12 @@ public class Config {
     public static boolean EXTENDED_PULL_TOUCH = true;
     public static boolean TTS_ENABLED = true;
 
-    public static String TRACKING_TERMS_URL = "https://www.ibikecph.dk/terms";
-    public static String TRACKING_USAGE_URL = "https://www.ibikecph.dk/about/privacy";
+    public static String ABOUT_TERMS_URL_DA = "https://www.ibikecph.dk/terms";
+    public static String ABOUT_TERMS_URL_EN = "https://www.ibikecph.dk/en/terms";
+    /*
+    public static String ABOUT_PRIVACY_URL_DA = "https://www.ibikecph.dk/about/privacy";
+    public static String ABOUT_PRIVACY_URL_EN = "https://www.ibikecph.dk/en/about/privacy";
+    */
 
     public static String TRACKING_TERMS_JSON_URL;
 
