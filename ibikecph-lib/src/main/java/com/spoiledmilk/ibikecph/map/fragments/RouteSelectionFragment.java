@@ -1,6 +1,7 @@
 package com.spoiledmilk.ibikecph.map.fragments;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -251,22 +252,34 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             v.findViewById(R.id.startRouteButton).setVisibility(View.GONE);
         }
 
+        // Make sure the buttons are in the disabled state if not enabled.
+
+        int greenButtonDrawable = R.drawable.btn_route_green_disabled;
+        int cargoButtonDrawable = R.drawable.btn_route_cargo_disabled;
+        int fastButtonDrawable = R.drawable.btn_route_fastest_disabled;
+        int breakButtonDrawable = R.drawable.btn_train_disabled;
+
         // Highlight the relevant route type button
         switch (route.getType()) {
-            case GREEN:
-                greenButton.setImageResource(R.drawable.btn_route_green_enabled);
+            case FASTEST:
+                fastButtonDrawable = R.drawable.btn_route_fastest_enabled;
                 break;
             case CARGO:
-                cargoButton.setImageResource(R.drawable.btn_route_cargo_enabled);
+                cargoButtonDrawable = R.drawable.btn_route_cargo_enabled;
                 break;
-            case FASTEST:
-                fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
+            case GREEN:
+                greenButtonDrawable = R.drawable.btn_route_green_enabled;
                 break;
             case BREAK:
-                breakButton.setImageResource(R.drawable.btn_train_enabled);
+                breakButtonDrawable = R.drawable.btn_train_enabled;
                 break;
             default:
                 break;
         }
+
+        greenButton.setImageResource(greenButtonDrawable);
+        cargoButton.setImageResource(cargoButtonDrawable);
+        fastButton.setImageResource(fastButtonDrawable);
+        breakButton.setImageResource(breakButtonDrawable);
     }
 }
