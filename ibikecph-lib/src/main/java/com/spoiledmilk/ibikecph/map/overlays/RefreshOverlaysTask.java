@@ -8,6 +8,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 
 /**
  * This task refreshes overlays in the background.
@@ -47,11 +48,14 @@ public class RefreshOverlaysTask extends AsyncTask<Boolean, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        if (success) {
-            factory.notifyOnOverlaysLoadedListeners(factory.getTogglableOverlays());
-        } else {
+        List<TogglableOverlay> togglableOverlay = factory.getTogglableOverlays();
+        if (!success) {
             // TODO: Translate the message
             Toast.makeText(context, "Error occurred when loading overlays", Toast.LENGTH_SHORT).show();
+        }
+        // Notify about the overlays that was actually loaded - if any
+        if(togglableOverlay.size() > 0) {
+            factory.notifyOnOverlaysLoadedListeners(togglableOverlay);
         }
     }
 }
