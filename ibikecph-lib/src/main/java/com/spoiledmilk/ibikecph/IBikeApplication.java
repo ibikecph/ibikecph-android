@@ -52,7 +52,7 @@ public class IBikeApplication extends Application {
         return BuildConfig.DEBUG;
     }
 
-    public static boolean isDebugging(AboutActivity activity) {
+    public static boolean isDebugging(Activity activity) {
         return ((IBikeApplication) activity.getApplication()).isDebugging();
     }
 

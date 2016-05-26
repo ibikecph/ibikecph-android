@@ -13,7 +13,7 @@ import java.io.StringWriter;
  * This task refreshes overlays in the background.
  * Created by kraen on 21-05-16.
  */
-public class RefreshOverlaysTask extends AsyncTask<Void, Void, Boolean> {
+public class RefreshOverlaysTask extends AsyncTask<Boolean, Void, Boolean> {
 
     protected Context context;
 
@@ -24,9 +24,17 @@ public class RefreshOverlaysTask extends AsyncTask<Void, Void, Boolean> {
     TogglableOverlayFactory factory = TogglableOverlayFactory.getInstance();
 
     @Override
-    protected Boolean doInBackground(Void... params) {
+    protected Boolean doInBackground(Boolean... params) {
+        boolean forced;
+        if(params.length == 0) {
+            forced = false;
+        } else if(params.length == 1) {
+            forced = params[0];
+        } else {
+            throw new RuntimeException("Unexpected arguments, expected a single optional boolean");
+        }
         try {
-            factory.loadOverlays(context);
+            factory.loadOverlays(context, forced);
             return true;
         } catch (Exception e) {
             StringWriter sw = new StringWriter();

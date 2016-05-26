@@ -55,12 +55,24 @@ public class TogglableOverlayFactory {
     /**
      * Loads all overlays from the local file system, or downloads them from the remote server.
      * Call this on a different thread than the UI thread.
+     * Not forcing is default.
      * @param context Used to access local files
      * @throws IOException
      */
     public void loadOverlays(Context context) throws IOException {
+        loadOverlays(context, true);
+    }
+
+    /**
+     * Loads all overlays from the local file system, or downloads them from the remote server.
+     * Call this on a different thread than the UI thread.
+     * @param context Used to access local files
+     * @param forced Always wipe the local copy before downloading.
+     * @throws IOException
+     */
+    public void loadOverlays(Context context, boolean forced) throws IOException {
         for(DownloadedOverlay downloadedOverlay: downloadedOverlays) {
-            downloadedOverlay.load(context);
+            downloadedOverlay.load(context, forced);
             // Make sure the overlays adhere to the selection when just initialized
             boolean selected = isSelected(downloadedOverlay);
             for(Overlay overlay: downloadedOverlay.getOverlays()) {

@@ -41,6 +41,8 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
     protected static final DateFormat HTTP_DATE =
             new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
 
+    protected static final long EXPECTED_MODIFICATION_DELAY = 1000 * 60 * 60 * 24;
+
     public DownloadedOverlay() {
         // Check the existence of the downloaded geojson data
         // Load the geojson into the overlays list
@@ -53,18 +55,33 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
 
     /**
      * Checks if the geojson file has changed on the server and downloads a new version if needed.
-     * First a HEAD request is made to identify if the remote file has changed, if that's the case
-     * we download it again, if not - we simply reuse the local file already downloaded.
-     * @param context
+     * First a GET request is made with the If-Modified-Since header to identify if the remote file
+     * has changed, if that's the case we download it again, if not - we simply reuse the local file
+     * already downloaded.
+     * @param context Used to access local files
      */
     public void load(Context context) throws IOException {
         load(context, false);
     }
 
-    public void load(Context context, boolean retrying) throws IOException {
+    /**
+     * Checks if the geojson file has changed on the server and downloads a new version if needed.
+     * First a GET request is made with the If-Modified-Since header to identify if the remote file
+     * has changed, if that's the case we download it again, if not - we simply reuse the local file
+     * already downloaded.
+     * @param context Used to access local files
+     * @param forced Should the local file be deleted before requesting to the remote server?
+     * @throws IOException
+     */
+    public void load(Context context, boolean forced) throws IOException {
         URL url = getURL();
 
         File file = new File(context.getFilesDir(), getFilename());
+
+        // If the update is forced, lets delete the file.
+        if(file.exists() && forced) {
+            file.delete();
+        }
 
         InputStream input = null;
         OutputStream output = null;
@@ -75,7 +92,7 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
             // If the GeoJSON has already been downloaded, we add the if-modified-since header
             if(file.exists()) {
                 long localLastModified = file.lastModified();
-                String ifModifiedSince = HTTP_DATE.format(new Date(localLastModified));
+                String ifModifiedSince = HTTP_DATE.format(new Date(localLastModified - EXPECTED_MODIFICATION_DELAY));
                 connection.setRequestProperty("If-Modified-Since", ifModifiedSince);
                 Log.d("DownloadedOverlay", "Requested " + url + " if-modified-since: " + ifModifiedSince);
             } else {
@@ -115,24 +132,23 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
             Log.d("DownloadedOverlay", "Reading from local file " + file.getAbsolutePath());
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readValue(file, JsonNode.class);
-            Log.d("DownloadedOverlay", "Loaded " + rootNode);
 
             parseGeoJson(rootNode);
         } catch (Exception e) {
             // Assuming that the file has been corrupted somehow.
-            if(retrying) {
-                throw new RuntimeException("Retried but error loading overlay", e);
+            if(forced) {
+                throw new RuntimeException("Retried forced but error loading overlay", e);
             } else {
                 Log.e("DownloadedOverlay", "Error loading overlay: '" + e.getMessage() + "' trying again.");
-                // Let's delete it
-                file.delete();
-                // And try again
+                // And try again - forced
                 load(context, true);
             }
         }
     }
 
     protected void parseGeoJson(JsonNode rootNode) {
+        // Clear all overlays before adding new
+        overlays.clear();
         try {
             if (!rootNode.has("type") || !rootNode.get("type").asText().equals("FeatureCollection")) {
                 throw new RuntimeException("Missing or unexpected type");
