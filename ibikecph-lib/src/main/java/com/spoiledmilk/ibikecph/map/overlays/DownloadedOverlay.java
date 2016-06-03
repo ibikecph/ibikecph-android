@@ -193,17 +193,19 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
             }
 
             for (JsonNode feature: rootNode.get("features")) {
-                PathOverlay overlay = parseFeatureNode(feature);
-                overlay.setPaint(paint);
-                overlays.add(overlay);
+                List<PathOverlay> featureOverlays = parseFeatureNode(feature);
+                for(PathOverlay overlay: featureOverlays) {
+                    overlay.setPaint(paint);
+                    overlays.add(overlay);
+                }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error parsing GeoJSON: " + e.getMessage());
+            throw new RuntimeException("Error parsing GeoJSON", e);
         }
     }
 
-    protected PathOverlay parseFeatureNode(JsonNode feature) {
-        PathOverlay overlay = new PathOverlay();
+    protected List<PathOverlay> parseFeatureNode(JsonNode feature) {
+        List<PathOverlay> overlays = new ArrayList<>();
         if (!feature.has("type") || !feature.get("type").asText().equals("Feature")) {
             throw new RuntimeException("Missing or unexpected feature[].type");
         }
@@ -211,13 +213,38 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
             throw new RuntimeException("Missing feature[].geometry");
         }
         JsonNode geometry = feature.get("geometry");
-        if (!geometry.has("type") || !geometry.get("type").asText().equals("LineString")) {
+        if (geometry.has("type") && geometry.get("type").asText().equals("LineString")) {
+            overlays.add(parseLineString(geometry));
+        } else if (geometry.has("type") && geometry.get("type").asText().equals("MultiLineString")) {
+            overlays.addAll(parseMultiLineString(geometry));
+        } else {
             throw new RuntimeException("Missing or unexpected feature[].type");
         }
+        return overlays;
+    }
+
+    protected PathOverlay parseLineString(JsonNode geometry) {
         if (!geometry.has("coordinates") || !geometry.get("coordinates").isArray()) {
             throw new RuntimeException("Missing or unexpected feature[].geometry.coordinates");
         }
-        for(JsonNode coordinate: geometry.get("coordinates")) {
+        return parseCoordinates(geometry.get("coordinates"));
+    }
+
+    protected List<PathOverlay> parseMultiLineString(JsonNode geometry) {
+        List<PathOverlay> overlays = new ArrayList<>();
+        if (!geometry.has("coordinates") || !geometry.get("coordinates").isArray()) {
+            throw new RuntimeException("Missing or unexpected feature[].geometry.coordinates");
+        }
+        for(JsonNode coordinates: geometry.get("coordinates")) {
+            PathOverlay overlay = parseCoordinates(coordinates);
+            overlays.add(overlay);
+        }
+        return overlays;
+    }
+
+    protected PathOverlay parseCoordinates(JsonNode coordinates) {
+        PathOverlay overlay = new PathOverlay();
+        for(JsonNode coordinate: coordinates) {
             if(coordinate.isArray() && coordinate.size() >= 2) {
                 // Coordinates are ordered longitude, latitude(, altitude)
                 // See http://geojson.org/geojson-spec.html#positions
