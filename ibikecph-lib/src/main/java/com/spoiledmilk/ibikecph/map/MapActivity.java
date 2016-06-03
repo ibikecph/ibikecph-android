@@ -411,7 +411,7 @@ public class MapActivity extends BaseMapActivity {
      * current location upon receiving this.
      */
     private void attemptToRegisterLocationListener() {
-        boolean hasLocationPermissions = ensureLocationPermissions();
+        boolean hasLocationPermissions = checkAndRequestLocationPermissions();
         if (hasLocationPermissions && locationListener == null) {
             // We can register a location listener and start receiving location updates right away.
             locationListener = new LocationListener() {
@@ -426,6 +426,8 @@ public class MapActivity extends BaseMapActivity {
                     if (!hasUpdatedMap) {
                         mapView.setCenter(new LatLng(location));
                         hasUpdatedMap = true;
+                        // Change the state to the browsing state - to update the user location
+                        MapActivity.this.changeState(BrowsingState.class);
                     }
                 }
             };
@@ -451,7 +453,7 @@ public class MapActivity extends BaseMapActivity {
      * Checks if the app has permissions to the device's physical location and requests it if not.
      * The result of a permission request ends up calling the onRequestPermissionsResult method.
      */
-    private boolean ensureLocationPermissions() {
+    private boolean checkAndRequestLocationPermissions() {
         final String permission = Manifest.permission.ACCESS_FINE_LOCATION;
         // Let's check if we have permissions to get file locations.
         int hasPermission = ContextCompat.checkSelfPermission(this.getApplicationContext(), permission);
