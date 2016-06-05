@@ -11,6 +11,7 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -126,8 +127,12 @@ public class BikeLocationService extends Service implements LocationListener {
             .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
                 @Override
                 public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                    Log.e("BikeLocationService", "Failed to connect to the location API:");
-                    Log.e("BikeLocationService", connectionResult.getErrorMessage());
+                    String msg = "Could not connect to the location API";
+                    if(connectionResult.getErrorMessage() != null) {
+                        msg += ": " + connectionResult.getErrorMessage();
+                    }
+                    Log.e("BikeLocationService", msg);
+                    Toast.makeText(BikeLocationService.this, msg, Toast.LENGTH_SHORT).show();
                 }
             })
             .addApi(LocationServices.API)
