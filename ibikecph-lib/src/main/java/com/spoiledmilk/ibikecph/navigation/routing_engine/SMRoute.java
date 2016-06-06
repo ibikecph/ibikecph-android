@@ -155,7 +155,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
 
     public void setListener(SMRouteListener listener) {
-        Log.d("DV", "setListener, with type = " + transportType);
         this.listener = listener;
     }
 
