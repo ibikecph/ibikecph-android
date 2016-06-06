@@ -201,8 +201,8 @@ public class MapActivity extends BaseMapActivity {
             @Override
             public void onOverlaysLoaded(List<TogglableOverlay> togglableOverlays) {
                 // Add all the overlays to the map view
-                for(TogglableOverlay togglableOverlay: factory.getTogglableOverlays()) {
-                    for(Overlay overlay: togglableOverlay.getOverlays()) {
+                for (TogglableOverlay togglableOverlay : factory.getTogglableOverlays()) {
+                    for (Overlay overlay : togglableOverlay.getOverlays()) {
                         mapView.addOverlay(overlay);
                     }
                 }
@@ -299,6 +299,7 @@ public class MapActivity extends BaseMapActivity {
 
     /**
      * Transition the map activity to another state.
+     *
      * @param toState the new state
      */
     public void changeState(MapState toState) {
@@ -310,7 +311,7 @@ public class MapActivity extends BaseMapActivity {
         toState.setMapActivity(this);
 
         // Transition away from the current state.
-        if(fromState != null) {
+        if (fromState != null) {
             logMessage += String.format("from %s ", fromState);
             fromState.transitionAway(toState, fragmentTransaction);
         }
@@ -328,6 +329,7 @@ public class MapActivity extends BaseMapActivity {
 
     /**
      * Transitions state to some state of the class provided.
+     *
      * @param stateClass
      * @return the existing or new state, useful when chaining.
      */
@@ -343,6 +345,7 @@ public class MapActivity extends BaseMapActivity {
 
     /**
      * Get the current state of the MapActivity.
+     *
      * @return
      */
     public MapState getState() {
@@ -350,7 +353,7 @@ public class MapActivity extends BaseMapActivity {
     }
 
     public IBCMapView getMapView() {
-        if(mapView == null) {
+        if (mapView == null) {
             throw new RuntimeException("The mapView has not yet been initialized.");
         }
         return mapView;
@@ -358,6 +361,7 @@ public class MapActivity extends BaseMapActivity {
 
     /**
      * Instantiate the left menu - this needs to be a method, so it can be overwritten.
+     *
      * @return
      */
     protected LeftMenu instantiateLeftMenu() {
@@ -458,7 +462,7 @@ public class MapActivity extends BaseMapActivity {
         // Let's check if we have permissions to get file locations.
         int hasPermission = ContextCompat.checkSelfPermission(this.getApplicationContext(), permission);
         if (hasPermission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{ permission }, PERMISSIONS_REQUEST_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{permission}, PERMISSIONS_REQUEST_FINE_LOCATION);
             return false;
         } else {
             return true;
@@ -521,7 +525,7 @@ public class MapActivity extends BaseMapActivity {
     }
 
     protected void toggleDrawer() {
-        if(drawerLayout == null) {
+        if (drawerLayout == null) {
             throw new RuntimeException("toggleDrawer called too soon, drawerLayout was null");
         }
 
@@ -548,7 +552,7 @@ public class MapActivity extends BaseMapActivity {
      */
     protected void checkForCrashes() {
         try {
-            if(IBikeApplication.getSettings().isCrashReportingEnabled()) {
+            if (IBikeApplication.getSettings().isCrashReportingEnabled()) {
                 CrashManager.register(this);
             } else {
                 Log.i("HockeyApp", "User turned off crash reporting - HockeyApp is disabled");
@@ -556,16 +560,6 @@ public class MapActivity extends BaseMapActivity {
         } catch (IllegalArgumentException e) {
             Log.i("HockeyApp", "No HockeyApp app identifier provided - HockeyApp is disabled");
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     AlertDialog loginDlg;
@@ -671,7 +665,7 @@ public class MapActivity extends BaseMapActivity {
             // throw new UnsupportedOperationException("Canceling the search address has not been implemented.");
         } else if (requestCode == REQUEST_CHANGE_SOURCE_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             Log.d(TAG, "Got back from setting the source");
-            if(state instanceof RouteSelectionState) {
+            if (state instanceof RouteSelectionState) {
                 final Bundle extras = data.getExtras();
                 Address address = (Address) extras.getSerializable("addressObject");
                 if (address != null) {
@@ -683,7 +677,7 @@ public class MapActivity extends BaseMapActivity {
             }
         } else if (requestCode == REQUEST_CHANGE_DESTINATION_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
             Log.d(TAG, "Got back from setting the destination");
-            if(state instanceof RouteSelectionState) {
+            if (state instanceof RouteSelectionState) {
                 final Bundle extras = data.getExtras();
                 Address address = (Address) extras.getSerializable("addressObject");
                 if (address != null) {
@@ -743,10 +737,10 @@ public class MapActivity extends BaseMapActivity {
      * They should return false if they want to do something before letting the user continue back.
      */
     public void onBackPressed() {
-        if(drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
             drawerLayout.closeDrawer(Gravity.LEFT);
-        } else if(state != null) {
-            if(state.onBackPressed() == MapState.BackPressBehaviour.PROPAGATE) {
+        } else if (state != null) {
+            if (state.onBackPressed() == MapState.BackPressBehaviour.PROPAGATE) {
                 super.onBackPressed();
             }
         } else {
@@ -796,11 +790,11 @@ public class MapActivity extends BaseMapActivity {
     public void updateCompassIcon() {
         UserLocationOverlay.TrackingMode currentTrackingMode = mapView.getUserLocationTrackingMode();
         // Without follow location enabled, we assume a NONE tracking mode.
-        if(!mapView.getUserLocationOverlay().isFollowLocationEnabled()) {
+        if (!mapView.getUserLocationOverlay().isFollowLocationEnabled()) {
             currentTrackingMode = UserLocationOverlay.TrackingMode.NONE;
         }
 
-        if(previousTrackingMode != currentTrackingMode) {
+        if (previousTrackingMode != currentTrackingMode) {
             ImageButton userTrackingButton = (ImageButton) this.findViewById(R.id.userTrackingButton);
 
             if (currentTrackingMode == UserLocationOverlay.TrackingMode.NONE) {
