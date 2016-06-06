@@ -66,6 +66,21 @@
                 android:layout_height="fill_parent" />
 
             <ImageButton
+                android:id="@+id/readAloudButton"
+                android:visibility="gone"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_above="@+id/userTrackingButton"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="12dp"
+                android:layout_marginRight="12dp"
+                android:adjustViewBounds="true"
+                android:background="@color/Transparent"
+                android:onClick="readAloudClicked"
+                android:scaleType="fitCenter"
+                android:src="@drawable/read_aloud_disabled" />
+
+            <ImageButton
                 android:id="@+id/userTrackingButton"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
