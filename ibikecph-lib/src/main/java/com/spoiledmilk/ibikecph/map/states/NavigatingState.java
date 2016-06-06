@@ -6,6 +6,7 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
@@ -31,6 +32,7 @@ public class NavigatingState extends MapState {
 
     protected Fragment turnByTurnFragment;
     protected Fragment navigationETAFragment;
+    protected ImageButton readAloudButton;
 
     public NavigatingState() {
         super();
@@ -52,6 +54,11 @@ public class NavigatingState extends MapState {
         mapHandler = (NavigationMapHandler) activity.getMapView().getMapHandler();
 
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        // Show the read aloud button
+        readAloudButton = (ImageButton) activity.findViewById(R.id.readAloudButton);
+        readAloudButton.setVisibility(View.VISIBLE);
+        setReadAloud(false);
     }
 
     @Override
@@ -70,6 +77,9 @@ public class NavigatingState extends MapState {
         mapHandler.destructor();
 
         activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        // Hide the read aloud button
+        activity.findViewById(R.id.readAloudButton).setVisibility(View.GONE);
     }
 
     @Override
@@ -112,15 +122,24 @@ public class NavigatingState extends MapState {
 
             IBikeApplication.getService().addLocationListener(mapHandler);
 
-            // FIXME: Remove the use of the handler and booleans like this.
-            mapHandler.isRouting = true;
+	    // FIXME: Remove the use of the handler and booleans like this.
+	    mapHandler.isRouting = true;
 
-            // Called to show the button from the action bar, that prompts the user to report problems
-            activity.invalidateOptionsMenu();
-            // Make the MapView show the route.
-            activity.getMapView().showRoute(route);
-            // Show the ETA and turn-by-turn fragments
-            addFragments();
+	    // Called to show the button from the action bar, that prompts the user to report problems
+	    activity.invalidateOptionsMenu();
+	    // Make the MapView show the route.
+	    activity.getMapView().showRoute(route);
+	    // Show the ETA and turn-by-turn fragments
+	    addFragments();
         }
+    }
+	
+    public void setReadAloud(boolean readAloud) {
+        // Change the value of the field
+        this.readAloud = readAloud;
+    }
+
+    public void toggleReadAloud() {
+        this.setReadAloud(!readAloud);
     }
 }
