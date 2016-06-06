@@ -5,8 +5,10 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
@@ -16,6 +18,7 @@ import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.fragments.NavigationETAFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
+import com.spoiledmilk.ibikecph.navigation.read_aloud.NavigationOracle;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 
 /**
@@ -25,6 +28,9 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 public class NavigatingState extends MapState {
 
     protected SMRoute route;
+    protected boolean readAloud;
+
+    protected NavigationOracle navigationOracle;
 
     protected MapState previousState;
 
@@ -137,6 +143,46 @@ public class NavigatingState extends MapState {
     public void setReadAloud(boolean readAloud) {
         // Change the value of the field
         this.readAloud = readAloud;
+        // Change the drawable used on the button.
+        final ImageButton readAloudButton = (ImageButton) activity.findViewById(R.id.readAloudButton);
+        readAloudButton.setImageResource(R.drawable.read_aloud_enabled);
+        // Register or deregister a listener on the location (and eventually route)
+        if(readAloud) {
+            readAloudButton.setAlpha(0.66f);
+            navigationOracle = new NavigationOracle(activity, route, new NavigationOracle.NavigationOracleListener() {
+                @Override
+                public void enabled() {
+                    IBikeApplication.getService().addLocationListener(navigationOracle);
+                    readAloudButton.setAlpha(1f);
+                }
+
+                @Override
+                public void disabled() {
+                    IBikeApplication.getService().removeLocationListener(navigationOracle);
+                    readAloudButton.setAlpha(1f);
+                    readAloudButton.setImageResource(R.drawable.read_aloud_disabled);
+                    // Updating the readAloud and the navigationOracle fields
+                    NavigatingState.this.readAloud = false;
+                    NavigatingState.this.navigationOracle = null;
+                }
+
+                @Override
+                public void initError() {
+                    String err = IBikeApplication.getString("read_aloud_error_initalizing");
+                    Toast.makeText(activity, err, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void unsupportedLanguage() {
+                    String err = IBikeApplication.getString("read_aloud_error_unsupported_language");
+                    Toast.makeText(activity, err, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else if(navigationOracle != null) {
+            navigationOracle.disable();
+        } else { // readAloud == false && navigationOracle == null
+            readAloudButton.setImageResource(R.drawable.read_aloud_disabled);
+        }
     }
 
     public void toggleReadAloud() {
