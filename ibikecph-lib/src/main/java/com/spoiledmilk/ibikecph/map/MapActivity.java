@@ -770,6 +770,13 @@ public class MapActivity extends BaseMapActivity {
         */
     }
 
+    public void readAloudClicked(View v) {
+        if (getState() instanceof NavigatingState) {
+            NavigatingState state = (NavigatingState) getState();
+            state.toggleReadAloud();
+        }
+    }
+
     public void compassClicked(View v) {
         UserLocationOverlay.TrackingMode curMode = this.mapView.getUserLocationTrackingMode();
 
