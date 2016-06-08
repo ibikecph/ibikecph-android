@@ -20,6 +20,9 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.squareup.okhttp.Route;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Showing an overview of the route on the map - here the departure and destination can be changed
  * and swapped.
@@ -37,6 +40,15 @@ public class RouteSelectionState extends MapState {
     protected NavigationMapHandler mapHandler;
 
     protected RouteSelectionFragment routeSelectionFragment;
+    private List<RouteCallback> routeCallbacks = new ArrayList<>();
+
+    protected abstract class RouteCallback implements Geocoder.RouteCallback {
+        boolean cancelled = false;
+        public void cancel() {
+            cancelled = true;
+            routeCallbacks.remove(this);
+        }
+    }
 
     public RouteSelectionState() {
         super();
@@ -74,6 +86,8 @@ public class RouteSelectionState extends MapState {
         // No need for a user location overlay afterwards - the future state will enabled this.
         activity.getMapView().setUserLocationEnabled(false);
         fragmentTransaction.remove(routeSelectionFragment);
+        routeSelectionFragment = null;
+        cancelRequests();
     }
 
     @Override
@@ -130,36 +144,53 @@ public class RouteSelectionState extends MapState {
         LatLng sourceLocation = source.getLocation();
         LatLng destinationLocation = destination.getLocation();
 
-        Geocoder.getRoute(sourceLocation, destinationLocation, new Geocoder.RouteCallback() {
+        RouteCallback routeCallback = new RouteCallback() {
             @Override
             public void onSuccess(SMRoute route) {
-                // TODO: This could probably be removed or moved to the geocoder.
-                route.startStationName = source.getStreetAddress();
-                route.endStationName = destination.getStreetAddress();
+                if(!cancelled) {
+                    routeCallbacks.remove(this);
 
-                route.startAddress = source;
-                route.endAddress = destination;
-                setRoute(route);
+                    // TODO: This could probably be removed or moved to the geocoder.
+                    route.startStationName = source.getStreetAddress();
+                    route.endStationName = destination.getStreetAddress();
+
+                    route.startAddress = source;
+                    route.endAddress = destination;
+                    setRoute(route);
+                }
             }
 
             @Override
             public void onSuccess(boolean isBreak) {
-                // TODO: Refactor the use of MapActivity.isBreakChosen - so it's no longer needed.
-                if (MapActivity.isBreakChosen) {
-                    Log.d("DV_break", "NavigationMaphandler: Calling showRoute with breakRoute!");
-                    activity.getMapView().showMultipleRoutes();
-                } else {
-                    MapActivity.breakFrag.setVisibility(View.GONE);
+                if(!cancelled) {
+                    routeCallbacks.remove(this);
+                    // TODO: Refactor the use of MapActivity.isBreakChosen - so it's no longer needed.
+                    if (MapActivity.isBreakChosen) {
+                        Log.d("DV_break", "NavigationMaphandler: Calling showRoute with breakRoute!");
+                        activity.getMapView().showMultipleRoutes();
+                    } else {
+                        MapActivity.breakFrag.setVisibility(View.GONE);
+                    }
                 }
-
             }
 
             @Override
             public void onFailure() {
-                displayTryAgain();
+                if(!cancelled) {
+                    displayTryAgain();
+                }
             }
 
-        }, null, routeType);
+        };
+        routeCallbacks.add(routeCallback);
+
+        Geocoder.getRoute(sourceLocation, destinationLocation, routeCallback, null, routeType);
+    }
+
+    protected void cancelRequests() {
+        for(RouteCallback callback: routeCallbacks) {
+            callback.cancel();
+        }
     }
 
     protected void setRoute(SMRoute route) {
