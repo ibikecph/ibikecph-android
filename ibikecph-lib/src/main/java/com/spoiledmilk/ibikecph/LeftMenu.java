@@ -58,9 +58,16 @@ public class LeftMenu extends Fragment {
 
     protected ArrayList<LeftMenuItem> menuItems;
 
+    protected IBikeApplication application;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(getActivity().getApplication() instanceof IBikeApplication) {
+            application = (IBikeApplication) getActivity().getApplication();
+        } else {
+            throw new RuntimeException("The LeftMenu should used with an IBikeApplication");
+        }
         populateMenu();
     }
 
@@ -103,7 +110,11 @@ public class LeftMenu extends Fragment {
         menuItems.add(new LeftMenuItem("favorites", R.drawable.fav_star, "spawnFavoritesListActivity"));
         //menuItems.add(new LeftMenuItem("voice", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
         // Kortlag
-        menuItems.add(new LeftMenuItem("map_overlays", R.drawable.ic_menu_overlays, "spawnOverlaysActivity"));
+        if(application.getTogglableOverlayClasses().size() > 0) {
+            menuItems.add(new LeftMenuItem("map_overlays",
+                                           R.drawable.ic_menu_overlays,
+                                           "spawnOverlaysActivity"));
+        }
         // Rutetype
         // Tracking
         if (getResources().getBoolean(R.bool.trackingEnabled)) {
