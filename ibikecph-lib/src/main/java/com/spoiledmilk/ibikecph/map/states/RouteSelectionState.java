@@ -46,7 +46,6 @@ public class RouteSelectionState extends MapState {
         boolean cancelled = false;
         public void cancel() {
             cancelled = true;
-            routeCallbacks.remove(this);
         }
     }
 
@@ -191,6 +190,7 @@ public class RouteSelectionState extends MapState {
         for(RouteCallback callback: routeCallbacks) {
             callback.cancel();
         }
+        routeCallbacks.clear();
     }
 
     protected void setRoute(SMRoute route) {
@@ -232,8 +232,11 @@ public class RouteSelectionState extends MapState {
     }
 
     public void startNavigation() {
-        NavigatingState state = (NavigatingState) activity.changeState(NavigatingState.class);
-        state.setRoute(route);
+        // Let's only change state if the route is actually set
+        if(route != null) {
+            NavigatingState state = activity.changeState(NavigatingState.class);
+            state.setRoute(route);
+        }
     }
 
     public SMRoute getRoute() {

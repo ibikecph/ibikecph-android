@@ -101,25 +101,26 @@ public class NavigatingState extends MapState {
 
     public void setRoute(SMRoute route) {
         this.route = route;
+        if(route != null) {
+            Location start = route.getWaypoints().get(0);
+            activity.getMapView().setCenter(new LatLng(start), true);
+            activity.getMapView().setZoom(17f);
 
-        Location start = route.getWaypoints().get(0);
-        activity.getMapView().setCenter(new LatLng(start), true);
-        activity.getMapView().setZoom(17f);
+            activity.getMapView()
+                    .getUserLocationOverlay()
+                    .setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
 
-        activity.getMapView()
-                .getUserLocationOverlay()
-                .setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
+            IBikeApplication.getService().addLocationListener(mapHandler);
 
-        IBikeApplication.getService().addLocationListener(mapHandler);
+            // FIXME: Remove the use of the handler and booleans like this.
+            mapHandler.isRouting = true;
 
-        // FIXME: Remove the use of the handler and booleans like this.
-        mapHandler.isRouting = true;
-
-        // Called to show the button from the action bar, that prompts the user to report problems
-        activity.invalidateOptionsMenu();
-        // Make the MapView show the route.
-        activity.getMapView().showRoute(route);
-        // Show the ETA and turn-by-turn fragments
-        addFragments();
+            // Called to show the button from the action bar, that prompts the user to report problems
+            activity.invalidateOptionsMenu();
+            // Make the MapView show the route.
+            activity.getMapView().showRoute(route);
+            // Show the ETA and turn-by-turn fragments
+            addFragments();
+        }
     }
 }
