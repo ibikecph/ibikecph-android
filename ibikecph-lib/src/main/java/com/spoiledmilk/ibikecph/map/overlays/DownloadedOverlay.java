@@ -3,7 +3,6 @@ package com.spoiledmilk.ibikecph.map.overlays;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -273,7 +272,7 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
      * The remote URL of the overlay GeoJSON data file.
      * @return
      */
-    protected URL getURL() {
+    public URL getURL() {
         try {
             return new URL("http://assets.ibikecph.dk/geodata/" + getFilename());
         } catch (MalformedURLException e) {
@@ -285,7 +284,7 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
      * The remote and local filename of the downloadable overlay.
      * @return
      */
-    abstract String getFilename();
+    public abstract String getFilename();
 
     @Override
     public boolean isSelected() {

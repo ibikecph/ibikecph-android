@@ -1,4 +1,6 @@
-package com.spoiledmilk.ibikecph.map.overlays;
+package dk.kk.ibikecph.map.overlays;
+
+import com.spoiledmilk.ibikecph.map.overlays.DownloadedOverlay;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,7 +12,7 @@ import java.net.URL;
 public class HarborRingOverlay extends DownloadedOverlay {
 
     @Override
-    String getFilename() {
+    public String getFilename() {
         return "havneringen.geojson";
     }
 }
