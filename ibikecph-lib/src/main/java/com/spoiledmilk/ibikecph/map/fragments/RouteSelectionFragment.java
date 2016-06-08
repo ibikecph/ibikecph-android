@@ -153,7 +153,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
         if (Geocoder.arrayLists != null) {
             for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
                 for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
-                    Geocoder.arrayLists.get(i).get(j).setListener(null);
+                    Geocoder.arrayLists.get(i).get(j).removeListeners();
                     IBikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
                 }
             }

@@ -1,15 +1,10 @@
 package com.spoiledmilk.ibikecph.map.handlers;
 
-import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
-import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.api.ILatLng;
@@ -17,7 +12,6 @@ import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
-import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
@@ -31,21 +25,15 @@ import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.MarkerType;
 import com.spoiledmilk.ibikecph.map.ObservablePageInteger;
 import com.spoiledmilk.ibikecph.map.OnIntegerChangeListener;
-import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.fragments.NavigationETAFragment;
 import com.spoiledmilk.ibikecph.map.fragments.RouteSelectionFragment;
-import com.spoiledmilk.ibikecph.map.states.DestinationPreviewState;
-import com.spoiledmilk.ibikecph.map.states.NavigatingState;
 import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
-import com.spoiledmilk.ibikecph.search.Address;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by jens on 5/30/15.
@@ -132,13 +120,13 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     public void reachedDestination() {
         Log.d("DV", "NavigationMapHandler reachedDestination");
         if (Geocoder.arrayLists != null && MapActivity.isBreakChosen) {
-            Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(null);
+            Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).removeListener(this);
             Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).reachedDestination = true;
             Log.d("DV", "NavigationMapHandler reachedDestination, removed with index = " + routePos + " og pageValue = " + obsInt.getPageValue());
             if ((routePos + 1) < Geocoder.arrayLists.get(obsInt.getPageValue()).size()) {
                 displayGetOffAt = false;
                 routePos = routePos + 1;
-                Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).setListener(this);
+                Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).addListener(this);
                 IBikeApplication.getService().addLocationListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
                 Log.d("DV", "NavigationMapHandler reachedDestination, ny listener er sat med index = " + routePos);
                 if (Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
@@ -259,7 +247,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         if (this.route != null) {
             route.cleanUp();
-            route.setListener(null);
+            route.removeListeners();
             IBikeApplication.getService().removeLocationListener(route);
             //route = null;
         }
@@ -314,7 +302,7 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         Log.d("DV_break", "showRouteOverview");
 
-        route.setListener(this);
+        route.addListener(this);
 
         // Set up the infoPane
         // initRouteSelectionFragment();
@@ -389,11 +377,12 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         this.mapView.addMarker(beginMarker);
         this.mapView.addMarker(endMarker);
 
-
+        /*
         Log.d("NavitationMapHandler", "Printing the " + this.mapView.getOverlays().size() + " overlays:");
         for(Overlay overlay: this.mapView.getOverlays()) {
             Log.d("NavitationMapHandler", "\tOverlay: " + overlay + " isEnabled=" + overlay.isEnabled());
         }
+        */
 
         cleanedUp = false;
     }
@@ -409,21 +398,21 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         Log.d("DV_break", "showBreakRouteOverview");
 
-        this.route.setListener(null);
+        this.route.removeListeners();
 
         if (position == 0) {
 
             if (Geocoder.arrayLists != null) {
                 for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
                     for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
-                        Geocoder.arrayLists.get(i).get(j).setListener(null);
+                        Geocoder.arrayLists.get(i).get(j).removeListeners();
                         IBikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
                     }
                 }
             }
 
             Log.d("DV", "Setting listener from showBreakRouteOverview");
-            route.setListener(this);
+            route.addListener(this);
             IBikeApplication.getService().addLocationListener(route);
         }
 
