@@ -3,6 +3,7 @@ package com.spoiledmilk.ibikecph.map.overlays;
 import android.content.Context;
 
 import com.mapbox.mapboxsdk.overlay.Overlay;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 import java.io.IOException;
@@ -15,21 +16,52 @@ import java.util.List;
  */
 public class TogglableOverlayFactory {
 
-    private static TogglableOverlayFactory ourInstance = new TogglableOverlayFactory();
+    protected static TogglableOverlayFactory ourInstance = new TogglableOverlayFactory();
+    protected IBikeApplication application;
+
+    /**
+     * Get the singleton instance.
+     * @param application
+     * @return
+     */
+    public static TogglableOverlayFactory getInstance(IBikeApplication application) {
+        ourInstance.setApplication(application);
+        return ourInstance;
+    }
 
     /**
      * Get the singleton instance.
      * @return
      */
     public static TogglableOverlayFactory getInstance() {
+        if(ourInstance.getApplication() == null) {
+            throw new RuntimeException("Must call the getInstance method with a application once");
+        }
         return ourInstance;
     }
 
-    protected List<DownloadedOverlay> downloadedOverlays = new ArrayList<>();
+    protected List<TogglableOverlay> overlays = new ArrayList<>();
 
     protected IBikePreferences preferences;
 
     boolean overlaysLoaded = false;
+
+    public void setApplication(IBikeApplication application) {
+        this.application = application;
+        overlays.clear();
+        for(Class<? extends TogglableOverlay> overlayClass: application.getTogglableOverlayClasses()) {
+            try {
+                overlays.add(overlayClass.newInstance());
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to load a togglable overlay", e);
+            }
+        }
+        this.preferences = application.getSettings();
+    }
+
+    public IBikeApplication getApplication() {
+        return application;
+    }
 
     public interface OnOverlaysLoadedListener {
         void onOverlaysLoaded(List<TogglableOverlay> togglableOverlays);
@@ -37,46 +69,35 @@ public class TogglableOverlayFactory {
 
     protected List<OnOverlaysLoadedListener> overlaysLoadedListeners = new ArrayList<>();
 
-    private TogglableOverlayFactory() {
-        // Add new downloaded overlays to this list
-        downloadedOverlays.add(new GreenPathsOverlay());
-        downloadedOverlays.add(new HarborRingOverlay());
-    }
-
-    /**
-     * Sets the preferences on the overlay factory, to be used when selecting or deselecting the
-     * various overlays.
-     * @param preferences The applications preferences object.
-     */
-    public void setPreferences(IBikePreferences preferences) {
-        this.preferences = preferences;
-    }
+    private TogglableOverlayFactory() { }
 
     /**
      * Loads all overlays from the local file system, or downloads them from the remote server.
      * Call this on a different thread than the UI thread.
      * Not forcing is default.
-     * @param context Used to access local files
      * @throws IOException
      */
-    public void loadOverlays(Context context) throws IOException {
-        loadOverlays(context, true);
+    public void loadOverlays() throws IOException {
+        loadOverlays(true);
     }
 
     /**
      * Loads all overlays from the local file system, or downloads them from the remote server.
      * Call this on a different thread than the UI thread.
-     * @param context Used to access local files
      * @param forced Always wipe the local copy before downloading.
      * @throws IOException
      */
-    public void loadOverlays(Context context, boolean forced) throws IOException {
-        for(DownloadedOverlay downloadedOverlay: downloadedOverlays) {
-            downloadedOverlay.load(context, forced);
-            // Make sure the overlays adhere to the selection when just initialized
-            boolean selected = isSelected(downloadedOverlay);
-            for(Overlay overlay: downloadedOverlay.getOverlays()) {
-                overlay.setEnabled(selected);
+    public void loadOverlays(boolean forced) throws IOException {
+        for(TogglableOverlay togglableOverlay: overlays) {
+            // If the togglable overlay is actually a downloaded overlay
+            if(togglableOverlay instanceof DownloadedOverlay) {
+                DownloadedOverlay downloadedOverlay = (DownloadedOverlay) togglableOverlay;
+                downloadedOverlay.load(application, forced);
+                // Make sure the overlays adhere to the selection when just initialized
+                boolean selected = isSelected(downloadedOverlay);
+                for(Overlay overlay: downloadedOverlay.getOverlays()) {
+                    overlay.setEnabled(selected);
+                }
             }
         }
     }
@@ -87,7 +108,7 @@ public class TogglableOverlayFactory {
      */
     public List<TogglableOverlay> getTogglableOverlays() {
         List<TogglableOverlay> result = new ArrayList<>();
-        for(DownloadedOverlay overlay: downloadedOverlays) {
+        for(TogglableOverlay overlay: overlays) {
             if(overlay.getOverlays().size() > 0) {
                 // If it actually has overlays
                 result.add(overlay);

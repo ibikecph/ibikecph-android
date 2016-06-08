@@ -22,6 +22,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.analytics.GoogleAnalytics;
 
 import com.spoiledmilk.ibikecph.map.MapActivity;
+import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlay;
 import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlayFactory;
 import com.spoiledmilk.ibikecph.map.overlays.RefreshOverlaysTask;
 import com.spoiledmilk.ibikecph.tracking.MilestoneManager;
@@ -32,7 +33,9 @@ import com.spoiledmilk.ibikecph.util.IBikePreferences.Language;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.SMDictionary;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import io.realm.exceptions.RealmMigrationNeededException;
 
@@ -96,9 +99,6 @@ public class IBikeApplication extends Application {
     }
 
     protected void initializeSelectableOverlays() {
-        // Checks if new overlays are available on the server and downloads any updated overlays.
-        final TogglableOverlayFactory togglableOverlayFactory = TogglableOverlayFactory.getInstance();
-        togglableOverlayFactory.setPreferences(getSettings());
         // Let's try to load the overlays from the server - and not hang the UI thread meanwhile
         new RefreshOverlaysTask(this).execute();
     }
@@ -348,6 +348,10 @@ public class IBikeApplication extends Application {
 
     public static Class getTermsAcceptanceClass() {
         return AcceptNewTermsActivity.class;
+    }
+
+    public List<Class<? extends TogglableOverlay>> getTogglableOverlayClasses() {
+        return new ArrayList<>();
     }
 
     public static int getPrimaryColor() {

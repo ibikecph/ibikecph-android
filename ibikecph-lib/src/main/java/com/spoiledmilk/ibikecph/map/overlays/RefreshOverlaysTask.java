@@ -5,7 +5,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.IOException;
+import com.spoiledmilk.ibikecph.IBikeApplication;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
@@ -16,13 +17,14 @@ import java.util.List;
  */
 public class RefreshOverlaysTask extends AsyncTask<Boolean, Void, Boolean> {
 
-    protected Context context;
+    protected IBikeApplication application;
 
-    public RefreshOverlaysTask(Context context) {
-        this.context = context;
+    TogglableOverlayFactory factory;
+
+    public RefreshOverlaysTask(IBikeApplication application) {
+        this.application = application;
+        this.factory = TogglableOverlayFactory.getInstance(application);
     }
-
-    TogglableOverlayFactory factory = TogglableOverlayFactory.getInstance();
 
     @Override
     protected Boolean doInBackground(Boolean... params) {
@@ -35,7 +37,7 @@ public class RefreshOverlaysTask extends AsyncTask<Boolean, Void, Boolean> {
             throw new RuntimeException("Unexpected arguments, expected a single optional boolean");
         }
         try {
-            factory.loadOverlays(context, forced);
+            factory.loadOverlays(forced);
             return true;
         } catch (Exception e) {
             StringWriter sw = new StringWriter();
@@ -51,7 +53,7 @@ public class RefreshOverlaysTask extends AsyncTask<Boolean, Void, Boolean> {
         List<TogglableOverlay> togglableOverlay = factory.getTogglableOverlays();
         if (!success) {
             // TODO: Translate the message
-            Toast.makeText(context, "Error occurred when loading overlays", Toast.LENGTH_SHORT).show();
+            Toast.makeText(application, "Error occurred when loading overlays", Toast.LENGTH_SHORT).show();
         }
         // Notify about the overlays that was actually loaded - if any
         if(togglableOverlay.size() > 0) {
