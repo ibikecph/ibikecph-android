@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.1.2'
         classpath 'io.realm:realm-gradle-plugin:0.88.3'
         classpath 'de.felixschulze.gradle:gradle-hockeyapp-plugin:3.2'
         classpath 'org.ajoberstar:grgit:1.1.0'
