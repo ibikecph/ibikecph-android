@@ -72,8 +72,9 @@ public class IBikeApplication extends Application {
         boldFont = Typeface.DEFAULT_BOLD; //Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Bd.ttf");
         italicFont = Typeface.defaultFromStyle(Typeface.ITALIC); // Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
 
-        boolean googleAnalyticsEnabled = getResources().getBoolean(R.bool.googleAnalyticsEnabled);
-        GoogleAnalytics.getInstance(this).setAppOptOut(googleAnalyticsEnabled == false);
+        // Let's run Google Analytics in dry running mode when debugging, to prevent bloat of the
+        // Google Analytics reports
+        GoogleAnalytics.getInstance(this).setDryRun(isDebugging());
 
         this.startService(new Intent(this, BikeLocationService.class));
 

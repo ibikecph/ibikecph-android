@@ -2,5 +2,4 @@
 <resources>
     <bool name="trackingEnabled">false</bool>
     <bool name="breakRouteEnabled">false</bool>
-    <bool name="googleAnalyticsEnabled">true</bool>
 </resources>
