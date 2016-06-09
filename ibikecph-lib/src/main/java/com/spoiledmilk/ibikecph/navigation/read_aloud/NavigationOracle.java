@@ -3,8 +3,10 @@ package com.spoiledmilk.ibikecph.navigation.read_aloud;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.location.Location;
+import android.media.AudioManager;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 
 import com.google.android.gms.location.LocationListener;
@@ -19,11 +21,33 @@ import java.util.Locale;
  * The Navigation oracle speaks
  * Created by kraen on 06-06-16.
  */
-public class NavigationOracle implements LocationListener, TextToSpeech.OnInitListener, SMRouteListener {
+public class NavigationOracle extends UtteranceProgressListener implements LocationListener, TextToSpeech.OnInitListener, SMRouteListener {
 
     protected TextToSpeech tts;
+    protected AudioManager am;
+
     protected SMRoute route;
     protected SMTurnInstruction lastReadInstruction;
+
+    @Override
+    public void onStart(String utteranceId) {
+        // Request audio focus when speaking
+        am.requestAudioFocus(null,
+                             // Use the music stream.
+                             AudioManager.STREAM_NOTIFICATION,
+                             // Request permanent focus.
+                             AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
+    }
+
+    @Override
+    public void onDone(String utteranceId) {
+        am.abandonAudioFocus(null);
+    }
+
+    @Override
+    public void onError(String utteranceId) {
+
+    }
 
     public interface NavigationOracleListener {
         void enabled();
@@ -64,6 +88,10 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
 
     public NavigationOracle(Context context, SMRoute route, NavigationOracleListener listener) {
         tts = new TextToSpeech(context, this);
+        // Make the oracle aware about it's own progress when speaking.
+        tts.setOnUtteranceProgressListener(this);
+        // We would use the audio manager to request audio focus when speaking
+        am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         this.listener = listener;
         this.route = route;
     }
