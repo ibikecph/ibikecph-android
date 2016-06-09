@@ -15,39 +15,22 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.Locale;
 
 /**
  * The Navigation oracle speaks
  * Created by kraen on 06-06-16.
  */
-public class NavigationOracle extends UtteranceProgressListener implements LocationListener, TextToSpeech.OnInitListener, SMRouteListener {
+public class NavigationOracle implements LocationListener, TextToSpeech.OnInitListener, SMRouteListener {
 
     protected TextToSpeech tts;
     protected AudioManager am;
 
     protected SMRoute route;
     protected SMTurnInstruction lastReadInstruction;
-
-    @Override
-    public void onStart(String utteranceId) {
-        // Request audio focus when speaking
-        am.requestAudioFocus(null,
-                             // Use the music stream.
-                             AudioManager.STREAM_NOTIFICATION,
-                             // Request permanent focus.
-                             AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
-    }
-
-    @Override
-    public void onDone(String utteranceId) {
-        am.abandonAudioFocus(null);
-    }
-
-    @Override
-    public void onError(String utteranceId) {
-
-    }
 
     public interface NavigationOracleListener {
         void enabled();
@@ -88,8 +71,29 @@ public class NavigationOracle extends UtteranceProgressListener implements Locat
 
     public NavigationOracle(Context context, SMRoute route, NavigationOracleListener listener) {
         tts = new TextToSpeech(context, this);
-        // Make the oracle aware about it's own progress when speaking.
-        tts.setOnUtteranceProgressListener(this);
+        // Request audio focus while speaking
+        tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+            @Override
+            public void onStart(String utteranceId) {
+                // Request audio focus when speaking
+                int requestStatus = am.requestAudioFocus(null,
+                        AudioManager.STREAM_NOTIFICATION,
+                        AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK);
+                if(requestStatus != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                    Log.w("NavigationOracle", "Failed to get audio focus");
+                }
+            }
+
+            @Override
+            public void onDone(String utteranceId) {
+                am.abandonAudioFocus(null);
+            }
+
+            @Override
+            public void onError(String utteranceId) {
+
+            }
+        });
         // We would use the audio manager to request audio focus when speaking
         am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         this.listener = listener;
@@ -102,13 +106,22 @@ public class NavigationOracle extends UtteranceProgressListener implements Locat
 
     protected void speak(String text, boolean wait) {
         Log.d("NavigationOracle", "Reading aloud '" + text + "'" + (wait ? " (waiting)" : ""));
+        HashMap<String, String> map = new HashMap<>();
+        String utteranceId = generateUtteranceId();
+        map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, utteranceId);
         int queueMode = wait ? TextToSpeech.QUEUE_ADD : TextToSpeech.QUEUE_FLUSH;
         // Read it aloud
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tts.speak(text, queueMode, null, null);
+            tts.speak(text, queueMode, null, utteranceId);
         } else {
-            tts.speak(text, queueMode, null);
+            tts.speak(text, queueMode, map);
         }
+    }
+
+    private SecureRandom random = new SecureRandom();
+
+    protected String generateUtteranceId() {
+        return new BigInteger(130, random).toString(32);
     }
 
     public void setRoute(SMRoute route) {
