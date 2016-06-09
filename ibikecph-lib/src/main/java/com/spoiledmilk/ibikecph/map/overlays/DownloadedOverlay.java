@@ -3,6 +3,8 @@ package com.spoiledmilk.ibikecph.map.overlays;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -82,57 +84,68 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
             file.delete();
         }
 
-        InputStream input = null;
-        OutputStream output = null;
+        // Check internet connection
+        boolean hasInternet = isNetworkAvailable(context);
 
-        try {
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        if(hasInternet) {
+            InputStream input = null;
+            OutputStream output = null;
 
-            // If the GeoJSON has already been downloaded, we add the if-modified-since header
-            if(file.exists()) {
-                long localLastModified = file.lastModified();
-                String ifModifiedSince = HTTP_DATE.format(new Date(localLastModified - EXPECTED_MODIFICATION_DELAY));
-                connection.setRequestProperty("If-Modified-Since", ifModifiedSince);
-                Log.d("DownloadedOverlay", "Requested " + url + " if-modified-since: " + ifModifiedSince);
-            } else {
-                Log.d("DownloadedOverlay", "Requested " + url);
-            }
+            try {
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            if(connection.getResponseCode() == 200) { // OK
-                Log.d("DownloadedOverlay", "Local file didn't exist or remote file was modified!");
-
-                // Download the content of the updated overlay
-                input = connection.getInputStream();
-                output = new FileOutputStream(file);
-
-                byte[] buffer = new byte[1024];
-                int bytesWritten;
-                while ((bytesWritten = input.read(buffer)) > 0) {
-                    output.write(buffer, 0, bytesWritten);
+                // If the GeoJSON has already been downloaded, we add the if-modified-since header
+                if(file.exists()) {
+                    long localLastModified = file.lastModified();
+                    String ifModifiedSince = HTTP_DATE.format(new Date(localLastModified -
+                                                                       EXPECTED_MODIFICATION_DELAY));
+                    connection.setRequestProperty("If-Modified-Since", ifModifiedSince);
+                    Log.d("DownloadedOverlay",
+                          "Requested " + url + " if-modified-since: " + ifModifiedSince);
+                } else {
+                    Log.d("DownloadedOverlay", "Requested " + url);
                 }
-            } else if(connection.getResponseCode() == 304) { // Not Modified
-                // Let's do nothing ...
-                Log.d("DownloadedOverlay", "The remote file has not been modified.");
-            } else {
-                throw new RuntimeException("Unexpected response code: " + connection.getResponseCode());
-            }
-            connection.disconnect();
-        } finally {
-            if(input != null) {
-                input.close();
-            }
-            if(output != null) {
-                output.close();
+
+                if(connection.getResponseCode() == 200) { // OK
+                    Log.d("DownloadedOverlay", "Local file didn't exist or remote file was modified!");
+
+                    // Download the content of the updated overlay
+                    input = connection.getInputStream();
+                    output = new FileOutputStream(file);
+
+                    byte[] buffer = new byte[1024];
+                    int bytesWritten;
+                    while ((bytesWritten = input.read(buffer)) > 0) {
+                        output.write(buffer, 0, bytesWritten);
+                    }
+                } else if(connection.getResponseCode() == 304) { // Not Modified
+                    // Let's do nothing ...
+                    Log.d("DownloadedOverlay", "The remote file has not been modified.");
+                } else {
+                    throw new RuntimeException("Unexpected response code: " + connection.getResponseCode());
+                }
+                connection.disconnect();
+            } finally {
+                if(input != null) {
+                    input.close();
+                }
+                if(output != null) {
+                    output.close();
+                }
             }
         }
 
         // Read directly from the local file
         try {
-            Log.d("DownloadedOverlay", "Reading from local file " + file.getAbsolutePath());
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode rootNode = mapper.readValue(file, JsonNode.class);
+            if(!file.exists()) {
+                throw new RuntimeException("Local file with overlay data was never downloaded.");
+            } else {
+                Log.d("DownloadedOverlay", "Reading from local file " + file.getAbsolutePath());
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode rootNode = mapper.readValue(file, JsonNode.class);
 
-            parseGeoJson(rootNode);
+                parseGeoJson(rootNode);
+            }
         } catch (Exception e) {
             // Assuming that the file has been corrupted somehow.
             if(forced) {
@@ -294,6 +307,13 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
     @Override
     public void setSelected(boolean selected) {
         TogglableOverlayFactory.getInstance().setSelected(this, selected);
+    }
+
+    private boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }
