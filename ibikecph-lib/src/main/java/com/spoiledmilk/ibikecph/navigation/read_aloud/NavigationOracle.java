@@ -32,6 +32,10 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
     protected SMRoute route;
     protected SMTurnInstruction lastReadInstruction;
 
+    // After this distance in silence, the Oracle will read a message to the user
+    // Example: 5 minutes at 15km/t
+    protected final static float MAX_SILENCE_DISTANCE = 15000.0f / 60.0f * 1.0f;
+
     public interface NavigationOracleListener {
         void enabled();
         void disabled();
@@ -190,10 +194,10 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
             tts.stop();
             tts.shutdown();
         }
-        emitDisabled();
         if (route != null) {
             route.removeListener(this);
         }
+        emitDisabled();
     }
 
     public SMTurnInstruction getNextInstruction() {
@@ -204,14 +208,38 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         }
     }
 
+    Location lastSpeakLocation;
+
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("NavigationOracle", "Got onLocationChanged");
         SMTurnInstruction instruction = getNextInstruction();
         // If we are close enough and the instruction has not been read aloud
         if(location.distanceTo(instruction.getLocation()) < 50 && lastReadInstruction != instruction) {
             String instructionString = instruction.generateFullDescriptionString();
             speak(instructionString, lastReadInstruction == null);
             lastReadInstruction = instruction;
+            lastSpeakLocation = location;
+        }
+
+        if(lastSpeakLocation != null &&
+           route != null &&
+           location.distanceTo(lastSpeakLocation) > MAX_SILENCE_DISTANCE) {
+            int minutesToArrival = Math.round(route.getEstimatedArrivalTime() / 60.0f);
+
+            String encouragement = null;
+            if(minutesToArrival > 1) {
+                encouragement = IBikeApplication.getString("read_aloud_encouragement");
+                encouragement = String.format(encouragement.replace("%@", "%d"), minutesToArrival);
+            } else if(minutesToArrival == 1) {
+                encouragement = IBikeApplication.getString("read_aloud_encouragement_singular");
+                encouragement = String.format(encouragement.replace("%@", "%d"), minutesToArrival);
+            }
+            // If we want to say an encouragement - let's speak
+            if(encouragement != null) {
+                speak(encouragement);
+                lastSpeakLocation = location;
+            }
         }
     }
 
