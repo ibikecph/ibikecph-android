@@ -569,10 +569,19 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return locations;
     }
 
+    /**
+     * Returns the estimated amount of seconds to the destination.
+     * @return
+     */
     public float getEstimatedArrivalTime() {
         return arrivalTime;
     }
 
+    /**
+     * Returns the estimated amount of seconds to the destination, when breaking route is enabled
+     * @deprecated This should be merged with the getEstimatedArrivalTime() method.
+     * @return
+     */
     public float getBreakRouteEstimatedArrivalTime() {
         return breakRouteArrivalTime;
     }
