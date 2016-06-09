@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -158,6 +159,7 @@ public class NavigatingState extends MapState {
 
                 @Override
                 public void disabled() {
+                    Log.d("NavigationState", "The Navigation Oracle got disabled");
                     IBikeApplication.getService().removeLocationListener(navigationOracle);
                     readAloudButton.setAlpha(1f);
                     readAloudButton.setImageResource(R.drawable.read_aloud_disabled);
