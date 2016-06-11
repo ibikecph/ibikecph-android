@@ -193,7 +193,9 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         Log.d("NavigationOracle", "Got onLocationChanged");
         SMTurnInstruction instruction = getNextInstruction();
         // If we are close enough and the instruction has not been read aloud
-        if(location.distanceTo(instruction.getLocation()) < 50 && lastReadInstruction != instruction) {
+        if(instruction != null &&
+           location.distanceTo(instruction.getLocation()) < 50 &&
+           lastReadInstruction != instruction) {
             String instructionString = instruction.generateFullDescriptionString();
             speak(instructionString, lastReadInstruction == null);
             lastReadInstruction = instruction;
