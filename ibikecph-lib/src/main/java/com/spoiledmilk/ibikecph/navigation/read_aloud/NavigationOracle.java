@@ -34,6 +34,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
 
     // After this distance in silence, the Oracle will read a message to the user
     // Example: 5 minutes at 15km/t
+    // TODO: Adjust this away from just 1 minute at 15km/t
     protected final static float MAX_SILENCE_DISTANCE = 15000.0f / 60.0f * 1.0f;
 
     public interface NavigationOracleListener {
@@ -149,34 +150,11 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         }
     }
 
-    String[] greetings = {
-            "Højtlæsning aktiveret",
-            "Nu læser jeg ruten op",
-            "Jeg læser ruten op",
-            "Hold fast i styret, træd i pedalerne og lyt til mine instrukser",
-            "Er du klar?",
-            "Vi er på vej til Nørrebrogade",
-            "Vi er fremme om 10 minutter"
-    };
-    static int currentGreeting = 0;
-
     public void enable() {
         Locale locale = IBikeApplication.getLocale();
         if (tts.isLanguageAvailable(locale) == TextToSpeech.LANG_AVAILABLE) {
             tts.setLanguage(locale);
-            String greeting;
-
-            // TODO: Remove when we're done debugging
-            if(locale.getLanguage().equals("da")) {
-                if(currentGreeting >= greetings.length) {
-                    currentGreeting = 0;
-                }
-                greeting = greetings[currentGreeting];
-                currentGreeting++;
-            } else {
-                greeting = IBikeApplication.getString("read_aloud_enabled");
-            }
-
+            String greeting = IBikeApplication.getString("read_aloud_enabled");
             speak(greeting);
             if (route != null) {
                 route.addListener(this);
