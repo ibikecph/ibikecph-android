@@ -21,6 +21,7 @@ import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.read_aloud.NavigationOracle;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 /**
  * The user is navigating a particular route from the current location towards a destination.
@@ -32,6 +33,7 @@ public class NavigatingState extends MapState {
     protected boolean readAloud;
 
     protected NavigationOracle navigationOracle;
+    protected IBikePreferences preferences;
 
     protected MapState previousState;
 
@@ -65,7 +67,14 @@ public class NavigatingState extends MapState {
         // Show the read aloud button
         readAloudButton = (ImageButton) activity.findViewById(R.id.readAloudButton);
         readAloudButton.setVisibility(View.VISIBLE);
-        setReadAloud(false);
+
+        if(activity.getApplication() instanceof IBikeApplication) {
+            preferences = IBikeApplication.getSettings();
+        } else {
+            throw new RuntimeException("Expected the IBikeApplication");
+        }
+
+        setReadAloud(preferences.getReadAloud(), false);
     }
 
     @Override
@@ -140,8 +149,17 @@ public class NavigatingState extends MapState {
 	    addFragments();
         }
     }
-	
+
     public void setReadAloud(boolean readAloud) {
+        setReadAloud(readAloud, true);
+    }
+
+    /**
+     * Set the read aloud feature on or off
+     * @param readAloud true if the user should start hearing the navigation instructions read aloud
+     * @param save Should this be saved persistent to the settings?
+     */
+    public void setReadAloud(boolean readAloud, boolean save) {
         // Change the value of the field
         this.readAloud = readAloud;
         // Change the drawable used on the button.
@@ -184,6 +202,10 @@ public class NavigatingState extends MapState {
             navigationOracle.disable();
         } else { // readAloud == false && navigationOracle == null
             readAloudButton.setImageResource(R.drawable.read_aloud_disabled);
+        }
+
+        if(save) {
+            preferences.setReadAloud(readAloud);
         }
     }
 

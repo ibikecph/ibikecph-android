@@ -38,6 +38,7 @@ public class IBikePreferences {
     public static final String LENGTH_NOTIFICATION    = "lengthNotification";
     public static final String STREAK_NOTIFICATION    = "streakNotification";
     public static final String NEWEST_TERMS_ACCEPTED  = "newest_terms_accepted";
+    public static final String READ_ALOUD             = "read_aloud";
 
     public static final int ROUTE_COLOR = Color.rgb(0, 174, 239);
     public static final float ROUTE_STROKE_WIDTH = 10.0f;
@@ -193,6 +194,14 @@ public class IBikePreferences {
 
     public void setCrashReporting(boolean enabled) {
         getPreferences().edit().putBoolean(CRASH_REPORTING, enabled).commit();
+    }
+
+    public boolean getReadAloud() {
+        return getPreferences().getBoolean(READ_ALOUD, false);
+    }
+
+    public void setReadAloud(boolean enabled) {
+        getPreferences().edit().putBoolean(READ_ALOUD, enabled).commit();
     }
 
     public SharedPreferences getPreferences() {
