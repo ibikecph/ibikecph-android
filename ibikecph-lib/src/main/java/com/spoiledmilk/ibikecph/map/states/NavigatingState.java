@@ -30,7 +30,6 @@ import com.spoiledmilk.ibikecph.util.IBikePreferences;
 public class NavigatingState extends MapState {
 
     protected SMRoute route;
-    protected boolean readAloud;
 
     protected NavigationOracle navigationOracle;
     protected IBikePreferences preferences;
@@ -74,7 +73,7 @@ public class NavigatingState extends MapState {
             throw new RuntimeException("Expected the IBikeApplication");
         }
 
-        setReadAloud(preferences.getReadAloud(), false);
+        readAloudUpdated(preferences.getReadAloud());
     }
 
     @Override
@@ -96,6 +95,10 @@ public class NavigatingState extends MapState {
 
         // Hide the read aloud button
         activity.findViewById(R.id.readAloudButton).setVisibility(View.GONE);
+
+        if(navigationOracle != null) {
+            navigationOracle.disable();
+        }
     }
 
     @Override
@@ -138,36 +141,46 @@ public class NavigatingState extends MapState {
 
             IBikeApplication.getService().addLocationListener(mapHandler);
 
-	    // FIXME: Remove the use of the handler and booleans like this.
-	    mapHandler.isRouting = true;
+            // FIXME: Remove the use of the handler and static booleans like this.
+            mapHandler.isRouting = true;
 
-	    // Called to show the button from the action bar, that prompts the user to report problems
-	    activity.invalidateOptionsMenu();
-	    // Make the MapView show the route.
-	    activity.getMapView().showRoute(route);
-	    // Show the ETA and turn-by-turn fragments
-	    addFragments();
+            // Called to show the button from the action bar, that prompts the user to report problems
+            activity.invalidateOptionsMenu();
+            // Make the MapView show the route.
+            activity.getMapView().showRoute(route);
+            // Show the ETA and turn-by-turn fragments
+            addFragments();
         }
-    }
 
-    public void setReadAloud(boolean readAloud) {
-        setReadAloud(readAloud, true);
+        if(navigationOracle != null) {
+            navigationOracle.setRoute(route);
+        }
     }
 
     /**
      * Set the read aloud feature on or off
      * @param readAloud true if the user should start hearing the navigation instructions read aloud
-     * @param save Should this be saved persistent to the settings?
      */
-    public void setReadAloud(boolean readAloud, boolean save) {
-        // Change the value of the field
-        this.readAloud = readAloud;
-        // Change the drawable used on the button.
-        final ImageButton readAloudButton = (ImageButton) activity.findViewById(R.id.readAloudButton);
-        readAloudButton.setImageResource(R.drawable.read_aloud_enabled);
+    public void setReadAloud(boolean readAloud) {
+        Log.d("NavigationState", "setReadAloud called with " + readAloud);
+        preferences.setReadAloud(readAloud);
+        readAloudUpdated(readAloud);
+    }
+
+    public boolean getReadAloud() {
+        return preferences.getReadAloud();
+    }
+
+    public void toggleReadAloud() {
+        this.setReadAloud(!getReadAloud());
+    }
+
+    public void readAloudUpdated(boolean readAloud) {
+        Log.d("NavigationState", "readAloudUpdated called with " + readAloud);
         // Register or deregister a listener on the location (and eventually route)
         if(readAloud) {
             readAloudButton.setAlpha(0.66f);
+            readAloudButton.setImageResource(R.drawable.read_aloud_enabled);
             navigationOracle = new NavigationOracle(activity, route, new NavigationOracle.NavigationOracleListener() {
                 @Override
                 public void enabled() {
@@ -179,11 +192,8 @@ public class NavigatingState extends MapState {
                 public void disabled() {
                     Log.d("NavigationState", "The Navigation Oracle got disabled");
                     IBikeApplication.getService().removeLocationListener(navigationOracle);
-                    readAloudButton.setAlpha(1f);
-                    readAloudButton.setImageResource(R.drawable.read_aloud_disabled);
-                    // Updating the readAloud and the navigationOracle fields
-                    NavigatingState.this.readAloud = false;
-                    NavigatingState.this.navigationOracle = null;
+                    navigationOracle = null;
+                    readAloudUpdated(false);
                 }
 
                 @Override
@@ -199,17 +209,11 @@ public class NavigatingState extends MapState {
                 }
             });
         } else if(navigationOracle != null) {
+            // Ask the navigation oracle to disable itself
             navigationOracle.disable();
         } else { // readAloud == false && navigationOracle == null
+            readAloudButton.setAlpha(1f);
             readAloudButton.setImageResource(R.drawable.read_aloud_disabled);
         }
-
-        if(save) {
-            preferences.setReadAloud(readAloud);
-        }
-    }
-
-    public void toggleReadAloud() {
-        this.setReadAloud(!readAloud);
     }
 }
