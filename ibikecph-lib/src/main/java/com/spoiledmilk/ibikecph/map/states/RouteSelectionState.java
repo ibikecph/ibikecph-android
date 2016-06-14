@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
+import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.Geocoder;
@@ -81,9 +82,12 @@ public class RouteSelectionState extends MapState {
         mapHandler.cleanUp();
         // No need for a user location overlay afterwards - the future state will enabled this.
         activity.getMapView().setUserLocationEnabled(false);
-        fragmentTransaction.remove(routeSelectionFragment);
-        routeSelectionFragment = null;
+        // Setting the route to no route, removes it as a listener on the BikeLocationService
+        setRoute(null);
+        // Cancel any requests that will be resolved asynchronously.
         cancelRequests();
+        // Then remove the route selection fragment
+        fragmentTransaction.remove(routeSelectionFragment);
     }
 
     @Override
@@ -191,9 +195,17 @@ public class RouteSelectionState extends MapState {
     }
 
     protected void setRoute(SMRoute route) {
+        if(this.route != null) {
+            BikeLocationService.getInstance().removeLocationListener(this.route);
+        }
         this.route = route;
         routeSelectionFragment.refreshView();
-        activity.getMapView().showRoute(route);
+        if(route != null) {
+            BikeLocationService.getInstance().addLocationListener(route);
+            activity.getMapView().showRoute(route);
+        } else {
+            activity.getMapView().removeAllRouteOverlays();
+        }
     }
 
     /**
@@ -231,8 +243,10 @@ public class RouteSelectionState extends MapState {
     public void startNavigation() {
         // Let's only change state if the route is actually set
         if(route != null) {
+            // Using a local variable here, as transitioning away will reset the route on the state.
+            SMRoute routeToNavigate = route;
             NavigatingState state = activity.changeState(NavigatingState.class);
-            state.setRoute(route);
+            state.setRoute(routeToNavigate);
         }
     }
 
