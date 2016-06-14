@@ -1,6 +1,5 @@
 package com.spoiledmilk.ibikecph.navigation.read_aloud;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.location.Location;
 import android.media.AudioManager;
@@ -26,16 +25,24 @@ import java.util.Locale;
  */
 public class NavigationOracle implements LocationListener, TextToSpeech.OnInitListener, SMRouteListener {
 
+    /**
+     * After this distance in silence, the Oracle will read a message to the user.
+     * Currently 1:30 minutes at 20km/t
+     */
+    protected final static float MAX_SILENCE_DISTANCE = 20000.0f / 60.0f * 1.5f;
+
+    /**
+     * The distance to an upcoming instruction when the oracle reads it aloud.
+     */
+    protected final static float DISTANCE_TO_INSTRUCTION = 75.0f;
+
     protected TextToSpeech tts;
     protected AudioManager am;
 
     protected SMRoute route;
     protected SMTurnInstruction lastReadInstruction;
 
-    // After this distance in silence, the Oracle will read a message to the user
-    // Example: 5 minutes at 15km/t
-    // TODO: Adjust this away from just 1 minute at 15km/t
-    protected final static float MAX_SILENCE_DISTANCE = 15000.0f / 60.0f * 1.0f;
+    protected boolean enabled = false;
 
     public interface NavigationOracleListener {
         void enabled();
@@ -130,35 +137,51 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
     }
 
     public void setRoute(SMRoute route) {
+        if (this.route != null) {
+            this.route.removeListener(this);
+        }
         this.route = route;
+        if(route != null && enabled) {
+            route.addListener(this);
+            routeReady();
+        }
+    }
+
+    protected void routeReady() {
+        if(route.endAddress != null) {
+            String greeting = IBikeApplication.getString("read_aloud_enabled");
+            String destination = route.endAddress.getStreet();
+            greeting = String.format(greeting.replace("%@", "%s"), destination);
+            speak(greeting);
+        } else {
+            Log.w("NavigationOracle", "End address was null when route was ready");
+        }
     }
 
     @Override
     public void onInit(int status) {
-        Log.d("NavigationOracle", "onInit called with status " + status);
-        if(status == TextToSpeech.ERROR) {
-            // TODO: Report this back to the initiator of the object
-            Log.e("NavigationOracle", "Error setting up the text-to-speech");
+        if(status == TextToSpeech.SUCCESS) {
+            enable();
+        } else {
+            Log.e("NavigationOracle", "Error setting up the text-to-speech: " + status);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Log.e("NavigationOracle", "Available languages:");
                 Log.e("NavigationOracle", tts.getAvailableLanguages().toArray().toString());
             }
             emitInitError();
             disable();
-        } else {
-            enable();
         }
     }
 
     public void enable() {
+        Log.d("NavigationOracle", "Enabling");
         Locale locale = IBikeApplication.getLocale();
         if (tts.isLanguageAvailable(locale) == TextToSpeech.LANG_AVAILABLE) {
             tts.setLanguage(locale);
-            String greeting = IBikeApplication.getString("read_aloud_enabled");
-            speak(greeting);
             if (route != null) {
-                route.addListener(this);
+                routeReady();
             }
+            enabled = true;
             emitEnabled();
         } else {
             Log.e("NavigationOracle", "Language was not supported");
@@ -168,13 +191,14 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
     }
 
     public void disable() {
+        Log.d("NavigationOracle", "Disabling");
+        enabled = false;
         if (tts != null) {
             tts.stop();
             tts.shutdown();
         }
-        if (route != null) {
-            route.removeListener(this);
-        }
+        // This removes the route listener
+        setRoute(null);
         emitDisabled();
     }
 
@@ -190,11 +214,14 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
 
     @Override
     public void onLocationChanged(Location location) {
+        if(!enabled) {
+            throw new RuntimeException("Called onLocationChanged but NavigationOracle is disabled");
+        }
         Log.d("NavigationOracle", "Got onLocationChanged");
         SMTurnInstruction instruction = getNextInstruction();
         // If we are close enough and the instruction has not been read aloud
         if(instruction != null &&
-           location.distanceTo(instruction.getLocation()) < 50 &&
+           location.distanceTo(instruction.getLocation()) < DISTANCE_TO_INSTRUCTION &&
            lastReadInstruction != instruction) {
             String instructionString = instruction.generateFullDescriptionString();
             speak(instructionString, lastReadInstruction == null);
