@@ -2,4 +2,6 @@
 <resources>
     <bool name="trackingEnabled">false</bool>
     <bool name="breakRouteEnabled">false</bool>
+    <!-- Setting this boolean gives better stack traces in GA -->
+    <bool name="ga_reportUncaughtExceptions">true</bool>
 </resources>
