@@ -37,8 +37,9 @@ import java.util.ArrayList;
 
 /**
  * Created by jens on 5/30/15.
+ * @deprecated Because it's used for both route selection and navigation - use MapStates instead.
  */
-public class NavigationMapHandler extends IBCMapHandler implements SMRouteListener, Serializable, LocationListener {
+public class NavigationMapHandler extends IBCMapHandler implements SMRouteListener, Serializable {
     private UserLocationOverlay userLocationOverlay;
     private static SMRoute route; // TODO: Static is bad, but we'll never have two NavigationMapHandlers anyway.
     private static SMRoute[] breakRoute;
@@ -47,7 +48,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient NavigationETAFragment navigationETAFragment;
     private transient IBCMarker beginMarker, endMarker;
     private transient ArrayList<IBCMarker> mMarker, sMarker, busMarker, boatMarker, trainMarker, walkMarker, icMarker, lynMarker, regMarker, exbMarker, nbMarker, tbMarker, fMarker;
-    public static boolean isRouting;
     private transient PathOverlay[] path;
     private transient PathOverlay beginWalkingPath = null;
     private transient PathOverlay endWalkingPath = null;
@@ -611,10 +611,6 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
             this.mapView.removeMarker(endMarker);
         }
 
-        // Return the orientation to normal.
-        this.mapView.setMapOrientation(0);
-        IBikeApplication.getService().removeLocationListener(this);
-
         // TODO: Consider if this is needed - removing markers invalidates the MapView internally.
         this.mapView.invalidate();
 
@@ -681,12 +677,5 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
 
         mapView.getParentActivity().startActivity(i);
 
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        if (this.isRouting) {
-            mapView.setMapOrientation(-1 * location.getBearing());
-        }
     }
 }

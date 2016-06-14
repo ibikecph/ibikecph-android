@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.IBikeApplication;
@@ -27,7 +28,7 @@ import com.spoiledmilk.ibikecph.util.IBikePreferences;
  * The user is navigating a particular route from the current location towards a destination.
  * Created by kraen on 02-05-16.
  */
-public class NavigatingState extends MapState {
+public class NavigatingState extends MapState implements LocationListener {
 
     protected SMRoute route;
 
@@ -56,6 +57,9 @@ public class NavigatingState extends MapState {
         UserLocationOverlay userLocationOverlay = activity.getMapView().getUserLocationOverlay();
         userLocationOverlay.enableFollowLocation();
         userLocationOverlay.setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
+
+        // Used to update the map orientation when navigating
+        IBikeApplication.getService().addLocationListener(this);
 
         activity.getMapView().setMapViewListener(NavigationMapHandler.class);
         // Hang onto this for later use - transition it's behaviour to this class over time
@@ -90,7 +94,10 @@ public class NavigatingState extends MapState {
         }
         // TODO: Remove the destructor call, when the handler has been refactored away.
         mapHandler.destructor();
-
+        // No need for this state to receive updates on location changes
+        IBikeApplication.getService().removeLocationListener(this);
+        // Reset the orientation of the map
+        activity.getMapView().setMapOrientation(0);
         // Let's no longer keep the screen on
         activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         // Hide the read aloud button
@@ -138,11 +145,6 @@ public class NavigatingState extends MapState {
             activity.getMapView()
                     .getUserLocationOverlay()
                     .setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
-
-            IBikeApplication.getService().addLocationListener(mapHandler);
-
-            // FIXME: Remove the use of the handler and static booleans like this.
-            mapHandler.isRouting = true;
 
             // Called to show the button from the action bar, that prompts the user to report problems
             activity.invalidateOptionsMenu();
@@ -215,5 +217,11 @@ public class NavigatingState extends MapState {
             readAloudButton.setAlpha(1f);
             readAloudButton.setImageResource(R.drawable.read_aloud_disabled);
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        // TODO: Consider only doing this when a bearing is available.
+        activity.getMapView().setMapOrientation(-1 * location.getBearing());
     }
 }
