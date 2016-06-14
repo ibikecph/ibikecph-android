@@ -39,7 +39,7 @@ public class RouteSelectionState extends MapState {
 
     protected NavigationMapHandler mapHandler;
 
-    protected RouteSelectionFragment routeSelectionFragment;
+    protected RouteSelectionFragment routeSelectionFragment = new RouteSelectionFragment();
     private List<RouteCallback> routeCallbacks = new ArrayList<>();
 
     protected abstract class RouteCallback implements Geocoder.RouteCallback {
@@ -61,9 +61,6 @@ public class RouteSelectionState extends MapState {
         // Enabled the user location, so the compass can be clicked
         activity.getMapView().setUserLocationEnabled(true);
         activity.getMapView().getUserLocationOverlay().setDrawAccuracyEnabled(false);
-
-        // Creating the route selection fragment
-        routeSelectionFragment = new RouteSelectionFragment();
 
         // Add the navigation map handler to the arguments
         Bundle b = new Bundle();

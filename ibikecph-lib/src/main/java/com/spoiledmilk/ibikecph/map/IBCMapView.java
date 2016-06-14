@@ -263,7 +263,7 @@ public class IBCMapView extends MapView {
     public MapView setCenter(ILatLng aCenter, boolean userAction) {
         MapView result = super.setCenter(aCenter, userAction);
         // Make sure we are no longer following the user when we explicitly set the center.
-        // TODO: Consider implementing this using a listner pattern.
+        // TODO: Consider implementing this using a listener pattern.
         setUserLocationTrackingMode(UserLocationOverlay.TrackingMode.NONE);
         return result;
     }
@@ -271,7 +271,7 @@ public class IBCMapView extends MapView {
     @Override
     public MapView setUserLocationTrackingMode(UserLocationOverlay.TrackingMode mode) {
         MapView result = super.setUserLocationTrackingMode(mode);
-        // TODO: Consider implementing this using a listner pattern.
+        // TODO: Consider implementing this using a listener pattern.
         if (getParentActivity() instanceof MapActivity) {
             MapActivity activity = (MapActivity) getParentActivity();
             Log.d("MapView", "Set center was called - calling updateCompassIcon");
@@ -329,7 +329,6 @@ public class IBCMapView extends MapView {
 
     /**
      * Adds a PathOverlay representing a route to the map.
-     * @param path
      */
     public void removeAllRouteOverlays() {
         // Remove all route overlays from the map and from the list of overlays.

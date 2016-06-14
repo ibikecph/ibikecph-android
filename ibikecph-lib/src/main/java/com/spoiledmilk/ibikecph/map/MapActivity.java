@@ -94,6 +94,8 @@ public class MapActivity extends BaseMapActivity {
     public final static int REQUEST_CHANGE_DESTINATION_ADDRESS = 251;
     public final static int RESULT_RETURN_FROM_NAVIGATION = 105;
 
+    public final static int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
+
     protected MapState state;
 
     public static Context mapActivityContext;
@@ -105,23 +107,51 @@ public class MapActivity extends BaseMapActivity {
     private MaterialMenuIcon materialMenu;
     protected IBCMapView mapView;
 
-    // TODO: Consider if these need to be static members of the class.
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static View topFragment;
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static View breakFrag;
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static CirclePageIndicator tabs;
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static ViewPager pager;
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static ProgressBar progressBar;
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static FrameLayout progressBarHolder;
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static boolean fromSearch = false;
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static ObservableInteger obsInt;
     public int amount = 0;
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static JsonNode breakRouteJSON = null;
+    /**
+     * @deprecated Let's phase out the use of static booleans like this.
+     */
     public static boolean isBreakChosen = false;
 
     private static final String TAG = "MapActivity";
 
     protected LocationListener locationListener;
-    final static int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {

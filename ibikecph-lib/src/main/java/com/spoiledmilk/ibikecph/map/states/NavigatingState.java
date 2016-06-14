@@ -91,11 +91,11 @@ public class NavigatingState extends MapState {
         // TODO: Remove the destructor call, when the handler has been refactored away.
         mapHandler.destructor();
 
+        // Let's no longer keep the screen on
         activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         // Hide the read aloud button
         activity.findViewById(R.id.readAloudButton).setVisibility(View.GONE);
-
+        // If the navigation oracle has been created, let's disable it
         if(navigationOracle != null) {
             navigationOracle.disable();
         }

@@ -164,7 +164,12 @@ public class BikeLocationService extends Service implements LocationListener {
      * to take care of two cases. If
      */
     public void onListenersChange() {
-
+        /*
+        Log.d("BikeLocationService", "Listeners changed, the listeners are now:");
+        for(LocationListener listener: locationListeners) {
+            Log.d("BikeLocationService", "\t" + listener);
+        }
+        */
         // We registered a listener
         // (and we can't be down from 2 because we weren't listening for GPS in the first place)
         if (locationListeners.size() == 1 && !locationApiClient.isConnected()) {
