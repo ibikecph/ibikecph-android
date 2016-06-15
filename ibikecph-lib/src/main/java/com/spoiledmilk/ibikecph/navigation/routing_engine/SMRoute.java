@@ -45,7 +45,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public int routePhase = TO_START_STATION;
     public boolean approachingTurn;
     public double distanceFromStart;
-    SMRouteListener listener;
     public List<Location> waypoints;
     public List<SMTurnInstruction> allTurnInstructions;
     public List<SMTurnInstruction> pastTurnInstructions; // turn instructions
@@ -87,6 +86,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     public Address startAddress, endAddress;
 
+    protected List<SMRouteListener> listeners = new ArrayList<>();
 
     // Variables for breakRoute
     public String transportType;
@@ -120,7 +120,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         locationStart = start;
         locationEnd = end;
-        setListener(listener);
+        addListener(listener);
 
         this.type = type;
 
@@ -139,7 +139,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         locationStart = start;
         locationEnd = end;
         this.type = type;
-        //setListener(listener);
+        //addListener(listener);
         setupBrokenRoute(routeJSON);
     }
 
@@ -153,9 +153,20 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return false;
     }
 
+    public void removeListeners() {
+        this.listeners.clear();
+    }
 
-    public void setListener(SMRouteListener listener) {
-        this.listener = listener;
+    public void removeListener(SMRouteListener listener) {
+        if(listeners.contains(listener)) {
+            listeners.remove(listener);
+        }
+    }
+
+    public void addListener(SMRouteListener listener) {
+        if(listener != null && !listeners.contains(listener)) {
+            listeners.add(listener);
+        }
     }
 
     // SMRequestOSRMListener callback
@@ -166,12 +177,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             case SMHttpRequest.REQUEST_GET_ROUTE:
                 JsonNode jsonRoot = ((RouteInfo) response).jsonRoot;
                 if (jsonRoot == null || jsonRoot.path("status").asInt(-1) != 0) {
-                    if (listener != null)
-                        listener.routeNotFound();
+                    emitRouteNotFound();
                 } else {
                     setupRoute(jsonRoot);
-                    if (listener != null)
-                        listener.startRoute();
+                    emitStartRoute();
                 }
                 break;
             case SMHttpRequest.REQUEST_GET_RECALCULATED_ROUTE:
@@ -182,9 +191,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                                  jRoot.path("status").asInt();
                 // OSRM v3 has status 0 on success, v4.9 has 200
                 if (statusCode != 200 && statusCode != 0) {
-                    if (listener != null) {
-                        listener.serverError();
-                    }
+                    emitServerError();
                     recalculationInProgress = false;
                     return;
                 }
@@ -212,6 +219,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                                     if (IBikeApplication.getService().hasValidLocation()) {
                                         updateDistances(IBikeApplication.getService().getLastValidLocation());
                                     }
+                                    emitRouteRecalculationDone();
+                                    emitRouteUpdated();
+                                    // TODO: Check if the listeners are using the update route,
+                                    // rename it and change and refactor out the use of the
+                                    // overloaded routeRecalculationDone
+                                    /*
                                     if (listener != null) {
                                         if (type.toString().equals("BREAK")) {
                                             Log.d("DV", "IS BREAK!");
@@ -222,6 +235,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                                         }
                                         listener.updateRoute();
                                     }
+                                    */
                                     recalculationInProgress = false;
                                 }
                             });
@@ -229,8 +243,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                             h.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (listener != null)
-                                        listener.serverError();
+                                    emitServerError();
                                     recalculationInProgress = false;
                                 }
                             });
@@ -240,6 +253,50 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 });
                 t.setPriority(Thread.MIN_PRIORITY);
                 t.start();
+        }
+    }
+
+    protected void emitRouteUpdated() {
+        for(SMRouteListener listener: listeners) {
+            // TODO: Rename the method
+            listener.updateRoute();
+        }
+    }
+
+    protected void emitRouteRecalculationDone() {
+        for(SMRouteListener listener: listeners) {
+            listener.routeRecalculationDone();
+        }
+    }
+
+    protected void emitServerError() {
+        for(SMRouteListener listener: listeners) {
+            listener.serverError();
+        }
+    }
+
+    protected void emitStartRoute() {
+        for(SMRouteListener listener: listeners) {
+            listener.startRoute();
+        }
+    }
+
+    protected void emitRouteNotFound() {
+        for(SMRouteListener listener: listeners) {
+            listener.routeNotFound();
+        }
+    }
+
+    protected void emitDestinationReached() {
+        for(SMRouteListener listener: listeners) {
+            // TODO: Change the name of the method
+            listener.reachedDestination();
+        }
+    }
+
+    protected void emitRouteRecalculationStarted() {
+        for(SMRouteListener listener: listeners) {
+            listener.routeRecalculationStarted();
         }
     }
 
@@ -671,27 +728,13 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 Log.d("DV", "finishing in " + distanceToFinish + " m and " + timeToFinish + " s");
                 //Log.d("DV", "turnInstructions.size() == " + turnInstructions.size());
                 if (turnInstructions.size() == 1) {
-                    Log.d("DV", "turnInstructions.size() er nu == 1");
-                    // if there was only one instruction left go through usual
-                    // channels
                     approachingTurn = false;
                     // removeTurn();
-                    if (listener != null) {
-                        IBikeApplication.getService().removeLocationListener(this);
-                        reachedDestination = true;
-                        listener.reachedDestination();
-                    }
-                    return;
-                } else {
-                    // we have somehow skipped most of the route (going through a
-                    // park or unknown street)
-                    if (listener != null) {
-                        IBikeApplication.getService().removeLocationListener(this);
-                        reachedDestination = true;
-                        listener.reachedDestination();
-                    }
-                    return;
                 }
+                IBikeApplication.getService().removeLocationListener(this);
+                reachedDestination = true;
+                emitDestinationReached();
+                return;
             }
         }
 
@@ -702,14 +745,14 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         //Only recalculate if we're walking or biking
         if (transportType != null && (transportType.equals("BIKE") || transportType.equals("WALK"))) {
-            if (!approachingFinish() && listener != null && isTooFarFromRoute(loc, maxD)) {
+            if (!approachingFinish() && listeners.size() > 0 && isTooFarFromRoute(loc, maxD)) {
                 approachingTurn = false;
                 recalculateRoute(loc, false);
                 return;
             }
             // transportType == null if its not a breakRoute, therefore we should just recalculate no matter what as we are always biking.
         } else if (transportType == null) {
-            if (!approachingFinish() && listener != null && isTooFarFromRoute(loc, maxD)) {
+            if (!approachingFinish() && listeners.size() > 0 && isTooFarFromRoute(loc, maxD)) {
                 approachingTurn = false;
                 recalculateRoute(loc, false);
                 return;
@@ -816,9 +859,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         LOG.d("Recalculating route, distance: " + distance);
         lastRecalcLocation = loc;
         recalculationInProgress = true;
-        if (listener != null) {
-            listener.routeRecalculationStarted();
-        }
+        emitRouteRecalculationStarted();
         Location end = getEndLocation();
         if (loc == null || end == null)
             return;
@@ -955,30 +996,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return isNear && turnInstructions.size() == 1;
     }
 
-    // private void removeTurn() {
-    // if (listener == null) {
-    // return;
-    // }
-    //
-    // if (turnInstructions.size() > 0) {
-    // pastTurnInstructions.add(turnInstructions.get(0));
-    // allTurnInstructions.add(turnInstructions.get(0));
-    // turnInstructions.remove(0);
-    // listener.updateTurn(true);
-    // if (isRouteBroken && station1 != null && station2 != null) {
-    // if (pastTurnInstructions.contains(station2)) {
-    // isRouteBroken = false;
-    // routePhase = TO_DESTINATION;
-    // } else if (pastTurnInstructions.contains(station1))
-    // routePhase = TO_END_STATION;
-    // }
-    // if (turnInstructions.size() == 0) {
-    // reachedDestination = true;
-    // listener.reachedDestination();
-    // }
-    // }
-    // }
-
     private void updateDistances(Location loc) {
         if (tripDistance < 0.0) {
             tripDistance = 0.0f;
@@ -1057,9 +1074,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             }
 
         }
-        if (listener != null) {
-            listener.updateRoute();
-        }
+        emitRouteUpdated();
     }
 
     private float calculateDistanceToNextTurn(Location loc) {
@@ -1127,7 +1142,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
      */
     public void cleanUp() {
         IBikeApplication.getService().removeLocationListener(this);
-        this.setListener(null);
+        this.removeListeners();
         this.cleanedUp = true;
     }
 
