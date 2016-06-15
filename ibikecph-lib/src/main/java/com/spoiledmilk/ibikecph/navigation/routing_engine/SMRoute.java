@@ -752,16 +752,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         // max allowed distance depends on location's accuracy
         int maxD = loc.getAccuracy() > 0.0 ? (int) (loc.getAccuracy() / 3 + 20) : MAX_DISTANCE_FROM_PATH;
 
-        //Only recalculate if we're walking or biking
-        if (transportType != null && (transportType.equals("BIKE") || transportType.equals("WALK"))) {
+        // Only recalculate if we're walking or biking or transportation type is irrelevant
+        if (transportType == null || (transportType.equals("BIKE") || transportType.equals("WALK"))) {
             if (!approachingFinish() && listeners.size() > 0 && isTooFarFromRoute(loc, maxD)) {
-                approachingTurn = false;
-                recalculateRoute(loc, false);
-                return;
-            }
-            // transportType == null if its not a breakRoute, therefore we should just recalculate no matter what as we are always biking.
-        } else if (transportType == null) {
-            if (!approachingFinish() && listeners.size() > 0 && isTooFarFromRoute(loc, maxD)) {
+                Log.d("SMRoute", "Route should recalculate and maxD was " + maxD);
                 approachingTurn = false;
                 recalculateRoute(loc, false);
                 return;
