@@ -181,7 +181,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 int statusCode = jRoot == null || jRoot.path("status") == null ?
                                  -1 :
                                  jRoot.path("status").asInt();
-                // OSRM v4 has status 0 on success, v5 has 200
+                // OSRM v3 has status 0 on success, v4.9 has 200
                 if (statusCode != 200 && statusCode != 0) {
                     if (listener != null) {
                         listener.serverError();
