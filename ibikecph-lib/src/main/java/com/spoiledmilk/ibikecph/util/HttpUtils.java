@@ -46,16 +46,16 @@ public class HttpUtils {
     private static final String ACCEPT = "application/vnd.ibikecph.v1";
     private static final int CONNECTON_TIMEOUT = 30000;
 
-    public static JsonResult readLink(String url_string, String method, boolean breakRoute) {
+    public static JsonResult readLink(String urlString, String method, boolean breakRoute) {
         JsonResult result = new JsonResult();
-        if (url_string == null) {
+        if (urlString == null) {
             return result;
         }
         URL url = null;
         HttpURLConnection httpget = null;
         try {
-            LOG.d("HttpUtils readlink() " + url_string);
-            url = new URL(url_string);
+            LOG.d("HttpUtils readlink() " + urlString);
+            url = new URL(urlString);
             httpget = (HttpURLConnection) url.openConnection();
             httpget.setDoInput(true);
             httpget.setRequestMethod(method);
