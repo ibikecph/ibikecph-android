@@ -64,7 +64,6 @@ public class HttpUtils {
             } else {
                 httpget.setRequestProperty("Accept", "application/json");
             }
-            httpget.setRequestProperty("Content-type", "application/json");
             httpget.setConnectTimeout(CONNECTON_TIMEOUT);
             httpget.setReadTimeout(CONNECTON_TIMEOUT);
             JsonNode root = null;
