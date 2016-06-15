@@ -35,25 +35,31 @@ import java.util.List;
 // TODO: This code comes from previous vendor. It's a mess. /jc
 public class SMRoute implements SMHttpRequestListener, LocationListener {
 
-    public static final int MAX_DISTANCE_FROM_PATH = 20;
-    public static final int MIN_DISTANCE_FOR_RECALCULATION = 20;
+    public static final float MAX_DISTANCE_FROM_PATH = 30.0f;
+    public static final float MIN_DISTANCE_FOR_RECALCULATION = MAX_DISTANCE_FROM_PATH;
     public static final int TO_START_STATION = 0;
     public static final int TO_END_STATION = 1;
     public static final int TO_DESTINATION = 2;
-    public static final double DISTANCE_TO_REMOVE_TURN = 20d;
 
     public int routePhase = TO_START_STATION;
     public boolean approachingTurn;
-    public double distanceFromStart;
     public List<Location> waypoints;
+
+    /**
+     * All turn instructions on the route
+     */
     public List<SMTurnInstruction> allTurnInstructions;
-    public List<SMTurnInstruction> pastTurnInstructions; // turn instructions
-    // from
-    // first to the last passed
-    // turn
-    public ArrayList<SMTurnInstruction> turnInstructions; // turn instruction
-    // from next
-    // to the last
+
+    /**
+     * Turn instructions on the route that the user has passed
+     */
+    public List<SMTurnInstruction> pastTurnInstructions;
+
+    /**
+     * Turn instructions from the next upcoming instruction to the last
+     */
+    public ArrayList<SMTurnInstruction> turnInstructions;
+
     public List<Location> visitedLocations;
     float distanceLeft;
     float tripDistance;
@@ -77,8 +83,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public int stationIcon;
     public boolean isRouteBroken = false;
     public SMTurnInstruction station1, station2;
-    public JsonNode jsonRoot, jsonRoot2;
-    public int startStatIndex = 0, endStatIndex = 0;
     public boolean reachedDestination = false;
     public int waypointStation1 = -1, waypointStation2 = -1;
     private boolean cleanedUp = false;
@@ -111,8 +115,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         reachedDestination = false;
         waypointStation1 = -1;
         waypointStation2 = -1;
-
-        //IBikeApplication.getService().addLocationListener(this);
     }
 
     public void init(Location start, Location end, SMRouteListener listener, JsonNode routeJSON, RouteType type) {
@@ -750,12 +752,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         // Check if we went too far from the calculated route and, if so,
         // recalculate route
         // max allowed distance depends on location's accuracy
-        int maxD = loc.getAccuracy() > 0.0 ? (int) (loc.getAccuracy() / 3 + 20) : MAX_DISTANCE_FROM_PATH;
+        float maximalDistance = MAX_DISTANCE_FROM_PATH + loc.getAccuracy() / 3;
 
         // Only recalculate if we're walking or biking or transportation type is irrelevant
         if (transportType == null || (transportType.equals("BIKE") || transportType.equals("WALK"))) {
-            if (!approachingFinish() && listeners.size() > 0 && isTooFarFromRoute(loc, maxD)) {
-                Log.d("SMRoute", "Route should recalculate and maxD was " + maxD);
+            if (!approachingFinish() && listeners.size() > 0 && isTooFarFromRoute(loc, maximalDistance)) {
+                Log.d("SMRoute", "Route should recalculate and maxD was " + maximalDistance);
                 approachingTurn = false;
                 recalculateRoute(loc, false);
                 return;
@@ -922,7 +924,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return true;
     }
 
-    public boolean isTooFarFromRoute(Location loc, int maxDistance) {
+    public boolean isTooFarFromRoute(Location loc, float maxDistance) {
         if (turnInstructions.size() > 0) {
             SMTurnInstruction currentTurn = turnInstructions.get(0);
             lastCorrectedLocation = new Location(loc);
