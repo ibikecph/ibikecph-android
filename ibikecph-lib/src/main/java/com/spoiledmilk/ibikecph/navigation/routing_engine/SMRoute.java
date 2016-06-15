@@ -178,7 +178,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             case SMHttpRequest.REQUEST_GET_RECALCULATED_ROUTE:
                 final JsonNode jRoot = ((RouteInfo) response).jsonRoot;
 
-                if (jRoot == null || jRoot.path("status").asInt() != 0) {
+                if (jRoot == null || jRoot.path("status").asInt() != 200) {
                     if (listener != null) {
                         listener.serverError();
                     }
