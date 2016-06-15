@@ -927,6 +927,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             SMTurnInstruction currentTurn = turnInstructions.get(0);
             lastCorrectedLocation = new Location(loc);
 
+            // TODO: Consider if this condition will ever be true?
             if (pastTurnInstructions.size() < 0) {
                 // lastCorrectedHeading = SMGPSUtil.bearingBetween(loc,
                 // currentTurn.loc);
