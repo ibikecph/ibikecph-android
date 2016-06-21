@@ -167,7 +167,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         // If an end address is known, let's start by reading that aloud.
         if(route.endAddress != null) {
             String greeting = IBikeApplication.getString("read_aloud_enabled");
-            String destination = route.endAddress.getStreet();
+            String destination = route.endAddress.getDisplayName();
             greeting = String.format(greeting.replace("%@", "%s"), destination);
             speak(greeting);
         } else {

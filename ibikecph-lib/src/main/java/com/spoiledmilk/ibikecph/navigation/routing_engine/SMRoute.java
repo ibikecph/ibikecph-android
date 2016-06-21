@@ -308,6 +308,14 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return null;
     }
 
+    public LatLng getRealStartLocation() {
+        if(startAddress != null) {
+            return startAddress.getLocation();
+        } else {
+            return new LatLng(getEndLocation());
+        }
+    }
+
     public Location getEndLocation() {
         if (waypoints != null && waypoints.size() > 0)
             return waypoints.get(waypoints.size() - 1);
@@ -316,7 +324,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     public LatLng getRealEndLocation() {
         if (locationEnd != null && endAddress != null) {
-            return (LatLng) endAddress.getLocation();
+            return endAddress.getLocation();
         } else {
             return new LatLng(getEndLocation());
         }

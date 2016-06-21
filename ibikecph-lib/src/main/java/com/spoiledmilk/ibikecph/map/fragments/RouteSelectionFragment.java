@@ -213,8 +213,8 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             }
             */
 
-            sourceText.setText(route.startAddress.getStreetAddress());
-            destinationText.setText(route.endAddress.getStreetAddress());
+            sourceText.setText(route.startAddress.getDisplayName());
+            destinationText.setText(route.endAddress.getDisplayName());
 
             distance = route.getEstimatedDistance();
             duration = route.getEstimatedArrivalTime();

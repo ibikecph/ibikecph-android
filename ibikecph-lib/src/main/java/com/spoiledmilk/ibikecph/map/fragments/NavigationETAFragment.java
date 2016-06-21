@@ -64,7 +64,8 @@ public class NavigationETAFragment extends Fragment {
         this.lengthText.setText(getFormattedDistance((int) parent.getRoute().getDistanceLeft()));
 
         // Set the address text
-        textAddress.setText(parent.getRoute().endStationName);
+        //textAddress.setText(parent.getRoute().endStationName);
+        textAddress.setText(parent.getRoute().endAddress.getDisplayName());
 
         // Set the duration label
         durationText.setText(TrackListAdapter.durationToFormattedTime(secondsToFinish));
