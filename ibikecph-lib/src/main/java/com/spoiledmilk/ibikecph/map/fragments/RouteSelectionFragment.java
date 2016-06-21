@@ -75,10 +75,6 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
         destinationText.setOnClickListener(this);
 
         ((TextView) v.findViewById(R.id.startRouteButtonText)).setText(IBikeApplication.getString("Start"));
-        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
-            ((TextView) v.findViewById(R.id.startRouteButtonText)).setTextColor(getResources().getColor(R.color.CPActionBar));
-
-        }
 
         return v;
     }
