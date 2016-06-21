@@ -368,8 +368,8 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
         // Put markers at the beginning and end of the route. We use the "real" end location, which means the place that
         // the user tapped.
 
-        beginMarker = new IBCMarker("", "", new LatLng(route.getStartLocation()), MarkerType.PATH_ENDPOINT);
-        endMarker = new IBCMarker("", "", new LatLng(route.getRealEndLocation()), MarkerType.PATH_ENDPOINT);
+        beginMarker = new IBCMarker("", "", route.getRealStartLocation(), MarkerType.PATH_ENDPOINT);
+        endMarker = new IBCMarker("", "", route.getRealEndLocation(), MarkerType.PATH_ENDPOINT);
 
         beginMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_start)));
         endMarker.setIcon(new Icon(mapView.getResources().getDrawable(R.drawable.marker_finish)));
