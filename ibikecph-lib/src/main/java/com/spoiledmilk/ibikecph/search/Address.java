@@ -34,13 +34,46 @@ public class Address implements Serializable {
     private double lon;
     private LatLng location;
 
-    //Shitty solution!
+    /**
+     * Let's not use static fields this way
+     * @deprecated
+     */
     public static String street_s = "";
+
+    /**
+     * Let's not use static fields this way
+     * @deprecated
+     */
     public static String name_s = "";
+
+    /**
+     * Let's not use static fields this way
+     * @deprecated
+     */
     public static String houseNumber_s = "";
+
+    /**
+     * Let's not use static fields this way
+     * @deprecated
+     */
     public static String zip_s = "";
+
+    /**
+     * Let's not use static fields this way
+     * @deprecated
+     */
     public static String city_s = "";
+
+    /**
+     * Let's not use static fields this way
+     * @deprecated
+     */
     public static double lat_s = -1;
+
+    /**
+     * Let's not use static fields this way
+     * @deprecated
+     */
     public static double lon_s = -1;
 
     public String getStreet() {
