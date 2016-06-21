@@ -74,11 +74,6 @@ public class DestinationPreviewFragment extends Fragment implements View.OnClick
         }
 
         ((TextView) v.findViewById(R.id.startRouteText)).setText(IBikeApplication.getString("new_route"));
-        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
-            ((TextView) v.findViewById(R.id.startRouteText)).setTextColor(getResources().getColor(R.color.CPActionBar));
-
-        }
-
 
         return v;
     }

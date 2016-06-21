@@ -83,7 +83,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_centerHorizontal="true"
                     android:text="new_route"
-                    android:textColor="@color/IBCActionBar"
+                    android:textColor="@color/PrimaryColor"
                     android:textSize="14dp" />
             </RelativeLayout>
         </RelativeLayout>

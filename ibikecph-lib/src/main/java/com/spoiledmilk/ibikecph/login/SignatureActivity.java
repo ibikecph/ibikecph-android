@@ -343,7 +343,7 @@ public class SignatureActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.PrimaryColor), PorterDuff.Mode.SRC_ATOP);
                 lockIcon.setVisibility(View.VISIBLE);
                 headLine.setVisibility(View.VISIBLE);
                 explainingText.setVisibility(View.VISIBLE);
@@ -389,7 +389,7 @@ public class SignatureActivity extends Activity {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.PrimaryColor), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
                 }
@@ -400,7 +400,7 @@ public class SignatureActivity extends Activity {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.PrimaryColor), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
                 }

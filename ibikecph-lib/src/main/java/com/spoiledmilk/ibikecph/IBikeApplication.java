@@ -48,7 +48,7 @@ public class IBikeApplication extends Application {
     private static Typeface normalFont, boldFont, italicFont;
 
     private static TrackingManager trackingManager;
-    protected static int primaryColor = R.color.IBCActionBar;
+    protected static int primaryColor = R.color.PrimaryColor;
 
     protected Tracker gaTracker;
 

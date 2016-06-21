@@ -228,13 +228,13 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             }
         });
 
-        textName.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+        textName.getBackground().setColorFilter(getResources().getColor(R.color.PrimaryColor), PorterDuff.Mode.SRC_ATOP);
 
         textName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    textName.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    textName.getBackground().setColorFilter(getResources().getColor(R.color.PrimaryColor), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     textName.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
                 }
@@ -245,7 +245,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    textEmail.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    textEmail.getBackground().setColorFilter(getResources().getColor(R.color.PrimaryColor), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     textEmail.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
                 }
@@ -256,7 +256,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.PrimaryColor), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     textNewPassword.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
                 }
@@ -267,7 +267,7 @@ public class RegisterActivity extends Activity implements ImagerPrefetcherListen
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.PrimaryColor), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     textPasswordConfirm.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
                 }

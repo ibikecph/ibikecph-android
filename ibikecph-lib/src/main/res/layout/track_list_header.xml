@@ -12,7 +12,7 @@
             android:layout_height="48dp"
             android:text="reactivate tracking"
             android:background="#fff"
-            android:textColor="@color/IBCActionBar"
+            android:textColor="@color/PrimaryColor"
             android:id="@+id/reactivateButton"
             android:onClick="onReactivateButtonClick"
             />

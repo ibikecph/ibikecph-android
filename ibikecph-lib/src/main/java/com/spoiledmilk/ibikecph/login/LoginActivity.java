@@ -183,7 +183,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    textEmail.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    textEmail.getBackground().setColorFilter(getResources().getColor(R.color.PrimaryColor), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     textEmail.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
                 }
@@ -194,7 +194,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b) {
-                    textPassword.getBackground().setColorFilter(getResources().getColor(R.color.app_primary_color), PorterDuff.Mode.SRC_ATOP);
+                    textPassword.getBackground().setColorFilter(getResources().getColor(R.color.PrimaryColor), PorterDuff.Mode.SRC_ATOP);
                 } else {
                     textPassword.getBackground().setColorFilter(getResources().getColor(R.color.Grey), PorterDuff.Mode.SRC_ATOP);
                 }

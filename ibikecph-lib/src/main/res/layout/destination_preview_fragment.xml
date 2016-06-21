@@ -52,7 +52,7 @@
             android:layout_below="@id/startRouteImage"
             android:layout_centerHorizontal="true"
             android:text="Rute"
-            android:textColor="@color/IBCActionBar"
+            android:textColor="@color/PrimaryColor"
             android:textSize="10dp" />
 
     </RelativeLayout>

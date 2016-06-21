@@ -31,8 +31,9 @@
         <item name="android:actionMenuTextColor">@color/white</item>
     </style>
 
+    <!-- TODO: Consider merging this with the IBCActionBar -->
     <style name="CPActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/CPActionBar</item>
+        <item name="android:background">@color/PrimaryColor</item>
         <item name="android:displayOptions">showTitle</item>
     </style>
 

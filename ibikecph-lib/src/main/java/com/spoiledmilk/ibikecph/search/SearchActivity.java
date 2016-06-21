@@ -110,10 +110,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
         textFavorites = (TextView) findViewById(R.id.textFavorites);
         textRecent = (TextView) findViewById(R.id.textRecent);
-
-        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
-            (findViewById(R.id.line)).setBackgroundColor(getResources().getColor(R.color.CPActionBar));
-        }
     }
 
     /**

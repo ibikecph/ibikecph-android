@@ -29,7 +29,7 @@
     </style>
 
     <style name="IBCActionBar" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
-        <item name="android:background">@color/IBCActionBar</item>
+        <item name="android:background">@color/PrimaryColor</item>
         <item name="android:displayOptions">showTitle</item>
     </style>
 

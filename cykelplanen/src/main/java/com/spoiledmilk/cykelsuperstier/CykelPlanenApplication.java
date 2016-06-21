@@ -19,7 +19,7 @@ public class CykelPlanenApplication extends IBikeApplication {
 		Config.EXTENDED_PULL_TOUCH = false;
 
         IBikeApplication.APP_NAME = "CykelPlanen";
-        this.primaryColor = R.color.CPActionBar;
+        primaryColor = R.color.PrimaryColor;
 
 		initializeGoogleAnalytics(R.xml.global_tracker);
 
