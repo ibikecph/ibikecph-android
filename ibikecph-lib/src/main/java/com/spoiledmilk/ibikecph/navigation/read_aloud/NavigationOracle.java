@@ -39,8 +39,23 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
     protected TextToSpeech tts;
     protected AudioManager am;
 
+    /**
+     * The route that we are reading aloud.
+     */
     protected SMRoute route;
-    protected SMTurnInstruction lastReadInstruction;
+    /**
+     * The last instruction that the oracle read aloud, as we got closer than
+     * DISTANCE_TO_INSTRUCTION
+     */
+    protected SMTurnInstruction lastCloseInstruction;
+    /**
+     * The last instruction that the oracle read aloud, as it became the next upcoming instruction.
+     */
+    protected SMTurnInstruction lastUpcomingInstruction;
+    /**
+     * The last physical location on which the oracle spoke last.
+     */
+    protected Location lastSpeakLocation;
 
     protected boolean enabled = false;
 
@@ -210,8 +225,6 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         }
     }
 
-    Location lastSpeakLocation;
-
     @Override
     public void onLocationChanged(Location location) {
         if(!enabled) {
@@ -219,35 +232,79 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         }
         Log.d("NavigationOracle", "Got onLocationChanged");
         SMTurnInstruction instruction = getNextInstruction();
-        // If we are close enough and the instruction has not been read aloud
-        if(instruction != null &&
-           location.distanceTo(instruction.getLocation()) < DISTANCE_TO_INSTRUCTION &&
-           lastReadInstruction != instruction) {
-            String instructionString = instruction.generateFullDescriptionString();
-            speak(instructionString, lastReadInstruction == null);
-            lastReadInstruction = instruction;
-            lastSpeakLocation = location;
-        }
-
-        if(lastSpeakLocation != null &&
-           route != null &&
-           location.distanceTo(lastSpeakLocation) > MAX_SILENCE_DISTANCE) {
-            int minutesToArrival = Math.round(route.getEstimatedArrivalTime() / 60.0f);
-
-            String encouragement = null;
-            if(minutesToArrival > 1) {
-                encouragement = IBikeApplication.getString("read_aloud_encouragement");
-                encouragement = String.format(encouragement.replace("%@", "%d"), minutesToArrival);
-            } else if(minutesToArrival == 1) {
-                encouragement = IBikeApplication.getString("read_aloud_encouragement_singular");
-                encouragement = String.format(encouragement.replace("%@", "%d"), minutesToArrival);
-            }
-            // If we want to say an encouragement - let's speak
-            if(encouragement != null) {
-                speak(encouragement);
+        if(route != null && instruction != null) {
+            // If we are close enough and the instruction has not been read aloud
+            if(location.distanceTo(instruction.getLocation()) < DISTANCE_TO_INSTRUCTION &&
+               lastCloseInstruction != instruction) {
+                String instructionString = instruction.generateFullDescriptionString();
+                speak(instructionString, lastCloseInstruction == null);
+                // Make sure we will not be reading this aloud again.
+                lastUpcomingInstruction = instruction;
+                lastCloseInstruction = instruction;
+                // Remember where we were when reading this
+                lastSpeakLocation = location;
+            } else if (lastUpcomingInstruction != instruction) {
+                String upcomingString = IBikeApplication.getString("read_aloud_upcoming_instruction");
+                // Let's pick the closest 10 metres
+                int metresToInstruction = Math.round(instruction.lengthInMeters / 10.f) * 10;
+                upcomingString = String.format(upcomingString.replace("%@", "%d"), metresToInstruction);
+                String instructionString = instruction.generateFullDescriptionString();
+                // Read it aloud
+                speak(upcomingString + " " + instructionString, lastUpcomingInstruction == null);
+                // Make sure we will not be reading this aloud again.
+                lastUpcomingInstruction = instruction;
+                // Remember where we were when reading this
                 lastSpeakLocation = location;
             }
+
+            if(lastSpeakLocation != null &&
+               location.distanceTo(lastSpeakLocation) > MAX_SILENCE_DISTANCE) {
+                int minutesToArrival = Math.round(route.getEstimatedArrivalTime() / 60.0f);
+                String encouragement = generateEncouragement(minutesToArrival);
+                // If we want to say an encouragement - let's speak
+                if(encouragement != null) {
+                    speak(encouragement);
+                    lastSpeakLocation = location;
+                }
+            }
         }
+    }
+
+    private String generateEncouragement(int minutesToArrival) {
+        int hoursToArrival = minutesToArrival / 60;
+        minutesToArrival %= 60;
+
+        String minutes = String.valueOf(minutesToArrival);
+        String minuteUnit;
+        if(minutesToArrival == 1) {
+            minuteUnit = IBikeApplication.getString("unit_m_long_singular");
+        } else {
+            minuteUnit = IBikeApplication.getString("unit_m_long");
+        }
+
+        if(hoursToArrival == 0) {
+            String encouragement = IBikeApplication.getString("read_aloud_encouragement_time_m");
+            return String.format(encouragement.replaceAll("%@", "%s"),
+                                 minutes,
+                                 minuteUnit);
+        } else {
+            String hours = String.valueOf(hoursToArrival);
+            String hoursUnit;
+            if(hoursToArrival == 1) {
+                hoursUnit = IBikeApplication.getString("unit_h_long_singular");
+            } else {
+                hoursUnit = IBikeApplication.getString("unit_h_long");
+            }
+
+            String encouragement = IBikeApplication.getString("read_aloud_encouragement_time_h_m");
+            return String.format(encouragement.replaceAll("%@", "%s"),
+                                 hours,
+                                 hoursUnit,
+                                 minutes,
+                                 minuteUnit);
+        }
+
+
     }
 
     @Override
