@@ -157,12 +157,14 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         }
         this.route = route;
         if(route != null && enabled) {
-            route.addListener(this);
             routeReady();
         }
     }
 
     protected void routeReady() {
+        // Register the oracle to receive updates on the route.
+        route.addListener(this);
+        // If an end address is known, let's start by reading that aloud.
         if(route.endAddress != null) {
             String greeting = IBikeApplication.getString("read_aloud_enabled");
             String destination = route.endAddress.getStreet();
@@ -193,10 +195,10 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         Locale locale = IBikeApplication.getLocale();
         if (tts.isLanguageAvailable(locale) == TextToSpeech.LANG_AVAILABLE) {
             tts.setLanguage(locale);
+            enabled = true;
             if (route != null) {
                 routeReady();
             }
-            enabled = true;
             emitEnabled();
         } else {
             Log.e("NavigationOracle", "Language was not supported");
