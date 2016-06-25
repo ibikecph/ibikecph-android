@@ -54,6 +54,8 @@ import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.fragments.BreakRouteFragment;
+import com.spoiledmilk.ibikecph.map.fragments.BreakRouteSelectionFragment;
+import com.spoiledmilk.ibikecph.map.fragments.RouteSelectionFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
 import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlayFactory;
@@ -394,7 +396,7 @@ public class MapActivity extends BaseMapActivity {
      *
      * @return
      */
-    protected LeftMenu instantiateLeftMenu() {
+    protected LeftMenu createLeftMenu() {
         return new LeftMenu();
     }
 
@@ -403,7 +405,7 @@ public class MapActivity extends BaseMapActivity {
      */
     protected void createMenu() {
         // Creating the left menu fragment
-        leftMenu = instantiateLeftMenu();
+        leftMenu = createLeftMenu();
 
         // Find the drawer layout view using it's id, we'll attach the menu to that.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -894,6 +896,20 @@ public class MapActivity extends BaseMapActivity {
                 }
             }
         });
+    }
+
+    /**
+     * Create the fragment used when the user selects a route, this is implemented as a function to
+     * allow for implementations to override this behaviour.
+     * @return
+     */
+    public RouteSelectionFragment createRouteSelectionFragment() {
+        IBikeApplication application = (IBikeApplication) getApplication();
+        if(application.breakRouteIsEnabled()) {
+            return new BreakRouteSelectionFragment();
+        } else {
+            return new RouteSelectionFragment();
+        }
     }
 
     /**

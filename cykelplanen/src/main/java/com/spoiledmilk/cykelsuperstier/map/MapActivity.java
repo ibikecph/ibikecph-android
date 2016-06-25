@@ -5,17 +5,7 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.cykelsuperstier.map;
 
-import android.os.Bundle;
-import android.util.Log;
-import com.mapbox.mapboxsdk.overlay.Overlay;
-import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
-import com.spoiledmilk.cykelsuperstier.CykelPlanenApplication;
 import com.spoiledmilk.cykelsuperstier.LeftMenu;
-import com.spoiledmilk.ibikecph.map.IBCMarker;
-import com.spoiledmilk.ibikecph.map.MarkerType;
-import com.spoiledmilk.ibikecph.map.OverlayType;
-
-import java.util.ArrayList;
 
 public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
 
@@ -57,7 +47,7 @@ public class MapActivity extends com.spoiledmilk.ibikecph.map.MapActivity {
     */
 
     @Override
-    protected com.spoiledmilk.ibikecph.LeftMenu instantiateLeftMenu() {
+    protected com.spoiledmilk.ibikecph.LeftMenu createLeftMenu() {
         return new LeftMenu();
     }
 
