@@ -40,7 +40,7 @@ public class RouteSelectionState extends MapState {
 
     protected NavigationMapHandler mapHandler;
 
-    protected RouteSelectionFragment routeSelectionFragment = new RouteSelectionFragment();
+    protected RouteSelectionFragment routeSelectionFragment;
     private List<RouteCallback> routeCallbacks = new ArrayList<>();
 
     protected abstract class RouteCallback implements Geocoder.RouteCallback {
@@ -63,11 +63,11 @@ public class RouteSelectionState extends MapState {
         activity.getMapView().setUserLocationEnabled(true);
         activity.getMapView().getUserLocationOverlay().setDrawAccuracyEnabled(false);
 
+        routeSelectionFragment = activity.createRouteSelectionFragment();
         // Add the navigation map handler to the arguments
         Bundle b = new Bundle();
         b.putSerializable("NavigationMapHandler", mapHandler);
         routeSelectionFragment.setArguments(b);
-
         // Add the fragment to the activity
         fragmentTransaction.add(R.id.topFragment, routeSelectionFragment);
 
