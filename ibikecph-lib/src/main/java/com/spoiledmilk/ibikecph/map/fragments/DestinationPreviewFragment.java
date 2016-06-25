@@ -26,6 +26,9 @@ public class DestinationPreviewFragment extends Fragment implements View.OnClick
 
     private TextView addressView;
     private Address address;
+    /**
+     * @deprecated Let's not use static fields like this.
+     */
     public static String name = "";
 
     public DestinationPreviewFragment() {

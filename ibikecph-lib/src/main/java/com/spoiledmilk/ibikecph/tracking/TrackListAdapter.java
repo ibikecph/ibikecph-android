@@ -192,6 +192,11 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
         return rowView;
     }
 
+    /**
+     * TODO: Consider moving this to the util package
+     * @param seconds
+     * @return
+     */
     public static String durationToFormattedTime(double seconds) {
         return String.format(IBikeApplication.getString("hour_minute_format"), (int) (seconds / 60 / 60), (int) ((seconds / 60) % 60));
     }
