@@ -29,15 +29,24 @@ import java.util.Date;
  * Created by jens on 6/1/15.
  */
 public class RouteSelectionFragment extends MapStateFragment implements View.OnClickListener {
-    private ImageButton fastButton, cargoButton, greenButton, breakButton;
+    protected ImageButton fastButton, cargoButton, greenButton, breakButton;
+    protected TextView sourceText, destinationText, durationText, lengthText, etaText;
 
     protected RouteSelectionState mapState;
 
     protected View v;
 
+    protected SimpleDateFormat dateFormat;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mapState = getMapState(RouteSelectionState.class);
+
+        if (DateFormat.is24HourFormat(this.getActivity())) {
+            dateFormat = new SimpleDateFormat("HH:mm");
+        } else {
+            dateFormat = new SimpleDateFormat("HH:mm a");
+        }
     }
 
     @Override
@@ -51,6 +60,12 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
         cargoButton = (ImageButton) v.findViewById(R.id.routeSelectionCargoButton);
         greenButton = (ImageButton) v.findViewById(R.id.routeSelectionGreenButton);
         breakButton = (ImageButton) v.findViewById(R.id.routeSelectionBreakButton);
+
+        sourceText = (TextView) v.findViewById(R.id.navigationOverviewSource);
+        destinationText = (TextView) v.findViewById(R.id.navigationOverviewDestination);
+        durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
+        lengthText = (TextView) v.findViewById(R.id.navigationOverviewRouteLength);
+        etaText = (TextView) v.findViewById(R.id.navigationOverviewRouteETA);
 
         fastButton.setOnClickListener(this);
         cargoButton.setOnClickListener(this);
@@ -158,11 +173,6 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
     }
 
     public void refreshView() {
-        TextView sourceText = (TextView) v.findViewById(R.id.navigationOverviewSource);
-        TextView destinationText = (TextView) v.findViewById(R.id.navigationOverviewDestination);
-        TextView durationText = (TextView) v.findViewById(R.id.navigationOverviewRouteDuration);
-        TextView lengthText = (TextView) v.findViewById(R.id.navigationOverviewRouteLength);
-        TextView etaText = (TextView) v.findViewById(R.id.navigationOverviewRouteETA);
 
         SMRoute route = mapState.getRoute();
         if(route == null) {
@@ -225,12 +235,10 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             // Set the duration label
             durationText.setText(TrackListAdapter.durationToFormattedTime(duration));
 
-            SimpleDateFormat sdf = null;
-            if (DateFormat.is24HourFormat(this.getActivity())) {
-                sdf = new SimpleDateFormat("HH:mm");
-            } else {
-                sdf = new SimpleDateFormat("HH:mm a");
-            }
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.SECOND, (int) duration);
+            Date arrivalTime = c.getTime();
+            etaText.setText(dateFormat.format(arrivalTime));
 
             if (arrivalTime > 0) {
                 // TODO: Move this the the Cykelplanen directory.
