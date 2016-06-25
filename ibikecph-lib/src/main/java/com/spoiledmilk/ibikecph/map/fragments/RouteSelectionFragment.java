@@ -72,10 +72,6 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
         greenButton.setOnClickListener(this);
         breakButton.setOnClickListener(this);
 
-        // Show or hide the break route button based on the setting
-        boolean breakRouteEnabled = getResources().getBoolean(R.bool.breakRouteEnabled);
-        breakButton.setVisibility(breakRouteEnabled ? View.VISIBLE : View.GONE);
-
         // Add the ability to flip the route
         ((ImageButton) v.findViewById(R.id.btnAddressSwap)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,43 +177,6 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
         } else {
             float distance;
             float duration;
-            long arrivalTime = 0;
-
-            boolean breakRouteEnabled = getResources().getBoolean(R.bool.breakRouteEnabled);
-            if(breakRouteEnabled) {
-                throw new RuntimeException("Break route needs to be refactored.");
-            }
-            /*
-            // TODO: Move this to the cykelplanen directory.
-            if (IBikeApplication.getAppName().equals("CykelPlanen")) {
-                breakButton = (ImageButton) v.findViewById(R.id.navigationOverviewBreakButton);
-                boolean breakRouteEnabled = getResources().getBoolean(R.bool.breakRouteEnabled);
-                Log.d(getClass().getSimpleName(), "breakRouteEnabled = " + breakRouteEnabled);
-                breakButton.setVisibility(breakRouteEnabled ? View.VISIBLE : View.GONE);
-
-                cargoButton.setVisibility(View.GONE);
-
-                // Set the distance label
-                if (MapActivity.isBreakChosen && Geocoder.totalBikeDistance != null) {
-                    distance = Geocoder.totalBikeDistance.get(NavigationMapHandler.obsInt.getPageValue());
-                    duration = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
-                    arrivalTime = Geocoder.arrivalTime.get(NavigationMapHandler.obsInt.getPageValue());
-                    sourceText.setText(IBikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
-                    destinationText.setText(DestinationPreviewFragment.name);
-                } else {
-                    distance = route.getEstimatedDistance();
-                    duration = route.getEstimatedArrivalTime();
-                    sourceText.setText(IBikeApplication.getString("current_position")); //Just set current position as default because this is the only option working right now.
-                    destinationText.setText(route.endAddress.getStreetAddress());
-                }
-            } else {
-                // Set the distance label
-                distance = route.getEstimatedDistance();
-                duration = route.getEstimatedArrivalTime();
-                sourceText.setText(route.startAddress.getStreetAddress());
-                destinationText.setText(route.endAddress.getStreetAddress());
-            }
-            */
 
             sourceText.setText(route.startAddress.getDisplayName());
             destinationText.setText(route.endAddress.getDisplayName());
@@ -240,16 +199,6 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             Date arrivalTime = c.getTime();
             etaText.setText(dateFormat.format(arrivalTime));
 
-            if (arrivalTime > 0) {
-                // TODO: Move this the the Cykelplanen directory.
-                arrivalTime = arrivalTime * 1000;
-                etaText.setText(sdf.format(arrivalTime).toString());
-            } else {
-                Calendar c = Calendar.getInstance();
-                c.add(Calendar.SECOND, (int) duration);
-                Date arrivalTimee = c.getTime();
-                etaText.setText(sdf.format(arrivalTimee));
-            }
             // Only show the go button if the route starts at the current location
             if (route != null && route.startAddress.isCurrentLocation()) {
                 v.findViewById(R.id.startRouteButton).setVisibility(View.VISIBLE);
