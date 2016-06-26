@@ -31,12 +31,39 @@ import java.util.Locale;
  */
 public class Geocoder {
 
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static ArrayList<ArrayList<SMRoute>> arrayLists;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static ArrayList<Integer> totalTime;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static ArrayList<Integer> totalDistance;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static ArrayList<Integer> totalBikeDistance;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static ArrayList<Long> arrivalTime;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static ArrayList<String> from;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static ArrayList<String> to;
 
     public interface GeocoderCallback {
@@ -46,11 +73,9 @@ public class Geocoder {
     }
 
     public interface RouteCallback {
-        public void onSuccess(SMRoute route);
-
-        public void onSuccess(boolean isBreak);
-
-        public void onFailure();
+        void onSuccess(SMRoute route);
+        void onSuccess(BreakRouteRequester.BreakRouteResponse breakRouteResponse);
+        void onFailure();
     }
 
     /**
