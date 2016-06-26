@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
@@ -135,86 +136,6 @@ public class IBCMapView extends MapView {
             throw new RuntimeException("Cannot show route with the current listner.");
         }
     }
-
-    /*
-    public void showRoute(final FavoritesData fd) {
-        Address a = Address.fromFavoritesData(fd);
-        showRoute(a);
-    }
-
-    public void showRoute(final Address destination) {
-        showRoute(null, destination);
-    }
-    */
-
-    public void showRoute(final Address givenSource, final Address givenDestination) {
-        Address source = givenSource;
-        Address destination = givenDestination;
-
-        // Remove the address marker, because the route draws its own end marker.
-        if (this.currentAddressMarker != null) {
-            this.removeMarker(this.currentAddressMarker);
-            this.currentAddressMarker = null;
-        }
-
-        // If no source address is provided, assume current location
-        if (givenSource == null || givenDestination == null) {
-            Address loc = Address.fromCurLoc();
-
-            // If we don't have a GPS coordinate, we cannot get the current address. Let the user know and return.
-            if (loc == null) {
-                Toast.makeText(
-                        IBikeApplication.getContext(),
-                        IBikeApplication.getString("error_no_gps_location"),
-                        Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            if (givenSource == null) {
-                source = loc;
-            }
-
-            if (givenDestination == null) {
-                destination = null;
-            }
-        }
-
-        final Address finalDestination = destination;
-        final Address finalSource = source;
-
-
-        Log.d("DV_break", "Calling Geocoder.getRoute");
-        Geocoder.getRoute(source.getLocation(), destination.getLocation(), new Geocoder.RouteCallback() {
-            @Override
-            public void onSuccess(SMRoute route) {
-                Log.d("DV_break", "IBCMapView, onSuccess!");
-                route.startStationName = finalSource.getStreetAddress();
-                route.endStationName = finalDestination.getStreetAddress();
-                route.startAddress = finalSource;
-                route.endAddress = finalDestination;
-                if (route.endAddress.getAddressSource() == Address.AddressSource.FAVORITE) {
-                    route.endAddress.setHouseNumber("");
-                }
-
-                Log.d("DV_break", "IBCMapView, calling showRoute!");
-                showRoute(route);
-            }
-
-            @Override
-            public void onSuccess(boolean isBreak) {
-
-            }
-
-            @Override
-            public void onFailure() {
-                Log.d("DV_break", "IBCMapView, onFailure!");
-            }
-
-        }, RouteType.FASTEST);
-
-
-    }
-
 
     public IBCMapHandler getMapHandler() {
         // We can always cast this to an IBCMapHandler as it's checked to be one when setting it.
