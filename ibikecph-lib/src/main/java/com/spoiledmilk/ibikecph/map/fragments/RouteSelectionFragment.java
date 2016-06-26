@@ -109,7 +109,6 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             MapActivity activity = (MapActivity) this.getActivity();
             Intent i = new Intent(activity, SearchAutocompleteActivity.class);
             activity.startActivityForResult(i, MapActivity.REQUEST_CHANGE_SOURCE_ADDRESS);
-
         } else if (v.getId() == R.id.navigationOverviewDestination) {
             MapActivity activity = (MapActivity) this.getActivity();
             Intent i = new Intent(activity, SearchAutocompleteActivity.class);
@@ -117,35 +116,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
         }
     }
 
-    public void disableAllRouteButtons() {
-        fastButton.setImageResource(R.drawable.btn_route_fastest_disabled);
-        cargoButton.setImageResource(R.drawable.btn_route_cargo_disabled);
-        greenButton.setImageResource(R.drawable.btn_route_green_disabled);
-        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
-            MapActivity.progressBarHolder.setVisibility(View.GONE);
-            breakButton.setImageResource(R.drawable.btn_train_disabled);
-            MapActivity.breakFrag.setVisibility(View.GONE);
-        }
-
-        NavigationMapHandler.displayExtraField = false;
-        NavigationMapHandler.displayGetOffAt = false;
-        NavigationMapHandler.isPublic = false;
-        NavigationMapHandler.getOffAt = "";
-        NavigationMapHandler.lastType = "";
-
-        if (Geocoder.arrayLists != null) {
-            for (int i = 0; i < Geocoder.arrayLists.size(); i++) {
-                for (int j = 0; j < Geocoder.arrayLists.get(i).size(); j++) {
-                    Geocoder.arrayLists.get(i).get(j).removeListeners();
-                    IBikeApplication.getService().removeLocationListener(Geocoder.arrayLists.get(i).get(j));
-                }
-            }
-        }
-
-    }
-
     public void refreshView() {
-
         SMRoute route = mapState.getRoute();
         if(route == null) {
             sourceText.setText("");
