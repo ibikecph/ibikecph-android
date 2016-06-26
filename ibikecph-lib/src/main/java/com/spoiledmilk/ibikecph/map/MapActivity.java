@@ -116,32 +116,11 @@ public class MapActivity extends BaseMapActivity {
     /**
      * @deprecated Let's phase out the use of static members like this.
      */
-    public static View breakFrag;
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static CirclePageIndicator tabs;
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static ViewPager pager;
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static ProgressBar progressBar;
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static FrameLayout progressBarHolder;
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
     public static boolean fromSearch = false;
     /**
      * @deprecated Let's phase out the use of static members like this.
      */
     public static ObservableInteger obsInt;
-    public int amount = 0;
     /**
      * @deprecated Let's phase out the use of static members like this.
      */
@@ -176,11 +155,6 @@ public class MapActivity extends BaseMapActivity {
         // Finding the sub-components of the activity's view, consider if these need to be static
         // or if we could pass a reference to this activity to the components that needs access
         topFragment = findViewById(R.id.topFragment);
-        breakFrag = findViewById(R.id.breakRouteContainer);
-        tabs = (CirclePageIndicator) findViewById(R.id.tabs);
-        pager = (ViewPager) findViewById(R.id.pager);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBarHolder = (FrameLayout) findViewById(R.id.progressBarHolder);
 
         // Initialize the map view
         mapView = (IBCMapView) findViewById(R.id.mapView);
@@ -201,9 +175,6 @@ public class MapActivity extends BaseMapActivity {
 
         // Check if the user accepts the newest terms
         // TermsManager.checkTerms(this);
-
-        // TODO: Move this to the CykelPlanen app - as it's break route related.
-        setupBreakRouteListener();
 
         // When scrolling the map, make sure that the compass icon is updated.
         this.mapView.addListener(new MapListener() {
@@ -526,12 +497,6 @@ public class MapActivity extends BaseMapActivity {
         int id = item.getItemId();
 
         if (id == R.id.ab_search) {
-            // to avoid too many not parcelable things, just set the map back to default state
-            // this.changeState(BrowsingState.class);
-            // this.mapView.setMapViewListener(new OverviewMapHandler(this.mapView));
-            breakFrag.setVisibility(View.GONE);
-            progressBarHolder.setVisibility(View.GONE);
-            isBreakChosen = false;
             this.mapView.removeAllMarkers();
             Intent i = new Intent(MapActivity.this, SearchActivity.class);
             startActivityForResult(i, REQUEST_SEARCH_ADDRESS);
@@ -757,13 +722,6 @@ public class MapActivity extends BaseMapActivity {
         }
     }
 
-    private void disableStatisticsInfoPane() {
-        topFragment.setVisibility(View.GONE);
-        breakFrag.setVisibility(View.GONE);
-        progressBarHolder.setVisibility(View.GONE);
-        mapView.removeAllMarkers();
-    }
-
     /**
      * Checks with all registered fragments if they're OK with letting back be pressed.
      * They should return false if they want to do something before letting the user continue back.
@@ -784,7 +742,7 @@ public class MapActivity extends BaseMapActivity {
                 super.onBackPressed();
             }
 
-            breakFrag.setVisibility(View.GONE);
+            breakRouteContainer.setVisibility(View.GONE);
             progressBarHolder.setVisibility(View.GONE);
             mapView.removeAllMarkers();
             NavigationMapHandler.displayExtraField = false;
@@ -846,59 +804,6 @@ public class MapActivity extends BaseMapActivity {
     }
 
     /**
-     * Creates a static observable integer for the Geocoder to callback when the amount of
-     * alternative breaking routes are available. When they are a listner is registered on the
-     * CirclePageIndicator tabs, that will notify the NavigationMapHandler when the user swipes.
-     * TODO: Consider refactoring this so static members of classes are no longer needed.
-     * TODO: Move this to the CykelPlanen app.
-     */
-    public void setupBreakRouteListener() {
-
-        obsInt = new ObservableInteger();
-
-        obsInt.setOnIntegerChangeListener(new OnIntegerChangeListener() {
-            @Override
-            public void onIntegerChanged(int newValue) {
-                amount = newValue;
-                Log.d("DV", "Amount changed to " + newValue);
-                if (newValue > 0) {
-                    Log.d("DV", "Amount > 0, enabling fragment!");
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isBreakChosen) {
-                                progressBarHolder.setVisibility(View.GONE);
-                                breakFrag.setVisibility(View.VISIBLE);
-                                pager.setVisibility(View.VISIBLE);
-                                tabs.setVisibility(View.VISIBLE);
-                                pager.setAdapter(new BreakRoutePagerAdapter(getSupportFragmentManager()));
-                                tabs.setViewPager(pager);
-                                tabs.setRadius(10);
-                                tabs.setCentered(true);
-                                tabs.setFillColor(Color.parseColor("#E2A500"));
-                            }
-                        }
-                    });
-                    tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                        @Override
-                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                        }
-
-                        @Override
-                        public void onPageSelected(int position) {
-                            NavigationMapHandler.obsInt.setPageValue(position);
-                        }
-
-                        @Override
-                        public void onPageScrollStateChanged(int state) {
-                        }
-                    });
-                }
-            }
-        });
-    }
-
-    /**
      * Create the fragment used when the user selects a route, this is implemented as a function to
      * allow for implementations to override this behaviour.
      * @return
@@ -912,28 +817,4 @@ public class MapActivity extends BaseMapActivity {
         }
     }
 
-    /**
-     * TODO: Refactor by renaming, removing the need for a static amount and moving to CykelPlanen.
-     */
-    class BreakRoutePagerAdapter extends FragmentStatePagerAdapter {
-
-        @Override
-        public int getCount() {
-            return amount;
-        }
-
-        public BreakRoutePagerAdapter(android.support.v4.app.FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return BreakRouteFragment.newInstance(position);
-        }
-
-        @Override
-        public int getItemPosition(Object object) {
-            return PagerAdapter.POSITION_NONE;
-        }
-    }
 }
