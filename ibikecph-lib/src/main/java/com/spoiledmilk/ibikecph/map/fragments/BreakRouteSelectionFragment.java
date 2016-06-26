@@ -1,16 +1,32 @@
 package com.spoiledmilk.ibikecph.map.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IBikeApplication;
+import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.BreakRouteRequester;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.MapActivity;
+import com.spoiledmilk.ibikecph.map.ObservableInteger;
+import com.spoiledmilk.ibikecph.map.OnIntegerChangeListener;
+import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
+import com.viewpagerindicator.CirclePageIndicator;
 
 /**
  * Created by kraen on 21-06-16.
