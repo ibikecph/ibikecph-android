@@ -66,8 +66,7 @@ public class HttpUtils {
             }
             httpget.setConnectTimeout(CONNECTON_TIMEOUT);
             httpget.setReadTimeout(CONNECTON_TIMEOUT);
-            JsonNode root = null;
-            root = Util.getJsonObjectMapper().readValue(httpget.getInputStream(), JsonNode.class);
+            JsonNode root = Util.getJsonObjectMapper().readValue(httpget.getInputStream(), JsonNode.class);
             if (root != null) {
                 result.setNode(root);
             }

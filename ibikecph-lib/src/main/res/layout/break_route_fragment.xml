@@ -14,7 +14,7 @@
             android:id="@+id/tableLayout"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_gravity="center_horizontal"></TableLayout>
+            android:layout_gravity="center_horizontal" />
 
     </ScrollView>
 
