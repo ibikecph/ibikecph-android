@@ -117,12 +117,11 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         waypointStation2 = -1;
     }
 
-    public void init(Location start, Location end, SMRouteListener listener, JsonNode routeJSON, RouteType type) {
+    public void init(Location start, Location end, JsonNode routeJSON, RouteType type) {
         init();
 
         locationStart = start;
         locationEnd = end;
-        addListener(listener);
 
         this.type = type;
 
@@ -136,12 +135,11 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         }
     }
 
-    public void init(Location start, Location end, Location startStation, Location endStation, SMRouteListener listener, JsonNode routeJSON, RouteType type) {
+    public void init(Location start, Location end, Location startStation, Location endStation, JsonNode routeJSON, RouteType type) {
         init();
         locationStart = start;
         locationEnd = end;
         this.type = type;
-        //addListener(listener);
         setupBrokenRoute(routeJSON);
     }
 

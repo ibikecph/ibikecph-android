@@ -210,7 +210,7 @@ public class IBCMapView extends MapView {
                 Log.d("DV_break", "IBCMapView, onFailure!");
             }
 
-        }, null, RouteType.FASTEST);
+        }, RouteType.FASTEST);
 
 
     }

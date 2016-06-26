@@ -183,8 +183,7 @@ public class RouteSelectionState extends MapState {
 
         };
         routeCallbacks.add(routeCallback);
-
-        Geocoder.getRoute(sourceLocation, destinationLocation, routeCallback, null, routeType);
+        Geocoder.getRoute(sourceLocation, destinationLocation, routeCallback, routeType);
     }
 
     protected void cancelRequests() {

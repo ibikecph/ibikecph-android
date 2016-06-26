@@ -117,7 +117,7 @@ public class Geocoder {
      * @param end
      * @param callback
      */
-    public static void getRoute(final ILatLng start, final ILatLng end, final RouteCallback callback, final SMRouteListener routeListener, final RouteType type) {
+    public static void getRoute(final ILatLng start, final ILatLng end, final RouteCallback callback, final RouteType type) {
         AsyncHttpClient client = new AsyncHttpClient();
 
         // OSRM directive to not ignore small road fragments
@@ -258,18 +258,12 @@ public class Geocoder {
                         ObjectMapper mapper = new ObjectMapper();
                         JsonNode node = mapper.readTree(response.toString());
 
-                        Log.d("DV_break", "Making route object!");
                         SMRoute route = new SMRoute();
-                        Log.d("DV_break", "Route object created!");
-                        route.init(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), routeListener, node, type);
-                        Log.d("DV_break", "Route.inti() called!");
+                        route.init(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), node, type);
                         // Pass the route back to the caller
                         callback.onSuccess(route);
-                        Log.d("DV_break", "onSuccess called!");
                     } catch (IOException e) {
                         // Couldn't parse the JSON. We pass the exception to the onFailure handler.
-                        Log.d("DV_break", "Error = " + statusCode + " " + headers);
-                        Log.d("DV_break", "Exception = " + e.getMessage());
                         onFailure(statusCode, headers, null);
                     }
                 }
