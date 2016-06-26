@@ -28,7 +28,7 @@ import java.util.Date;
 /**
  * Created by jens on 6/1/15.
  */
-public class RouteSelectionFragment extends MapStateFragment implements View.OnClickListener {
+public class RouteSelectionFragment extends MapStateFragment implements View.OnClickListener, RouteSelectionState.RouteTypeChangeListener {
     protected ImageButton fastButton, cargoButton, greenButton, breakButton;
     protected TextView sourceText, destinationText, durationText, lengthText, etaText;
 
@@ -51,7 +51,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.route_selection_fragment, container, false);
+        v = inflater.inflate(getLayoutResource(), container, false);
 
         View startRouteButton = (View) v.findViewById(R.id.startRouteButton);
         startRouteButton.setOnClickListener(this);
@@ -100,35 +100,11 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
         if (v.getId() == R.id.startRouteButton) {
             mapState.startNavigation();
         } else if (v.getId() == R.id.routeSelectionFastButton) {
-            disableAllRouteButtons();
-            fastButton.setImageResource(R.drawable.btn_route_fastest_enabled);
-            MapActivity.isBreakChosen = false;
             mapState.setType(RouteType.FASTEST);
-
         } else if (v.getId() == R.id.routeSelectionCargoButton) {
-            disableAllRouteButtons();
-            cargoButton.setImageResource(R.drawable.btn_route_cargo_enabled);
-
             mapState.setType(RouteType.CARGO);
-
         } else if (v.getId() == R.id.routeSelectionGreenButton) {
-            disableAllRouteButtons();
-            MapActivity.isBreakChosen = false;
-            greenButton.setImageResource(R.drawable.btn_route_green_enabled);
-
             mapState.setType(RouteType.GREEN);
-
-        } else if (v.getId() == R.id.routeSelectionBreakButton) {
-            // TODO: Move all this controller code to the map state
-            disableAllRouteButtons();
-            breakButton.setImageResource(R.drawable.btn_train_enabled);
-            MapActivity.isBreakChosen = true;
-            NavigationMapHandler.routePos = 0;
-            MapActivity.pager.setAdapter(null);
-            MapActivity.tabs.setVisibility(View.GONE);
-            MapActivity.progressBarHolder.setVisibility(View.VISIBLE);
-
-            mapState.setType(RouteType.BREAK);
         } else if (v.getId() == R.id.navigationOverviewSource) {
             MapActivity activity = (MapActivity) this.getActivity();
             Intent i = new Intent(activity, SearchAutocompleteActivity.class);
