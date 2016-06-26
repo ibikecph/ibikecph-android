@@ -41,7 +41,15 @@ import java.util.ArrayList;
  */
 public class NavigationMapHandler extends IBCMapHandler implements SMRouteListener, Serializable {
     private UserLocationOverlay userLocationOverlay;
-    private static SMRoute route; // TODO: Static is bad, but we'll never have two NavigationMapHandlers anyway.
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
+    private static SMRoute route;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     private static SMRoute[] breakRoute;
     private boolean cleanedUp = true;
     private transient TurnByTurnInstructionFragment turnByTurnFragment;
@@ -52,14 +60,46 @@ public class NavigationMapHandler extends IBCMapHandler implements SMRouteListen
     private transient PathOverlay beginWalkingPath = null;
     private transient PathOverlay endWalkingPath = null;
     private int amount = 0;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static int routePos = 0; // Keep track of which routePiece we are currently tracking
     ArrayList<LatLng> waypoints;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static ObservablePageInteger obsInt;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static boolean displayExtraField = false;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static boolean displayGetOffAt = false;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static boolean isPublic = false;
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static String getOffAt = "";
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static String lastType = "";
+
+    /**
+     * @deprecated Let's phase out the use of static members like this.
+     */
     public static float dist = 0;
 
     public NavigationMapHandler(IBCMapView mapView) {
