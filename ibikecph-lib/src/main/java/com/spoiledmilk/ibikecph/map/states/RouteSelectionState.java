@@ -7,14 +7,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
 import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.BreakRouteRequester;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
+import com.spoiledmilk.ibikecph.map.fragments.BreakRouteSelectionFragment;
 import com.spoiledmilk.ibikecph.map.fragments.RouteSelectionFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
@@ -50,6 +53,11 @@ public class RouteSelectionState extends MapState {
         }
     }
 
+    public interface RouteTypeChangeListener {
+        void routeTypeChanged(RouteType newType);
+    }
+    private List<RouteTypeChangeListener> routeTypeChangeListeners = new ArrayList<>();
+
     public RouteSelectionState() {
         super();
     }
@@ -68,6 +76,9 @@ public class RouteSelectionState extends MapState {
         Bundle b = new Bundle();
         b.putSerializable("NavigationMapHandler", mapHandler);
         routeSelectionFragment.setArguments(b);
+        // Add the route selection fragment as a route type change listener, so it can update when
+        // the route type changes.
+        addRouteTypeChangeListener(routeSelectionFragment);
         // Add the fragment to the activity
         fragmentTransaction.add(R.id.topFragment, routeSelectionFragment);
 
@@ -86,6 +97,8 @@ public class RouteSelectionState extends MapState {
         setRoute(null);
         // Cancel any requests that will be resolved asynchronously.
         cancelRequests();
+        // Remove the route selection fragment as a route type change listener.
+        removeRouteTypeChangeListener(routeSelectionFragment);
         // Then remove the route selection fragment
         fragmentTransaction.remove(routeSelectionFragment);
     }
@@ -126,9 +139,37 @@ public class RouteSelectionState extends MapState {
         return routeType;
     }
 
+    /**
+     * Set the route type
+     * @param routeType
+     */
     public void setType(RouteType routeType) {
         this.routeType = routeType;
         fetchRoute();
+        notifyRouteTypeChangeListeners();
+    }
+
+    public void addRouteTypeChangeListener(RouteTypeChangeListener listener) {
+        routeTypeChangeListeners.add(listener);
+    }
+
+    public void removeRouteTypeChangeListener(RouteTypeChangeListener listener) {
+        if(routeTypeChangeListeners.contains(listener)) {
+            routeTypeChangeListeners.remove(listener);
+        }
+    }
+
+    protected void notifyRouteTypeChangeListeners() {
+        for(RouteTypeChangeListener listener: routeTypeChangeListeners) {
+            listener.routeTypeChanged(routeType);
+        }
+    }
+
+    /**
+     * Flip around the source and destination addresses
+     */
+    public void flipRoute() {
+        setSourceAndDestination(destination, source);
     }
 
     /**
@@ -232,10 +273,6 @@ public class RouteSelectionState extends MapState {
             }
         });
         dialog.show();
-    }
-
-    public void flipRoute() {
-        setSourceAndDestination(destination, source);
     }
 
     public void startNavigation() {
