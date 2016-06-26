@@ -161,15 +161,13 @@ public class RouteSelectionState extends MapState {
             }
 
             @Override
-            public void onSuccess(boolean isBreak) {
+            public void onSuccess(BreakRouteRequester.BreakRouteResponse breakRouteResponse) {
                 if(!cancelled) {
                     routeCallbacks.remove(this);
-                    // TODO: Refactor the use of MapActivity.isBreakChosen - so it's no longer needed.
-                    if (MapActivity.isBreakChosen) {
-                        Log.d("DV_break", "NavigationMaphandler: Calling showRoute with breakRoute!");
+                    if(routeSelectionFragment instanceof BreakRouteSelectionFragment) {
+                        BreakRouteSelectionFragment fragment = ((BreakRouteSelectionFragment) routeSelectionFragment);
+                        fragment.brokenRouteReady(breakRouteResponse);
                         activity.getMapView().showMultipleRoutes();
-                    } else {
-                        MapActivity.breakFrag.setVisibility(View.GONE);
                     }
                 }
             }
@@ -182,6 +180,7 @@ public class RouteSelectionState extends MapState {
             }
 
         };
+
         routeCallbacks.add(routeCallback);
         Geocoder.getRoute(sourceLocation, destinationLocation, routeCallback, routeType);
     }

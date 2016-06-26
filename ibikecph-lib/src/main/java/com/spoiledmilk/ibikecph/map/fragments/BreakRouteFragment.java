@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.BreakRouteRequester;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
@@ -27,8 +28,6 @@ import java.text.SimpleDateFormat;
  */
 public class BreakRouteFragment extends Fragment implements View.OnClickListener {
 
-    private static final String ARG_POSITION = "position";
-    private int position;
     private View root;
     private boolean hasDataBeenSet = false;
 
@@ -48,13 +47,12 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     TextView typeTV;
     TextView fromToTV;
 
+    protected JsonNode jsonNode;
 
     // newInstance constructor for creating fragment with arguments
-    public static BreakRouteFragment newInstance(int position) {
+    public static BreakRouteFragment newInstance(BreakRouteRequester.BreakRouteResponse response, int position) {
         BreakRouteFragment breakRouteFragment = new BreakRouteFragment();
-        Bundle b = new Bundle();
-        b.putInt(ARG_POSITION, position);
-        breakRouteFragment.setArguments(b);
+        breakRouteFragment.setData(response.getJsonNode().get(position));
         return breakRouteFragment;
     }
 
@@ -69,15 +67,14 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        position = getArguments().getInt(ARG_POSITION);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if (!hasDataBeenSet) {
-            JsonNode jsonNode = MapActivity.breakRouteJSON.get(position);
-            setData(jsonNode);
+            parseData();
+
             //dummyData();
             int marginPx = convertToDp(10);
             int paddingPx = convertToDp(10);
@@ -181,19 +178,11 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
         hasDataBeenSet = true;
     }
 
-    @Override
-    public void onClick(View view) {
-    }
-
-    public int convertToDp(int input) {
-        //Get the screen's density scale
-        final float scale = getResources().getDisplayMetrics().density;
-        //Convert the dps to pixels, based on density scale
-        return (int) (input * scale + 0.5f);
-    }
-
-    public void setData(JsonNode jsonNode) {
-
+    /**
+     * Turn the break route data into an internal representation.
+     * Don't call this before the fragment has been attached to an activity.
+     */
+    protected void parseData() {
         String type;
         String from;
         String to;
@@ -224,7 +213,21 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
                 fromTo[i] = jsonNode.path("journey").get(i).path("route_summary").path("name").textValue() + " " + IBikeApplication.getString("To") + "\n" + jsonNode.path("journey").get(i).path("route_name").get(1).textValue();
             }
         }
+    }
 
+    @Override
+    public void onClick(View view) {
+    }
+
+    public int convertToDp(int input) {
+        //Get the screen's density scale
+        final float scale = getResources().getDisplayMetrics().density;
+        //Convert the dps to pixels, based on density scale
+        return (int) (input * scale + 0.5f);
+    }
+
+    public void setData(JsonNode jsonNode) {
+        this.jsonNode = jsonNode;
     }
 
     public String formatDistance(double distance) {
