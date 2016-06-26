@@ -85,8 +85,35 @@ public class BreakRouteSelectionFragment extends RouteSelectionFragment {
         progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
         progressBarHolder = (FrameLayout) v.findViewById(R.id.progressBarHolder);
 
+        // Setting up the tabs
+        tabs.setRadius(10);
+        tabs.setCentered(true);
+        tabs.setFillColor(getResources().getColor(R.color.PrimaryColor));
+
+        // Update the route type right away, to make trigger a route type change
+        mapState.setType(RouteType.FASTEST);
+
         return v;
     }
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.break_route_selection_fragment;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.routeSelectionBreakButton) {
+            // TODO: Refactor out the following two lines.
+            NavigationMapHandler.routePos = 0;
+            pager.setAdapter(null);
+
+            mapState.setType(RouteType.BREAK);
+        } else {
+            super.onClick(v);
+        }
+    }
+
     public void brokenRouteReady(BreakRouteRequester.BreakRouteResponse response) {
         progressBarHolder.setVisibility(View.GONE);
         breakRouteContainer.setVisibility(View.VISIBLE);
@@ -148,6 +175,18 @@ public class BreakRouteSelectionFragment extends RouteSelectionFragment {
         });
     }
     */
+
+    @Override
+    public void routeTypeChanged(RouteType newType) {
+        super.routeTypeChanged(newType);
+        if(newType == RouteType.BREAK) {
+            progressBarHolder.setVisibility(View.VISIBLE);
+            breakRouteContainer.setVisibility(View.GONE);
+        } else {
+            progressBarHolder.setVisibility(View.GONE);
+            breakRouteContainer.setVisibility(View.GONE);
+        }
+    }
 
     /**
      * TODO: Refactor by renaming

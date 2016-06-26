@@ -208,31 +208,42 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
                 v.findViewById(R.id.startRouteButton).setVisibility(View.GONE);
             }
         }
+    }
 
+    /**
+     * A way to get the fragment, as a method to enable override.
+     * @return
+     */
+    protected int getLayoutResource() {
+        return R.layout.route_selection_fragment;
+    }
+
+    @Override
+    public void routeTypeChanged(RouteType newType) {
         // Make sure the buttons are in the disabled state if not enabled.
         int greenButtonDrawable = R.drawable.btn_route_green_disabled;
         int cargoButtonDrawable = R.drawable.btn_route_cargo_disabled;
         int fastButtonDrawable = R.drawable.btn_route_fastest_disabled;
         int breakButtonDrawable = R.drawable.btn_train_disabled;
 
-        if(route != null) {
-            // Highlight the relevant route type button
-            switch (route.getType()) {
-                case FASTEST:
-                    fastButtonDrawable = R.drawable.btn_route_fastest_enabled;
-                    break;
-                case CARGO:
-                    cargoButtonDrawable = R.drawable.btn_route_cargo_enabled;
-                    break;
-                case GREEN:
-                    greenButtonDrawable = R.drawable.btn_route_green_enabled;
-                    break;
-                case BREAK:
-                    breakButtonDrawable = R.drawable.btn_train_enabled;
-                    break;
-                default:
-                    break;
-            }
+        // TODO: Remove the need for this
+        MapActivity.isBreakChosen = newType == RouteType.BREAK;
+
+        switch (newType) {
+            case FASTEST:
+                fastButtonDrawable = R.drawable.btn_route_fastest_enabled;
+                break;
+            case CARGO:
+                cargoButtonDrawable = R.drawable.btn_route_cargo_enabled;
+                break;
+            case GREEN:
+                greenButtonDrawable = R.drawable.btn_route_green_enabled;
+                break;
+            case BREAK:
+                breakButtonDrawable = R.drawable.btn_train_enabled;
+                break;
+            default:
+                break;
         }
 
         greenButton.setImageResource(greenButtonDrawable);
