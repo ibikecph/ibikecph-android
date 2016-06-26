@@ -122,127 +122,31 @@ public class Geocoder {
 
         // OSRM directive to not ignore small road fragments
         int z = 18;
-        String baseURL;
-        final String url;
-
-        switch (type) {
-            case CARGO:
-                baseURL = Config.OSRM_SERVER_CARGO;
-                break;
-            case GREEN:
-                baseURL = Config.OSRM_SERVER_GREEN;
-                break;
-            case BREAK:
-                baseURL = Config.API_BREAK_ROUTE;
-                break;
-            case FASTEST:
-            default:
-                baseURL = Config.OSRM_SERVER_DEFAULT;
-                break;
-        }
 
         if (type == RouteType.BREAK) {
-            url = String.format(Locale.US,
-                                "%s?loc[]=%.6f,%.6f&loc[]=%.6f,%.6f",
-                                baseURL,
-                                start.getLatitude(),
-                                start.getLongitude(),
-                                end.getLatitude(),
-                                end.getLongitude());
-
-            final SMHttpRequest.RouteInfo[] ri = new SMHttpRequest.RouteInfo[1];
-
-            new AsyncTask<String, Integer, String>() {
-                @Override
-                protected String doInBackground(String... strings) {
-                    ri[0] = new SMHttpRequest.RouteInfo(HttpUtils.get(url, true), Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end));
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(String result) {
-                    super.onPostExecute(result);
-                    if (ri[0] == null || ri[0].jsonRoot == null || ri[0].jsonRoot.path("status").asInt(-1) != 0) {
-                        // Log.d("DV", "jsonRoot = " + ri.jsonRoot);
-
-                        if (ri[0] != null && ri[0].jsonRoot != null) {
-                            Log.d("DV_break", "ri != null");
-                            int amountOfRoutes = ri[0].jsonRoot.size(); // Gets the amount of routes.
-                            MapActivity.breakRouteJSON = ri[0].jsonRoot;
-                            MapActivity.obsInt.set(amountOfRoutes); // Set the amount of route suggestions in order to display this amount in the fragmentAdapter
-
-                            ObjectMapper mapper = new ObjectMapper();
-                            JsonNode node = null;
-                            try {
-                                node = mapper.readTree(ri[0].jsonRoot.toString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-
-
-                            // Make route objects for each route piece in each route suggestion.
-                            SMRoute route;
-                            arrayLists = new ArrayList<ArrayList<SMRoute>>(); // One array for each route-suggestion, which contains x route pieces
-                            ArrayList<SMRoute> smRoutesArr; // route pieces
-
-                            for (int i = 0; i < amountOfRoutes; i++) {
-                                smRoutesArr = new ArrayList<SMRoute>();
-                                for (int j = 0; j < node.get(i).path("journey").size(); j++) {
-                                    route = new SMRoute();
-                                    route.transportType = node.get(i).path("journey").get(j).path("route_summary").path("type").textValue();
-
-                                    // Add the route piece to the route-array
-                                    smRoutesArr.add(route);
-                                    Log.d("DV_break", "Route type = " + route.transportType);
-                                }
-                                // Add the route pieces-array to the route-suggestion-array
-                                arrayLists.add(smRoutesArr);
-                            }
-
-                            totalTime = new ArrayList<Integer>();
-                            totalBikeDistance = new ArrayList<Integer>();
-                            totalDistance = new ArrayList<Integer>();
-                            arrivalTime = new ArrayList<Long>();
-                            from = new ArrayList<String>();
-                            to = new ArrayList<String>();
-
-                            for (int i = 0; i < arrayLists.size(); i++) {
-                                for (int j = 0; j < arrayLists.get(i).size(); j++) {
-
-                                    int viaPointsSize = node.get(i).path("journey").get(j).path("via_points").size();
-                                    Location loc1 = Util.locationFromCoordinates(node.get(i).path("journey").get(j).path("via_points").get(0).get(0).asDouble(), node.get(i).path("journey").get(j).path("via_points").get(0).get(1).asDouble());
-                                    Location loc2 = Util.locationFromCoordinates(node.get(i).path("journey").get(j).path("via_points").get(viaPointsSize - 1).get(0).asDouble(), node.get(i).path("journey").get(j).path("via_points").get(viaPointsSize - 1).get(1).asDouble());
-
-                                    Address start = new Address();
-                                    Address end = new Address();
-
-                                    start.setStreet(node.get(i).path("journey").get(j).path("route_name").get(0).textValue());
-                                    start.setLocation(new LatLng(node.get(i).path("journey").get(j).path("via_points").get(0).get(0).asDouble(), node.get(i).path("journey").get(j).path("via_points").get(0).get(1).asDouble()));
-                                    end.setStreet(node.get(i).path("journey").get(j).path("route_name").get(1).textValue());
-                                    end.setLocation(new LatLng(node.get(i).path("journey").get(j).path("via_points").get(viaPointsSize - 1).get(0).asDouble(), node.get(i).path("journey").get(j).path("via_points").get(viaPointsSize - 1).get(1).asDouble()));
-
-                                    arrayLists.get(i).get(j).init(loc1, loc2, routeListener, node.get(i).path("journey").get(j), type);
-                                    arrayLists.get(i).get(j).startAddress = start;
-                                    arrayLists.get(i).get(j).endAddress = end;
-
-                                }
-
-                                totalDistance.add(node.get(i).path("journey_summary").path("total_distance").asInt());
-                                totalTime.add(node.get(i).path("journey_summary").path("total_time").asInt());
-                                totalBikeDistance.add(node.get(i).path("journey_summary").path("total_bike_distance").asInt());
-                                arrivalTime.add(node.get(i).path("journey").get(node.get(i).path("journey").size() - 1).path("route_summary").path("arrival_time").asLong());
-                                from.add(node.get(i).path("journey").get(0).path("route_name").get(0).textValue());
-                                //to.add(node.get(i).path("journey").get(node.get(i).path("journey").size() - 1).path("route_name").get(1).textValue());
-                            }
-                            callback.onSuccess(true);
-                        } else {
-                            callback.onFailure();
-                        }
-                    }
-
-                }
-            }.execute();
+            BreakRouteRequester requester = new BreakRouteRequester(start, end, callback);
+            requester.execute();
         } else {
+            String baseURL;
+            final String url;
+
+            switch (type) {
+                case CARGO:
+                    baseURL = Config.OSRM_SERVER_CARGO;
+                    break;
+                case GREEN:
+                    baseURL = Config.OSRM_SERVER_GREEN;
+                    break;
+                case BREAK:
+                    baseURL = Config.API_BREAK_ROUTE;
+                    break;
+                case FASTEST:
+                    baseURL = Config.OSRM_SERVER_FAST;
+                    break;
+                default:
+                    baseURL = Config.OSRM_SERVER_DEFAULT;
+                    break;
+            }
             url = String.format(Locale.US, "%s/viaroute?z=%d&alt=false&loc=%.6f,%.6f&loc=%.6f,%.6f&instructions=true",
                     baseURL,
                     z,
