@@ -69,7 +69,7 @@ public class Config {
         API_SERVER_HAS_PASSWORD = API_SERVER_REGISTER + "/has_password";
         API_SERVER_CHANGE_PASSWORD = API_SERVER_REGISTER + "/change_password";
         API_UPLOAD_TRACKS = baseUrl + "/tracks";
-        API_BREAK_ROUTE = baseUrl + "/journey";
+        API_BREAK_ROUTE = baseUrl + "/journeys";
         TRACKING_TERMS_JSON_URL = baseUrl + "/terms";
     }
 }
