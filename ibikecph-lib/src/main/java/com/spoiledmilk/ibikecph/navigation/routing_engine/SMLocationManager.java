@@ -92,12 +92,6 @@ public class SMLocationManager implements LocationListener {
         return IBikeApplication.getService().getLastValidLocation();
     }
 
-    public Location getLastKnownLocation() {
-        Log.e("JC", "FIXME: SMLocationManager.getLastKnownLocation()");
-
-        return IBikeApplication.getService().getLastKnownLocation();
-    }
-
     @Override
     public void onLocationChanged(Location location) {
 		//Log.i("JC", "SMLocationManager new location");

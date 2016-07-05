@@ -126,9 +126,6 @@ public class Address implements Serializable {
         if (isCurrent) {
             if (IBikeApplication.getService().getLastValidLocation() != null)
                 return new LatLng(IBikeApplication.getService().getLastValidLocation());
-
-            if (IBikeApplication.getService().getLastKnownLocation() != null)
-                return new LatLng(IBikeApplication.getService().getLastKnownLocation());
         }
 
         return location;
@@ -251,7 +248,7 @@ public class Address implements Serializable {
 
         // If we don't have a fresh GPS coordinate, go with the best that we have.
         if (curLoc == null) {
-            curLoc = IBikeApplication.getService().getLastKnownLocation();
+            curLoc = IBikeApplication.getService().getLastValidLocation();
         }
 
         // If we still don't have a fix, we cannot do anything for them.

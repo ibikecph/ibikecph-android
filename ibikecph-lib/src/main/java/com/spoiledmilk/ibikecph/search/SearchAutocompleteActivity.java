@@ -336,8 +336,6 @@ public class SearchAutocompleteActivity extends Activity {
                     final Location loc1;
                     if (IBikeApplication.getService().hasValidLocation()) {
                         loc1 = IBikeApplication.getService().getLastValidLocation();
-                    } else if (IBikeApplication.getService().getLastKnownLocation() != null) {
-                        loc1 = IBikeApplication.getService().getLastKnownLocation();
                     } else {
                         loc1 = Util.COPENHAGEN;
                     }

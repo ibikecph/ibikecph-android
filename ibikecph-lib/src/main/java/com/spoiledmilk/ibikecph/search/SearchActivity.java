@@ -133,9 +133,6 @@ public class SearchActivity extends Activity implements ScrollViewListener {
         Intent intent = new Intent();
         if (ALatitude == -1 || ALongitude == -1) {
             Location start = IBikeApplication.getService().getLastValidLocation();
-            if (start == null) {
-                start = IBikeApplication.getService().getLastKnownLocation();
-            }
             if (start != null) {
                 ALatitude = start.getLatitude();
                 ALongitude = start.getLongitude();
@@ -212,11 +209,8 @@ public class SearchActivity extends Activity implements ScrollViewListener {
 
         initStrings();
         if (textCurrentLoc.getVisibility() == View.VISIBLE
-                && (IBikeApplication.getService().getLastValidLocation() != null || IBikeApplication.getService().getLastKnownLocation() != null)) {
+                && (IBikeApplication.getService().getLastValidLocation() != null)) {
             Location loc = IBikeApplication.getService().getLastValidLocation();
-            if (loc == null) {
-                loc = IBikeApplication.getService().getLastKnownLocation();
-            }
             ALatitude = loc.getLatitude();
             ALongitude = loc.getLongitude();
         }

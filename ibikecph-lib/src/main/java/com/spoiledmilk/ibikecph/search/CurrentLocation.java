@@ -22,7 +22,7 @@ public class CurrentLocation extends SearchListItem {
 	}
 
 	public double getLatitude() {
-		Location start = SMLocationManager.getInstance().getLastKnownLocation();
+		Location start = SMLocationManager.getInstance().getLastValidLocation();
 		latitude = -1;
 		if (start != null) {
 			latitude = start.getLatitude();
@@ -31,7 +31,7 @@ public class CurrentLocation extends SearchListItem {
 	}
 
 	public double getLongitude() {
-		Location start = SMLocationManager.getInstance().getLastKnownLocation();
+		Location start = SMLocationManager.getInstance().getLastValidLocation();
 		longitude = -1;
 		if (start != null) {
 			longitude = start.getLongitude();
