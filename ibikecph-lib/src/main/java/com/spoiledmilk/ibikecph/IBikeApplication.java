@@ -371,6 +371,6 @@ public class IBikeApplication extends Application {
     }
 
     public boolean breakRouteIsEnabled() {
-        return false;
+        return getResources().getBoolean(R.bool.breakRouteEnabled);
     }
 }

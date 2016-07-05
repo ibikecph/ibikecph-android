@@ -36,9 +36,4 @@ public class CykelPlanenApplication extends IBikeApplication {
 		return BuildConfig.DEBUG;
 	}
 
-	@Override
-	public boolean breakRouteIsEnabled() {
-		return getResources().getBoolean(R.bool.breakRouteEnabled);
-	}
-
 }
