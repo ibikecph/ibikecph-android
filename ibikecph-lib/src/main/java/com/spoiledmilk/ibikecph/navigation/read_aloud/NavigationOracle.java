@@ -305,13 +305,6 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
                                  minutes,
                                  minuteUnit);
         }
-
-
-    }
-
-    @Override
-    public void updateTurn(boolean firstElementRemoved) {
-
     }
 
     @Override
@@ -341,11 +334,6 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
 
     @Override
     public void routeRecalculationDone() {
-
-    }
-
-    @Override
-    public void routeRecalculationDone(String type) {
 
     }
 

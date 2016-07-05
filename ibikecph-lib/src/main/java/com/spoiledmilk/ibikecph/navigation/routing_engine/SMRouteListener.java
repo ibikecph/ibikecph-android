@@ -6,13 +6,11 @@
 package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
 public interface SMRouteListener {
-	public void updateTurn(boolean firstElementRemoved);
-	public void reachedDestination();
-	public void updateRoute();
-	public void startRoute();
-	public void routeNotFound();
-	public void routeRecalculationStarted();
-	public void routeRecalculationDone();
-	public void routeRecalculationDone(String type);
-	public void serverError();
+	void reachedDestination();
+	void updateRoute();
+	void startRoute();
+	void routeNotFound();
+	void routeRecalculationStarted();
+	void routeRecalculationDone();
+	void serverError();
 }

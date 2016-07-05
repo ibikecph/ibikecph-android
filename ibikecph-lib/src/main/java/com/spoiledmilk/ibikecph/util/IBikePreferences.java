@@ -55,8 +55,6 @@ public class IBikePreferences {
 
     public Language language = Language.UNDEFINED;
 
-//    private Map<OverlayType, Boolean> overlays = new HashMap<OverlayType, Boolean>();
-
     private Context context;
 
     public IBikePreferences(Context context) {

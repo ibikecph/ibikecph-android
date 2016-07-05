@@ -6,31 +6,23 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
-import com.mapbox.mapboxsdk.overlay.Overlay;
-import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.mapbox.mapboxsdk.tileprovider.MapTileLayerBase;
 import com.mapbox.mapboxsdk.tileprovider.tilesource.WebSourceTileLayer;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.mapbox.mapboxsdk.views.MapViewListener;
-import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
-import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Util;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -51,11 +43,6 @@ public class IBCMapView extends MapView {
 
     protected List<Overlay> routeOverlays = new ArrayList<>();
 
-    public enum MapViewState {
-        DEFAULT,
-        TRACK_DISPLAY,
-        NAVIGATION_OVERVIEW
-    }
 
     private MapViewListener currentListener;
     private BaseMapActivity parentActivity;
@@ -200,13 +187,6 @@ public class IBCMapView extends MapView {
         }
         return result;
     }
-
-    /*
-    public void showAddressFromFavorite(Address a) {
-        showDestinationPreviewFragment(a);
-        removeAddressMarker();
-    }
-    */
 
     @Override
     public void selectMarker(Marker marker) {

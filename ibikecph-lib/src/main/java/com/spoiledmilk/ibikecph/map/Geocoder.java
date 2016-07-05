@@ -1,9 +1,5 @@
 package com.spoiledmilk.ibikecph.map;
 
-import android.location.Location;
-import android.os.AsyncTask;
-import android.util.Log;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
@@ -12,10 +8,8 @@ import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.Util;
 
 import org.apache.http.Header;
@@ -35,36 +29,6 @@ public class Geocoder {
      * @deprecated Let's phase out the use of static members like this.
      */
     public static ArrayList<ArrayList<SMRoute>> arrayLists;
-
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static ArrayList<Integer> totalTime;
-
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static ArrayList<Integer> totalDistance;
-
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static ArrayList<Integer> totalBikeDistance;
-
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static ArrayList<Long> arrivalTime;
-
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static ArrayList<String> from;
-
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static ArrayList<String> to;
 
     public interface GeocoderCallback {
         public void onSuccess(Address address);

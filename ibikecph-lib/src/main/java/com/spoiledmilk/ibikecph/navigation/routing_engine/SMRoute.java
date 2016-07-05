@@ -201,12 +201,9 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     @Override
                     public void run() {
 
-                        boolean ok = parseFromJson(jRoot, null, isRouteBroken);
-
-//                        logWaypoints();
+                        boolean ok = parseFromJson(jRoot);
 
                         if (ok) {
-                            approachingTurn = false;
                             h.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -219,32 +216,17 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                                     if (IBikeApplication.getService().hasValidLocation()) {
                                         updateDistances(IBikeApplication.getService().getLastValidLocation());
                                     }
+                                    recalculationInProgress = false;
                                     emitRouteRecalculationDone();
                                     emitRouteUpdated();
-                                    // TODO: Check if the listeners are using the update route,
-                                    // rename it and change and refactor out the use of the
-                                    // overloaded routeRecalculationDone
-                                    /*
-                                    if (listener != null) {
-                                        if (type.toString().equals("BREAK")) {
-                                            Log.d("DV", "IS BREAK!");
-                                            listener.routeRecalculationDone(type.toString());
-                                        } else {
-                                            Log.d("DV", "IS BREAK NOT!");
-                                            listener.routeRecalculationDone();
-                                        }
-                                        listener.updateRoute();
-                                    }
-                                    */
-                                    recalculationInProgress = false;
                                 }
                             });
                         } else {
                             h.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    emitServerError();
                                     recalculationInProgress = false;
+                                    emitServerError();
                                 }
                             });
                         }
@@ -256,44 +238,63 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         }
     }
 
+    /**
+     * Emits that the route has updated.
+     */
     protected void emitRouteUpdated() {
         for(SMRouteListener listener: listeners) {
-            // TODO: Rename the method
             listener.updateRoute();
         }
     }
 
+    /**
+     * Emits that the route recalculation is done.
+     */
     protected void emitRouteRecalculationDone() {
         for(SMRouteListener listener: listeners) {
             listener.routeRecalculationDone();
         }
     }
 
+    /**
+     * Emits that a server error occurred when fetching the route.
+     */
     protected void emitServerError() {
         for(SMRouteListener listener: listeners) {
             listener.serverError();
         }
     }
 
+    /**
+     * Emits that the route is ready to be started
+     */
     protected void emitStartRoute() {
         for(SMRouteListener listener: listeners) {
             listener.startRoute();
         }
     }
 
+    /**
+     * Emits that no route was found
+     */
     protected void emitRouteNotFound() {
         for(SMRouteListener listener: listeners) {
             listener.routeNotFound();
         }
     }
 
+    /**
+     * Emits that the routes destination was reached
+     */
     protected void emitDestinationReached() {
         for(SMRouteListener listener: listeners) {
-            // TODO: Change the name of the method
             listener.reachedDestination();
         }
     }
 
+    /**
+     * Emits that the user has diverged too much from the route, and a recalculation has started
+     */
     protected void emitRouteRecalculationStarted() {
         for(SMRouteListener listener: listeners) {
             listener.routeRecalculationStarted();
@@ -614,6 +615,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     Location lastLocation;
 
     // Turn by Turn
+
+    /**
+     * Updates the route when a user has visited a particular location.
+     * TODO: Clean this up - a lot ...
+     * @param loc
+     */
     public void visitLocation(Location loc) {
         Log.d("DV", "VISIT LOCATION!, Transport type = " + transportType);
 
@@ -775,21 +782,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         double minD = Double.MAX_VALUE;
         Location projectedLoc = null;
         if (turnInstructions != null && turnInstructions.size() > 0) {
-            // find the projected location on the route segment
-            // check only a couple of the first instructions
-            // for (int i = 0; i < turnInstructions.size() - 1 && i < 3; i++) {
-            // double d = SMGPSUtil.distanceFromLineInMeters(loc, turnInstructions.get(i).loc, turnInstructions.get(i +
-            // 1).loc);
-            // if (d < minD && d < 20) {
-            // projectedLoc = SMGPSUtil.closestCoordinate(loc, turnInstructions.get(i).loc, turnInstructions.get(i +
-            // 1).loc);
-            // }
-            // }
-            // minD = Double.MAX_VALUE;
-
-            // if (lastCorrectedLocation != null && lastCorrectedLocation.distanceTo(loc) < 30) {
-            // projectedLoc = lastCorrectedLocation;
-            // }
 
             projectedLoc = loc;
 
@@ -805,15 +797,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     }
                 }
             }
-        }
-
-        try {
-            LOG.d("routing debug closestWaypointIndex = " + closestWaypointIndex);
-            LOG.d("routing debug loc = " + Util.locationString(loc));
-            LOG.d("routing debug instructions[0] = " + turnInstructions.get(0).fullDescriptionString + " loc = "
-                    + Util.locationString(turnInstructions.get(0).loc) + " waypoint index = " + turnInstructions.get(0).waypointsIndex);
-        } catch (Exception e) {
-
         }
 
         if (closestWaypointIndex > -1 && !recalculationInProgress) {
@@ -859,7 +842,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     }
 
     public void recalculateRoute(Location loc, boolean isBicycleTypeChanged) {
-        Log.d("DV_break", "SMRoute, recalculateRoute with type = " + transportType);
         if (recalculationInProgress) {
             return;
         }
@@ -867,22 +849,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         if (distance < MIN_DISTANCE_FOR_RECALCULATION && !isBicycleTypeChanged) {
             return;
         }
-        LOG.d("Recalculating route, distance: " + distance);
         lastRecalcLocation = loc;
         recalculationInProgress = true;
         emitRouteRecalculationStarted();
         Location end = getEndLocation();
         if (loc == null || end == null)
             return;
-
-        // Uncomment code below if previous part of the route needs to be
-        // displayed.
-        // NSMutableArray *viaPoints = [NSMutableArray array];
-        // for (SMTurnInstruction *turn in self.pastTurnInstructions)
-        // [viaPoints addObject:turn.loc];
-        // [viaPoints addObject:loc];
-        // [r getRouteFrom:((CLLocation *)[self.waypoints
-        // objectAtIndex:0]).coordinate to:end.coordinate via:viaPoints];
 
         if (!isRouteBroken
                 || (isRouteBroken && (((pastTurnInstructions != null && pastTurnInstructions.contains(station1)) || loc.distanceTo(endStation) < loc
@@ -900,19 +872,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         }
     }
 
-    public boolean getRouteForNewBicycleType(Location loc) {
-        if (recalculationInProgress) {
-            return false;
-        }
-        lastRecalcLocation = loc;
-        recalculationInProgress = true;
-        Location end = getEndLocation();
-        if (loc == null || end == null) {
-            return false;
-        }
-        new SMHttpRequest().getRecalculatedRoute(loc, end, null, null, null, null, this.type, this);
-        return true;
-    }
 
     boolean checkLocation(Location loc, float maxDistance) {
         SMTurnInstruction currentTurn = turnInstructions.get(0);
@@ -1140,24 +1099,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        if (this.cleanedUp) {
-            IBikeApplication.getService().removeLocationListener(this);
-            return;
-        }
-
-        // Must fix this and use it.
         this.visitLocation(location);
     }
-
-    /**
-     * Severs any connections with this SMRoute object, since we're not gonna need it anymore.
-     */
-    public void cleanUp() {
-        IBikeApplication.getService().removeLocationListener(this);
-        this.removeListeners();
-        this.cleanedUp = true;
-    }
-
 
     public RouteType getType() {
         return type;

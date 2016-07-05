@@ -212,10 +212,6 @@ public class BikeLocationService extends Service implements LocationListener {
         return lastValidLocation;
     }
 
-    public Location getLastKnownLocation() {
-        return null;
-    }
-
     public boolean hasValidLocation() {
         return lastValidLocation != null;
     }
