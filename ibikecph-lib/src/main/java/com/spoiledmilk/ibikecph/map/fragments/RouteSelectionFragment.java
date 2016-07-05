@@ -17,6 +17,7 @@ import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
@@ -45,7 +46,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
         if (DateFormat.is24HourFormat(this.getActivity())) {
             dateFormat = new SimpleDateFormat("HH:mm");
         } else {
-            dateFormat = new SimpleDateFormat("HH:mm a");
+            dateFormat = new SimpleDateFormat("hh:mm a");
         }
     }
 
@@ -53,7 +54,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v = inflater.inflate(getLayoutResource(), container, false);
 
-        View startRouteButton = (View) v.findViewById(R.id.startRouteButton);
+        View startRouteButton = v.findViewById(R.id.startRouteButton);
         startRouteButton.setOnClickListener(this);
 
         fastButton = (ImageButton) v.findViewById(R.id.routeSelectionFastButton);
@@ -73,7 +74,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
         breakButton.setOnClickListener(this);
 
         // Add the ability to flip the route
-        ((ImageButton) v.findViewById(R.id.btnAddressSwap)).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.btnAddressSwap).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mapState.flipRoute();
@@ -117,19 +118,19 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
     }
 
     public void refreshView() {
-        SMRoute route = mapState.getRoute();
-        if(route == null) {
+        Journey journey = mapState.getJourney();
+        if(journey == null) {
             sourceText.setText("");
             destinationText.setText("");
         } else {
             float distance;
             float duration;
 
-            sourceText.setText(route.startAddress.getDisplayName());
-            destinationText.setText(route.endAddress.getDisplayName());
+            sourceText.setText(journey.getStartAddress().getDisplayName());
+            destinationText.setText(journey.getEndAddress().getDisplayName());
 
-            distance = route.getEstimatedDistance();
-            duration = route.getEstimatedArrivalTime();
+            distance = journey.getEstimatedDistance();
+            duration = journey.getEstimatedArrivalTime();
 
             if (distance > 1000) {
                 distance /= 1000;
@@ -146,10 +147,9 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             Date arrivalTime = c.getTime();
             etaText.setText(dateFormat.format(arrivalTime));
 
-            // Only show the go button if the route starts at the current location
-            if (route != null && route.startAddress.isCurrentLocation()) {
-                v.findViewById(R.id.startRouteButton).setVisibility(View.VISIBLE);
-            } else if (MapActivity.isBreakChosen) {
+            // Only show the go button if the route starts at the current location or the route type
+            // is break route.
+            if (journey.getStartAddress().isCurrentLocation() || mapState.getType() == RouteType.BREAK) {
                 v.findViewById(R.id.startRouteButton).setVisibility(View.VISIBLE);
             } else {
                 v.findViewById(R.id.startRouteButton).setVisibility(View.GONE);

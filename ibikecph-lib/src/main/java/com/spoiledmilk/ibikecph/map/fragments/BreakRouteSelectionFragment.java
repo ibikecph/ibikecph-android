@@ -15,10 +15,14 @@ import android.widget.ProgressBar;
 
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteRequester;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -37,6 +41,7 @@ public class BreakRouteSelectionFragment extends RouteSelectionFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
+
         breakButton.setVisibility(View.VISIBLE);
         cargoButton.setVisibility(View.GONE);
 
@@ -51,8 +56,9 @@ public class BreakRouteSelectionFragment extends RouteSelectionFragment {
         tabs.setCentered(true);
         tabs.setFillColor(getResources().getColor(R.color.PrimaryColor));
 
-        // Update the route type right away, to make trigger a route type change
-        mapState.setType(RouteType.FASTEST);
+        // Trigger the route type changed to update route type buttons.
+        RouteSelectionState state = getMapState(RouteSelectionState.class);
+        routeTypeChanged(state.getType());
 
         return v;
     }
@@ -75,7 +81,7 @@ public class BreakRouteSelectionFragment extends RouteSelectionFragment {
         }
     }
 
-    public void brokenRouteReady(BreakRouteRequester.BreakRouteResponse response) {
+    public void brokenRouteReady(final BreakRouteResponse response) {
         progressBarHolder.setVisibility(View.GONE);
         breakRouteContainer.setVisibility(View.VISIBLE);
         pager.setVisibility(View.VISIBLE);
@@ -84,35 +90,38 @@ public class BreakRouteSelectionFragment extends RouteSelectionFragment {
         MapActivity activity = (MapActivity) getActivity();
         FragmentManager fm = activity.getSupportFragmentManager();
         pager.setAdapter(new BreakRoutePagerAdapter(fm, response));
-        tabs.setViewPager(pager);
-
-        tabs.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
 
             @Override
             public void onPageSelected(int position) {
-                Log.d("BreakRouteSelectionFrag", "onPageSelected called with " + position);
-                NavigationMapHandler.obsInt.setPageValue(position);
+                Journey journey = response.getJourney(position);
+                mapState.setJourney(journey);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
             }
-        });
+        };
+        tabs.setOnPageChangeListener(pageChangeListener);
+        tabs.setViewPager(pager);
+        // Call the listener right away.
+        pageChangeListener.onPageSelected(pager.getCurrentItem());
     }
-
 
     @Override
     public void routeTypeChanged(RouteType newType) {
         super.routeTypeChanged(newType);
-        if(newType == RouteType.BREAK) {
-            progressBarHolder.setVisibility(View.VISIBLE);
-            breakRouteContainer.setVisibility(View.GONE);
-        } else {
-            progressBarHolder.setVisibility(View.GONE);
-            breakRouteContainer.setVisibility(View.GONE);
+        if(breakRouteContainer != null && breakRouteContainer != null) {
+            if(newType == RouteType.BREAK) {
+                progressBarHolder.setVisibility(View.VISIBLE);
+                breakRouteContainer.setVisibility(View.GONE);
+            } else {
+                progressBarHolder.setVisibility(View.GONE);
+                breakRouteContainer.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -121,9 +130,9 @@ public class BreakRouteSelectionFragment extends RouteSelectionFragment {
      */
     class BreakRoutePagerAdapter extends FragmentStatePagerAdapter {
 
-        protected BreakRouteRequester.BreakRouteResponse response;
+        protected BreakRouteResponse response;
 
-        public BreakRoutePagerAdapter(FragmentManager fm, BreakRouteRequester.BreakRouteResponse response) {
+        public BreakRoutePagerAdapter(FragmentManager fm, BreakRouteResponse response) {
             super(fm);
             this.response = response;
         }

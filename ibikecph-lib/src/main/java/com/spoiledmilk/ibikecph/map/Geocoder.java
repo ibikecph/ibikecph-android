@@ -7,6 +7,8 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteRequester;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Config;
@@ -31,14 +33,13 @@ public class Geocoder {
     public static ArrayList<ArrayList<SMRoute>> arrayLists;
 
     public interface GeocoderCallback {
-        public void onSuccess(Address address);
-
-        public void onFailure();
+        void onSuccess(Address address);
+        void onFailure();
     }
 
     public interface RouteCallback {
         void onSuccess(SMRoute route);
-        void onSuccess(BreakRouteRequester.BreakRouteResponse breakRouteResponse);
+        void onSuccess(BreakRouteResponse breakRouteResponse);
         void onFailure();
     }
 
@@ -53,8 +54,6 @@ public class Geocoder {
         String url = String.format(Locale.US, "%s/%f,%f.json", Config.GEOCODER, location.getLatitude(), location.getLongitude());
         client.get(url, new JsonHttpResponseHandler() {
             public void onSuccess(int statusCode, org.apache.http.Header[] headers, org.json.JSONObject response) {
-                Marker m;
-
                 try {
                     Address address = new Address(
                             ((JSONObject) response.get("vejnavn")).getString("navn"),
@@ -65,10 +64,8 @@ public class Geocoder {
                             location.getLongitude());
 
                     callback.onSuccess(address);
-                    m = new IBCMarker(address.getStreetAddress(), address.getPostCodeAndCity(), (LatLng) location, MarkerType.ADDRESS);
                 } catch (JSONException e) {
                     callback.onFailure();
-                    m = new IBCMarker("Ukendt position", "", (LatLng) location, MarkerType.ADDRESS);
                 }
             }
         });
@@ -126,8 +123,7 @@ public class Geocoder {
                         ObjectMapper mapper = new ObjectMapper();
                         JsonNode node = mapper.readTree(response.toString());
 
-                        SMRoute route = new SMRoute();
-                        route.init(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), node, type);
+                        SMRoute route = new SMRoute(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), node, type);
                         // Pass the route back to the caller
                         callback.onSuccess(route);
                     } catch (IOException e) {
