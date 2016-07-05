@@ -3,11 +3,13 @@ package com.spoiledmilk.ibikecph.map;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 
 import com.mapbox.mapboxsdk.api.ILatLng;
+import com.mapbox.mapboxsdk.geometry.BoundingBox;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Icon;
 import com.mapbox.mapboxsdk.overlay.Marker;
@@ -18,6 +20,8 @@ import com.mapbox.mapboxsdk.views.MapView;
 import com.mapbox.mapboxsdk.views.MapViewListener;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
+import com.spoiledmilk.ibikecph.map.overlays.JourneyOverlay;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -38,11 +42,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class IBCMapView extends MapView {
 
-    public static IBCMarker currentAddressMarker;
+    public static IBCMarker destinationPreviewMarker;
     private CopyOnWriteArrayList<IBCMarker> markers = new CopyOnWriteArrayList<IBCMarker>();
 
-    protected List<Overlay> routeOverlays = new ArrayList<>();
-
+    protected JourneyOverlay journeyOverlay;
 
     private MapViewListener currentListener;
     private BaseMapActivity parentActivity;
@@ -103,25 +106,48 @@ public class IBCMapView extends MapView {
     }
 
     /**
-     * Starts routing. This is a two-stage process, in which we first show the route to the user. Then they press "Go"
-     * and we zoom to the first instruction.
-     *
-     * @param route
+     * Show a journey that consists of one or more routes.
      */
-    public void showRoute(SMRoute route) {
-        if(currentListener instanceof NavigationMapHandler) {
-            ((NavigationMapHandler) getMapHandler()).showRouteOverview(route);
-        } else {
-            throw new RuntimeException("Cannot show route with the current listner.");
-        }
+    public void showJourney(Journey journey) {
+        clearJourneyOverlay();
+        journeyOverlay = new JourneyOverlay(this, journey);
+        addOverlay(journeyOverlay);
     }
 
-    public void showMultipleRoutes() {
-        if(currentListener instanceof NavigationMapHandler) {
-            ((NavigationMapHandler) getMapHandler()).showRouteOverviewPieces(0);
-        } else {
-            throw new RuntimeException("Cannot show route with the current listner.");
+    /**
+     * Zoom the map to a route, with a default 20% padding
+     * @param journey
+     */
+    public void zoomToJourney(Journey journey) {
+        zoomToJourney(journey, 0.2f);
+    }
+
+    /**
+     * Zoom the map to a journey of routes, with a default padding around the path.
+     * @param journey
+     * @param padding
+     */
+    public void zoomToJourney(Journey journey, float padding) {
+        List<LatLng> points = new ArrayList<>();
+        for(SMRoute route: journey.getRoutes()) {
+            for(Location location: route.getWaypoints()) {
+                points.add(new LatLng(location.getLatitude(), location.getLongitude()));
+            }
         }
+        BoundingBox boundingBox = BoundingBox.fromLatLngs(points);
+        double north = boundingBox.getLatNorth();
+        double east = boundingBox.getLonEast();
+        double west = boundingBox.getLonWest();
+        double south = boundingBox.getLatSouth();
+        double latitudeDiff = Math.abs(north - south) * padding;
+        double longitudeDiff = Math.abs(east - west) * padding;
+        // Adding padding
+        ArrayList<LatLng> paddedWaypoints = new ArrayList<>();
+        LatLng ne = new LatLng(north + latitudeDiff, east + longitudeDiff);
+        LatLng sw = new LatLng(south - latitudeDiff, west - longitudeDiff);
+        paddedWaypoints.add(ne);
+        paddedWaypoints.add(sw);
+        zoomToBoundingBox(BoundingBox.fromLatLngs(paddedWaypoints), true, true, false, true);
     }
 
     public IBCMapHandler getMapHandler() {
@@ -153,18 +179,11 @@ public class IBCMapView extends MapView {
     }
 
     public void showAddress(Address a) {
-        removeAddressMarker();
-
-        IBCMarker m = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), a.getLocation(), MarkerType.ADDRESS);
+        removeDestinationPreviewMarker();
+        destinationPreviewMarker = new IBCMarker(a.getStreetAddress(), a.getPostCodeAndCity(), a.getLocation(), MarkerType.ADDRESS);
         Icon markerIcon = new Icon(this.getResources().getDrawable(R.drawable.marker));
-        m.setIcon(markerIcon);
-
-        this.currentAddressMarker = m;
-
-        this.addMarker(m);
-
-        // Invalidate the view so the marker gets drawn.
-        this.invalidate();
+        destinationPreviewMarker.setIcon(markerIcon);
+        addMarker(destinationPreviewMarker);
     }
 
     @Override
@@ -194,47 +213,29 @@ public class IBCMapView extends MapView {
         return;
     }
 
-    public void removeAddressMarker() {
-        if (currentAddressMarker != null) {
-            this.getOverlays().remove(currentAddressMarker);
-            this.removeMarker(currentAddressMarker);
-            currentAddressMarker = null;
+    public void removeDestinationPreviewMarker() {
+        if (destinationPreviewMarker != null) {
+            this.getOverlays().remove(destinationPreviewMarker);
+            this.removeMarker(destinationPreviewMarker);
+            destinationPreviewMarker = null;
         }
     }
 
-    public IBCMarker addMarker(IBCMarker m) {
-        super.addMarker(m);
-        markers.add(m);
-        return m;
+    @Override
+    public void clear() {
+        removeDestinationPreviewMarker();
+        clearJourneyOverlay();
+        super.clear();
     }
 
-    public void removeMarker(IBCMarker m) {
-        markers.remove(m);
-        super.removeMarker(m);
-    }
-
-    public void removeAllMarkers() {
-        for (IBCMarker m : markers) {
-            this.removeMarker(m);
+    /**
+     * Removes all route overlays and markers from the map
+     */
+    public void clearJourneyOverlay() {
+        if(journeyOverlay != null) {
+            journeyOverlay.onDetach(this);
+            removeOverlay(journeyOverlay);
+            journeyOverlay = null;
         }
     }
-
-    /**
-     * Adds a PathOverlay representing a route to the map.
-     * @param path
-     */
-    public void addRouteOverlay(PathOverlay path) {
-        routeOverlays.add(path);
-        addOverlay(path);
-    }
-
-    /**
-     * Adds a PathOverlay representing a route to the map.
-     */
-    public void removeAllRouteOverlays() {
-        // Remove all route overlays from the map and from the list of overlays.
-        getOverlays().removeAll(routeOverlays);
-        routeOverlays.removeAll(routeOverlays);
-    }
-
 }

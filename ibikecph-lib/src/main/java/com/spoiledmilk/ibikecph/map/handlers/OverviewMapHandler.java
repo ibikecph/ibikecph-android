@@ -118,7 +118,7 @@ public class OverviewMapHandler extends IBCMapHandler {
             } else {
                 disableStatisticsInfoPane();
             }
-            this.mapView.removeAddressMarker();
+            this.mapView.removeDestinationPreviewMarker();
 
             isWatchingAddress = false;
 

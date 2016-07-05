@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mapbox.mapboxsdk.api.ILatLng;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.iLanguageListener;
@@ -425,5 +426,9 @@ public class Util {
         ret.setLatitude(location.getLatitude());
         ret.setAltitude(location.getAltitude());
         return ret;
+    }
+
+    public static LatLng locationToLatLng(Location location) {
+        return new LatLng(location);
     }
 }

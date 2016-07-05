@@ -31,9 +31,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 // TODO: This code comes from previous vendor. It's a mess. /jc
 public class SMRoute implements SMHttpRequestListener, LocationListener {
+
+    public static float DESTINATION_METRES_THRESHOLD = 40.0f;
+    public static int DESTINATION_SECONDS_THRESHOLD = 3;
 
     public static final float MAX_DISTANCE_FROM_PATH = 30.0f;
     public static final float MIN_DISTANCE_FOR_RECALCULATION = MAX_DISTANCE_FROM_PATH;
@@ -42,7 +46,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public static final int TO_DESTINATION = 2;
 
     public int routePhase = TO_START_STATION;
-    public boolean approachingTurn;
     public List<Location> waypoints;
 
     /**
@@ -68,7 +71,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public Location locationStart;
     public Location locationEnd;
     public boolean recalculationInProgress;
-    float estimatedArrivalTime, arrivalTime;
+    int estimatedArrivalTime, arrivalTime;
     int estimatedRouteDistance = -1;
     String routeChecksum;
     String destinationHint;
@@ -85,21 +88,34 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public SMTurnInstruction station1, station2;
     public boolean reachedDestination = false;
     public int waypointStation1 = -1, waypointStation2 = -1;
-    private boolean cleanedUp = false;
     private RouteType type;
 
     public Address startAddress, endAddress;
 
-    protected List<SMRouteListener> listeners = new ArrayList<>();
+    protected List<SMRouteListener> listeners = new CopyOnWriteArrayList<>();
+
+    public enum TransportationType {
+        BIKE, M, S, WALK, TOG, BUS, IC, LYN, REG, EXB, NB, TB, F
+    }
 
     // Variables for breakRoute
-    public String transportType;
-    private float breakRouteArrivalTime;
-    private float breakRouteEstimatedArrivalTime;
-    private int breakRouteEstimatedRouteDistance = -1;
+    public TransportationType transportType;
+    public String description = null;
+    public long departureTime;
 
-    public SMRoute() {
+    public SMRoute(Location start, Location end, JsonNode routeJSON, RouteType type) {
         init();
+        locationStart = start;
+        locationEnd = end;
+        this.type = type;
+
+        // TODO: Require a JSON coming from outside
+        if (routeJSON == null) {
+            throw new RuntimeException("The routeJSON must have been set before init is called.");
+            // new SMHttpRequest().getRoute(start, end, null, this);
+        } else {
+            setupRoute(routeJSON);
+        }
     }
 
     public void init() {
@@ -107,50 +123,25 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         tripDistance = -1;
         caloriesBurned = -1;
         averageSpeed = -1;
-        approachingTurn = false;
         lastVisitedWaypointIndex = -1;
         recalculationInProgress = false;
         lastRecalcLocation = Util.locationFromCoordinates(0, 0);
-        allTurnInstructions = new ArrayList<SMTurnInstruction>();
+        allTurnInstructions = new ArrayList<>();
         reachedDestination = false;
         waypointStation1 = -1;
         waypointStation2 = -1;
+
+        transportType = TransportationType.BIKE;
+        description = null;
+        departureTime = -1;
     }
 
-    public void init(Location start, Location end, JsonNode routeJSON, RouteType type) {
-        init();
-
-        locationStart = start;
-        locationEnd = end;
-
-        this.type = type;
-
-        // TODO: Require a JSON coming from outside
-        if (routeJSON == null) {
-            LOG.d("SMRoute init() jsonRoot is null, trying to get route from here...");
-            new SMHttpRequest().getRoute(start, end, null, this);
-        } else {
-            Log.d("DV_break", "SMRoute, Calling setupRoute!");
-            setupRoute(routeJSON);
-        }
+    public static boolean isPublic(TransportationType type) {
+        return (type != null && type != TransportationType.BIKE && type != TransportationType.WALK);
     }
 
-    public void init(Location start, Location end, Location startStation, Location endStation, JsonNode routeJSON, RouteType type) {
-        init();
-        locationStart = start;
-        locationEnd = end;
-        this.type = type;
-        setupBrokenRoute(routeJSON);
-    }
-
-    public boolean isPublic(String transportType) {
-
-        if (transportType != null && !transportType.equals("BIKE") && !transportType.equals("WALK")) {
-            //Log.d("DV", "IS PUBLIC!");
-            return true;
-        }
-        //Log.d("DV", "IS NOT PUBLIC!");
-        return false;
+    public boolean isPublic() {
+        return isPublic(transportType);
     }
 
     public void removeListeners() {
@@ -311,7 +302,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         if(startAddress != null) {
             return startAddress.getLocation();
         } else {
-            return new LatLng(getEndLocation());
+            return new LatLng(getStartLocation());
         }
     }
 
@@ -338,43 +329,37 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     }
 
     private void setupRoute(JsonNode jsonRoot) {
-        LOG.d("SMRoute setupRoute()");
-        Log.d("DV_break", "SmRoute, setupRoute");
-
-        JsonNode actualObj = getObject();
-
-        boolean ok = parseFromJson(jsonRoot, null, false);
-        //boolean ok = parseFromJson(actualObj, null, false);
-        Log.d("DV_break", " ok = " + ok);
+        boolean ok = parseFromJson(jsonRoot);
         if (ok) {
-            approachingTurn = false;
-            tripDistance = 0.0f;
-
-            if (IBikeApplication.getService().hasValidLocation()) {
-                Log.d("DV_break", " ValidLocation = " + IBikeApplication.getService().hasValidLocation());
-                updateDistances(IBikeApplication.getService().getLastValidLocation());
-            }
-            Log.d("DV_break", " ValidLocation = " + IBikeApplication.getService().hasValidLocation());
-        }
-    }
-
-    private void setupBrokenRoute(JsonNode jsonRoot) {
-        boolean ok = parseFromJson(jsonRoot, null, true);
-        if (ok) {
-            approachingTurn = false;
             tripDistance = 0.0f;
             if (IBikeApplication.getService().hasValidLocation()) {
                 updateDistances(IBikeApplication.getService().getLastValidLocation());
+                emitRouteUpdated();
             }
         }
     }
 
-    boolean parseFromJson(JsonNode jsonRoot, SMRouteListener listener, boolean isBrokenRoute) {
+    boolean parseFromJson(JsonNode jsonRoot) {
         Log.d("SMRoute", "parseFromJson() json = " + jsonRoot);
         synchronized (this) {
             if (jsonRoot == null) {
                 Log.d("DV_break", "jsonRoot == null");
                 return false;
+            }
+
+            if(jsonRoot.get("route_summary") != null) {
+                if(jsonRoot.get("route_summary").get("type") != null) {
+                    String transportType = jsonRoot.get("route_summary").path("type").textValue();
+                    if (transportType != null) {
+                        this.transportType = SMRoute.TransportationType.valueOf(transportType);
+                    }
+                }
+                if(jsonRoot.get("route_summary").get("name") != null) {
+                    description = jsonRoot.get("route_summary").get("name").asText();
+                }
+                if(jsonRoot.get("route_summary").get("departure_time") != null) {
+                    departureTime = jsonRoot.get("route_summary").get("departure_time").asLong();
+                }
             }
 
             Log.d("DV_break", "parse from JSON");
@@ -385,9 +370,9 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             }
 
             Log.d("DV", "Setting turnInstructions");
-            turnInstructions = new ArrayList<SMTurnInstruction>();
-            pastTurnInstructions = new LinkedList<SMTurnInstruction>();
-            visitedLocations = new ArrayList<Location>();
+            turnInstructions = new ArrayList<>();
+            pastTurnInstructions = new LinkedList<>();
+            visitedLocations = new ArrayList<>();
             estimatedArrivalTime = jsonRoot.path("route_summary").path("total_time").asInt();
             arrivalTime = estimatedArrivalTime;
             distancePassed = 0d;
@@ -530,8 +515,9 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return true;
     }
 
-    /*
-     * Decoder for the Encoded Polyline Algorithm Format https://developers.google.com/maps/documentation/utilities/polylinealgorithm
+    /**
+     * Decoder for the Encoded Polyline Algorithm Format
+     * @see <a href="https://developers.google.com/maps/documentation/utilities/polylinealgorithm">Encoded Polyline Algorithm Format</a>
      */
     List<Location> decodePolyline(String encodedString, String type) {
         if (encodedString == null)
@@ -590,27 +576,11 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return arrivalTime;
     }
 
-    /**
-     * Returns the estimated amount of seconds to the destination, when breaking route is enabled
-     * @deprecated This should be merged with the getEstimatedArrivalTime() method.
-     * @return
-     */
-    public float getBreakRouteEstimatedArrivalTime() {
-        return breakRouteArrivalTime;
-    }
-
 
     public int getEstimatedDistance() {
         return estimatedRouteDistance;
     }
 
-    public int getBreakRouteEstimatedDistance() {
-        return breakRouteEstimatedRouteDistance;
-    }
-
-    ArrayList<Double> speedData = new ArrayList<Double>();
-    final int SPEEDS_COUNT = 20;
-    int speedIndex = 0;
     double distancePassed = 0;
     Location lastLocation;
 
@@ -622,40 +592,30 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
      * @param loc
      */
     public void visitLocation(Location loc) {
-        Log.d("DV", "VISIT LOCATION!, Transport type = " + transportType);
-
+        // Accumulating the distance passed
+        // TODO: Consider doing this when the user actually passes a way point and use its location.
         if (lastLocation != null && loc != null) {
-            //Log.d("DV", "lastLocation and loc != null");
             distancePassed += loc.distanceTo(lastLocation);
         }
 
+        // TODO: Consider moving this to the end of the method for semantics
         lastLocation = loc;
-
         visitedLocations.add(loc);
 
-        if (turnInstructions.size() <= 0 && !type.toString().equals("BREAK")) {
-            //Log.d("DV", "turnInstructions.size() <= 0");
+        // Let's do nothing if there are no more turn instructions.
+        if (turnInstructions.size() <= 0 && type != RouteType.BREAK) {
             return;
         }
 
+        // Let's do nothing if a recalculation is in progress.
         if (recalculationInProgress) {
-            Log.d("DV", "recalculationInProgress = true");
             return;
         }
 
-        // Check if we are finishing:
+        // Calculate the distance to the end location.
         double distanceToFinish = loc.distanceTo(getEndLocation());
-        Log.d("DV", "Distance to finish = " + distanceToFinish + ", end location = " + getEndLocation());
 
-        if (!type.toString().equals("BREAK")) {
-            arrivalTime = distanceLeft * estimatedArrivalTime / estimatedRouteDistance;
-        } else {
-            breakRouteEstimatedRouteDistance = Geocoder.totalBikeDistance.get(NavigationMapHandler.obsInt.getPageValue());
-            breakRouteEstimatedArrivalTime = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
-
-            breakRouteArrivalTime = distanceLeft * breakRouteEstimatedArrivalTime / breakRouteEstimatedRouteDistance;
-        }
-
+        arrivalTime = Math.round(estimatedArrivalTime * distanceLeft / estimatedRouteDistance);
 
         // Calculate the average speed and update the ETA
         double speed = loc.getSpeed() > 0 ? loc.getSpeed() : 5;
@@ -664,14 +624,16 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         if (speed > 0) {
             timeToFinish = (int) (distanceToFinish / speed); // A bike travels approximately 5 meters per second
         }
-        Log.d("DV", "Time to finish = " + timeToFinish);
 
-        double destinationRadius = 40.0;
+        /*
         double destinationRadiusPublic = 300;
         double leaveLastPublicInfoRadius = 300; // Display two informations in fragment until we are further away than this
         double leavingLastPublicRadius = 300; // Display "get on transport xx on xx" until we are this distance away, then change to "get off on xx"
-        //String destRadius = ""; // string used to print in log
-        if (type != null && type.toString().equals("BREAK")) {
+        */
+
+        // TODO: Reimplement a proper behaviour when leaving or changing public transportation
+        /*
+        if (type == RouteType.BREAK) {
             try {
                 if (NavigationMapHandler.routePos == Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).size() - 1) {
                     if (!isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
@@ -741,42 +703,38 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 Log.d("DV", "Next stop exception = " + ex.getMessage());
             }
         }
+        */
 
-        //destRadius += destinationRadius;
-        // Log.d("DV", "" + destRadius);
-
-        Log.d("DV", "ReachedDest bool = " + reachedDestination + " with type = " + transportType + " of routeType = " + type.toString());
+        // TODO: Consider if this check is need - maybe we only want to reach the destination once.
         if (!reachedDestination) {
-            // are we close to the finish (< 10m or 3s left)?
-            if (distanceToFinish < destinationRadius || timeToFinish <= 3) {
-                Log.d("DV", "finishing in " + distanceToFinish + " m and " + timeToFinish + " s");
-                //Log.d("DV", "turnInstructions.size() == " + turnInstructions.size());
-                if (turnInstructions.size() == 1) {
-                    approachingTurn = false;
-                    // removeTurn();
-                }
+            // Are we close to the finish?
+            if (distanceToFinish < DESTINATION_METRES_THRESHOLD ||
+                timeToFinish <= DESTINATION_SECONDS_THRESHOLD) {
+                // Move all future turn instructions to the past instructions
+                pastTurnInstructions.addAll(turnInstructions);
+                turnInstructions.clear();
+                // Remove this route as a listner of location updates.
                 IBikeApplication.getService().removeLocationListener(this);
+                // Declare that we've reached the destination
+                // TODO: Make this a derived method of the fact that we have no more turn instructions
                 reachedDestination = true;
+                // Tell any listener that we have arrived.
                 emitDestinationReached();
                 return;
             }
         }
 
         // Check if we went too far from the calculated route and, if so,
-        // recalculate route
-        // max allowed distance depends on location's accuracy
+        // recalculate route. The maximum allowed distance depends on location's accuracy.
         float maximalDistance = MAX_DISTANCE_FROM_PATH + loc.getAccuracy() / 3;
 
         // Only recalculate if we're walking or biking or transportation type is irrelevant
-        if (transportType == null || (transportType.equals("BIKE") || transportType.equals("WALK"))) {
+        if (transportType == TransportationType.BIKE || transportType == TransportationType.WALK) {
             if (!approachingFinish() && listeners.size() > 0 && isTooFarFromRoute(loc, maximalDistance)) {
-                Log.d("SMRoute", "Route should recalculate and maxD was " + maximalDistance);
-                approachingTurn = false;
                 recalculateRoute(loc, false);
                 return;
             }
         }
-
 
         int closestWaypointIndex = -1;
         double minD = Double.MAX_VALUE;
@@ -838,7 +796,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         }
 
         updateDistances(loc);
-
+        emitRouteUpdated();
     }
 
     public void recalculateRoute(Location loc, boolean isBicycleTypeChanged) {
@@ -872,17 +830,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         }
     }
 
-
     boolean checkLocation(Location loc, float maxDistance) {
-        SMTurnInstruction currentTurn = turnInstructions.get(0);
         SMTurnInstruction nextTurn = turnInstructions.get(Math.min(turnInstructions.size() - 1, 2));
         if (nextTurn != null) {
             if (!isTooFarFromRouteSegment(loc, null, nextTurn, maxDistance)) {
-                if (lastVisitedWaypointIndex > currentTurn.waypointsIndex) {
-                    // removeTurn();
-                    approachingTurn = true;
-                }
-
                 return false;
             }
         }
@@ -976,76 +927,22 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         }
 
         if (distanceLeft < 0.0) {
-            if (!type.toString().equals("BREAK")) {
-                distanceLeft = estimatedRouteDistance;
-            } else {
-                if (NavigationMapHandler.routePos == 0) {
-                    distanceLeft = breakRouteEstimatedRouteDistance;
-                    try {
-                        if (Geocoder.totalTime != null) {
-                            breakRouteArrivalTime = Geocoder.totalTime.get(NavigationMapHandler.obsInt.getPageValue());
-                        }
-                    } catch (Exception ex) {
-                    }
-                } else {
-                    distanceLeft = NavigationMapHandler.dist;
-                    breakRouteArrivalTime = distanceLeft * breakRouteEstimatedArrivalTime / breakRouteEstimatedRouteDistance;
-                }
-            }
+            distanceLeft = estimatedRouteDistance;
         } else if (turnInstructions.size() > 0) {
-            // calculate distance from location to the next turn
+            // Calculate distance from location to the next turn
             SMTurnInstruction nextTurn = turnInstructions.get(0);
             nextTurn.lengthInMeters = (int) calculateDistanceToNextTurn(loc);
             if (nextTurn.plannedForRemoving && nextTurn.lengthInMeters < 10) {
                 nextTurn.lengthInMeters = 0;
             }
-            // LOG.d("turn " + nextTurn.descriptionString + " distance = " +
-            // nextTurn.lengthInMeters);
             nextTurn.lengthWithUnit = Util.formatDistance(nextTurn.lengthInMeters);
-            // turnInstructions.set(0, nextTurn);
 
-            if (!type.toString().equals("BREAK")) {
-                distanceLeft = nextTurn.lengthInMeters;
-                // calculate distance from next turn to the end of the route
-                for (int i = 1; i < turnInstructions.size(); i++) {
-                    distanceLeft += turnInstructions.get(i).lengthInMeters;
-                }
-            } else {
-                // breakRoute distance left on bike calculation
-                if (Geocoder.arrayLists != null) {
-                    distanceLeft = 0;
-                    Log.d("DV", "SMRoute dist left set to = 0");
-                    for (int j = NavigationMapHandler.routePos; j < Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).size(); j++) {
-                        if (Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(j).transportType.equals("BIKE") && j < Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).size() - 1) {
-
-                            for (int i = 0; i < turnInstructions.size(); i++) {
-
-                                distanceLeft += Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(j).turnInstructions.get(i).lengthInMeters;
-                            }
-                            Log.d("DV", "SMRoute dist left1 = " + distanceLeft);
-                        } else if (NavigationMapHandler.routePos == Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).size() - 1) {
-                            for (int i = 0; i < turnInstructions.size(); i++) {
-
-                                distanceLeft += Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(j).turnInstructions.get(i).lengthInMeters;
-                                Log.d("DV", "SMRoute dist left3 = " + distanceLeft);
-                            }
-                        }
-                        try {
-                            if (Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(j + 1).transportType.equals("BIKE")) {
-                                distanceLeft += Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(j + 1).estimatedRouteDistance;
-                                Log.d("DV", "SMRoute dist left2 = " + distanceLeft);
-                            }
-                        } catch (Exception ex) {
-                            Log.d("DV", "dist exception");
-                        }
-                    }
-                    //Hold the distance to show this when on a public transport
-                    NavigationMapHandler.dist = distanceLeft;
-                }
+            distanceLeft = nextTurn.lengthInMeters;
+            // Calculate distance from next turn to the end of the route
+            for (int i = 1; i < turnInstructions.size(); i++) {
+                distanceLeft += turnInstructions.get(i).lengthInMeters;
             }
-
         }
-        emitRouteUpdated();
     }
 
     private float calculateDistanceToNextTurn(Location loc) {

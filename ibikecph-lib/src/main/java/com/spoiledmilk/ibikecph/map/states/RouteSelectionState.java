@@ -4,25 +4,21 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
-import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.BreakRouteRequester;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.fragments.BreakRouteSelectionFragment;
 import com.spoiledmilk.ibikecph.map.fragments.RouteSelectionFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
-import com.squareup.okhttp.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +36,11 @@ public class RouteSelectionState extends MapState {
 
     // A representation of the route after it's been fetched from the geocoder
     protected SMRoute route;
+    protected Journey journey;
 
+    /**
+     * @deprecated Remove the need for the map handler, as its behaviour transitions into this state
+     */
     protected NavigationMapHandler mapHandler;
 
     protected RouteSelectionFragment routeSelectionFragment;
@@ -90,17 +90,16 @@ public class RouteSelectionState extends MapState {
 
     @Override
     public void transitionAway(MapState to, FragmentTransaction fragmentTransaction) {
-        mapHandler.cleanUp();
         // No need for a user location overlay afterwards - the future state will enabled this.
         activity.getMapView().setUserLocationEnabled(false);
-        // Setting the route to no route, removes it as a listener on the BikeLocationService
-        setRoute(null);
         // Cancel any requests that will be resolved asynchronously.
         cancelRequests();
         // Remove the route selection fragment as a route type change listener.
         removeRouteTypeChangeListener(routeSelectionFragment);
         // Then remove the route selection fragment
         fragmentTransaction.remove(routeSelectionFragment);
+        // Remove any journey overlays from the map view
+        activity.getMapView().clear();
     }
 
     @Override
@@ -175,7 +174,7 @@ public class RouteSelectionState extends MapState {
     /**
      * Calculates a new route when either the source or destination address change
      */
-    private void fetchRoute() {
+    protected void fetchRoute() {
         if(destination == null) {
             new RuntimeException("A route to nowhere - that doesn't make any sense");
         }
@@ -197,18 +196,20 @@ public class RouteSelectionState extends MapState {
 
                     route.startAddress = source;
                     route.endAddress = destination;
-                    setRoute(route);
+                    // TODO: Make the route callback called with a Journey instead.
+                    setJourney(new Journey(route));
                 }
             }
 
             @Override
-            public void onSuccess(BreakRouteRequester.BreakRouteResponse breakRouteResponse) {
+            public void onSuccess(BreakRouteResponse breakRouteResponse) {
                 if(!cancelled) {
                     routeCallbacks.remove(this);
+                    breakRouteResponse.setStartAddress(source);
+                    breakRouteResponse.setEndAddress(destination);
                     if(routeSelectionFragment instanceof BreakRouteSelectionFragment) {
                         BreakRouteSelectionFragment fragment = ((BreakRouteSelectionFragment) routeSelectionFragment);
                         fragment.brokenRouteReady(breakRouteResponse);
-                        activity.getMapView().showMultipleRoutes();
                     }
                 }
             }
@@ -233,18 +234,16 @@ public class RouteSelectionState extends MapState {
         routeCallbacks.clear();
     }
 
-    protected void setRoute(SMRoute route) {
-        if(this.route != null) {
-            BikeLocationService.getInstance().removeLocationListener(this.route);
-        }
-        this.route = route;
+    /**
+     * Sets the journey to be displayed and to be used, if navigation is started.
+     * This overload should be used to display a broken route instead of a regular route.
+     * @param journey
+     */
+    public void setJourney(Journey journey) {
+        this.journey = journey;
+        activity.getMapView().showJourney(journey);
+        activity.getMapView().zoomToJourney(journey);
         routeSelectionFragment.refreshView();
-        if(route != null) {
-            BikeLocationService.getInstance().addLocationListener(route);
-            activity.getMapView().showRoute(route);
-        } else {
-            activity.getMapView().removeAllRouteOverlays();
-        }
     }
 
     /**
@@ -276,16 +275,22 @@ public class RouteSelectionState extends MapState {
     }
 
     public void startNavigation() {
-        // Let's only change state if the route is actually set
+        // Using a local variable here, as transitioning away will reset the route on the state.
+        Journey journeyToNavigate = null;
         if(route != null) {
-            // Using a local variable here, as transitioning away will reset the route on the state.
-            SMRoute routeToNavigate = route;
-            NavigatingState state = activity.changeState(NavigatingState.class);
-            state.setRoute(routeToNavigate);
+            journeyToNavigate = new Journey(route);
+        } else if(journey != null) {
+            journeyToNavigate = journey;
         }
+        NavigatingState state = activity.changeState(NavigatingState.class);
+        state.setJourney(journeyToNavigate);
     }
 
     public SMRoute getRoute() {
         return route;
+    }
+
+    public Journey getJourney() {
+        return journey;
     }
 }

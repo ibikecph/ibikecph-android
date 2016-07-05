@@ -42,11 +42,11 @@ public class SMTurnInstruction {
 		}
 	};
 
-	int[] iconsSmall = { -1, R.drawable.up, R.drawable.right_ward, R.drawable.right, R.drawable.right, R.drawable.u_turn, R.drawable.left,
+	protected int[] iconsSmall = { -1, R.drawable.up, R.drawable.right_ward, R.drawable.right, R.drawable.right, R.drawable.u_turn, R.drawable.left,
 			R.drawable.left, R.drawable.left_ward, R.drawable.location, R.drawable.up, R.drawable.roundabout, R.drawable.roundabout,
 			R.drawable.roundabout, R.drawable.up, R.drawable.flag, R.drawable.push_bike, R.drawable.bike, R.drawable.near_destination };
 
-	int[] iconsLarge = { -1, R.drawable.white_up, R.drawable.white_right_ward, R.drawable.white_right, R.drawable.white_right,
+	protected int[] iconsLarge = { -1, R.drawable.white_up, R.drawable.white_right_ward, R.drawable.white_right, R.drawable.white_right,
 			R.drawable.white_u_turn, R.drawable.white_left, R.drawable.white_left, R.drawable.white_left_ward, R.drawable.white_location,
 			R.drawable.white_up, R.drawable.white_roundabout, R.drawable.white_roundabout, R.drawable.white_roundabout,
 			R.drawable.white_up, R.drawable.white_flag, R.drawable.white_push_bike, R.drawable.white_bike,
@@ -111,15 +111,6 @@ public class SMTurnInstruction {
 			return context.getResources().getDrawable(iconResource);
 		else
 			return context.getResources().getDrawable(iconsLarge[drivingDirection.ordinal()]);
-	}
-
-	public int getDirectionImageResource() {
-		if (drivingDirection == TurnDirection.NoTurn)
-			return -1;
-		else if (drivingDirection == TurnDirection.Station)
-			return iconResource;
-		else
-			return iconsLarge[drivingDirection.ordinal()];
 	}
 
 	public int getBlackDirectionImageResource() {

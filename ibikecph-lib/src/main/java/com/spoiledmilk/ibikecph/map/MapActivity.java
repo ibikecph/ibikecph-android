@@ -497,12 +497,15 @@ public class MapActivity extends BaseMapActivity {
         int id = item.getItemId();
 
         if (id == R.id.ab_search) {
-            this.mapView.removeAllMarkers();
+            this.mapView.clear();
             Intent i = new Intent(MapActivity.this, SearchActivity.class);
             startActivityForResult(i, REQUEST_SEARCH_ADDRESS);
             overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
         } else if (id == R.id.ab_problem) {
-            ((NavigationMapHandler) this.mapView.getMapHandler()).problemButtonPressed();
+            if(state instanceof NavigatingState) {
+                NavigatingState navigatingState = (NavigatingState) state;
+                navigatingState.reportProblem();
+            }
         }
         // Toggle the drawer when tapping the app icon.
         else if (id == android.R.id.home) {

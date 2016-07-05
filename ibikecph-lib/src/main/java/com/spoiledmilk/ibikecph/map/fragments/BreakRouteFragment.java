@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteRequester;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
 import java.text.SimpleDateFormat;
@@ -48,7 +50,7 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     protected JsonNode jsonNode;
 
     // newInstance constructor for creating fragment with arguments
-    public static BreakRouteFragment newInstance(BreakRouteRequester.BreakRouteResponse response, int position) {
+    public static BreakRouteFragment newInstance(BreakRouteResponse response, int position) {
         BreakRouteFragment breakRouteFragment = new BreakRouteFragment();
         breakRouteFragment.setData(response.getJsonNode().get(position));
         return breakRouteFragment;
@@ -224,6 +226,10 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
         return (int) (input * scale + 0.5f);
     }
 
+    /**
+     * @deprecated No need to set this data JSON node, as all data is present on the Journey object
+     * @param jsonNode
+     */
     public void setData(JsonNode jsonNode) {
         this.jsonNode = jsonNode;
     }

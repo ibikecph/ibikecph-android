@@ -39,9 +39,8 @@ public class DestinationPreviewState extends MapState {
     @Override
     public void transitionAway(MapState to, FragmentTransaction fragmentTransaction) {
         activity.getMapView().setUserLocationEnabled(false);
-        // Remove the address marker
-        // TODO: Consider renaming the method from the generic "address marker" to "temporary .."
-        activity.getMapView().removeAddressMarker();
+        // Remove the destination preview marker from the map view
+        activity.getMapView().removeDestinationPreviewMarker();
         if(destinationPreviewFragment != null) {
             fragmentTransaction.remove(destinationPreviewFragment);
         }
@@ -64,6 +63,7 @@ public class DestinationPreviewState extends MapState {
     public void setDestination(Address destinationAddress) {
         this.destinationAddress = destinationAddress;
         activity.getMapView().showAddress(destinationAddress);
+        activity.getMapView().setCenter(destinationAddress.getLocation());
         updateDestinationPreviewFragment(destinationAddress);
     }
 
