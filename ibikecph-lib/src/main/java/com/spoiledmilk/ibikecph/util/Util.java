@@ -53,7 +53,6 @@ public class Util {
     public static final String DISTANCE_M_SHORT = "m";
     public static final Location COPENHAGEN = Util.locationFromCoordinates(55.675455, 12.566643);
 
-
     private static DisplayMetrics metrics = null;
     private static float screenWidht = 0;
     private static float screenHeight = 0;
