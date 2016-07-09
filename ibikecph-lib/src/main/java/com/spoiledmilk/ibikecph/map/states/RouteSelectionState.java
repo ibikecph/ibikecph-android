@@ -189,11 +189,6 @@ public class RouteSelectionState extends MapState {
             public void onSuccess(SMRoute route) {
                 if(!cancelled) {
                     routeCallbacks.remove(this);
-
-                    // TODO: This could probably be removed or moved to the geocoder.
-                    route.startStationName = source.getStreetAddress();
-                    route.endStationName = destination.getStreetAddress();
-
                     route.startAddress = source;
                     route.endAddress = destination;
                     // TODO: Make the route callback called with a Journey instead.
