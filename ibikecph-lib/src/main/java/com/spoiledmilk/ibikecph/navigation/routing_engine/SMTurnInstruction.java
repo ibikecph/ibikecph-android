@@ -5,31 +5,42 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.util.LOG;
 
 import java.util.Locale;
+
+import static com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute.TransportationType.isPublicTransportation;
 
 public class SMTurnInstruction {
 
 	// ***** constants and types
 
-	private static final int kVehicleBike = 1;
-
-	// private static final int kVehicleWalk = 2;
-	// private static final int kVehicleFerry = 3;
-	// private static final int kVehicleTrain = 4;
-
 	public enum TurnDirection {
 		NoTurn(0), // Give no instruction at all
-		GoStraight(1), TurnSlightRight(2), TurnRight(3), TurnSharpRight(4), UTurn(5), TurnSharpLeft(6), TurnLeft(7), TurnSlightLeft(8), ReachViaPoint(
-				9), HeadOn(10), EnterRoundAbout(11), LeaveRoundAbout(12), StayOnRoundAbout(13), StartAtEndOfStreet(14), ReachedYourDestination(
-				15), StartPushingBikeInOneway(16), StopPushingBikeInOneway(17), ReachingDestination(100), Station(18);
+		GoStraight(1),
+		TurnSlightRight(2),
+		TurnRight(3),
+		TurnSharpRight(4),
+		UTurn(5),
+		TurnSharpLeft(6),
+		TurnLeft(7),
+		TurnSlightLeft(8),
+		ReachViaPoint(9),
+		HeadOn(10),
+		EnterRoundAbout(11),
+		LeaveRoundAbout(12),
+		StayOnRoundAbout(13),
+		StartAtEndOfStreet(14),
+		ReachedYourDestination(15),
+		StartPushingBikeInOneWay(16),
+		StopPushingBikeInOneWay(17),
+		GetOnPublicTransportation(18),
+		GetOffPublicTransportation(19),
+		ReachingDestination(100);
 
 		TurnDirection(int i) {
 			this.type = i;
@@ -37,16 +48,33 @@ public class SMTurnInstruction {
 
 		private int type;
 
-		public int getNumericType() {
-			return type;
+		/**
+		 * Translate a turn direction into a human understandable direction.
+		 * @return
+		 */
+		public String toDisplayString() {
+			return toDisplayString(false);
+		}
+
+		/**
+		 * Translate a turn direction into a human understandable direction.
+		 * @param isFirst is this the first direction in a route?
+         * @return
+         */
+		public String toDisplayString(boolean isFirst) {
+			if (isFirst) {
+				return IBikeApplication.getString("first_direction_" + type);
+			} else {
+				return IBikeApplication.getString("direction_" + type);
+			}
 		}
 	};
 
-	protected int[] iconsSmall = { -1, R.drawable.up, R.drawable.right_ward, R.drawable.right, R.drawable.right, R.drawable.u_turn, R.drawable.left,
+	protected int[] iconsSmall = { 0, R.drawable.up, R.drawable.right_ward, R.drawable.right, R.drawable.right, R.drawable.u_turn, R.drawable.left,
 			R.drawable.left, R.drawable.left_ward, R.drawable.location, R.drawable.up, R.drawable.roundabout, R.drawable.roundabout,
 			R.drawable.roundabout, R.drawable.up, R.drawable.flag, R.drawable.push_bike, R.drawable.bike, R.drawable.near_destination };
 
-	protected int[] iconsLarge = { -1, R.drawable.white_up, R.drawable.white_right_ward, R.drawable.white_right, R.drawable.white_right,
+	protected int[] iconsLarge = { 0, R.drawable.white_up, R.drawable.white_right_ward, R.drawable.white_right, R.drawable.white_right,
 			R.drawable.white_u_turn, R.drawable.white_left, R.drawable.white_left, R.drawable.white_left_ward, R.drawable.white_location,
 			R.drawable.white_up, R.drawable.white_roundabout, R.drawable.white_roundabout, R.drawable.white_roundabout,
 			R.drawable.white_up, R.drawable.white_flag, R.drawable.white_push_bike, R.drawable.white_bike,
@@ -54,10 +82,8 @@ public class SMTurnInstruction {
 
 	// ***** fields
 
-	public int vehicle;
-	private int iconResource;
 	public TurnDirection drivingDirection = TurnDirection.NoTurn;
-	String ordinalDirection = "";
+	TurnDirection secondaryDirection = null;
 	public String wayName = "";
 	public int lengthInMeters = 0;
 	int timeInSeconds = 0;
@@ -66,14 +92,13 @@ public class SMTurnInstruction {
 	 * Length to next turn in units (km or m) This value will not auto update
 	 */
 	String fixedLengthWithUnit;
-	String directionAbrevation; // N: north, S: south, E: east, W: west, NW:
-								// North West, ...
+	public String directionAbrevation; // N: north, S: south, E: east, W: west, NW:
+									   // North West, ...
 	public float azimuth;
 	public int waypointsIndex;
 	Location loc;
 	public String descriptionString;
 	public String fullDescriptionString;
-	boolean isFakeInstruction = false;
 	public boolean plannedForRemoving = false;
 	double lastD = -1;
 
@@ -81,144 +106,146 @@ public class SMTurnInstruction {
 
 	}
 
-	// used only for the instructions adapter to add one another view
-	public SMTurnInstruction(boolean isFakeInstruction) {
-		this.isFakeInstruction = isFakeInstruction;
+	public SMRoute.TransportationType transportType;
+
+	public SMTurnInstruction(JsonNode instructionNode) {
+		// Splitting on a dash an using the first value as an integer to indicate
+		// the direction.
+		String[] directionIndices = instructionNode.get(0).asText().split("-");
+
+		int directionIndex = Integer.valueOf(directionIndices[0]);
+		if (directionIndex < SMTurnInstruction.TurnDirection.values().length) {
+			drivingDirection = SMTurnInstruction.TurnDirection.values()[directionIndex];
+			if (directionIndices.length > 1) {
+				int secondaryDrivingDirection = Integer.valueOf(directionIndices[1]);
+				secondaryDirection = SMTurnInstruction.TurnDirection.values()[secondaryDrivingDirection];
+			} else {
+				secondaryDirection = null;
+			}
+
+			wayName = instructionNode.get(1).asText();
+			if (wayName.matches("\\{.+\\:.+\\}"))
+				wayName = IBikeApplication.getString(wayName);
+			wayName = wayName.replaceAll("&#39;", "'");
+			timeInSeconds = instructionNode.get(4).asInt();
+			if (instructionNode.size() > 8) {
+				int vehicle = instructionNode.get(8).asInt();
+				if(vehicle == 1) {
+					transportType = SMRoute.TransportationType.BIKE;
+				} else if(vehicle == 2) {
+					transportType = SMRoute.TransportationType.WALK;
+				} else if(vehicle == 3) {
+					transportType = SMRoute.TransportationType.F;
+				} else if(vehicle == 4) {
+					transportType = SMRoute.TransportationType.TOG;
+				}
+
+			}
+			directionAbrevation = instructionNode.get(6).asText();
+			azimuth = (float) instructionNode.get(7).asDouble();
+
+			generateFullDescriptionString();
+			waypointsIndex = instructionNode.get(3).asInt();
+		}
 	}
 
-	public void convertToStation(String stationName, int iconResource) {
-		wayName = stationName;
-		this.iconResource = iconResource;
-		drivingDirection = TurnDirection.Station;
+	public double getTransitionDistance() {
+		if(isPublicTransportation(transportType)) {
+			return 20d;
+		} else {
+			return 10d;
+		}
 	}
 
 	public Location getLocation() {
 		return loc;
 	}
 
-	public Drawable smallDirectionIcon(Context context) throws Exception {
-		if (drivingDirection == TurnDirection.Station)
-			return context.getResources().getDrawable(iconResource);
-		else
-			return context.getResources().getDrawable(iconsSmall[drivingDirection.ordinal()]);
-
-	}
-
-	public Drawable largeDirectionIcon(Context context) {
-		if (drivingDirection == TurnDirection.NoTurn)
-			return null;
-		else if (drivingDirection == TurnDirection.Station)
-			return context.getResources().getDrawable(iconResource);
-		else
-			return context.getResources().getDrawable(iconsLarge[drivingDirection.ordinal()]);
-	}
-
-	public int getBlackDirectionImageResource() {
-		if (drivingDirection == TurnDirection.NoTurn)
-			return -1;
-		else if (drivingDirection == TurnDirection.Station)
-			return iconResource;
-		else
+	public int getSmallDirectionResourceId() {
+		if (drivingDirection == TurnDirection.GetOnPublicTransportation ||
+			drivingDirection == TurnDirection.GetOffPublicTransportation) {
+			return transportType.getDrawableId();
+		} else {
 			return iconsSmall[drivingDirection.ordinal()];
+		}
+
+	}
+
+	public int getLargeDirectionResourceId() {
+		if (drivingDirection == TurnDirection.GetOnPublicTransportation ||
+			drivingDirection == TurnDirection.GetOffPublicTransportation) {
+			return transportType.getDrawableId();
+		} else {
+			return iconsLarge[drivingDirection.ordinal()];
+		}
 	}
 
 	// Returns only string representation of the driving direction
 	void generateDescriptionString() {
 		switch (drivingDirection) {
-		case Station:
-			descriptionString = wayName;
-			break;
-		case EnterRoundAbout:
-			descriptionString = String.format(IBikeApplication.getString("direction_" + drivingDirection.ordinal()).replace("%@", "@s"),
-					IBikeApplication.getString("direction_number_" + ordinalDirection));
-			break;
-		default:
-			descriptionString = IBikeApplication.getString("direction_" + drivingDirection.ordinal());
+			case GetOnPublicTransportation:
+			case GetOffPublicTransportation:
+				descriptionString = wayName;
+				break;
+			case EnterRoundAbout:
+				descriptionString = String.format(drivingDirection.toDisplayString().replace("%@", "@s"),
+						IBikeApplication.getString("direction_number_" + secondaryDirection));
+				break;
+			default:
+				descriptionString = drivingDirection.toDisplayString();
 
 		}
-
-		if (vehicle > kVehicleBike) {
-			String v = "vehicle_" + vehicle;
-			descriptionString = IBikeApplication.getString(v) + ": " + descriptionString;
-		}
+		descriptionString = getPrefix() + descriptionString;
 	}
 
 	void generateStartDescriptionString() {
 		switch (drivingDirection) {
-		case Station:
-			descriptionString = wayName;
-			break;
-		case NoTurn:
-		case ReachedYourDestination:
-		case ReachingDestination:
-			descriptionString = IBikeApplication.getString("first_direction_" + drivingDirection.ordinal());
-			break;
-		case EnterRoundAbout:
-			descriptionString = String.format(
-					IBikeApplication.getString("first_direction_" + drivingDirection.ordinal()).replace("%@", "@s"), IBikeApplication
-							.getString("direction_" + directionAbrevation).replace("%@", "@s"), IBikeApplication
-							.getString("direction_number_" + ordinalDirection));
-			break;
-		default:
-			String firstDirection = IBikeApplication.getString("first_direction_" + drivingDirection.ordinal());
-			firstDirection = firstDirection.replace("%@", "%s");
-			String secondDirection = IBikeApplication.getString("direction_" + directionAbrevation);
-			LOG.d("First direction = " + firstDirection + " Second direction = " + secondDirection);
-			descriptionString = String.format(firstDirection, secondDirection);
+			case GetOnPublicTransportation:
+			case GetOffPublicTransportation:
+				descriptionString = wayName;
+				break;
+			case NoTurn:
+			case ReachedYourDestination:
+			case ReachingDestination:
+				descriptionString = drivingDirection.toDisplayString(true);
+				break;
+			case EnterRoundAbout:
+				descriptionString = String.format(
+					drivingDirection.toDisplayString(true).replace("%@", "%s"),
+					IBikeApplication.getString("direction_" + directionAbrevation).replace("%@", "@s"),
+					IBikeApplication.getString("direction_number_" + secondaryDirection)
+				);
+				break;
+			default:
+				String firstDirection = drivingDirection.toDisplayString(true);
+				firstDirection = firstDirection.replace("%@", "%s");
+				String secondDirection = IBikeApplication.getString("direction_" + directionAbrevation);
+				descriptionString = String.format(firstDirection, secondDirection);
 		}
-
-		if (vehicle > kVehicleBike) {
-			String v = "vehicle_" + vehicle;
-			descriptionString = IBikeApplication.getString(v) + ": " + descriptionString;
-		}
+		descriptionString = getPrefix() + descriptionString;
 	}
 
-	// Returns string representation of the driving direction including wayname
-	public String generateFullDescriptionString() {
-		if (drivingDirection == TurnDirection.Station)
+	public void generateFullDescriptionString() {
+		if (drivingDirection == TurnDirection.GetOnPublicTransportation ||
+			drivingDirection == TurnDirection.GetOffPublicTransportation)
 			fullDescriptionString = wayName;
 		else {
-			fullDescriptionString = IBikeApplication.getString("direction_" + drivingDirection.ordinal());
+			fullDescriptionString = drivingDirection.toDisplayString();
 
-			if (drivingDirection != TurnDirection.NoTurn && drivingDirection != TurnDirection.ReachedYourDestination
-					&& drivingDirection != TurnDirection.ReachingDestination) {
+			if (drivingDirection != TurnDirection.NoTurn &&
+				drivingDirection != TurnDirection.ReachedYourDestination &&
+				drivingDirection != TurnDirection.ReachingDestination) {
 				fullDescriptionString += " " + wayName;
 			}
-			// else if (drivingDirection == TurnDirection.ReachedYourDestination
-			// || drivingDirection ==
-			// TurnDirection.ReachingDestination) {
-			// fullDescriptionString = IBikeApplication.getString("arrival");
-			// }
-
-			if (vehicle > kVehicleBike) {
-				String v = "vehicle_" + vehicle;
-				fullDescriptionString = IBikeApplication.getString(v) + ": " + fullDescriptionString;
-			}
+			fullDescriptionString = getPrefix() + fullDescriptionString;
 		}
-		return fullDescriptionString;
-	}
-
-	public String getShortDescriptionString() {
-		String ret = "";
-		if (drivingDirection == TurnDirection.Station)
-			ret = wayName;
-		else {
-			if (drivingDirection != TurnDirection.NoTurn && drivingDirection != TurnDirection.ReachedYourDestination
-					&& drivingDirection != TurnDirection.ReachingDestination) {
-				ret = wayName;
-			}
-			if (vehicle > kVehicleBike) {
-				String v = "vehicle_" + vehicle;
-				ret = IBikeApplication.getString(v) + ": " + ret;
-			}
-		}
-		return ret;
 	}
 
 	// Full textual representation of the object, used mainly for debugging
 	@Override
 	public String toString() {
-		if (drivingDirection == TurnDirection.Station)
+		if (drivingDirection == TurnDirection.GetOnPublicTransportation ||
+			drivingDirection == TurnDirection.GetOffPublicTransportation)
 			return wayName;
 		else
 			return String.format(Locale.US, "%s %s [SMTurnInstruction: %d, %d, %s, %s, %f, (%f, %f)]", descriptionString, wayName,
@@ -227,11 +254,10 @@ public class SMTurnInstruction {
 	}
 
 	public String getPrefix() {
-		String ret = "";
-		if (vehicle > kVehicleBike) {
-			String v = "vehicle_" + vehicle;
-			ret = IBikeApplication.getString(v) + ": ";
+		if (transportType != null && transportType != SMRoute.TransportationType.BIKE) {
+			return transportType.toDisplayString() + ": ";
+		} else {
+			return "";
 		}
-		return ret;
 	}
 }
