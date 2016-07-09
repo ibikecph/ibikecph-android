@@ -3,7 +3,6 @@ package com.spoiledmilk.ibikecph.map.states;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -11,7 +10,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.location.LocationListener;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IBikeApplication;
@@ -159,9 +157,6 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
             BikeLocationService.getInstance().removeLocationListener(this.route);
         }
         this.route = route;
-        if(navigationOracle != null) {
-            navigationOracle.setRoute(route);
-        }
         if(this.route != null) {
             this.route.addListener(this);
             BikeLocationService.getInstance().addLocationListener(this.route);
@@ -170,6 +165,15 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
 
     public SMRoute getRoute() {
         return route;
+    }
+
+    public SMRoute getNextRoute() {
+        int currentRouteIndex = journey.getRoutes().indexOf(route);
+        if(currentRouteIndex < journey.getRoutes().size()-1) {
+            return journey.getRoutes().get(currentRouteIndex+1);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -196,17 +200,15 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
         if(readAloud) {
             readAloudButton.setAlpha(0.66f);
             readAloudButton.setImageResource(R.drawable.read_aloud_enabled);
-            navigationOracle = new NavigationOracle(activity, route, new NavigationOracle.NavigationOracleListener() {
+            navigationOracle = new NavigationOracle(activity, this, new NavigationOracle.NavigationOracleListener() {
                 @Override
                 public void enabled() {
-                    IBikeApplication.getService().addLocationListener(navigationOracle);
                     readAloudButton.setAlpha(1f);
                 }
 
                 @Override
                 public void disabled() {
                     Log.d("NavigationState", "The Navigation Oracle got disabled");
-                    IBikeApplication.getService().removeLocationListener(navigationOracle);
                     navigationOracle = null;
                     readAloudUpdated(false);
                 }
@@ -236,6 +238,9 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
     public void onLocationChanged(Location location) {
         // TODO: Consider only doing this when a bearing is available.
         activity.getMapView().setMapOrientation(-1 * location.getBearing());
+        if(navigationOracle != null && navigationOracle.isEnabled()) {
+            navigationOracle.onLocationChanged(location);
+        }
     }
 
     @Override
@@ -248,37 +253,9 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
             // Switch to the next route in the journey
             setRoute(nextRoute);
         }
-        /*
-        // TODO: Remove this entire block comment
-        if (Geocoder.arrayLists != null && MapActivity.isBreakChosen) {
-            Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).removeListener(this);
-            Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).reachedDestination = true;
-            Log.d("DV", "NavigationMapHandler reachedDestination, removed with index = " + routePos + " og pageValue = " + obsInt.getPageValue());
-            if ((routePos + 1) < Geocoder.arrayLists.get(obsInt.getPageValue()).size()) {
-                displayGetOffAt = false;
-                routePos = routePos + 1;
-                Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos).addListener(this);
-                IBikeApplication.getService().addLocationListener(Geocoder.arrayLists.get(obsInt.getPageValue()).get(routePos));
-                Log.d("DV", "NavigationMapHandler reachedDestination, ny listener er sat med index = " + routePos);
-                if (SMRoute.isPublic(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
-                    isPublic = true;
-                    Log.d("DV", "NavigationMapHandler reachedDestination, public set to true");
-                } else {
-                    isPublic = false;
-                    Log.d("DV", "NavigationMapHandler reachedDestination, public set to false");
-                }
-            } else {
-                displayGetOffAt = false;
-                if (this.turnByTurnFragment != null) {
-                    this.turnByTurnFragment.reachedDestination();
-                }
-            }
-        } else {
-            if (this.turnByTurnFragment != null) {
-                this.turnByTurnFragment.reachedDestination();
-            }
+        if(navigationOracle != null) {
+            navigationOracle.reachedDestination();
         }
-        */
     }
 
     @Override
@@ -290,56 +267,45 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
         if(navigationETAFragment != null && navigationETAFragment.isAdded()) {
             navigationETAFragment.render();
         }
+        if(navigationOracle != null) {
+            navigationOracle.updateRoute();
+        }
     }
 
     @Override
     public void startRoute() {
-
+        if(navigationOracle != null) {
+            navigationOracle.startRoute();
+        }
     }
 
     @Override
     public void routeNotFound() {
-
+        if(navigationOracle != null) {
+            navigationOracle.routeNotFound();
+        }
     }
 
     @Override
     public void routeRecalculationStarted() {
-
+        if(navigationOracle != null) {
+            navigationOracle.routeRecalculationStarted();
+        }
     }
 
     @Override
     public void routeRecalculationDone() {
-        /*
-        mapView.clearJourneyOverlay();
-
-        PathOverlay path = null;
-        if (IBikeApplication.getAppName().equals("CykelPlanen")) {
-            path = new PathOverlay(Color.parseColor("#FF6600"), 10);
-        } else {
-            path = new PathOverlay(Color.RED, 10);
+        if(navigationOracle != null) {
+            navigationOracle.routeRecalculationDone();
         }
-
-        if (this.route != null) {
-            for (Location loc : this.route.waypoints) {
-                path.addPoint(loc.getLatitude(), loc.getLongitude());
-            }
-            mapView.addRouteOverlay(path);
-        }
-        */
     }
 
     @Override
     public void serverError() {
-        Toast.makeText(activity, IBikeApplication.getString("error_route_not_found"), Toast.LENGTH_SHORT).show();
-    }
-
-    public SMRoute getNextRoute() {
-        int currentRouteIndex = journey.getRoutes().indexOf(route);
-        if(currentRouteIndex < journey.getRoutes().size()-1) {
-            return journey.getRoutes().get(currentRouteIndex+1);
-        } else {
-            return null;
+        if(navigationOracle != null) {
+            navigationOracle.serverError();
         }
+        Toast.makeText(activity, IBikeApplication.getString("error_route_not_found"), Toast.LENGTH_SHORT).show();
     }
 
     public Journey getJourney() {
@@ -349,8 +315,8 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
     public void reportProblem() {
         Intent i = new Intent(activity, IssuesActivity.class);
         ArrayList<String> turnsArray = new ArrayList<>();
-        for (SMTurnInstruction instruction : route.getTurnInstructions()) {
-            turnsArray.add(instruction.generateFullDescriptionString());
+        for (SMTurnInstruction instruction : route.getUpcomingTurnInstructions()) {
+            turnsArray.add(instruction.fullDescriptionString);
         }
         i.putStringArrayListExtra("turns", turnsArray);
         i.putExtra("startLoc", route.getStartLocation().toString());

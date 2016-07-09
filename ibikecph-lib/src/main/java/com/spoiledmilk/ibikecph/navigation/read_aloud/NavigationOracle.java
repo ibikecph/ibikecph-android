@@ -10,7 +10,7 @@ import android.util.Log;
 
 import com.google.android.gms.location.LocationListener;
 import com.spoiledmilk.ibikecph.IBikeApplication;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.map.states.NavigatingState;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 
@@ -42,7 +42,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
     /**
      * The route that we are reading aloud.
      */
-    protected SMRoute route;
+    protected NavigatingState state;
     /**
      * The last instruction that the oracle read aloud, as we got closer than
      * DISTANCE_TO_INSTRUCTION
@@ -58,6 +58,10 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
     protected Location lastSpeakLocation;
 
     protected boolean enabled = false;
+
+    public boolean isEnabled() {
+        return enabled;
+    }
 
     public interface NavigationOracleListener {
         void enabled();
@@ -92,11 +96,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         }
     }
 
-    public NavigationOracle(Context context, SMRoute route) {
-        this(context, route, null);
-    }
-
-    public NavigationOracle(Context context, SMRoute route, NavigationOracleListener listener) {
+    public NavigationOracle(Context context, NavigatingState state, NavigationOracleListener listener) {
         tts = new TextToSpeech(context, this);
         // Request audio focus while speaking
         tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
@@ -124,7 +124,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         // We would use the audio manager to request audio focus when speaking
         am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         this.listener = listener;
-        this.route = route;
+        this.state = state;
     }
 
     protected void speak(String text) {
@@ -151,15 +151,6 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         return new BigInteger(130, random).toString(32);
     }
 
-    public void setRoute(SMRoute route) {
-        if (this.route != null) {
-            this.route.removeListener(this);
-        }
-        this.route = route;
-        if(route != null && enabled) {
-            routeReady();
-        }
-    }
 
     protected void routeReady() {
         // Register the oracle to receive updates on the route.
