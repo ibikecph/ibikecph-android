@@ -141,7 +141,7 @@ public class JourneyOverlay extends Overlay implements LocationListener {
             startingWalkPath.clearPath();
             SMRoute firstRoute = journey.getRoutes().get(0);
             // The starting walk path should only be shown if no turn instructions has been passed.
-            if(firstRoute.getWaypoints().size() > 0 && firstRoute.pastTurnInstructions.size() == 0) {
+            if(firstRoute.getWaypoints().size() > 0 && firstRoute.getPastTurnInstructions().size() == 0) {
                 Location routeStart = firstRoute.getWaypoints().get(0);
                 startingWalkPath.addPoint(new LatLng(currentUserLocation));
                 startingWalkPath.addPoint(new LatLng(routeStart));
