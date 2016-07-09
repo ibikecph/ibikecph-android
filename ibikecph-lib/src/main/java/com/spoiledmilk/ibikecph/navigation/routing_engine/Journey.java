@@ -29,15 +29,8 @@ public class Journey {
     public int totalDistance;
     public long arrivalTime;
 
-    /**
-     * @deprecated Use the startAddress instead
-     */
-    public String from;
-
-    /**
-     * @deprecated Use the endAddress instead
-     */
-    public String to;
+    protected Address startAddress;
+    protected Address endAddress;
 
     public Journey(JsonNode journeyNode) {
         this.journeyNode = journeyNode;
@@ -52,27 +45,18 @@ public class Journey {
         totalBikeDistance = totalDistance;
         arrivalTime = route.arrivalTime;
 
-        from = route.startAddress.getDisplayName();
-        to = route.endAddress.getDisplayName();
+        startAddress = route.startAddress;
+        endAddress = route.endAddress;
+
         // TODO: Make sure this is updated when the route is recalculated.
     }
 
     public Address getStartAddress() {
-        if(routes.size() > 0) {
-            SMRoute firstRoute = routes.get(0);
-            return firstRoute.startAddress;
-        } else {
-            return null;
-        }
+        return startAddress;
     }
 
     public Address getEndAddress() {
-        if(routes.size() > 0) {
-            SMRoute lastRoute = routes.get(routes.size()-1);
-            return lastRoute.endAddress;
-        } else {
-            return null;
-        }
+        return endAddress;
     }
 
     public List<SMRoute> getRoutes() {
@@ -112,11 +96,8 @@ public class Journey {
         totalDistance = summary.get("total_distance").asInt();
         totalTime = summary.get("total_time").asInt();
         totalBikeDistance = summary.get("total_bike_distance").asInt();
-        JsonNode firstRouteNode = journeyNode.get("journey").get(0);
         JsonNode lastRouteNode = journeyNode.get("journey").get(journeyNode.get("journey").size()-1);
         arrivalTime = lastRouteNode.get("route_summary").get("arrival_time").asLong();
-        from = firstRouteNode.get("route_name").get(0).asText();
-        to = lastRouteNode.get("route_name").get(1).asText();
     }
 
     protected Location parseViaPoint(JsonNode viaPoint) {

@@ -45,10 +45,7 @@ public class BreakRouteResponse {
      */
     public void setStartAddress(Address startAddress) {
         for(Journey journey: alternativeJourneys) {
-            if(journey.getRoutes().size() > 0) {
-                SMRoute firstRoute = journey.getRoutes().get(0);
-                firstRoute.startAddress = startAddress;
-            }
+            journey.startAddress = startAddress;
         }
     }
 
@@ -59,10 +56,7 @@ public class BreakRouteResponse {
      */
     public void setEndAddress(Address endAddress) {
         for(Journey journey: alternativeJourneys) {
-            if(journey.getRoutes().size() > 0) {
-                SMRoute lastRoute = journey.getRoutes().get(journey.getRoutes().size()-1);
-                lastRoute.endAddress = endAddress;
-            }
+            journey.endAddress = endAddress;
         }
     }
 }
