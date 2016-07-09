@@ -11,6 +11,7 @@ import android.util.Log;
 import com.google.android.gms.location.LocationListener;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.map.states.NavigatingState;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 
@@ -407,7 +408,11 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
 
     @Override
     public void reachedDestination() {
-        speak(IBikeApplication.getString("you_have_reached_your_destination"));
+        // TODO: Consider implementing a Journey listener instead
+        SMRoute lastRoute = state.getJourney().getRoutes().get(state.getJourney().getRoutes().size()-1);
+        if(state.getRoute() == lastRoute) {
+            speak(IBikeApplication.getString("you_have_reached_your_destination"));
+        }
     }
 
     @Override
