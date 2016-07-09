@@ -118,14 +118,6 @@ public class MapActivity extends BaseMapActivity {
      */
     public static boolean fromSearch = false;
     /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static ObservableInteger obsInt;
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static JsonNode breakRouteJSON = null;
-    /**
      * @deprecated Let's phase out the use of static booleans like this.
      */
     public static boolean isBreakChosen = false;
@@ -739,28 +731,6 @@ public class MapActivity extends BaseMapActivity {
         } else {
             super.onBackPressed();
         }
-        /*
-        if (mapView.getMapHandler().onBackPressed()) {
-            if (!OverviewMapHandler.isWatchingAddress) {
-                super.onBackPressed();
-            }
-
-            breakRouteContainer.setVisibility(View.GONE);
-            progressBarHolder.setVisibility(View.GONE);
-            mapView.removeAllMarkers();
-            NavigationMapHandler.displayExtraField = false;
-            NavigationMapHandler.displayGetOffAt = false;
-            NavigationMapHandler.isPublic = false;
-            NavigationMapHandler.getOffAt = "";
-            NavigationMapHandler.lastType = "";
-            isBreakChosen = false;
-            for (Overlay overlay : this.mapView.getOverlays()) {
-                if (overlay instanceof com.mapbox.mapboxsdk.overlay.PathOverlay) {
-                    this.mapView.removeOverlay(overlay);
-                }
-            }
-        }
-        */
     }
 
     public void readAloudClicked(View v) {
