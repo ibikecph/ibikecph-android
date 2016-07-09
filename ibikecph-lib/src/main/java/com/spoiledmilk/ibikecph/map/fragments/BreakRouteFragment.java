@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 /**
  * Created by Daniel on 12-11-2015.
@@ -130,6 +132,7 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
                     lineIconIV.setImageResource(R.drawable.route_line);
                 }
 
+                // TODO: Use a helper function to do this - one already exists
                 String type = jsonNode.path("journey").get(i).path("route_summary").path("type").textValue();
                 if (type.equals("BIKE")) {
                     typeIconIV.setImageResource(R.drawable.route_bike);
@@ -251,33 +254,8 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     }
 
     public String timeStampFormat(long seconds) {
-
-        String time;
         seconds = seconds * 1000;
-
-        // 24-hour format
-        if (DateFormat.is24HourFormat(this.getActivity())) {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            //sdf.setTimeZone(TimeZone.getDefault());
-            time = sdf.format(seconds).toString();
-        }
-        // 12-hour format
-        else {
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
-            //sdf.setTimeZone(TimeZone.getDefault());
-            time = sdf.format(seconds).toString();
-        }
-
-        return time;
-    }
-
-    public void dummyData() {
-        for (int i = 0; i < 5; i++) {
-            startTime[i] = "11" + ":0" + i;
-            arrivalTime[i] = "\n12" + ":1" + i;
-            typeAndTime[i] = "Cykel " + i + " km " + "   0t " + i + "m";
-            fromTo[i] = "Fra nuværende position til\nRandom st. ";
-        }
+        return DateFormat.getTimeFormat(this.getContext()).format(seconds);
     }
 
     @Override
