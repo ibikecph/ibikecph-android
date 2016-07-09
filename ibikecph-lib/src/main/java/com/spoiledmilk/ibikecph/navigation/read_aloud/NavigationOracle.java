@@ -19,6 +19,8 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Locale;
 
+import static com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute.TransportationType.isPublicTransportation;
+
 /**
  * The Navigation oracle speaks
  * Created by kraen on 06-06-16.
@@ -34,7 +36,8 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
     /**
      * The distance to an upcoming instruction when the oracle reads it aloud.
      */
-    protected final static float DISTANCE_TO_INSTRUCTION = 75.0f;
+    protected final static float DISTANCE_TO_INSTRUCTION_BIKING = 75.0f;
+    protected final static float DISTANCE_TO_INSTRUCTION_DRIVING = 150.0f;
 
     protected TextToSpeech tts;
     protected AudioManager am;
@@ -145,20 +148,24 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         }
     }
 
-    private SecureRandom random = new SecureRandom();
+    protected static SecureRandom random = new SecureRandom();
 
+    /**
+     * Generates a random string that can be used to send to the TTS engine.
+     * @return
+     */
     protected String generateUtteranceId() {
         return new BigInteger(130, random).toString(32);
     }
 
-
-    protected void routeReady() {
-        // Register the oracle to receive updates on the route.
-        route.addListener(this);
+    /**
+     * The journey is ready - this speaks a greeting
+     */
+    protected void journeyReady() {
         // If an end address is known, let's start by reading that aloud.
-        if(route.endAddress != null) {
+        if(state.getJourney().getEndAddress() != null) {
             String greeting = IBikeApplication.getString("read_aloud_enabled");
-            String destination = route.endAddress.getDisplayName();
+            String destination = state.getJourney().getEndAddress().getDisplayName();
             greeting = String.format(greeting.replace("%@", "%s"), destination);
             speak(greeting);
         } else {
@@ -181,14 +188,18 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         }
     }
 
+    /**
+     * Enable the navigation oracle
+     */
     public void enable() {
         Log.d("NavigationOracle", "Enabling");
         Locale locale = IBikeApplication.getLocale();
         if (tts.isLanguageAvailable(locale) == TextToSpeech.LANG_AVAILABLE) {
             tts.setLanguage(locale);
             enabled = true;
-            if (route != null) {
-                routeReady();
+            if (state.getJourney() != null) {
+                // TODO: Consider adding a listener on the state, to know if the journey changes.
+                journeyReady();
             }
             emitEnabled();
         } else {
@@ -198,6 +209,9 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         }
     }
 
+    /**
+     * Disable the navigation oracle
+     */
     public void disable() {
         Log.d("NavigationOracle", "Disabling");
         enabled = false;
@@ -205,14 +219,26 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
             tts.stop();
             tts.shutdown();
         }
-        // This removes the route listener
-        setRoute(null);
         emitDisabled();
     }
 
     public SMTurnInstruction getNextInstruction() {
-        if (route != null && route.getTurnInstructions().size() > 0) {
-            return route.getTurnInstructions().get(0);
+        return getNextInstruction(0);
+    }
+
+    public SMTurnInstruction getNextInstruction(int offset) {
+        if (state.getRoute() != null &&
+            state.getRoute().getUpcomingTurnInstructions().size() > offset) {
+            return state.getRoute().getUpcomingTurnInstructions().get(offset);
+        } else {
+            return null;
+        }
+    }
+
+    public SMTurnInstruction getPreviousInstruction() {
+        if (state.getRoute() != null && state.getRoute().getPastTurnInstructions().size() > 0) {
+            int lastInstructionIndex = state.getRoute().getPastTurnInstructions().size()-1;
+            return state.getRoute().getPastTurnInstructions().get(lastInstructionIndex);
         } else {
             return null;
         }
@@ -225,11 +251,11 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         }
         Log.d("NavigationOracle", "Got onLocationChanged");
         SMTurnInstruction instruction = getNextInstruction();
-        if(route != null && instruction != null) {
+        if(state.getRoute() != null && instruction != null) {
+            String instructionString = getTextToSpeak(instruction, getPreviousInstruction(), getNextInstruction(1));
             // If we are close enough and the instruction has not been read aloud
-            if(location.distanceTo(instruction.getLocation()) < DISTANCE_TO_INSTRUCTION &&
+            if(location.distanceTo(instruction.getLocation()) < getDistanceWhenReading(instruction) &&
                lastCloseInstruction != instruction) {
-                String instructionString = instruction.generateFullDescriptionString();
                 speak(instructionString, lastCloseInstruction == null);
                 // Make sure we will not be reading this aloud again.
                 lastUpcomingInstruction = instruction;
@@ -237,13 +263,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
                 // Remember where we were when reading this
                 lastSpeakLocation = location;
             } else if (lastUpcomingInstruction != instruction) {
-                String upcomingString = IBikeApplication.getString("read_aloud_upcoming_instruction");
-                // Let's pick the closest 10 metres
-                int metresToInstruction = Math.round(instruction.lengthInMeters / 10.f) * 10;
-                upcomingString = String.format(upcomingString.replace("%@", "%d"), metresToInstruction);
-                String instructionString = instruction.generateFullDescriptionString();
-                // Read it aloud
-                speak(upcomingString + " " + instructionString, lastUpcomingInstruction == null);
+                speakUpcoming(instruction.lengthInMeters, instructionString);
                 // Make sure we will not be reading this aloud again.
                 lastUpcomingInstruction = instruction;
                 // Remember where we were when reading this
@@ -251,8 +271,9 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
             }
 
             if(lastSpeakLocation != null &&
-               location.distanceTo(lastSpeakLocation) > MAX_SILENCE_DISTANCE) {
-                int minutesToArrival = Math.round(route.getEstimatedArrivalTime() / 60.0f);
+               location.distanceTo(lastSpeakLocation) > MAX_SILENCE_DISTANCE &&
+               !state.getRoute().isPublicTransportation()) {
+                int minutesToArrival = Math.round(state.getRoute().getEstimatedArrivalTime() / 60.0f);
                 String encouragement = generateEncouragement(minutesToArrival);
                 // If we want to say an encouragement - let's speak
                 if(encouragement != null) {
@@ -261,6 +282,92 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
                 }
             }
         }
+    }
+
+    /**
+     * Reads aloud ex "In {metresToInstruction} metres {instructionString}"
+     * or ex "In {metresToInstruction / 1000} kilometres {instructionString}" if metresToInstruction
+     * is greater than 1000 metres.
+     * @param metresToInstruction
+     * @param instructionString
+     */
+    protected void speakUpcoming(int metresToInstruction, String instructionString) {
+        // Let's pick the closest 10 metres
+        metresToInstruction = Math.round(metresToInstruction / 10.f) * 10;
+        String upcomingString = IBikeApplication.getString("read_aloud_upcoming_instruction");
+        upcomingString = upcomingString.replace("%@", "%s");
+        if(metresToInstruction < 1000) {
+            String unit = IBikeApplication.getString("unit_metre");
+            upcomingString = String.format(upcomingString, String.valueOf(metresToInstruction), unit);
+        } else {
+            String unit;
+            if(metresToInstruction == 1000) {
+                unit = IBikeApplication.getString("unit_kilometre");
+            } else {
+                unit = IBikeApplication.getString("unit_kilometres");
+            }
+            String kmToInstruction = String.format(Locale.getDefault(), "%.1f", metresToInstruction / 1000f);
+            upcomingString = String.format(upcomingString, kmToInstruction, unit);
+        }
+        // Read it aloud
+        speak(upcomingString + " " + instructionString, lastUpcomingInstruction == null);
+    }
+
+    private float getDistanceWhenReading(SMTurnInstruction instruction) {
+        if(isPublicTransportation(instruction.transportType)) {
+            return DISTANCE_TO_INSTRUCTION_DRIVING;
+        } else {
+            return DISTANCE_TO_INSTRUCTION_BIKING;
+        }
+    }
+
+    private String getTextToSpeak(SMTurnInstruction instruction) {
+        return getTextToSpeak(instruction, null, null);
+    }
+
+    /**
+     * Generates the text to speak aloud, that describes an instruction that the user could follow.
+     * @param instruction
+     * @param previousInstruction used to determine if the vehicle is changing.
+     * @return
+     */
+    private String getTextToSpeak(SMTurnInstruction instruction, SMTurnInstruction previousInstruction, SMTurnInstruction nextInstruction) {
+        String result = "";
+        if(instruction != null) {
+            if (previousInstruction != null && previousInstruction.transportType != instruction.transportType) {
+                // The user should change vehicle
+                int vehicleId = instruction.transportType.getVehicleId();
+                if (vehicleId > 0) {
+                    result += IBikeApplication.getString("vehicle_changed_instruction_" + vehicleId);
+                }
+            }
+            String direction = instruction.drivingDirection.toDisplayString(previousInstruction == null);
+            if(instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOnPublicTransportation) {
+                result += String.format(direction.replaceAll("%@", "%s"),
+                                        instruction.wayName,
+                                        state.getRoute().description,
+                                        nextInstruction.wayName);
+                // Pronounce St. as Station
+                result = result.replaceAll("St.", "Station");
+            } else if(instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOffPublicTransportation) {
+                result += direction + " " + instruction.wayName;
+                // Pronounce St. as Station
+                result = result.replaceAll("St.", "Station");
+            } else {
+                // This is the first instruction
+                if(previousInstruction == null) {
+                    String generalDirection = IBikeApplication.getString("direction_" + instruction.directionAbrevation);
+                    direction = String.format(direction.replace("%@", "%s"), generalDirection);
+                }
+                result += direction;
+                if(instruction.drivingDirection != SMTurnInstruction.TurnDirection.NoTurn &&
+                    instruction.drivingDirection != SMTurnInstruction.TurnDirection.ReachedYourDestination &&
+                    instruction.drivingDirection != SMTurnInstruction.TurnDirection.ReachingDestination) {
+                    result += " " + instruction.wayName;
+                }
+            }
+        }
+        return result;
     }
 
     private String generateEncouragement(int minutesToArrival) {
@@ -320,7 +427,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
 
     @Override
     public void routeRecalculationStarted() {
-        speak(IBikeApplication.getString("calculating_new_route"));
+        speak(IBikeApplication.getString("read_aloud_recalculating_route"));
     }
 
     @Override
