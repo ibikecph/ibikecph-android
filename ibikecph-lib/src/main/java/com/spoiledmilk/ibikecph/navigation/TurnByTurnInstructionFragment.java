@@ -2,7 +2,6 @@ package com.spoiledmilk.ibikecph.navigation;
 
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +11,9 @@ import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.fragments.MapStateFragment;
-import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.states.NavigatingState;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 
@@ -30,6 +28,7 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
     private TextView textDistance;
     private TextView textWayname, textLastWayNameXtra;
     private RelativeLayout XtraView;
+    private SMTurnInstruction nextTurnInstruction;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +60,15 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
      */
     public void render() {
         SMRoute route = getMapState(NavigatingState.class).getRoute();
-        if(route.getTurnInstructions().size() > 0) {
-            if(!route.isPublic()) {
-                SMTurnInstruction turn = route.getTurnInstructions().get(0);
+        SMTurnInstruction turn = getNextTurnInstruction();
+        if (turn != null) {
+            if (!turn.transportType.isPublicTransportation()) {
                 textWayname.setText(turn.wayName);
                 textDistance.setText(turn.lengthInMeters + " m");
-                imgDirectionIcon.setImageResource(turn.getBlackDirectionImageResource());
+                imgDirectionIcon.setImageResource(turn.getSmallDirectionResourceId());
             } else {
+                // TODO: Look at the current and next instructions instead of the start and end
+                // address of the route.
                 String from = route.startAddress.getDisplayName();
                 String take = route.description;
                 String to = route.endAddress.getDisplayName();
@@ -80,7 +81,7 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
                 textWayname.setText(instruction);
                 // Use time instead of metres when next stop is public transportation
                 textDistance.setText(departureTime);
-                imgDirectionIcon.setImageResource(getTypeDrawableId(route.transportType));
+                imgDirectionIcon.setImageResource(turn.getSmallDirectionResourceId());
             }
         } else {
             textWayname.setText("");
@@ -114,36 +115,30 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
         return time;
     }
 
-    public int getTypeDrawableId(SMRoute.TransportationType type) {
-        if (type == SMRoute.TransportationType.BIKE) {
-            return R.drawable.route_bike;
-        } else if (type == SMRoute.TransportationType.M) {
-            return R.drawable.route_metro_direction;
-        } else if (type == SMRoute.TransportationType.S) {
-            return R.drawable.route_s_direction;
-        } else if (type == SMRoute.TransportationType.TOG) {
-            return R.drawable.route_train_direction;
-        } else if (type == SMRoute.TransportationType.WALK) {
-            return R.drawable.route_walking_direction;
-        } else if (type == SMRoute.TransportationType.IC) {
-            return R.drawable.route_train_direction;
-        } else if (type == SMRoute.TransportationType.LYN) {
-            return R.drawable.route_train_direction;
-        } else if (type == SMRoute.TransportationType.REG) {
-            return R.drawable.route_train_direction;
-        } else if (type == SMRoute.TransportationType.BUS) {
-            return R.drawable.route_bus_direction;
-        } else if (type == SMRoute.TransportationType.EXB) {
-            return R.drawable.route_bus_direction;
-        } else if (type == SMRoute.TransportationType.NB) {
-            return R.drawable.route_bus_direction;
-        } else if (type == SMRoute.TransportationType.TB) {
-            return R.drawable.route_bus_direction;
-        } else if (type == SMRoute.TransportationType.F) {
-            return R.drawable.route_ship_direction;
+    /**
+     * Loops through the journey's routes and returns the first upcoming instruction
+     * @return
+     */
+    public SMTurnInstruction getNextTurnInstruction() {
+        NavigatingState state = getMapState(NavigatingState.class);
+        // Let's try the current route, right away
+        SMRoute currentRoute = state.getRoute();
+        if(currentRoute.getUpcomingTurnInstructions().size() > 0) {
+            return currentRoute.getUpcomingTurnInstructions().get(0);
         } else {
-            return 0;
+            // Let's start the looping
+            Journey journey = state.getJourney();
+            int currentRouteIndex = journey.getRoutes().indexOf(state.getRoute());
+            if(currentRouteIndex == -1) {
+                return null;
+            }
+            for(int r = currentRouteIndex+1; r < journey.getRoutes().size(); r++) {
+                SMRoute route = journey.getRoutes().get(r);
+                if(route.getUpcomingTurnInstructions().size() > 0) {
+                    return route.getUpcomingTurnInstructions().get(0);
+                }
+            }
+            return null;
         }
     }
-
 }
