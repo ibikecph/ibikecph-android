@@ -110,6 +110,8 @@ public class JourneyOverlay extends Overlay implements LocationListener {
     private Icon getTransportationTypeIcon(SMRoute route) {
         if(route != null) {
             switch(route.transportType) {
+                case BIKE:
+                    return new Icon(mapView.getResources().getDrawable(R.drawable.marker_bike));
                 case IC:
                 case LYN:
                 case REG:
