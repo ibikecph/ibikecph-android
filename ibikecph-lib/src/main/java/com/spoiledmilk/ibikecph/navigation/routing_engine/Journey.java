@@ -2,7 +2,6 @@ package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
 import android.location.Location;
 import android.location.LocationManager;
-import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -24,9 +23,9 @@ public class Journey {
 
     protected JsonNode journeyNode;
 
-    public int totalTime;
+    public int estimatedDuration;
     public int totalBikeDistance;
-    public int totalDistance;
+    public int estimatedDistance;
     public long arrivalTime;
 
     protected Address startAddress;
@@ -40,15 +39,13 @@ public class Journey {
     public Journey(SMRoute route) {
         routes.add(route);
 
-        totalDistance = route.estimatedRouteDistance;
-        totalTime = route.estimatedArrivalTime;
-        totalBikeDistance = totalDistance;
-        arrivalTime = route.arrivalTime;
+        estimatedDistance = route.estimatedDistance;
+        estimatedDuration = route.estimatedDuration;
+        totalBikeDistance = estimatedDistance;
+        arrivalTime = route.estimatedDurationLeft;
 
         startAddress = route.startAddress;
         endAddress = route.endAddress;
-
-        // TODO: Make sure this is updated when the route is recalculated.
     }
 
     public Address getStartAddress() {
@@ -93,11 +90,11 @@ public class Journey {
         }
 
         JsonNode summary = journeyNode.get("journey_summary");
-        totalDistance = summary.get("total_distance").asInt();
-        totalTime = summary.get("total_time").asInt();
+        estimatedDistance = summary.get("total_distance").asInt();
+        estimatedDuration = summary.get("total_time").asInt();
         totalBikeDistance = summary.get("total_bike_distance").asInt();
         JsonNode lastRouteNode = journeyNode.get("journey").get(journeyNode.get("journey").size()-1);
-        arrivalTime = lastRouteNode.get("route_summary").get("arrival_time").asLong();
+        arrivalTime = lastRouteNode.get("route_summary").get("arrival_time").asInt();
     }
 
     protected Location parseViaPoint(JsonNode viaPoint) {
@@ -110,24 +107,16 @@ public class Journey {
         return result;
     }
 
-    public int getEstimatedArrivalTime() {
+    /**
+     * Returns the estimated duration of the entire journey
+     * @return
+     */
+    public int getEstimatedDuration() {
         int estimatedArrivalTime = 0;
         for(SMRoute route: getRoutes()) {
-            estimatedArrivalTime += route.estimatedArrivalTime;
+            estimatedArrivalTime += route.estimatedDuration;
         }
         return estimatedArrivalTime;
-    }
-
-    public int getEstimatedRouteDistance() {
-        int estimatedRouteDistance = 0;
-        for(SMRoute route: getRoutes()) {
-            estimatedRouteDistance += route.estimatedRouteDistance;
-        }
-        return estimatedRouteDistance;
-    }
-
-    public int getArrivalTime() {
-        return Math.round(getDistanceLeft() * getEstimatedArrivalTime() / getEstimatedRouteDistance());
     }
 
     public float getEstimatedDistance() {
@@ -139,11 +128,11 @@ public class Journey {
         return estimatedDistance;
     }
 
-    public float getDistanceLeft() {
+    public float getEstimatedDistanceLeft() {
         float distanceLeft = 0;
         // Calculate the accumulated distance left.
         for(SMRoute route: getRoutes()) {
-            distanceLeft += route.distanceLeft;
+            distanceLeft += route.getEstimatedDistanceLeft();
         }
         return distanceLeft;
     }

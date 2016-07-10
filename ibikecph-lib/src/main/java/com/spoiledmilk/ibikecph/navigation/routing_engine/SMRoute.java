@@ -57,15 +57,15 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     protected ArrayList<SMTurnInstruction> upcomingTurnInstructions;
 
     public List<Location> visitedLocations;
-    float distanceLeft;
+    float estimatedDistanceLeft;
     float tripDistance;
     float averageSpeed;
     float caloriesBurned;
     public Location locationStart;
     public Location locationEnd;
     public boolean recalculationInProgress;
-    int estimatedArrivalTime, arrivalTime;
-    int estimatedRouteDistance = -1;
+    int estimatedDuration, estimatedDurationLeft;
+    int estimatedDistance = -1;
     String routeChecksum;
     String destinationHint;
     public Location lastCorrectedLocation;
@@ -75,7 +75,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     private String viaStreets;
     private Location lastRecalcLocation;
     public String startStationName, endStationName;
-    public SMTurnInstruction station1, station2;
     public boolean reachedDestination = false;
     public int waypointStation1 = -1, waypointStation2 = -1;
     private RouteType type;
@@ -192,7 +191,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     }
 
     public void init() {
-        distanceLeft = -1;
+        estimatedDistanceLeft = -1;
         tripDistance = -1;
         caloriesBurned = -1;
         averageSpeed = -1;
@@ -442,11 +441,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             upcomingTurnInstructions = new ArrayList<>();
             pastTurnInstructions = new LinkedList<>();
             visitedLocations = new ArrayList<>();
-            estimatedArrivalTime = jsonRoot.path("route_summary").path("total_time").asInt();
-            arrivalTime = estimatedArrivalTime;
+            estimatedDuration = jsonRoot.path("route_summary").path("total_time").asInt();
+            estimatedDurationLeft = estimatedDuration;
             distancePassed = 0d;
-            if (estimatedRouteDistance < 0)
-                estimatedRouteDistance = jsonRoot.path("route_summary").path("total_distance").asInt();
+            estimatedDistance = jsonRoot.path("route_summary").path("total_distance").asInt();
 
             routeChecksum = null;
             destinationHint = null;
@@ -638,13 +636,13 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
      * Returns the estimated amount of seconds to the destination.
      * @return
      */
-    public float getEstimatedArrivalTime() {
-        return arrivalTime;
+    public float getEstimatedDuration() {
+        return estimatedDurationLeft;
     }
 
 
     public int getEstimatedDistance() {
-        return estimatedRouteDistance;
+        return estimatedDistance;
     }
 
     double distancePassed = 0;
@@ -676,20 +674,9 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             return;
         }
 
-        // Calculate the distance to the end location.
-        // TODO: Calculate this in a non-euclidean way
-        double distanceToFinish = loc.distanceTo(getEndLocation());
+        updateDistances(loc);
 
-        arrivalTime = Math.round(estimatedArrivalTime * distanceLeft / estimatedRouteDistance);
-
-        // Calculate the average speed and update the ETA
-        // A bike travels approximately 5 meters per second
-        double speed = loc.getSpeed() > 0 ? loc.getSpeed() : 5;
-
-        int timeToFinish = 100;
-        if (speed > 0) {
-            timeToFinish = (int) (distanceToFinish / speed);
-        }
+        estimatedDurationLeft = Math.round(estimatedDuration / estimatedDistance * estimatedDistanceLeft);
 
         /*
         double destinationRadiusPublic = 300;
@@ -774,8 +761,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         // TODO: Consider if this check is need - maybe we only want to reach the destination once.
         if (!reachedDestination) {
             // Are we close to the finish?
-            if (distanceToFinish < DESTINATION_METRES_THRESHOLD ||
-                timeToFinish <= DESTINATION_SECONDS_THRESHOLD) {
+            if (estimatedDistanceLeft < DESTINATION_METRES_THRESHOLD ||
+                estimatedDurationLeft <= DESTINATION_SECONDS_THRESHOLD) {
                 // Move all future turn instructions to the past instructions
                 pastTurnInstructions.addAll(upcomingTurnInstructions);
                 upcomingTurnInstructions.clear();
@@ -853,7 +840,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         }
 
-        updateDistances(loc);
         emitRouteUpdated();
     }
 
@@ -978,8 +964,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             tripDistance += loc.distanceTo(visitedLocations.get(visitedLocations.size() - 1));
         }
 
-        if (distanceLeft < 0.0) {
-            distanceLeft = estimatedRouteDistance;
+        if (estimatedDistanceLeft < 0.0) {
+            estimatedDistanceLeft = estimatedDistance;
         } else if (upcomingTurnInstructions.size() > 0) {
             // Calculate distance from location to the next turn
             SMTurnInstruction nextTurn = upcomingTurnInstructions.get(0);
@@ -989,10 +975,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             }
             nextTurn.lengthWithUnit = Util.formatDistance(nextTurn.lengthInMeters);
 
-            distanceLeft = nextTurn.lengthInMeters;
+            estimatedDistanceLeft = nextTurn.lengthInMeters;
             // Calculate distance from next turn to the end of the route
             for (int i = 1; i < upcomingTurnInstructions.size(); i++) {
-                distanceLeft += upcomingTurnInstructions.get(i).lengthInMeters;
+                estimatedDistanceLeft += upcomingTurnInstructions.get(i).lengthInMeters;
             }
         }
     }
@@ -1023,29 +1009,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return distance;
     }
 
-    public String getViaStreets() {
-        return viaStreets;
-    }
-
-
-    // public void logWaypoints() {
-    // Iterator<Location> it = waypoints.iterator();
-    // while (it.hasNext()) {
-    // Location loc = it.next();
-    // LOG.d("waypoint = " + loc.getLatitude() + " , " + loc.getLongitude() + "");
-    // }
-    // LOG.d("///////////////////////////////////////////");
-    // }
-
-
-    public float getTripDistance() {
-        return tripDistance;
-    }
-
-    public int getEstimatedRouteDistance() {
-        return estimatedRouteDistance;
-    }
-
     @Override
     public void onLocationChanged(Location location) {
         this.visitLocation(location);
@@ -1055,8 +1018,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return type;
     }
 
-    public float getDistanceLeft() {
-        return distanceLeft;
+    public float getEstimatedDistanceLeft() {
+        return estimatedDistanceLeft;
     }
 
     public JsonNode getObject() {

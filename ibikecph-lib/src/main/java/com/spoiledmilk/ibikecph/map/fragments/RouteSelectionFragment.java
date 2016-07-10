@@ -126,7 +126,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             destinationText.setText(journey.getEndAddress().getDisplayName());
 
             distance = journey.getEstimatedDistance();
-            duration = journey.getEstimatedArrivalTime();
+            duration = journey.getEstimatedDuration();
 
             if (distance > 1000) {
                 distance /= 1000;

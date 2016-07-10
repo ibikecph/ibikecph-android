@@ -24,7 +24,6 @@ import com.spoiledmilk.ibikecph.util.DB;
  */
 public class DestinationPreviewFragment extends Fragment implements View.OnClickListener {
 
-    private TextView addressView;
     private Address address;
     /**
      * @deprecated Let's not use static fields like this.
@@ -86,7 +85,7 @@ public class DestinationPreviewFragment extends Fragment implements View.OnClick
             if (getActivity() instanceof MapActivity) {
                 Address a = (Address) getArguments().getSerializable("address");
                 MapActivity activity = (MapActivity) getActivity();
-                RouteSelectionState state = (RouteSelectionState) activity.changeState(RouteSelectionState.class);
+                RouteSelectionState state = activity.changeState(RouteSelectionState.class);
                 state.setDestination(a);
             }
         } else {

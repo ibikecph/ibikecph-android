@@ -46,9 +46,9 @@ public class NavigationETAFragment extends MapStateFragment {
         if (journey == null) {
             return;
         } else {
-            int secondsToFinish = journey.getEstimatedArrivalTime();
+            int secondsToFinish = journey.getEstimatedDuration();
 
-            this.lengthText.setText(getFormattedDistance(Math.round(journey.getDistanceLeft())));
+            this.lengthText.setText(getFormattedDistance(Math.round(journey.getEstimatedDistanceLeft())));
 
             // Set the address text
             textAddress.setText(journey.getEndAddress().getDisplayName());
