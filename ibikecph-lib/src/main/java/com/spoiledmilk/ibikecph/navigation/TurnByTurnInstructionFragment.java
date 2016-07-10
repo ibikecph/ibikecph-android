@@ -59,14 +59,15 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
      * TODO: Have this method implement some of the behaviour from renderForBreakRoute
      */
     public void render() {
-        SMRoute route = getMapState(NavigatingState.class).getRoute();
-        SMTurnInstruction turn = getNextTurnInstruction();
+        NavigatingState state = getMapState(NavigatingState.class);
+        SMTurnInstruction turn = state.getJourney().getUpcomingInstruction();
         if (turn != null) {
             if (!turn.transportType.isPublicTransportation()) {
                 textWayname.setText(turn.wayName);
                 textDistance.setText(turn.lengthInMeters + " m");
                 imgDirectionIcon.setImageResource(turn.getSmallDirectionResourceId());
             } else {
+                SMRoute route = state.getRoute();
                 // TODO: Look at the current and next instructions instead of the start and end
                 // address of the route.
                 String from = route.startAddress.getDisplayName();

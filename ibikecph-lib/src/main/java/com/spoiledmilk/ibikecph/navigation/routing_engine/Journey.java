@@ -147,4 +147,30 @@ public class Journey {
         }
         return distanceLeft;
     }
+
+    public SMTurnInstruction getUpcomingInstruction() {
+        return getUpcomingInstruction(0);
+    }
+
+    public SMTurnInstruction getUpcomingInstruction(int offset) {
+        if(offset < 0) {
+            throw new RuntimeException("Expected a non-negative offset");
+        }
+        List<SMTurnInstruction> allUpcomingInstructions = new ArrayList<>();
+        for(SMRoute route: routes) {
+            List<SMTurnInstruction> instructions = route.getUpcomingTurnInstructions();
+            // If we are simply looking for the first, let's just return it right away
+            if(offset == 0 && instructions.size() > 0) {
+                return instructions.get(0);
+            } else {
+                allUpcomingInstructions.addAll(instructions);
+            }
+        }
+        // Return the turn instruction
+        if(offset < allUpcomingInstructions.size()) {
+            return allUpcomingInstructions.get(offset);
+        } else {
+            return null;
+        }
+    }
 }
