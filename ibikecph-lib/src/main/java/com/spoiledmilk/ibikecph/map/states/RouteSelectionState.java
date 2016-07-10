@@ -38,20 +38,7 @@ public class RouteSelectionState extends MapState {
     protected SMRoute route;
     protected Journey journey;
 
-    /**
-     * @deprecated Remove the need for the map handler, as its behaviour transitions into this state
-     */
-    protected NavigationMapHandler mapHandler;
-
     protected RouteSelectionFragment routeSelectionFragment;
-    private List<RouteCallback> routeCallbacks = new ArrayList<>();
-
-    protected abstract class RouteCallback implements Geocoder.RouteCallback {
-        boolean cancelled = false;
-        public void cancel() {
-            cancelled = true;
-        }
-    }
 
     public interface RouteTypeChangeListener {
         void routeTypeChanged(RouteType newType);
@@ -64,18 +51,13 @@ public class RouteSelectionState extends MapState {
 
     @Override
     public void transitionTowards(MapState from, FragmentTransaction fragmentTransaction) {
-        mapHandler = new NavigationMapHandler(activity.getMapView());
-        activity.getMapView().setMapViewListener(mapHandler);
+        activity.getMapView().setMapViewListener(NavigationMapHandler.class);
 
         // Enabled the user location, so the compass can be clicked
         activity.getMapView().setUserLocationEnabled(true);
         activity.getMapView().getUserLocationOverlay().setDrawAccuracyEnabled(false);
 
         routeSelectionFragment = activity.createRouteSelectionFragment();
-        // Add the navigation map handler to the arguments
-        Bundle b = new Bundle();
-        b.putSerializable("NavigationMapHandler", mapHandler);
-        routeSelectionFragment.setArguments(b);
         // Add the route selection fragment as a route type change listener, so it can update when
         // the route type changes.
         addRouteTypeChangeListener(routeSelectionFragment);
@@ -93,7 +75,7 @@ public class RouteSelectionState extends MapState {
         // No need for a user location overlay afterwards - the future state will enabled this.
         activity.getMapView().setUserLocationEnabled(false);
         // Cancel any requests that will be resolved asynchronously.
-        cancelRequests();
+        Geocoder.cancelRequests();
         // Remove the route selection fragment as a route type change listener.
         removeRouteTypeChangeListener(routeSelectionFragment);
         // Then remove the route selection fragment
@@ -184,49 +166,34 @@ public class RouteSelectionState extends MapState {
         LatLng sourceLocation = source.getLocation();
         LatLng destinationLocation = destination.getLocation();
 
-        RouteCallback routeCallback = new RouteCallback() {
+        Geocoder.RouteCallback routeCallback = new Geocoder.RouteCallback() {
             @Override
             public void onSuccess(SMRoute route) {
-                if(!cancelled) {
-                    routeCallbacks.remove(this);
-                    route.startAddress = source;
-                    route.endAddress = destination;
-                    // TODO: Make the route callback called with a Journey instead.
-                    setJourney(new Journey(route));
-                }
+                route.startAddress = source;
+                route.endAddress = destination;
+                // TODO: Make the route callback called with a Journey instead.
+                setJourney(new Journey(route));
             }
 
             @Override
             public void onSuccess(BreakRouteResponse breakRouteResponse) {
-                if(!cancelled) {
-                    routeCallbacks.remove(this);
-                    breakRouteResponse.setStartAddress(source);
-                    breakRouteResponse.setEndAddress(destination);
-                    if(routeSelectionFragment instanceof BreakRouteSelectionFragment) {
-                        BreakRouteSelectionFragment fragment = ((BreakRouteSelectionFragment) routeSelectionFragment);
-                        fragment.brokenRouteReady(breakRouteResponse);
-                    }
+                breakRouteResponse.setStartAddress(source);
+                breakRouteResponse.setEndAddress(destination);
+                if(routeSelectionFragment instanceof BreakRouteSelectionFragment) {
+                    BreakRouteSelectionFragment fragment = ((BreakRouteSelectionFragment) routeSelectionFragment);
+                    fragment.brokenRouteReady(breakRouteResponse);
                 }
             }
 
             @Override
             public void onFailure() {
-                if(!cancelled) {
-                    displayTryAgain();
-                }
+                displayTryAgain();
             }
 
         };
-
-        routeCallbacks.add(routeCallback);
+        // Cancel any pending requests, making sure they will not override the result of this
+        Geocoder.cancelRequests();
         Geocoder.getRoute(sourceLocation, destinationLocation, routeCallback, routeType);
-    }
-
-    protected void cancelRequests() {
-        for(RouteCallback callback: routeCallbacks) {
-            callback.cancel();
-        }
-        routeCallbacks.clear();
     }
 
     /**

@@ -28,10 +28,8 @@ import java.util.Locale;
 /**
  * Created by kraen on 26-06-16.
  */
-public class BreakRouteRequester extends AsyncTask<Void, Void, Boolean> {
+public class BreakRouteRequester extends RouteRequester {
 
-    protected ILatLng start, end;
-    protected Geocoder.RouteCallback callback;
     protected String token;
 
     protected static int RETRY_DELAY = 1000;
@@ -40,9 +38,7 @@ public class BreakRouteRequester extends AsyncTask<Void, Void, Boolean> {
     protected BreakRouteResponse response;
 
     public BreakRouteRequester(ILatLng start, ILatLng end, Geocoder.RouteCallback callback) {
-        this.start = start;
-        this.end = end;
-        this.callback = callback;
+        super(start, end, callback);
     }
 
     @Override

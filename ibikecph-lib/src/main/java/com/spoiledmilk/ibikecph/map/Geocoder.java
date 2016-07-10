@@ -1,5 +1,7 @@
 package com.spoiledmilk.ibikecph.map;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
@@ -9,6 +11,8 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteRequester;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.RegularRouteRequester;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.RouteRequester;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Config;
@@ -20,17 +24,13 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by jens on 5/30/15.
  */
 public class Geocoder {
-
-    /**
-     * @deprecated Let's phase out the use of static members like this.
-     */
-    public static ArrayList<ArrayList<SMRoute>> arrayLists;
 
     public interface GeocoderCallback {
         void onSuccess(Address address);
@@ -72,70 +72,30 @@ public class Geocoder {
     }
 
     /**
-     * Returns a route from the OSRM server
-     *
+     * Requests a route from the OSRM server and calls the callback when done or failed
      * @param start
      * @param end
      * @param callback
+     * @param type
      */
     public static void getRoute(final ILatLng start, final ILatLng end, final RouteCallback callback, final RouteType type) {
-        AsyncHttpClient client = new AsyncHttpClient();
-
-        // OSRM directive to not ignore small road fragments
-        int z = 18;
-
+        RouteRequester requester;
         if (type == RouteType.BREAK) {
-            BreakRouteRequester requester = new BreakRouteRequester(start, end, callback);
-            requester.execute();
+            requester = new BreakRouteRequester(start, end, callback);
         } else {
-            String baseURL;
-            final String url;
+            requester = new RegularRouteRequester(start, end, callback, type);
+        }
+        requesters.add(requester);
+        requester.execute();
+    }
 
-            switch (type) {
-                case CARGO:
-                    baseURL = Config.OSRM_SERVER_CARGO;
-                    break;
-                case GREEN:
-                    baseURL = Config.OSRM_SERVER_GREEN;
-                    break;
-                case BREAK:
-                    baseURL = Config.API_BREAK_ROUTE;
-                    break;
-                case FASTEST:
-                    baseURL = Config.OSRM_SERVER_FAST;
-                    break;
-                default:
-                    baseURL = Config.OSRM_SERVER_DEFAULT;
-                    break;
+    protected static List<RouteRequester> requesters = new ArrayList<>();
+
+    public static void cancelRequests() {
+        for(RouteRequester requester: requesters) {
+            if(!requester.isCancelled()) {
+                requester.cancel(true);
             }
-            url = String.format(Locale.US, "%s/viaroute?z=%d&alt=false&loc=%.6f,%.6f&loc=%.6f,%.6f&instructions=true",
-                    baseURL,
-                    z,
-                    start.getLatitude(),
-                    start.getLongitude(),
-                    end.getLatitude(),
-                    end.getLongitude());
-
-            client.get(url, new JsonHttpResponseHandler() {
-                public void onSuccess(int statusCode, Header[] headers, org.json.JSONObject response) {
-                    // Convert the JSONObject into a Jackson JsonNode to make it compatible with SMRoute
-                    try {
-                        ObjectMapper mapper = new ObjectMapper();
-                        JsonNode node = mapper.readTree(response.toString());
-
-                        SMRoute route = new SMRoute(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), node, type);
-                        // Pass the route back to the caller
-                        callback.onSuccess(route);
-                    } catch (IOException e) {
-                        // Couldn't parse the JSON. We pass the exception to the onFailure handler.
-                        onFailure(statusCode, headers, null);
-                    }
-                }
-
-                public void onFailure(int statusCode, Header[] headers, JSONObject response) {
-                    callback.onFailure();
-                }
-            });
         }
     }
 }
