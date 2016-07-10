@@ -24,7 +24,6 @@ import com.spoiledmilk.ibikecph.util.IBikePreferences;
 public class OverviewMapHandler extends IBCMapHandler {
     private Marker curMarker;
     public static boolean isWatchingAddress = false;
-    public static Address addressBeingWatched = null;
     private IBCMapView mapView;
     private IBikePreferences settings;
 

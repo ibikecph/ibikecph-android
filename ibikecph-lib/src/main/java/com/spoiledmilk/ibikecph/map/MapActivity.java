@@ -19,24 +19,17 @@ import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.events.MapListener;
 import com.mapbox.mapboxsdk.events.RotateEvent;
@@ -46,20 +39,17 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.IBikeApplication;
-import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.LeftMenu;
-
+import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.TermsManager;
 import com.spoiledmilk.ibikecph.favorites.FavoritesData;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
-import com.spoiledmilk.ibikecph.map.fragments.BreakRouteFragment;
 import com.spoiledmilk.ibikecph.map.fragments.BreakRouteSelectionFragment;
 import com.spoiledmilk.ibikecph.map.fragments.RouteSelectionFragment;
-import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
-import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlayFactory;
 import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlay;
+import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlayFactory;
 import com.spoiledmilk.ibikecph.map.states.BrowsingState;
 import com.spoiledmilk.ibikecph.map.states.DestinationPreviewState;
 import com.spoiledmilk.ibikecph.map.states.MapState;
@@ -69,10 +59,9 @@ import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.SearchActivity;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackHelper;
-import com.spoiledmilk.ibikecph.tracking.TrackingStatisticsFragment;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
+import com.spoiledmilk.ibikecph.tracking.TrackingStatisticsFragment;
 import com.spoiledmilk.ibikecph.util.Util;
-import com.viewpagerindicator.CirclePageIndicator;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -638,7 +627,7 @@ public class MapActivity extends BaseMapActivity {
         } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_OK) {
             Log.d(TAG, "Got back from address search, with an OK result");
             // Change state right away
-            DestinationPreviewState state = (DestinationPreviewState) this.changeState(DestinationPreviewState.class);
+            DestinationPreviewState state = this.changeState(DestinationPreviewState.class);
             // What address was selected?
             final Bundle extras = data.getExtras();
             Address address = (Address) extras.getSerializable("addressObject");

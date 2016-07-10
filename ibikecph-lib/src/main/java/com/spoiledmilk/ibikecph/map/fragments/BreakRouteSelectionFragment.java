@@ -6,25 +6,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
-import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteRequester;
-import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
-import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
+import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
-import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 import com.viewpagerindicator.CirclePageIndicator;
 
 /**
@@ -71,10 +64,7 @@ public class BreakRouteSelectionFragment extends RouteSelectionFragment {
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.routeSelectionBreakButton) {
-            // TODO: Refactor out the following two lines.
-            NavigationMapHandler.routePos = 0;
             pager.setAdapter(null);
-
             mapState.setType(RouteType.BREAK);
         } else {
             super.onClick(v);

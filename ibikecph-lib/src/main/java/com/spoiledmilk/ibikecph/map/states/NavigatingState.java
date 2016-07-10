@@ -42,8 +42,6 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
 
     protected MapState previousState;
 
-    protected NavigationMapHandler mapHandler;
-
     protected TurnByTurnInstructionFragment turnByTurnFragment;
     protected NavigationETAFragment navigationETAFragment;
     protected ImageButton readAloudButton;
@@ -67,8 +65,6 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
         IBikeApplication.getService().addLocationListener(this);
 
         activity.getMapView().setMapViewListener(NavigationMapHandler.class);
-        // Hang onto this for later use - TODO transition it's behaviour to this class over time
-        mapHandler = (NavigationMapHandler) activity.getMapView().getMapHandler();
 
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -97,8 +93,7 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
         if(navigationETAFragment != null) {
             fragmentTransaction.remove(navigationETAFragment);
         }
-        // TODO: Remove the destructor call, when the handler has been refactored away.
-        mapHandler.destructor();
+
         // No need for this state to receive updates on location changes
         IBikeApplication.getService().removeLocationListener(this);
         // Reset the orientation of the map

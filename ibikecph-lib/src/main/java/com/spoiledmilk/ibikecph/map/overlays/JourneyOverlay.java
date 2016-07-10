@@ -94,8 +94,8 @@ public class JourneyOverlay extends Overlay implements LocationListener {
             Icon icon = getTransportationTypeIcon(route);
             if(icon != null) {
                 Location routeStartLocation = route.getStartLocation();
-                LatLng journeyEnd = new LatLng(routeStartLocation);
-                IBCMarker journeyEndMarker = new IBCMarker("", "", journeyEnd, MarkerType.PATH_ENDPOINT);
+                LatLng routeStartLatLng = new LatLng(routeStartLocation);
+                IBCMarker journeyEndMarker = new IBCMarker("", "", routeStartLatLng, MarkerType.PATH_ENDPOINT);
                 journeyEndMarker.setIcon(icon);
                 markersOverlay.addItem(journeyEndMarker);
             }
