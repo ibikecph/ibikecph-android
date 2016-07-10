@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.google.android.gms.location.LocationListener;
 import com.spoiledmilk.ibikecph.IBikeApplication;
+import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.states.NavigatingState;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
@@ -62,6 +63,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
     protected Location lastSpeakLocation;
 
     protected boolean enabled = false;
+    protected boolean readAloudVehicleChange;
 
     public boolean isEnabled() {
         return enabled;
@@ -129,6 +131,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         am = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         this.listener = listener;
         this.state = state;
+        readAloudVehicleChange = context.getResources().getBoolean(R.bool.readAloudVehicleChange);
     }
 
     protected void speak(String text) {
@@ -335,7 +338,9 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
     private String getTextToSpeak(SMTurnInstruction instruction, SMTurnInstruction previousInstruction, SMTurnInstruction nextInstruction) {
         String result = "";
         if(instruction != null) {
-            if (previousInstruction != null && previousInstruction.transportType != instruction.transportType) {
+            if (readAloudVehicleChange &&
+                previousInstruction != null &&
+                previousInstruction.transportType != instruction.transportType) {
                 // The user should change vehicle
                 int vehicleId = instruction.transportType.getVehicleId();
                 if (vehicleId > 0) {
