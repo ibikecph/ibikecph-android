@@ -27,9 +27,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 // TODO: This code comes from previous vendor. It's a mess. /jc
@@ -120,40 +122,69 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             return 0;
         }
 
+        public enum DrawableSize {
+            SMALL,
+            LARGE
+        }
+
+        public int getDrawableId() {
+            return getDrawableId(DrawableSize.LARGE);
+        }
+
         /**
          * Returns a drawable representing the particular type of transportation
          * TODO: Consider implementing the two sizes available as drawables
          * @return
          */
-        public int getDrawableId() {
+        public int getDrawableId(DrawableSize size) {
             if (this == SMRoute.TransportationType.BIKE) {
-                return R.drawable.route_bike;
+                return R.drawable.route_bike; // TODO: Add a large version
             } else if (this == SMRoute.TransportationType.M) {
-                return R.drawable.route_metro_direction;
+                return size == DrawableSize.LARGE ?
+                       R.drawable.route_metro_direction :
+                       R.drawable.route_metro;
             } else if (this == SMRoute.TransportationType.S) {
-                return R.drawable.route_s_direction;
+                return size == DrawableSize.LARGE ?
+                       R.drawable.route_s_direction :
+                       R.drawable.route_s;
             } else if (this == SMRoute.TransportationType.TOG) {
-                return R.drawable.route_train_direction;
+                return size == DrawableSize.LARGE ?
+                        R.drawable.route_train_direction :
+                        R.drawable.route_train;
             } else if (this == SMRoute.TransportationType.WALK) {
-                return R.drawable.route_walking_direction;
+                return size == DrawableSize.LARGE ?
+                        R.drawable.route_walking_direction :
+                        R.drawable.route_walk;
             } else if (this == SMRoute.TransportationType.IC) {
-                return R.drawable.route_train_direction;
+                return size == DrawableSize.LARGE ?
+                        R.drawable.route_train_direction :
+                        R.drawable.route_train;
             } else if (this == SMRoute.TransportationType.LYN) {
-                return R.drawable.route_train_direction;
+                return size == DrawableSize.LARGE ?
+                        R.drawable.route_train_direction :
+                        R.drawable.route_train;
             } else if (this == SMRoute.TransportationType.REG) {
-                return R.drawable.route_train_direction;
+                return size == DrawableSize.LARGE ?
+                        R.drawable.route_train_direction :
+                        R.drawable.route_train;
             } else if (this == SMRoute.TransportationType.BUS) {
-                return R.drawable.route_bus_direction;
+                return size == DrawableSize.LARGE ?
+                        R.drawable.route_bus_direction :
+                        R.drawable.route_bus;
             } else if (this == SMRoute.TransportationType.EXB) {
-                return R.drawable.route_bus_direction;
+                return size == DrawableSize.LARGE ?
+                        R.drawable.route_bus_direction :
+                        R.drawable.route_bus;
             } else if (this == SMRoute.TransportationType.NB) {
-                return R.drawable.route_bus_direction;
+                return size == DrawableSize.LARGE ?
+                        R.drawable.route_bus_direction :
+                        R.drawable.route_bus;
             } else if (this == SMRoute.TransportationType.TB) {
-                return R.drawable.route_bus_direction;
+                return size == DrawableSize.LARGE ?
+                        R.drawable.route_bus_direction :
+                        R.drawable.route_bus;
             } else if (this == SMRoute.TransportationType.F) {
-                return R.drawable.route_ship_direction;
-            } else if (this == SMRoute.TransportationType.WALK) {
-                return R.drawable.route_walking_direction;
+                return R.drawable.route_ship_direction; // TODO: Add a large version
             } else {
                 return 0;
             }
@@ -173,7 +204,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     // Variables for breakRoute
     public TransportationType transportType;
     public String description = null;
-    public long departureTime;
+    public long departureTime, arrivalTime;
 
     public SMRoute(Location start, Location end, JsonNode routeJSON, RouteType type) {
         init();
@@ -205,6 +236,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         transportType = TransportationType.BIKE;
         description = null;
         departureTime = -1;
+        arrivalTime = -1;
     }
 
     public boolean isPublicTransportation() {
@@ -430,6 +462,19 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 if(jsonRoot.get("route_summary").get("departure_time") != null) {
                     departureTime = jsonRoot.get("route_summary").get("departure_time").asLong();
                 }
+                if(jsonRoot.get("route_summary").get("arrival_time") != null) {
+                    arrivalTime = jsonRoot.get("route_summary").get("arrival_time").asLong();
+                }
+                // TODO: Remove this hack once the server responds with proper timestamps
+                if(departureTime > 0 && arrivalTime > 0) {
+                    Date now = new Date();
+                    boolean daylight = TimeZone.getTimeZone("Europe/Copenhagen").inDaylightTime(now);
+                    if(daylight) {
+                        int anHour = 60 * 60;
+                        departureTime -= anHour;
+                        arrivalTime -= anHour;
+                    }
+                }
             }
 
             waypoints = decodePolyline(jsonRoot.path("route_geometry").textValue(), jsonRoot.path("route_summary").path("type").textValue());
@@ -441,7 +486,13 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             upcomingTurnInstructions = new ArrayList<>();
             pastTurnInstructions = new LinkedList<>();
             visitedLocations = new ArrayList<>();
-            estimatedDuration = jsonRoot.path("route_summary").path("total_time").asInt();
+            if(departureTime > 0 && arrivalTime > 0) {
+                // Let's calculate the estimated duration from the difference in departure and
+                // arrival time to account for the change of vehicle
+                estimatedDuration = (int)(arrivalTime - departureTime);
+            } else {
+                estimatedDuration = jsonRoot.path("route_summary").path("total_time").asInt();
+            }
             estimatedDurationLeft = estimatedDuration;
             distancePassed = 0d;
             estimatedDistance = jsonRoot.path("route_summary").path("total_distance").asInt();
@@ -637,6 +688,14 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
      * @return
      */
     public float getEstimatedDuration() {
+        return estimatedDuration;
+    }
+
+    /**
+     * Returns the estimated amount of seconds to the destination.
+     * @return
+     */
+    public float getEstimatedDurationLeft() {
         return estimatedDurationLeft;
     }
 
@@ -676,7 +735,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         updateDistances(loc);
 
-        estimatedDurationLeft = Math.round(estimatedDuration / estimatedDistance * estimatedDistanceLeft);
+        estimatedDurationLeft = Math.round(estimatedDistanceLeft * estimatedDuration / estimatedDistance);
 
         /*
         double destinationRadiusPublic = 300;
@@ -771,6 +830,9 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 // Declare that we've reached the destination
                 // TODO: Make this a derived method of the fact that we have no more turn instructions
                 reachedDestination = true;
+                // Let's update to reflect that we do not estimate any more time or distance
+                estimatedDistanceLeft = 0;
+                estimatedDurationLeft = 0;
                 // Tell any listener that we have arrived.
                 emitDestinationReached();
                 return;

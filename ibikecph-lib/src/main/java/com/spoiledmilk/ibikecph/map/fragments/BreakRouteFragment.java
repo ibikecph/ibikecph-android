@@ -4,7 +4,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,15 +14,12 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteRequester;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
-
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 
 /**
  * Created by Daniel on 12-11-2015.
@@ -49,12 +45,18 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     TextView typeTV;
     TextView fromToTV;
 
-    protected JsonNode jsonNode;
+    // protected JsonNode jsonNode;
+    protected Journey journey;
+
+    public void setJourney(Journey journey) {
+        this.journey = journey;
+    }
 
     // newInstance constructor for creating fragment with arguments
     public static BreakRouteFragment newInstance(BreakRouteResponse response, int position) {
         BreakRouteFragment breakRouteFragment = new BreakRouteFragment();
-        breakRouteFragment.setData(response.getJsonNode().get(position));
+        // breakRouteFragment.setData(response.getJsonNode().get(position));
+        breakRouteFragment.setJourney(response.getJourney(position));
         return breakRouteFragment;
     }
 
@@ -75,17 +77,15 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     public void onResume() {
         super.onResume();
         if (!hasDataBeenSet) {
-            parseData();
+            parseJourney();
 
-            //dummyData();
             int marginPx = convertToDp(10);
             int paddingPx = convertToDp(10);
             tableLayout = (TableLayout) root.findViewById(R.id.tableLayout);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             params.setMargins(marginPx, 0, marginPx, 0);
 
-            for (int i = 0; i < jsonNode.path("journey").size(); i++) {
-
+            for(int i = 0; i < journey.getRoutes().size(); i++) {
                 // Layouts
                 imageLayout = new LinearLayout(getActivity());
                 timeLayout = new LinearLayout(getActivity());
@@ -128,40 +128,13 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
                 typeTV.setText(typeAndTime[i]);
                 fromToTV.setText(this.fromTo[i]);
                 // Don't set lineIcon after last stop
-                if (i < jsonNode.path("journey").size() - 1) {
+                if (i != journey.getRoutes().size()-1) {
                     lineIconIV.setImageResource(R.drawable.route_line);
                 }
 
-                // TODO: Use a helper function to do this - one already exists
-                String type = jsonNode.path("journey").get(i).path("route_summary").path("type").textValue();
-                if (type.equals("BIKE")) {
-                    typeIconIV.setImageResource(R.drawable.route_bike);
-                } else if (type.equals("M")) {
-                    typeIconIV.setImageResource(R.drawable.route_metro);
-                } else if (type.equals("S")) {
-                    typeIconIV.setImageResource(R.drawable.route_s);
-                } else if (type.equals("TOG")) {
-                    typeIconIV.setImageResource(R.drawable.route_train);
-                } else if (type.equals("WALK")) {
-                    typeIconIV.setImageResource(R.drawable.route_walk);
-                } else if (type.equals("IC")) {
-                    typeIconIV.setImageResource(R.drawable.route_train);
-                } else if (type.equals("LYN")) {
-                    typeIconIV.setImageResource(R.drawable.route_train);
-                } else if (type.equals("REG")) {
-                    typeIconIV.setImageResource(R.drawable.route_train);
-                } else if (type.equals("BUS")) {
-                    typeIconIV.setImageResource(R.drawable.route_bus);
-                } else if (type.equals("EXB")) {
-                    typeIconIV.setImageResource(R.drawable.route_bus);
-                } else if (type.equals("NB")) {
-                    typeIconIV.setImageResource(R.drawable.route_bus);
-                } else if (type.equals("TB")) {
-                    typeIconIV.setImageResource(R.drawable.route_bus);
-                } else if (type.equals("F")) {
-                    typeIconIV.setImageResource(R.drawable.route_ship_direction);
-                }
-
+                // Update the route type icon
+                int typeIconId = journey.getRoutes().get(i).transportType.getDrawableId(SMRoute.TransportationType.DrawableSize.SMALL);
+                typeIconIV.setImageResource(typeIconId);
 
                 // Add the views
                 imageLayout.addView(typeIconIV);
@@ -185,35 +158,35 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
      * Turn the break route data into an internal representation.
      * Don't call this before the fragment has been attached to an activity.
      */
-    protected void parseData() {
-        String type;
-        String from;
-        String to;
-
-        for (int i = 0; i < jsonNode.path("journey").size(); i++) {
-            type = jsonNode.path("journey").get(i).path("route_summary").path("type").textValue();
-
-
-            if (i == jsonNode.path("journey").size() - 1) {
-                from = IBikeApplication.getString("From") + " " + IBikeApplication.getString(jsonNode.path("journey").get(i).path("route_name").get(0).textValue());
-                to = " " + IBikeApplication.getString("To") + "\n" + IBikeApplication.getString(jsonNode.path("journey").get(i).path("route_name").get(1).textValue());
+    protected void parseJourney() {
+        for(int i = 0; i < journey.getRoutes().size(); i++) {
+            SMRoute route = journey.getRoutes().get(i);
+            String from, to;
+            if (i == journey.getRoutes().size() - 1) {
+                from = IBikeApplication.getString("From") + " " + IBikeApplication.getString(route.startAddress.getDisplayName());
+                to = " " + IBikeApplication.getString("To") + "\n" + IBikeApplication.getString(route.endAddress.getDisplayName());
             } else {
-                from = IBikeApplication.getString("From") + " " + jsonNode.path("journey").get(i).path("route_name").get(0).textValue();
-                to = " " + IBikeApplication.getString("To") + "\n" + jsonNode.path("journey").get(i).path("route_name").get(1).textValue();
+                from = IBikeApplication.getString("From") + " " + route.startAddress.getDisplayName();
+                to = " " + IBikeApplication.getString("To") + "\n" + route.endAddress.getDisplayName();
             }
 
-            startTime[i] = timeStampFormat(jsonNode.path("journey").get(i).path("route_summary").path("departure_time").asLong());
-            arrivalTime[i] = timeStampFormat(jsonNode.path("journey").get(i).path("route_summary").path("arrival_time").asLong());
+            startTime[i] = timeStampFormat(route.departureTime);
+            arrivalTime[i] = timeStampFormat(route.arrivalTime);
 
-            if (type.equals("BIKE")) {
-                typeAndTime[i] = IBikeApplication.getString("vehicle_1") + " " + formatDistance(jsonNode.path("journey").get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.path("journey").get(i).path("route_summary").path("total_time").asDouble()));
+            if (route.transportType == SMRoute.TransportationType.BIKE) {
+                typeAndTime[i] = IBikeApplication.getString("vehicle_1") + " ";
+                typeAndTime[i] += formatDistance(route.getEstimatedDuration()) + " ";
+                typeAndTime[i] += "(" + formatTime(route.getEstimatedDuration()) + ")";
                 fromTo[i] = from + to;
-            } else if (type.equals("WALK")) {
-                typeAndTime[i] = IBikeApplication.getString("vehicle_2") + " " + formatDistance(jsonNode.path("journey").get(i).path("route_summary").path("total_distance").doubleValue()) + "    " + formatTime((jsonNode.path("journey").get(i).path("route_summary").path("total_time").asDouble()));
+            } else if (route.transportType == SMRoute.TransportationType.WALK) {
+                typeAndTime[i] = IBikeApplication.getString("vehicle_2") + " ";
+                typeAndTime[i] += formatDistance(route.getEstimatedDuration()) + " ";
+                typeAndTime[i] += "(" + formatTime(route.getEstimatedDuration()) + ")";
                 fromTo[i] = from + to;
             } else {
-                typeAndTime[i] = jsonNode.path("journey").get(i).path("route_name").get(0).textValue();
-                fromTo[i] = jsonNode.path("journey").get(i).path("route_summary").path("name").textValue() + " " + IBikeApplication.getString("To") + "\n" + jsonNode.path("journey").get(i).path("route_name").get(1).textValue();
+                typeAndTime[i] = route.startAddress.getDisplayName();
+                fromTo[i] = route.description + " " + IBikeApplication.getString("To") + "\n";
+                fromTo[i] += route.endAddress.getDisplayName();
             }
         }
     }
@@ -229,13 +202,14 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
         return (int) (input * scale + 0.5f);
     }
 
-    /**
+    /* *
      * @deprecated No need to set this data JSON node, as all data is present on the Journey object
      * @param jsonNode
-     */
+     * /
     public void setData(JsonNode jsonNode) {
         this.jsonNode = jsonNode;
     }
+    */
 
     public String formatDistance(double distance) {
         String formattedDistance;

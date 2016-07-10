@@ -9,6 +9,8 @@ import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.search.Address;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,7 +44,6 @@ public class Journey {
         estimatedDistance = route.estimatedDistance;
         estimatedDuration = route.estimatedDuration;
         totalBikeDistance = estimatedDistance;
-        arrivalTime = route.estimatedDurationLeft;
 
         startAddress = route.startAddress;
         endAddress = route.endAddress;
@@ -135,6 +136,23 @@ public class Journey {
             distanceLeft += route.getEstimatedDistanceLeft();
         }
         return distanceLeft;
+    }
+
+    public int getEstimatedDurationLeft() {
+        int durationLeft = 0;
+        // Calculate the accumulated distance left.
+        for(SMRoute route: getRoutes()) {
+            durationLeft += route.getEstimatedDurationLeft();
+        }
+        return durationLeft;
+    }
+
+    public Date getArrivalTime() {
+        int durationLeft = getEstimatedDurationLeft();
+        // Set the ETA label
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.SECOND, durationLeft);
+        return c.getTime();
     }
 
     public SMTurnInstruction getUpcomingInstruction() {

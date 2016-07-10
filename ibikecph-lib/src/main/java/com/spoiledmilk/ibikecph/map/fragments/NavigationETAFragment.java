@@ -1,6 +1,7 @@
 package com.spoiledmilk.ibikecph.map.fragments;
 
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +24,21 @@ public class NavigationETAFragment extends MapStateFragment {
     private TextView durationText, lengthText, etaText;
     private TextView textAddress;
 
+    protected SimpleDateFormat dateFormat;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+        if (DateFormat.is24HourFormat(this.getActivity())) {
+            dateFormat = new SimpleDateFormat("HH:mm");
+        } else {
+            dateFormat = new SimpleDateFormat("hh:mm a");
+        }
+
         View v = inflater.inflate(R.layout.navigation_fragment, container, false);
 
         textAddress = (TextView) v.findViewById(R.id.textAddress);
@@ -46,22 +56,16 @@ public class NavigationETAFragment extends MapStateFragment {
         if (journey == null) {
             return;
         } else {
-            int secondsToFinish = journey.getEstimatedDuration();
-
             this.lengthText.setText(getFormattedDistance(Math.round(journey.getEstimatedDistanceLeft())));
 
             // Set the address text
             textAddress.setText(journey.getEndAddress().getDisplayName());
 
             // Set the duration label
-            durationText.setText(TrackListAdapter.durationToFormattedTime(secondsToFinish));
+            int durationLeft = journey.getEstimatedDurationLeft();
+            durationText.setText(TrackListAdapter.durationToFormattedTime(durationLeft));
 
-            // Set the ETA label
-            Calendar c = Calendar.getInstance();
-            c.add(Calendar.SECOND, secondsToFinish);
-            Date arrivalTime = c.getTime();
-            SimpleDateFormat dt = new SimpleDateFormat("HH:mm");
-            etaText.setText(dt.format(arrivalTime));
+            etaText.setText(dateFormat.format(journey.getArrivalTime()));
         }
     }
 

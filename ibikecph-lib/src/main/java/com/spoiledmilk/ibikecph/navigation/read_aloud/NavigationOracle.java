@@ -265,7 +265,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
             if(lastSpeakLocation != null &&
                location.distanceTo(lastSpeakLocation) > MAX_SILENCE_DISTANCE &&
                !state.getRoute().isPublicTransportation()) {
-                int minutesToArrival = Math.round(state.getRoute().getEstimatedDuration() / 60.0f);
+                int minutesToArrival = Math.round(state.getRoute().getEstimatedDurationLeft() / 60.0f);
                 String encouragement = generateEncouragementSentence(minutesToArrival);
                 // If we want to say an encouragement - let's speak
                 if(encouragement != null) {
