@@ -10,6 +10,8 @@ import com.spoiledmilk.ibikecph.search.Address;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -148,10 +150,23 @@ public class Journey {
     }
 
     public Date getArrivalTime() {
-        int durationLeft = getEstimatedDurationLeft();
-        // Set the ETA label
+        // Find the last non-public routes - only these can have their arrival time
+        // improved by the user biking faster
+        int nonPublicDurationLeft = 0;
+        Date earliestDeparture = new Date(); // Let's assume now
+        // Loop backwards in routes
+        for(int r = getRoutes().size()-1; r >= 0; r--) {
+            SMRoute route = getRoutes().get(r);
+            if(!route.isPublicTransportation()) {
+                nonPublicDurationLeft += route.getEstimatedDurationLeft();
+            } else if(route.arrivalTime != -1) {
+                // The last public transporation
+                earliestDeparture = new Date(route.arrivalTime * 1000);
+            }
+        }
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.SECOND, durationLeft);
+        c.setTime(earliestDeparture);
+        c.add(Calendar.SECOND, nonPublicDurationLeft);
         return c.getTime();
     }
 

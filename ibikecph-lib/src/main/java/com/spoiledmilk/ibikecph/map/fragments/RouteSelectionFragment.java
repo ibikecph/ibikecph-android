@@ -138,10 +138,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             // Set the duration label
             durationText.setText(TrackListAdapter.durationToFormattedTime(duration));
 
-            Calendar c = Calendar.getInstance();
-            c.add(Calendar.SECOND, (int) duration);
-            Date arrivalTime = c.getTime();
-            etaText.setText(dateFormat.format(arrivalTime));
+            etaText.setText(dateFormat.format(journey.getArrivalTime()));
 
             // Only show the go button if the route starts at the current location or the route type
             // is break route.

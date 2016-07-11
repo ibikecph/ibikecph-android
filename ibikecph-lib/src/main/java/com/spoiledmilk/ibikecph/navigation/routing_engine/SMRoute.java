@@ -204,6 +204,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     // Variables for breakRoute
     public TransportationType transportType;
     public String description = null;
+    // TODO: Convert these into Date objects
     public long departureTime, arrivalTime;
 
     public SMRoute(Location start, Location end, JsonNode routeJSON, RouteType type) {
@@ -487,6 +488,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             pastTurnInstructions = new LinkedList<>();
             visitedLocations = new ArrayList<>();
             if(departureTime > 0 && arrivalTime > 0) {
+                Log.d("SMRoute", "Overriding duration from difference in arrival and departure");
                 // Let's calculate the estimated duration from the difference in departure and
                 // arrival time to account for the change of vehicle
                 estimatedDuration = (int)(arrivalTime - departureTime);
