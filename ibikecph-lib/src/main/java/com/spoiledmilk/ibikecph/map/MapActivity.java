@@ -152,8 +152,6 @@ public class MapActivity extends BaseMapActivity {
             Log.i("HockeyApp", "No HockeyApp app identifier provided - HockeyApp is disabled");
         }
 
-        attemptToRegisterLocationListener();
-
         // Check if the user accepts the newest terms
         // TermsManager.checkTerms(this);
 
@@ -201,6 +199,8 @@ public class MapActivity extends BaseMapActivity {
 
         // Tell Google Analytics that the user has resumed on this screen.
         IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
+
+        attemptToRegisterLocationListener();
 
         /*
         LOG.d("Map activity onResume");
@@ -411,11 +411,10 @@ public class MapActivity extends BaseMapActivity {
                     // Let's update the map only once - we use the hasUpdatedMap for this
                     // We cannot simply deregister the listener as this would stop updating the
                     // user's location on the map.
-                    if (!hasUpdatedMap) {
+                    if (!hasUpdatedMap && state instanceof BrowsingState) {
+                        Log.d("MapActivity", "Location changed and we center the map");
                         mapView.setCenter(new LatLng(location));
                         hasUpdatedMap = true;
-                        // Change the state to the browsing state - to update the user location
-                        MapActivity.this.changeState(BrowsingState.class);
                     }
                 }
             };
@@ -430,6 +429,7 @@ public class MapActivity extends BaseMapActivity {
      * Stop listening for locations by removing the location listener.
      */
     private void deregisterLocationListener() {
+        Log.d("MapActivity", "deregisterLocationListener called");
         if (locationListener != null) {
             IBikeApplication.getService().removeLocationListener(locationListener);
             // Null this - as this is how we know if we've already added it to the location service.

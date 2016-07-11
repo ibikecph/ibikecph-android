@@ -96,10 +96,8 @@ public class BikeLocationService extends Service implements LocationListener {
         Context context = IBikeApplication.getContext();
         //this.androidLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        /**
-         * Instantiate a wake lock so we can keep tracking while the phone is off. We're not acquiring it until the
-         * user starts navigation.
-         */
+        // Instantiate a wake lock so we can keep tracking while the phone is off.
+        // We're not acquiring it until the user starts navigation.
         PowerManager pm = (PowerManager) context.getSystemService(Service.POWER_SERVICE);
         this.wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BikeLocationService");
 
@@ -173,7 +171,7 @@ public class BikeLocationService extends Service implements LocationListener {
         // We registered a listener
         // (and we can't be down from 2 because we weren't listening for GPS in the first place)
         if (locationListeners.size() == 1 && !locationApiClient.isConnected()) {
-            Log.d("JC", "GPS listener added to the BikeLocationService, started listening for locations upstream.");
+            Log.d("BikeLocationService", "GPS listener added to the BikeLocationService, started listening for locations upstream.");
             // Start listning for locations by connecting to the location API.
             locationApiClient.connect();
             wakeLock.acquire();
@@ -181,7 +179,7 @@ public class BikeLocationService extends Service implements LocationListener {
 
         // We unregistered the last listener. Unregister the service.
         if (locationListeners.size() == 0 && locationApiClient.isConnected()) {
-            Log.d("JC", "No more listeners in BikeLocationSerivce, unregistering for upstream locations.");
+            Log.d("BikeLocationService", "No more listeners in BikeLocationService, disconnecting for upstream locations.");
             // Disconnect from the location API.
             locationApiClient.disconnect();
             wakeLock.release();
