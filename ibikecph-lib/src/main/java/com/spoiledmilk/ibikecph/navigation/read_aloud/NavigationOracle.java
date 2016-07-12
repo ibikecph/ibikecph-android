@@ -15,6 +15,7 @@ import com.spoiledmilk.ibikecph.map.states.NavigatingState;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.v5.TurnInstruction;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -254,7 +255,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
                 // Remember where we were when reading this
                 lastSpeakLocation = location;
             } else if (lastUpcomingInstruction != instruction) {
-                String upcomingSentence = generateUpcomingSentence(instruction.lengthInMeters);
+                String upcomingSentence = generateUpcomingSentence(instruction.distance);
                 speak(upcomingSentence + " " + instructionSentence, lastUpcomingInstruction == null);
                 // Make sure we will not be reading this aloud again.
                 lastUpcomingInstruction = instruction;
@@ -320,30 +321,36 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
                     result += IBikeApplication.getString("vehicle_changed_instruction_" + vehicleId);
                 }
             }
-            String direction = instruction.drivingDirection.toDisplayString(previousInstruction == null);
-            if (instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOnPublicTransportation) {
-                SMTurnInstruction nextInstruction = state.getJourney().getUpcomingInstruction(1);
-                result += String.format(direction.replaceAll("%@", "%s"),
-                                        instruction.wayName,
-                                        state.getRoute().description,
-                                        nextInstruction.wayName);
-                // Pronounce St. as Station
-                result = result.replaceAll("St.", "Station");
-            } else if (instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOffPublicTransportation) {
-                result += direction + " " + instruction.wayName;
-                // Pronounce St. as Station
-                result = result.replaceAll("St.", "Station");
+            if(instruction instanceof TurnInstruction) {
+                // An implementation, supporting OSRM v5 steps (turn instructions)
+                TurnInstruction turnInstruction = (TurnInstruction) instruction;
+                result += turnInstruction.getSpeakableString();
             } else {
-                // This is the first instruction
-                if(previousInstruction == null) {
-                    String generalDirection = IBikeApplication.getString("direction_" + instruction.directionAbrevation);
-                    direction = String.format(direction.replace("%@", "%s"), generalDirection);
-                }
-                result += direction;
-                if(instruction.drivingDirection != SMTurnInstruction.TurnDirection.NoTurn &&
-                    instruction.drivingDirection != SMTurnInstruction.TurnDirection.ReachedYourDestination &&
-                    instruction.drivingDirection != SMTurnInstruction.TurnDirection.ReachingDestination) {
-                    result += " " + instruction.wayName;
+                String direction = instruction.drivingDirection.toDisplayString(previousInstruction == null);
+                if (instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOnPublicTransportation) {
+                    SMTurnInstruction nextInstruction = state.getJourney().getUpcomingInstruction(1);
+                    result += String.format(direction.replaceAll("%@", "%s"),
+                                            instruction.wayName,
+                                            state.getRoute().description,
+                                            nextInstruction.wayName);
+                    // Pronounce St. as Station
+                    result = result.replaceAll("St.", "Station");
+                } else if (instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOffPublicTransportation) {
+                    result += direction + " " + instruction.wayName;
+                    // Pronounce St. as Station
+                    result = result.replaceAll("St.", "Station");
+                } else {
+                    // This is the first instruction
+                    if(previousInstruction == null) {
+                        String generalDirection = IBikeApplication.getString("direction_" + instruction.directionAbbreviation);
+                        direction = String.format(direction.replace("%@", "%s"), generalDirection);
+                    }
+                    result += direction;
+                    if(instruction.drivingDirection != SMTurnInstruction.TurnDirection.NoTurn &&
+                        instruction.drivingDirection != SMTurnInstruction.TurnDirection.ReachedYourDestination &&
+                        instruction.drivingDirection != SMTurnInstruction.TurnDirection.ReachingDestination) {
+                        result += " " + instruction.wayName;
+                    }
                 }
             }
         }

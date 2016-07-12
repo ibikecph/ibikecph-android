@@ -1,28 +1,19 @@
 package com.spoiledmilk.ibikecph.map;
 
-import android.util.Log;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mapbox.mapboxsdk.api.ILatLng;
-import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.overlay.Marker;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteRequester;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.RegularRouteRequester;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.v5.RegularRouteRequester;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.RouteRequester;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Config;
-import com.spoiledmilk.ibikecph.util.Util;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

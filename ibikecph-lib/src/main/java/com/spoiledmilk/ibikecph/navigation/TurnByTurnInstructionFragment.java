@@ -64,7 +64,7 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
         if (turn != null) {
             if (!turn.transportType.isPublicTransportation()) {
                 textWayname.setText(turn.wayName);
-                textDistance.setText(turn.lengthInMeters + " m");
+                textDistance.setText(turn.distance + " m");
                 imgDirectionIcon.setImageResource(turn.getSmallDirectionResourceId());
             } else {
                 SMRoute route = state.getRoute();

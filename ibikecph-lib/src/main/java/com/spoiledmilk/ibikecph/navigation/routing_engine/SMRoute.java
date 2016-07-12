@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IBikeApplication;
@@ -23,8 +22,6 @@ import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,16 +63,16 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public Location locationStart;
     public Location locationEnd;
     public boolean recalculationInProgress;
-    int estimatedDuration, estimatedDurationLeft;
-    int estimatedDistance = -1;
-    String routeChecksum;
-    String destinationHint;
+    protected int estimatedDuration, estimatedDurationLeft;
+    protected int estimatedDistance = -1;
+    protected String routeChecksum;
+    protected String destinationHint;
     public Location lastCorrectedLocation;
     public double lastCorrectedHeading;
     public int lastVisitedWaypointIndex;
     public float distanceFromRoute;
-    private String viaStreets;
-    private Location lastRecalcLocation;
+    protected String viaStreets;
+    protected Location lastRecalcLocation;
     public String startStationName, endStationName;
     public boolean reachedDestination = false;
     public int waypointStation1 = -1, waypointStation2 = -1;
@@ -207,19 +204,11 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     // TODO: Convert these into Date objects
     public long departureTime, arrivalTime;
 
-    public SMRoute(Location start, Location end, JsonNode routeJSON, RouteType type) {
+    public SMRoute(Location start, Location end, RouteType type) {
         init();
         locationStart = start;
         locationEnd = end;
         this.type = type;
-
-        // TODO: Require a JSON coming from outside
-        if (routeJSON == null) {
-            throw new RuntimeException("The routeJSON must have been set before init is called.");
-            // new SMHttpRequest().getRoute(start, end, null, this);
-        } else {
-            setupRoute(routeJSON);
-        }
     }
 
     public void init() {
@@ -270,7 +259,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 if (jsonRoot == null || jsonRoot.path("status").asInt(-1) != 0) {
                     emitRouteNotFound();
                 } else {
-                    setupRoute(jsonRoot);
+                    parseJsonNode(jsonRoot);
                     emitStartRoute();
                 }
                 break;
@@ -332,7 +321,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     /**
      * Emits that the route has updated.
      */
-    protected void emitRouteUpdated() {
+    public void emitRouteUpdated() {
         for(SMRouteListener listener: listeners) {
             listener.updateRoute();
         }
@@ -432,7 +421,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return pastTurnInstructions;
     }
 
-    private void setupRoute(JsonNode jsonRoot) {
+    public void parseJsonNode(JsonNode jsonRoot) {
         boolean ok = parseFromJson(jsonRoot);
         if (ok) {
             tripDistance = 0.0f;
@@ -443,7 +432,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         }
     }
 
-    boolean parseFromJson(JsonNode jsonRoot) {
+    public boolean parseFromJson(JsonNode jsonRoot) {
         Log.d("SMRoute", "parseFromJson() json = " + jsonRoot);
         synchronized (this) {
             if (jsonRoot == null) {
@@ -531,16 +520,13 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
                     // Save length to next turn with units so we don't have to generate it each
                     // time It's formatted just the way we like it
-                    instruction.lengthInMeters = previousLengthInMeters;
-                    instruction.lengthWithUnit = previousLengthWithUnit;
+                    instruction.distance = previousLengthInMeters;
                     previousLengthInMeters = instructionNode.get(2).asInt();
-                    previousLengthWithUnit = instructionNode.get(5).asText();
-                    instruction.fixedLengthWithUnit = Util.formatDistance(previousLengthInMeters);
                     // Derive the instructions location from its index in the waypoints
                     if (instruction.waypointsIndex >= 0 &&
                         instruction.waypointsIndex < waypoints.size()) {
                         // Set the location from the waypoints
-                        instruction.loc = waypoints.get(instruction.waypointsIndex);
+                        instruction.location = waypoints.get(instruction.waypointsIndex);
                     }
 
                     // Generate a special description if this is the first instruction on the route.
@@ -583,12 +569,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 float distToStart = Float.MAX_VALUE, distToEnd = Float.MAX_VALUE;
                 while (it2.hasNext()) {
                     SMTurnInstruction smt = it2.next();
-                    if (smt.loc.distanceTo(locationStart) < distToStart && smt.waypointsIndex <= waypointStation1) {
-                        distToStart = smt.loc.distanceTo(locationStart);
+                    if (smt.location.distanceTo(locationStart) < distToStart && smt.waypointsIndex <= waypointStation1) {
+                        distToStart = smt.location.distanceTo(locationStart);
                         station1 = smt;
                     }
-                    if (smt.loc.distanceTo(locationEnd) < distToEnd && smt.waypointsIndex <= waypointStation2) {
-                        distToEnd = smt.loc.distanceTo(locationEnd);
+                    if (smt.location.distanceTo(locationEnd) < distToEnd && smt.waypointsIndex <= waypointStation2) {
+                        distToEnd = smt.location.distanceTo(locationEnd);
                         station2 = smt;
                     }
                 }
@@ -617,8 +603,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             if (viaStreets == null || viaStreets.trim().equals("")) {
                 for (int i = 1; i < upcomingTurnInstructions.size() - 1; i++) {
                     SMTurnInstruction inst = upcomingTurnInstructions.get(i);
-                    if (inst.lengthInMeters > longestStreet) {
-                        longestStreet = inst.lengthInMeters;
+                    if (inst.distance > longestStreet) {
+                        longestStreet = inst.distance;
                         viaStreets = upcomingTurnInstructions.get(i - 1).wayName;
                     }
                 }
@@ -636,7 +622,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
      * Decoder for the Encoded Polyline Algorithm Format
      * @see <a href="https://developers.google.com/maps/documentation/utilities/polylinealgorithm">Encoded Polyline Algorithm Format</a>
      */
-    List<Location> decodePolyline(String encodedString, String type) {
+    public static List<Location> decodePolyline(String encodedString, String type) {
+        Log.d("SMRoute", "Decoding a polyline: " + encodedString);
         if (encodedString == null)
             return null;
 
@@ -706,7 +693,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return estimatedDistance;
     }
 
-    double distancePassed = 0;
+    protected double distancePassed = 0;
     Location lastLocation;
 
     /**
@@ -875,10 +862,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 // int i = 0;
                 while (it.hasNext()) {
                     SMTurnInstruction instruction = it.next();
-                    double d = loc.distanceTo(instruction.loc);
+                    double d = loc.distanceTo(instruction.location);
                     if (closestWaypointIndex < instruction.waypointsIndex) {
                         // future instruction, stop the loop
-                        instruction.lastD = loc.distanceTo(instruction.loc);
+                        instruction.lastD = loc.distanceTo(instruction.location);
                         break;
                     } else if (closestWaypointIndex > instruction.waypointsIndex) {
                         // we have definitely passed the instruction
@@ -887,7 +874,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     } else if (d < instruction.getTransitionDistance() && (!instruction.plannedForRemoving || d > instruction.lastD)) {
                         // we are approaching the instruction
                         LOG.d("routing debug instruction planned for removing = " + instruction.fullDescriptionString + " d = "
-                                + loc.distanceTo(instruction.loc));
+                                + loc.distanceTo(instruction.location));
                         instruction.plannedForRemoving = true;
                     } else {
                         if (d >= instruction.getTransitionDistance() && (instruction.plannedForRemoving || d > instruction.lastD)) {
@@ -897,7 +884,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                             pastTurnInstructions.add(instruction);
                         }
                     }
-                    instruction.lastD = loc.distanceTo(instruction.loc);
+                    instruction.lastD = loc.distanceTo(instruction.location);
 
                 }
             }
@@ -949,12 +936,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
             // TODO: Consider if this condition will ever be true?
             if (pastTurnInstructions.size() < 0) {
-                // lastCorrectedHeading = SMGPSUtil.bearingBetween(loc,
-                // currentTurn.loc);
+                // lastCorrectedHeading = SMGPSUtil.bearingBetween(location,
+                // currentTurn.location);
                 // We have passed no turns. Check if we have managed to get on
                 // the route somehow.
                 if (currentTurn != null) {
-                    double currentDistanceFromStart = loc.distanceTo(currentTurn.loc);
+                    double currentDistanceFromStart = loc.distanceTo(currentTurn.location);
                     LOG.d("Current distance from start: " + currentDistanceFromStart);
                     if (currentDistanceFromStart > maxDistance) {
                         return checkLocation(loc, maxDistance);
@@ -1033,16 +1020,15 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         } else if (upcomingTurnInstructions.size() > 0) {
             // Calculate distance from location to the next turn
             SMTurnInstruction nextTurn = upcomingTurnInstructions.get(0);
-            nextTurn.lengthInMeters = (int) calculateDistanceToNextTurn(loc);
-            if (nextTurn.plannedForRemoving && nextTurn.lengthInMeters < 10) {
-                nextTurn.lengthInMeters = 0;
+            nextTurn.distance = (int) calculateDistanceToNextTurn(loc);
+            if (nextTurn.plannedForRemoving && nextTurn.distance < 10) {
+                nextTurn.distance = 0;
             }
-            nextTurn.lengthWithUnit = Util.formatDistance(nextTurn.lengthInMeters);
 
-            estimatedDistanceLeft = nextTurn.lengthInMeters;
+            estimatedDistanceLeft = nextTurn.distance;
             // Calculate distance from next turn to the end of the route
             for (int i = 1; i < upcomingTurnInstructions.size(); i++) {
-                estimatedDistanceLeft += upcomingTurnInstructions.get(i).lengthInMeters;
+                estimatedDistanceLeft += upcomingTurnInstructions.get(i).distance;
             }
         }
     }
@@ -1056,7 +1042,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         // If first turn still hasn't been reached, return linear distance to
         // it.
         if (pastTurnInstructions.size() == 0)
-            return loc.distanceTo(nextTurn.loc);
+            return loc.distanceTo(nextTurn.location);
 
         int firstIndex = lastVisitedWaypointIndex >= 0 ? lastVisitedWaypointIndex + 1 : 0;
         float distance = 0.0f;
@@ -1086,44 +1072,4 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return estimatedDistanceLeft;
     }
 
-    public JsonNode getObject() {
-
-        JsonNode actualObj = null;
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            actualObj = mapper.readTree(loadJSONFromAsset());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return actualObj;
-
-    }
-
-    public String loadJSONFromAsset() {
-        String json = null;
-        try {
-
-            InputStream is = IBikeApplication.getContext().getAssets().open("Dummy_JSON.js");
-
-            int size = is.available();
-
-            byte[] buffer = new byte[size];
-
-            is.read(buffer);
-
-            is.close();
-
-            json = new String(buffer, "UTF-8");
-
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-
-    }
 }

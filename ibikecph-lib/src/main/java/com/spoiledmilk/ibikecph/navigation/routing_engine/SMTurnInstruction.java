@@ -84,19 +84,19 @@ public class SMTurnInstruction {
 
 	public TurnDirection drivingDirection = TurnDirection.NoTurn;
 	TurnDirection secondaryDirection = null;
+	// TODO: Consider renaming this field to "name"
 	public String wayName = "";
-	public int lengthInMeters = 0;
-	int timeInSeconds = 0;
-	String lengthWithUnit = "";
-	/**
-	 * Length to next turn in units (km or m) This value will not auto update
-	 */
-	String fixedLengthWithUnit;
-	public String directionAbrevation; // N: north, S: south, E: east, W: west, NW:
+	public int distance = 0;;
+	public int timeInSeconds = 0;
+
+	public String directionAbbreviation; // N: north, S: south, E: east, W: west, NW:
 									   // North West, ...
 	public float azimuth;
+	/**
+	 * @deprecated There is no actual need for an index into the waypoints.
+	 */
 	public int waypointsIndex;
-	Location loc;
+	Location location;
 	public String descriptionString;
 	public String fullDescriptionString;
 	public boolean plannedForRemoving = false;
@@ -141,12 +141,20 @@ public class SMTurnInstruction {
 				}
 
 			}
-			directionAbrevation = instructionNode.get(6).asText();
+			directionAbbreviation = instructionNode.get(6).asText();
 			azimuth = (float) instructionNode.get(7).asDouble();
 
 			generateFullDescriptionString();
 			waypointsIndex = instructionNode.get(3).asInt();
 		}
+	}
+
+	public void setDistance(int distance) {
+		this.distance = distance;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
 	public double getTransitionDistance() {
@@ -158,7 +166,7 @@ public class SMTurnInstruction {
 	}
 
 	public Location getLocation() {
-		return loc;
+		return location;
 	}
 
 	public int getSmallDirectionResourceId() {
@@ -181,7 +189,7 @@ public class SMTurnInstruction {
 	}
 
 	// Returns only string representation of the driving direction
-	void generateDescriptionString() {
+	public void generateDescriptionString() {
 		switch (drivingDirection) {
 			case GetOnPublicTransportation:
 			case GetOffPublicTransportation:
@@ -198,7 +206,7 @@ public class SMTurnInstruction {
 		descriptionString = getPrefix() + descriptionString;
 	}
 
-	void generateStartDescriptionString() {
+	public void generateStartDescriptionString() {
 		switch (drivingDirection) {
 			case GetOnPublicTransportation:
 			case GetOffPublicTransportation:
@@ -212,14 +220,14 @@ public class SMTurnInstruction {
 			case EnterRoundAbout:
 				descriptionString = String.format(
 					drivingDirection.toDisplayString(true).replace("%@", "%s"),
-					IBikeApplication.getString("direction_" + directionAbrevation).replace("%@", "@s"),
+					IBikeApplication.getString("direction_" + directionAbbreviation).replace("%@", "@s"),
 					IBikeApplication.getString("direction_number_" + secondaryDirection)
 				);
 				break;
 			default:
 				String firstDirection = drivingDirection.toDisplayString(true);
 				firstDirection = firstDirection.replace("%@", "%s");
-				String secondDirection = IBikeApplication.getString("direction_" + directionAbrevation);
+				String secondDirection = IBikeApplication.getString("direction_" + directionAbbreviation);
 				descriptionString = String.format(firstDirection, secondDirection);
 		}
 		descriptionString = getPrefix() + descriptionString;
@@ -249,7 +257,7 @@ public class SMTurnInstruction {
 			return wayName;
 		else
 			return String.format(Locale.US, "%s %s [SMTurnInstruction: %d, %d, %s, %s, %f, (%f, %f)]", descriptionString, wayName,
-					lengthInMeters, timeInSeconds, lengthWithUnit, directionAbrevation, azimuth, getLocation().getLatitude(), getLocation()
+					distance, timeInSeconds, directionAbbreviation, azimuth, getLocation().getLatitude(), getLocation()
 							.getLongitude());
 	}
 

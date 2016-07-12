@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.spoiledmilk.ibikecph.map.Geocoder;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.v5.Route;
 
 /**
  * Created by kraen on 10-07-16.
@@ -11,6 +12,7 @@ import com.spoiledmilk.ibikecph.map.Geocoder;
 public abstract class RouteRequester extends AsyncTask<Void, Void, Boolean> {
     protected ILatLng start, end;
     protected Geocoder.RouteCallback callback;
+    private String destinationHint;
 
     public RouteRequester(ILatLng start, ILatLng end, Geocoder.RouteCallback callback) {
         this.start = start;
@@ -18,4 +20,7 @@ public abstract class RouteRequester extends AsyncTask<Void, Void, Boolean> {
         this.callback = callback;
     }
 
+    public void setDestinationHint(String destinationHint) {
+        this.destinationHint = destinationHint;
+    }
 }

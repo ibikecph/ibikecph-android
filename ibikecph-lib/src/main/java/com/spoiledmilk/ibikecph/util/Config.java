@@ -19,9 +19,9 @@ public class Config {
     public static String API_BREAK_ROUTE;
 
     // routing
-    public static final String OSRM_SERVER_FAST = "http://routes.ibikecph.dk/v1.1/fast";
-    public static final String OSRM_SERVER_GREEN = "http://routes.ibikecph.dk/v1.1/green";
-    public static final String OSRM_SERVER_CARGO = "http://routes.ibikecph.dk/v1.1/cargo";
+    public static final String OSRM_SERVER_FAST = "http://routes.ibikecph.dk/v5/fast/route/v1/profile";
+    public static final String OSRM_SERVER_GREEN = "http://routes.ibikecph.dk/v5/green/route/v1/profile";
+    public static final String OSRM_SERVER_CARGO = "http://routes.ibikecph.dk/v5/cargo/route/v1/profile";
 
     public static boolean GREEN_ROUTES_ENABLED = true;
 

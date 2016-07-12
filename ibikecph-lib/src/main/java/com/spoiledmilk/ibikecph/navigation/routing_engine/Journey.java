@@ -6,6 +6,7 @@ import android.location.LocationManager;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.map.RouteType;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.v5.Route;
 import com.spoiledmilk.ibikecph.search.Address;
 
 import java.util.ArrayList;
@@ -73,7 +74,8 @@ public class Journey {
         for(JsonNode routeNode: this.journeyNode.get("journey")) {
             Location start = parseViaPoint(routeNode.get("via_points").get(0));
             Location end = parseViaPoint(routeNode.get("via_points").get(routeNode.get("via_points").size() - 1));
-            SMRoute route = new SMRoute(start, end, routeNode, RouteType.BREAK);
+            Route route = new Route(start, end, RouteType.BREAK);
+            route.parseFromJson(routeNode, Route.OsrmVersion.V4);
 
             // Set the start and end addresses on the route.
             if(!routeNode.get("route_name").isArray() || routeNode.get("route_name").size() != 2) {

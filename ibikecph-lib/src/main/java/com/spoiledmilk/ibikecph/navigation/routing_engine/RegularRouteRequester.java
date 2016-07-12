@@ -10,6 +10,7 @@ import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.Util;
 
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 
@@ -18,7 +19,7 @@ import java.util.Locale;
  */
 public class RegularRouteRequester extends RouteRequester {
 
-    RouteType type;
+    protected RouteType type;
     protected SMRoute route;
 
     public RegularRouteRequester(ILatLng start, ILatLng end, Geocoder.RouteCallback callback, RouteType type) {
@@ -26,37 +27,15 @@ public class RegularRouteRequester extends RouteRequester {
         this.type = type;
     }
 
+    public void setRoute(SMRoute route) {
+        this.route = route;
+    }
+
     @Override
     protected Boolean doInBackground(Void... params) {
         HttpURLConnection connection = null;
         try {
-            // OSRM directive to not ignore small road fragments
-            int z = 18;
-            String baseURL;
-
-            switch (type) {
-                case CARGO:
-                    baseURL = Config.OSRM_SERVER_CARGO;
-                    break;
-                case GREEN:
-                    baseURL = Config.OSRM_SERVER_GREEN;
-                    break;
-                case FASTEST:
-                    baseURL = Config.OSRM_SERVER_FAST;
-                    break;
-                default:
-                    baseURL = Config.OSRM_SERVER_DEFAULT;
-                    break;
-            }
-            String urlString = String.format(Locale.US, "%s/viaroute?z=%d&alt=false&loc=%.6f,%.6f&loc=%.6f,%.6f&instructions=true",
-                    baseURL,
-                    z,
-                    start.getLatitude(),
-                    start.getLongitude(),
-                    end.getLatitude(),
-                    end.getLongitude());
-
-            URL url = new URL(urlString);
+            URL url = generateURL();
             Log.d("RegularRouteRequester", "Requesting " + url.toString());
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -66,7 +45,7 @@ public class RegularRouteRequester extends RouteRequester {
                 throw new RuntimeException("Unexpected status code: " + connection.getResponseCode());
             }
             JsonNode node = Util.getJsonObjectMapper().readValue(connection.getInputStream(), JsonNode.class);
-            route = new SMRoute(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), node, type);
+            parseJSON(node);
             return true;
         } catch (Exception e) {
             Log.e("RegularRouteRequester", "Error requesting route", e);
@@ -75,6 +54,51 @@ public class RegularRouteRequester extends RouteRequester {
             if(connection != null) {
                 connection.disconnect();
             }
+        }
+    }
+
+    protected SMRoute parseJSON(JsonNode node) {
+        if (route == null) {
+            route = new SMRoute(Util.locationFromGeoPoint(start),
+                                Util.locationFromGeoPoint(end),
+                                type);
+        }
+        route.parseFromJson(node);
+        return route;
+    }
+
+    protected URL generateURL() {
+        // OSRM directive to not ignore small road fragments
+        int z = 18;
+        String baseURL;
+
+        switch (type) {
+            case CARGO:
+                baseURL = Config.OSRM_SERVER_CARGO;
+                break;
+            case GREEN:
+                baseURL = Config.OSRM_SERVER_GREEN;
+                break;
+            case FASTEST:
+                baseURL = Config.OSRM_SERVER_FAST;
+                break;
+            default:
+                baseURL = Config.OSRM_SERVER_DEFAULT;
+                break;
+        }
+        String url = String.format(Locale.US, "%s/viaroute?z=%d&alt=false&loc=%.6f,%.6f&loc=%.6f,%.6f&instructions=true",
+                baseURL,
+                z,
+                start.getLatitude(),
+                start.getLongitude(),
+                end.getLatitude(),
+                end.getLongitude());
+
+        try {
+            return new URL(url);
+        } catch (MalformedURLException e) {
+            Log.e("RegularRouteRequester", "Error generating the url", e);
+            return null;
         }
     }
 
