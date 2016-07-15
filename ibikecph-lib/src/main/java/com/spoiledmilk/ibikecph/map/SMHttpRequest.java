@@ -26,7 +26,7 @@ import java.util.Locale;
 /**
  * Implements the API calls to search for routes, find nearest points, etc.
  * Also has some model stuff embedded.
- *
+ * @deprecated Use the RegularRouteRequester instead
  * @author jens
  */
 public class SMHttpRequest {

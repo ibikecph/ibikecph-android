@@ -162,6 +162,7 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
         for(int i = 0; i < journey.getRoutes().size(); i++) {
             SMRoute route = journey.getRoutes().get(i);
             String from, to;
+            // TODO: Figure out why this conditional is necessary
             if (i == journey.getRoutes().size() - 1) {
                 from = IBikeApplication.getString("From") + " " + IBikeApplication.getString(route.startAddress.getDisplayName());
                 to = " " + IBikeApplication.getString("To") + "\n" + IBikeApplication.getString(route.endAddress.getDisplayName());

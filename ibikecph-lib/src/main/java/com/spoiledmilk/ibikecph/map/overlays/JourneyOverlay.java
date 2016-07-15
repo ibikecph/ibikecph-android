@@ -103,7 +103,7 @@ public class JourneyOverlay extends Overlay implements LocationListener {
         overlays.add(markersOverlay);
 
         // We want this object to listen for changes to the location, so it can adjust the walk
-        // paths accordingly
+        // paths accordingly. This is deregistered again when onDetach is called.
         BikeLocationService.getInstance().addLocationListener(this);
     }
 

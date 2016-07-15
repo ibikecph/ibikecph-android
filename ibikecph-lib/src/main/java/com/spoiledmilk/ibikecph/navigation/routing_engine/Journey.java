@@ -94,6 +94,9 @@ public class Journey {
             routes.add(route);
         }
 
+        // TODO: Consider overwriting the street of the first routes startAddress and the last
+        // routes endAddress as they should match the start and end that was requested
+
         JsonNode summary = journeyNode.get("journey_summary");
         estimatedDistance = summary.get("total_distance").asInt();
         estimatedDuration = summary.get("total_time").asInt();

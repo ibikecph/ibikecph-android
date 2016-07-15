@@ -45,7 +45,6 @@ public class BikeLocationService extends Service implements LocationListener {
     protected Location lastValidLocation;
     final static long INTERVAL = 5000;
     final static long FASTEST_INTERVAL = 2000;
-    boolean isBuild = false;
 
     public ActivityRecognitionClient getActivityRecognitionClient() {
         return activityRecognitionClient;

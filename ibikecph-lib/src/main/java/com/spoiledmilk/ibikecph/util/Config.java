@@ -24,14 +24,6 @@ public class Config {
 
     public static boolean GREEN_ROUTES_ENABLED = true;
 
-    public static final double GEOMETRY_DIGITS_LATITUDE = 1e6;
-    public static final double GEOMETRY_DIGITS_LONGITUDE = 1e6;
-
-    public static final double GEOMETRY_DIGITS_LATITUDE_RP = 1e5;
-    public static final double GEOMETRY_DIGITS_LONGITUDE_RP = 1e5;
-
-    public static final String OSRM_SERVER_DEFAULT = OSRM_SERVER_FAST;
-
     public static final String GEOCODER = "http://geo.oiorest.dk/adresser";
 
     // TODO uncomment this before submission
