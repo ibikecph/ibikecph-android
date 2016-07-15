@@ -84,9 +84,9 @@ public class SMTurnInstruction {
 
 	public TurnDirection drivingDirection = TurnDirection.NoTurn;
 	TurnDirection secondaryDirection = null;
-	// TODO: Consider renaming this field to "name"
-	public String wayName = "";
-	public int distance = 0;;
+
+	public String name = "";
+	public float distance = 0;
 	public int timeInSeconds = 0;
 
 	public String directionAbbreviation; // N: north, S: south, E: east, W: west, NW:
@@ -96,7 +96,18 @@ public class SMTurnInstruction {
 	 * @deprecated There is no actual need for an index into the waypoints.
 	 */
 	public int waypointsIndex;
+
+	/**
+	 * The location in which this instruction should be taken by the user.
+	 */
 	Location location;
+
+	/**
+	 * This field holds an optional free-text description of the instruction.
+	 * For public transportation this will be the name or number of the train or bus line.
+	 */
+	protected String description;
+
 	public String descriptionString;
 	public String fullDescriptionString;
 	public boolean plannedForRemoving = false;
@@ -123,10 +134,10 @@ public class SMTurnInstruction {
 				secondaryDirection = null;
 			}
 
-			wayName = instructionNode.get(1).asText();
-			if (wayName.matches("\\{.+\\:.+\\}"))
-				wayName = IBikeApplication.getString(wayName);
-			wayName = wayName.replaceAll("&#39;", "'");
+			name = instructionNode.get(1).asText();
+			if (name.matches("\\{.+\\:.+\\}"))
+				name = IBikeApplication.getString(name);
+			name = name.replaceAll("&#39;", "'");
 			timeInSeconds = instructionNode.get(4).asInt();
 			if (instructionNode.size() > 8) {
 				int vehicle = instructionNode.get(8).asInt();
@@ -147,6 +158,14 @@ public class SMTurnInstruction {
 			generateFullDescriptionString();
 			waypointsIndex = instructionNode.get(3).asInt();
 		}
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public void setDistance(int distance) {
@@ -193,7 +212,7 @@ public class SMTurnInstruction {
 		switch (drivingDirection) {
 			case GetOnPublicTransportation:
 			case GetOffPublicTransportation:
-				descriptionString = wayName;
+				descriptionString = name;
 				break;
 			case EnterRoundAbout:
 				descriptionString = String.format(drivingDirection.toDisplayString().replace("%@", "@s"),
@@ -210,7 +229,7 @@ public class SMTurnInstruction {
 		switch (drivingDirection) {
 			case GetOnPublicTransportation:
 			case GetOffPublicTransportation:
-				descriptionString = wayName;
+				descriptionString = name;
 				break;
 			case NoTurn:
 			case ReachedYourDestination:
@@ -236,14 +255,14 @@ public class SMTurnInstruction {
 	public void generateFullDescriptionString() {
 		if (drivingDirection == TurnDirection.GetOnPublicTransportation ||
 			drivingDirection == TurnDirection.GetOffPublicTransportation)
-			fullDescriptionString = wayName;
+			fullDescriptionString = name;
 		else {
 			fullDescriptionString = drivingDirection.toDisplayString();
 
 			if (drivingDirection != TurnDirection.NoTurn &&
 				drivingDirection != TurnDirection.ReachedYourDestination &&
 				drivingDirection != TurnDirection.ReachingDestination) {
-				fullDescriptionString += " " + wayName;
+				fullDescriptionString += " " + name;
 			}
 			fullDescriptionString = getPrefix() + fullDescriptionString;
 		}
@@ -254,9 +273,9 @@ public class SMTurnInstruction {
 	public String toString() {
 		if (drivingDirection == TurnDirection.GetOnPublicTransportation ||
 			drivingDirection == TurnDirection.GetOffPublicTransportation)
-			return wayName;
+			return name;
 		else
-			return String.format(Locale.US, "%s %s [SMTurnInstruction: %d, %d, %s, %s, %f, (%f, %f)]", descriptionString, wayName,
+			return String.format(Locale.US, "%s %s [SMTurnInstruction: %d, %d, %s, %s, %f, (%f, %f)]", descriptionString, name,
 					distance, timeInSeconds, directionAbbreviation, azimuth, getLocation().getLatitude(), getLocation()
 							.getLongitude());
 	}
@@ -267,5 +286,9 @@ public class SMTurnInstruction {
 		} else {
 			return "";
 		}
+	}
+
+	public float getDistance() {
+		return distance;
 	}
 }

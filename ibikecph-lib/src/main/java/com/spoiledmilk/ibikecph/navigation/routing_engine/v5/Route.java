@@ -130,7 +130,7 @@ public class Route extends SMRoute {
                 int distanceToNextInstruction = 0;
 
                 for (JsonNode stepNode: stepsJson) {
-                    SMTurnInstruction instruction = new TurnInstruction(stepNode);
+                    TurnInstruction instruction = new TurnInstruction(stepNode);
                     // Sets the distance from the previous instruction
                     instruction.setDistance(distanceToNextInstruction);
                     distanceToNextInstruction = (int) Math.round(stepNode.get("distance").asDouble());
@@ -152,6 +152,10 @@ public class Route extends SMRoute {
                         instruction.transportType = transportType;
                     } else if(instruction.transportType == null) {
                         instruction.transportType = TransportationType.BIKE;
+                    }
+
+                    if(instruction.getDescription() == null) {
+                        instruction.setDescription(description);
                     }
 
                     upcomingTurnInstructions.add(instruction);
@@ -187,7 +191,7 @@ public class Route extends SMRoute {
      * Decoder for the Encoded Polyline Algorithm Format
      * @see <a href="https://developers.google.com/maps/documentation/utilities/polylinealgorithm">Encoded Polyline Algorithm Format</a>
      */
-    public static List<Location> decodePolyline(String encodedString, String type) {
+    public static List<Location> decodePolyline(String encodedString, TransportationType type) {
         if (encodedString == null)
             return null;
 
@@ -223,7 +227,7 @@ public class Route extends SMRoute {
                 else
                     lng += delta;
             }
-            Location loc = Util.locationFromCoordinates((double) lat / 1e5, (double) lng / 1e5);
+            Location loc = Util.locationFromCoordinates((double) lat / GEOMETRY_SCALING_V5, (double) lng / GEOMETRY_SCALING_V5);
             locations.add(loc);
         }
 
@@ -274,6 +278,9 @@ public class Route extends SMRoute {
         }, getType());
         requester.setDestinationHint(destinationHint);
         requester.setRoute(this);
+        if(location.hasBearing()) {
+            requester.setBearing(location.getBearing());
+        }
         requester.execute();
     }
 }

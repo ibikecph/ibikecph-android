@@ -24,11 +24,9 @@ import com.spoiledmilk.ibikecph.util.Util;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 // TODO: This code comes from previous vendor. It's a mess. /jc
@@ -36,6 +34,9 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     public static float DESTINATION_METRES_THRESHOLD = 40.0f;
     public static int DESTINATION_SECONDS_THRESHOLD = 3;
+
+    public static final double GEOMETRY_SCALING_V4 = 1e6;
+    public static final double GEOMETRY_SCALING_V5 = 1e5;
 
     public static final float MAX_DISTANCE_FROM_PATH = 30.0f;
     public static final float MIN_DISTANCE_FOR_RECALCULATION = MAX_DISTANCE_FROM_PATH;
@@ -446,6 +447,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                         this.transportType = SMRoute.TransportationType.valueOf(transportType);
                     }
                 }
+                // This will be the name of the train, metro or bus line
                 if(jsonRoot.get("route_summary").get("name") != null) {
                     description = jsonRoot.get("route_summary").get("name").asText();
                 }
@@ -455,19 +457,9 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 if(jsonRoot.get("route_summary").get("arrival_time") != null) {
                     arrivalTime = jsonRoot.get("route_summary").get("arrival_time").asLong();
                 }
-                // TODO: Remove this hack once the server responds with proper timestamps
-                if(departureTime > 0 && arrivalTime > 0) {
-                    Date now = new Date();
-                    boolean daylight = TimeZone.getTimeZone("Europe/Copenhagen").inDaylightTime(now);
-                    if(daylight) {
-                        int anHour = 60 * 60;
-                        departureTime -= anHour;
-                        arrivalTime -= anHour;
-                    }
-                }
             }
 
-            waypoints = decodePolyline(jsonRoot.path("route_geometry").textValue(), jsonRoot.path("route_summary").path("type").textValue());
+            waypoints = decodePolyline(jsonRoot.path("route_geometry").textValue(), this.transportType);
 
             if (waypoints == null || waypoints.size() < 2) {
                 return false;
@@ -514,19 +506,25 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                     // Instead of fixing it here -
                     // If the driving direction is to get off public transportation we'll override
                     // the way point index to the last wayout. Fix it on the server instead.
-                    if(isPublicTransportation() && instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOffPublicTransportation) {
-                        instruction.waypointsIndex = waypoints.size()-1;
+                    if (isPublicTransportation() && instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOffPublicTransportation) {
+                        instruction.waypointsIndex = waypoints.size() - 1;
                     }
 
                     // Save length to next turn with units so we don't have to generate it each
                     // time It's formatted just the way we like it
-                    instruction.distance = previousLengthInMeters;
-                    previousLengthInMeters = instructionNode.get(2).asInt();
+                    // TODO: Fix this ugly hack when the journey API return more consistent data
+                    if (transportType.isPublicTransportation()) {
+                        instruction.distance = instructionNode.get(2).asInt();
+                    } else {
+                        instruction.distance = previousLengthInMeters;
+                        previousLengthInMeters = instructionNode.get(2).asInt();
+                    }
                     // Derive the instructions location from its index in the waypoints
                     if (instruction.waypointsIndex >= 0 &&
                         instruction.waypointsIndex < waypoints.size()) {
                         // Set the location from the waypoints
                         instruction.location = waypoints.get(instruction.waypointsIndex);
+                        // Log.d("SMRoute", instruction.name + " is at " + instruction.location);
                     }
 
                     // Generate a special description if this is the first instruction on the route.
@@ -543,78 +541,17 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                         instruction.transportType = transportType;
                     }
 
+                    if(instruction.getDescription() == null) {
+                        instruction.setDescription(description);
+                    }
+
                     upcomingTurnInstructions.add(instruction);
                 }
             }
 
-            // TODO: Consider if this whole block is even needed ...
-            /*
-            if (isPublicTransportation()) {
-                double minimalStartDistance = Double.MAX_VALUE;
-                double minimalEndDistance = Double.MAX_VALUE;
-
-                // Find the waypoints closest to the start and end stations
-                for (int i = 0; i < waypoints.size(); i++) {
-                    if (locationStart.distanceTo(waypoints.get(i)) < minimalStartDistance) {
-                        minimalStartDistance = locationStart.distanceTo(waypoints.get(i));
-                        waypointStation1 = i;
-                    }
-                    if (locationEnd.distanceTo(waypoints.get(i)) < minimalEndDistance) {
-                        minimalEndDistance = locationEnd.distanceTo(waypoints.get(i));
-                        waypointStation2 = i;
-                    }
-                }
-
-                Iterator<SMTurnInstruction> it2 = upcomingTurnInstructions.iterator();
-                float distToStart = Float.MAX_VALUE, distToEnd = Float.MAX_VALUE;
-                while (it2.hasNext()) {
-                    SMTurnInstruction smt = it2.next();
-                    if (smt.location.distanceTo(locationStart) < distToStart && smt.waypointsIndex <= waypointStation1) {
-                        distToStart = smt.location.distanceTo(locationStart);
-                        station1 = smt;
-                    }
-                    if (smt.location.distanceTo(locationEnd) < distToEnd && smt.waypointsIndex <= waypointStation2) {
-                        distToEnd = smt.location.distanceTo(locationEnd);
-                        station2 = smt;
-                    }
-                }
-
-                int startIndex = upcomingTurnInstructions.indexOf(station1);
-                int endIndex = upcomingTurnInstructions.indexOf(station2);
-                while (startIndex < endIndex - 1) {
-                    upcomingTurnInstructions.remove(startIndex + 1);
-                    startIndex = upcomingTurnInstructions.indexOf(station1);
-                    endIndex = upcomingTurnInstructions.indexOf(station2);
-                }
-            }
-            */
-
-            int longestStreet = 0;
-            viaStreets = "";
-
-            int n = jsonRoot.path("route_name").size();
-            if (n > 0) {
-                int i = 0;
-                for (JsonNode streetNode : jsonRoot.path("route_name")) {
-                    i++;
-                    viaStreets += streetNode.asText() + (i == n ? "" : ", ");
-                }
-            }
-            if (viaStreets == null || viaStreets.trim().equals("")) {
-                for (int i = 1; i < upcomingTurnInstructions.size() - 1; i++) {
-                    SMTurnInstruction inst = upcomingTurnInstructions.get(i);
-                    if (inst.distance > longestStreet) {
-                        longestStreet = inst.distance;
-                        viaStreets = upcomingTurnInstructions.get(i - 1).wayName;
-                    }
-                }
-            }
-
             lastVisitedWaypointIndex = 0;
-
         }
 
-        Log.d("DV_break", "SMRoute, returning true");
         return true;
     }
 
@@ -622,8 +559,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
      * Decoder for the Encoded Polyline Algorithm Format
      * @see <a href="https://developers.google.com/maps/documentation/utilities/polylinealgorithm">Encoded Polyline Algorithm Format</a>
      */
-    public static List<Location> decodePolyline(String encodedString, String type) {
-        Log.d("SMRoute", "Decoding a polyline: " + encodedString);
+    public static List<Location> decodePolyline(String encodedString, TransportationType type) {
+        // Log.d("SMRoute", "Decoding a polyline: " + encodedString);
         if (encodedString == null)
             return null;
 
@@ -659,12 +596,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 else
                     lng += delta;
             }
-            Location loc;
-            if (type != null && !type.equals("BIKE")) {
-                loc = Util.locationFromCoordinates((double) lat / com.spoiledmilk.ibikecph.util.Config.GEOMETRY_DIGITS_LATITUDE_RP, (double) lng / com.spoiledmilk.ibikecph.util.Config.GEOMETRY_DIGITS_LONGITUDE_RP);
-            } else {
-                loc = Util.locationFromCoordinates((double) lat / com.spoiledmilk.ibikecph.util.Config.GEOMETRY_DIGITS_LATITUDE, (double) lng / com.spoiledmilk.ibikecph.util.Config.GEOMETRY_DIGITS_LONGITUDE);
+            // BIKE and WALK is returned as a OSRVv4 polyline (which should be devided by 10^6)
+            double scaleFactor = GEOMETRY_SCALING_V4;
+            if(type != TransportationType.BIKE && type != TransportationType.WALK) {
+                scaleFactor = GEOMETRY_SCALING_V5;
             }
+            Location loc = Util.locationFromCoordinates((double) lat / scaleFactor, (double) lng / scaleFactor);
             locations.add(loc);
 
         }
@@ -808,9 +745,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         // TODO: Consider if this check is need - maybe we only want to reach the destination once.
         if (!reachedDestination) {
-            // Are we close to the finish?
+            // Are we close to the finish? Or have no more instructions?
             if (estimatedDistanceLeft < DESTINATION_METRES_THRESHOLD ||
-                estimatedDurationLeft <= DESTINATION_SECONDS_THRESHOLD) {
+                estimatedDurationLeft <= DESTINATION_SECONDS_THRESHOLD ||
+                upcomingTurnInstructions.isEmpty()) {
                 // Move all future turn instructions to the past instructions
                 pastTurnInstructions.addAll(upcomingTurnInstructions);
                 upcomingTurnInstructions.clear();
@@ -1017,10 +955,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         if (estimatedDistanceLeft < 0.0) {
             estimatedDistanceLeft = estimatedDistance;
-        } else if (upcomingTurnInstructions.size() > 0) {
+        }
+
+        if (upcomingTurnInstructions.size() > 0) {
             // Calculate distance from location to the next turn
             SMTurnInstruction nextTurn = upcomingTurnInstructions.get(0);
-            nextTurn.distance = (int) calculateDistanceToNextTurn(loc);
+            nextTurn.distance = calculateDistanceToNextTurn(loc);
             if (nextTurn.plannedForRemoving && nextTurn.distance < 10) {
                 nextTurn.distance = 0;
             }

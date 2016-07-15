@@ -19,6 +19,8 @@ import java.util.Locale;
  */
 public class RegularRouteRequester extends com.spoiledmilk.ibikecph.navigation.routing_engine.RegularRouteRequester {
 
+    private Float bearing = null;
+
     public RegularRouteRequester(ILatLng start, ILatLng end, Geocoder.RouteCallback callback, RouteType type) {
         super(start, end, callback, type);
     }
@@ -48,6 +50,12 @@ public class RegularRouteRequester extends com.spoiledmilk.ibikecph.navigation.r
             end.getLatitude()
         );
 
+        if(bearing != null) {
+            // Tells ORSM to start the route facing in the users direction +- 20 deg
+            // and allows OSRM to end the route from any direction
+            url += "&bearings=" + Math.round(bearing) + ",20;0,180";
+        }
+
         try {
             return new URL(url);
         } catch (MalformedURLException e) {
@@ -68,6 +76,15 @@ public class RegularRouteRequester extends com.spoiledmilk.ibikecph.navigation.r
     @Override
     protected void onPostExecute(Boolean success) {
         super.onPostExecute(success);
-        route.emitRouteUpdated();
+        if (route != null && success) {
+            route.emitRouteUpdated();
+        }
+    }
+
+    public void setBearing(float bearing) {
+        if(bearing < 0 || bearing > 360) {
+            throw new RuntimeException("Expected a non-negative bearing below 360 degrees");
+        }
+        this.bearing = bearing;
     }
 }

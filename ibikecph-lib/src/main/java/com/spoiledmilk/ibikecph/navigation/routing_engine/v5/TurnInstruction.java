@@ -177,9 +177,9 @@ public class TurnInstruction extends SMTurnInstruction implements Speakable {
             transportType = SMRoute.TransportationType.WALK;
         }
 
-        wayName = stepNode.get("name").asText();
-        if (wayName.matches("\\{.+\\:.+\\}")) {
-            wayName = IBikeApplication.getString(wayName);
+        name = stepNode.get("name").asText();
+        if (name.matches("\\{.+\\:.+\\}")) {
+            name = IBikeApplication.getString(name);
         }
 
         double duration = stepNode.get("duration").asDouble();
@@ -290,7 +290,7 @@ public class TurnInstruction extends SMTurnInstruction implements Speakable {
     @Override
     public String toString() {
         String result = this.getClass().getSimpleName() + "(";
-        result += wayName != null && !wayName.isEmpty() ? wayName : "No wayName";
+        result += name != null && !name.isEmpty() ? name : "No name";
         result += ", ";
         result += type != null ? type.toString() : "no type";
         result += ", ";
@@ -324,29 +324,29 @@ public class TurnInstruction extends SMTurnInstruction implements Speakable {
                 }
                 languageKey += "_" + modifier.name().toLowerCase();
                 return IBikeApplication.getString(languageKey)
-                        .replace("{{name}}", wayName);
+                        .replace("{{name}}", name);
             case DEPART:
                 return IBikeApplication.getString("depart")
                         .replace("{{heading}}", modifier == null ? "" : modifier.displayName())
-                        .replace("{{name}}", wayName);
+                        .replace("{{name}}", name);
             case ARRIVE:
                 return IBikeApplication.getString("arrive")
-                        .replace("{{name}}", wayName)
+                        .replace("{{name}}", name)
                         .replace("{{side}}", modifier == null ? "" : modifier.displayName());
             case ROUNDABOUT:
                 return IBikeApplication.getString("roundabout")
                         .replace("%{exit}", "") // TODO: Make sure this value is read from the JSON
-                        .replace("{{name}}", wayName);
+                        .replace("{{name}}", name);
             case ROTARY:
                 return IBikeApplication.getString("rotary")
                         .replace("%{exit}", "") // TODO: Make sure this value is read from the JSON
-                        .replace("{{name}}", wayName);
+                        .replace("{{name}}", name);
             case ON_RAMP:
                 return IBikeApplication.getString("on_ramp")
-                        .replace("{{name}}", wayName);
+                        .replace("{{name}}", name);
             case OFF_RAMP:
                 return IBikeApplication.getString("off_ramp")
-                        .replace("{{name}}", wayName);
+                        .replace("{{name}}", name);
             default:
                 return null;
         }

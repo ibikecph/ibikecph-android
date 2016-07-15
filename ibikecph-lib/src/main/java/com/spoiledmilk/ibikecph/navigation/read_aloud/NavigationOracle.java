@@ -12,7 +12,6 @@ import com.google.android.gms.location.LocationListener;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.states.NavigatingState;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.v5.TurnInstruction;
@@ -227,15 +226,6 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         emitDisabled();
     }
 
-    public SMTurnInstruction getPreviousInstruction() {
-        if (state.getRoute() != null && state.getRoute().getPastTurnInstructions().size() > 0) {
-            int lastInstructionIndex = state.getRoute().getPastTurnInstructions().size()-1;
-            return state.getRoute().getPastTurnInstructions().get(lastInstructionIndex);
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public void onLocationChanged(Location location) {
         if(!enabled) {
@@ -246,8 +236,8 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         if(state.getRoute() != null && instruction != null) {
             String instructionSentence = generateInstructionSentence(instruction);
             // If we are close enough and the instruction has not been read aloud
-            if(location.distanceTo(instruction.getLocation()) < getDistanceWhenReading(instruction) &&
-               lastCloseInstruction != instruction) {
+            if (lastCloseInstruction != instruction &&
+               location.distanceTo(instruction.getLocation()) < getDistanceWhenReading(instruction)) {
                 speak(instructionSentence, lastCloseInstruction == null);
                 // Make sure we will not be reading this aloud again.
                 lastUpcomingInstruction = instruction;
@@ -255,7 +245,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
                 // Remember where we were when reading this
                 lastSpeakLocation = location;
             } else if (lastUpcomingInstruction != instruction) {
-                String upcomingSentence = generateUpcomingSentence(instruction.distance);
+                String upcomingSentence = generateUpcomingSentence(Math.round(instruction.getDistance()));
                 speak(upcomingSentence + " " + instructionSentence, lastUpcomingInstruction == null);
                 // Make sure we will not be reading this aloud again.
                 lastUpcomingInstruction = instruction;
@@ -266,7 +256,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
             if(lastSpeakLocation != null &&
                location.distanceTo(lastSpeakLocation) > MAX_SILENCE_DISTANCE &&
                !state.getRoute().isPublicTransportation()) {
-                int minutesToArrival = Math.round(state.getRoute().getEstimatedDurationLeft() / 60.0f);
+                int minutesToArrival = Math.round(state.getJourney().getEstimatedDurationLeft() / 60.0f);
                 String encouragement = generateEncouragementSentence(minutesToArrival);
                 // If we want to say an encouragement - let's speak
                 if(encouragement != null) {
@@ -309,12 +299,11 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
      * @return
      */
     private String generateInstructionSentence(SMTurnInstruction instruction) {
-        SMTurnInstruction previousInstruction = getPreviousInstruction();
         String result = "";
         if(instruction != null) {
             if (readAloudVehicleChange &&
-                previousInstruction != null &&
-                previousInstruction.transportType != instruction.transportType) {
+                lastCloseInstruction != null &&
+                lastCloseInstruction.transportType != instruction.transportType) {
                 // The user should change vehicle
                 int vehicleId = instruction.transportType.getVehicleId();
                 if (vehicleId > 0) {
@@ -326,22 +315,22 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
                 TurnInstruction turnInstruction = (TurnInstruction) instruction;
                 result += turnInstruction.getSpeakableString();
             } else {
-                String direction = instruction.drivingDirection.toDisplayString(previousInstruction == null);
+                String direction = instruction.drivingDirection.toDisplayString(lastCloseInstruction == null);
                 if (instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOnPublicTransportation) {
                     SMTurnInstruction nextInstruction = state.getJourney().getUpcomingInstruction(1);
                     result += String.format(direction.replaceAll("%@", "%s"),
-                                            instruction.wayName,
-                                            state.getRoute().description,
-                                            nextInstruction.wayName);
+                                            instruction.name,
+                                            instruction.getDescription(),
+                                            nextInstruction.name);
                     // Pronounce St. as Station
                     result = result.replaceAll("St.", "Station");
                 } else if (instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOffPublicTransportation) {
-                    result += direction + " " + instruction.wayName;
+                    result += direction + " " + instruction.name;
                     // Pronounce St. as Station
                     result = result.replaceAll("St.", "Station");
                 } else {
                     // This is the first instruction
-                    if(previousInstruction == null) {
+                    if(lastCloseInstruction == null) {
                         String generalDirection = IBikeApplication.getString("direction_" + instruction.directionAbbreviation);
                         direction = String.format(direction.replace("%@", "%s"), generalDirection);
                     }
@@ -349,7 +338,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
                     if(instruction.drivingDirection != SMTurnInstruction.TurnDirection.NoTurn &&
                         instruction.drivingDirection != SMTurnInstruction.TurnDirection.ReachedYourDestination &&
                         instruction.drivingDirection != SMTurnInstruction.TurnDirection.ReachingDestination) {
-                        result += " " + instruction.wayName;
+                        result += " " + instruction.name;
                     }
                 }
             }
@@ -402,11 +391,7 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
 
     @Override
     public void reachedDestination() {
-        // TODO: Consider implementing a Journey listener instead
-        SMRoute lastRoute = state.getJourney().getRoutes().get(state.getJourney().getRoutes().size()-1);
-        if(state.getRoute() == lastRoute) {
-            speak(IBikeApplication.getString("you_have_reached_your_destination"));
-        }
+        speak(IBikeApplication.getString("you_have_reached_your_destination"));
     }
 
     @Override

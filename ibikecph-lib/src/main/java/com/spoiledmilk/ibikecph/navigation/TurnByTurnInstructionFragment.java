@@ -60,29 +60,35 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
      */
     public void render() {
         NavigatingState state = getMapState(NavigatingState.class);
-        SMTurnInstruction turn = state.getJourney().getUpcomingInstruction();
-        if (turn != null) {
-            if (!turn.transportType.isPublicTransportation()) {
-                textWayname.setText(turn.wayName);
-                textDistance.setText(turn.distance + " m");
-                imgDirectionIcon.setImageResource(turn.getSmallDirectionResourceId());
-            } else {
-                SMRoute route = state.getRoute();
-                // TODO: Look at the current and next instructions instead of the start and end
-                // address of the route.
-                String from = route.startAddress.getDisplayName();
-                String take = route.description;
-                String to = route.endAddress.getDisplayName();
+        SMTurnInstruction instruction = state.getJourney().getUpcomingInstruction();
+        if (instruction != null) {
+            SMRoute route = state.getRoute();
+            if (!instruction.transportType.isPublicTransportation()) {
+                textWayname.setText(instruction.name);
+                textDistance.setText(Math.round(instruction.distance) + " m");
+                imgDirectionIcon.setImageResource(instruction.getSmallDirectionResourceId());
+            } else if(instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOnPublicTransportation) {
+                SMTurnInstruction nextInstruction = state.getJourney().getUpcomingInstruction(1);
+                String from = instruction.name;
+                String take = instruction.getDescription();
+                String to = nextInstruction.name;
 
-                String instruction = IBikeApplication.getString("direction_18");
-                instruction = instruction.replace("%@", "%s");
-                instruction = String.format(instruction, from, take, to);
+                String instructionString = IBikeApplication.getString("direction_18");
+                instructionString = instructionString.replace("%@", "%s");
+                instructionString = String.format(instructionString, from, take, to);
 
                 String departureTime = timeStampFormat(route.departureTime);
-                textWayname.setText(instruction);
+                textWayname.setText(instructionString);
                 // Use time instead of metres when next stop is public transportation
                 textDistance.setText(departureTime);
-                imgDirectionIcon.setImageResource(turn.getSmallDirectionResourceId());
+                imgDirectionIcon.setImageResource(instruction.getSmallDirectionResourceId());
+            } else if(instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOffPublicTransportation) {
+                String instructionString = IBikeApplication.getString("direction_19");
+                String arrivalTime = timeStampFormat(route.arrivalTime);
+                textWayname.setText(instructionString + " " + instruction.name);
+                // Use time instead of metres when next stop is public transportation
+                textDistance.setText(arrivalTime);
+                imgDirectionIcon.setImageResource(instruction.getSmallDirectionResourceId());
             }
         } else {
             textWayname.setText("");
