@@ -61,6 +61,35 @@
           "status": 1
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012506062786:android:ec884afa73994f18",
+        "android_client_info": {
+          "package_name": "dk.kk.ibikecph.local"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4Tv9rk7BBX5evagh8uy7R8g0jV97tRu0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-32719126-2"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
     }
   ],
   "configuration_version": "1"

@@ -44,6 +44,11 @@ android {
         }
     }
     productFlavors {
+        local {
+            applicationIdSuffix ".local"
+            resValue "string", "app_name", "CykelPlanen (local)"
+            buildConfigField "String", "API_URL", "\"http://10.0.2.2:3000/api\""
+        }
         staging {
             applicationIdSuffix ".staging"
             resValue "string", "app_name", "CykelPlanen (staging)"

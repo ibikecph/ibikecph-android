@@ -61,6 +61,35 @@
           "status": 1
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691732006711:android:e08e6889763b42b7",
+        "android_client_info": {
+          "package_name": "com.spoiledmilk.cykelsuperstier.local"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6cd2CtxGF3CEzveLSnUoo3RnVmqxe11A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 2,
+          "analytics_property": {
+            "tracking_id": "UA-32719126-3"
+          }
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
     }
   ],
   "configuration_version": "1"
