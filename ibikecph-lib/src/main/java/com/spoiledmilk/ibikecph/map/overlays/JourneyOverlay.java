@@ -46,7 +46,7 @@ public class JourneyOverlay extends Overlay implements LocationListener {
 
         // Add a path overlay for every route in the journey
         for(SMRoute route: journey.getRoutes()) {
-            RoutePathOverlay overlay = new RouteOverlay(mapView.getContext(), route);
+            RoutePathOverlay overlay = new RouteOverlay(mapView, route);
             overlays.add(overlay);
         }
 

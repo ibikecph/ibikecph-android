@@ -24,9 +24,11 @@ import java.util.List;
 public class RouteOverlay extends RoutePathOverlay implements SMRouteListener {
 
     protected SMRoute route;
+    protected MapView mapView;
 
-    public RouteOverlay(Context context, SMRoute route) {
-        super(context, route.transportType);
+    public RouteOverlay(MapView mapView, SMRoute route) {
+        super(mapView.getContext(), route.transportType);
+        this.mapView = mapView;
         this.route = route;
         route.addListener(this);
         updateRoute();
@@ -49,6 +51,7 @@ public class RouteOverlay extends RoutePathOverlay implements SMRouteListener {
         for(Location location: route.getWaypoints()) {
             addPoint(location.getLatitude(), location.getLongitude());
         }
+        mapView.invalidate();
     }
 
     @Override
