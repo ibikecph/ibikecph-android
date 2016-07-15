@@ -132,20 +132,20 @@ public class SMHttpRequest {
                 Log.d("DV_break", "SMHttpRequest, before switch, type = " + type.toString());
                 switch (type) {
                     case GREEN:
-                        routingServer = Config.OSRM_SERVER_GREEN;
+                        routingServer = Config.OSRMv4_SERVER + "/green";
                         break;
                     case CARGO:
-                        routingServer = Config.OSRM_SERVER_CARGO;
+                        routingServer = Config.OSRMv4_SERVER + "/cargo";
                         break;
                     case BREAK:
                         Log.d("DV_break", "Setting routingServer");
                         //routingServer = Config.API_BREAK_ROUTE;
-                        routingServer = Config.OSRM_SERVER_FAST;
+                        routingServer = Config.OSRMv4_SERVER + "/fast";
                         Break = false;
                         break;
                     case FASTEST:
                     default:
-                        routingServer = Config.OSRM_SERVER_FAST;
+                        routingServer = Config.OSRMv4_SERVER + "/fast";
                 }
 
                 if (startHint != null) {
@@ -225,11 +225,11 @@ public class SMHttpRequest {
         z10Route = null;
         String url;
         if (startHint != null) {
-            url = String.format(Locale.US, "%s/viaroute?z=10&alt=false&loc=%.6f,%.6f&hint=" + startHint + "", Config.OSRM_SERVER_DEFAULT,
+            url = String.format(Locale.US, "%s/fast/viaroute?z=10&alt=false&loc=%.6f,%.6f&hint=" + startHint + "", Config.OSRMv4_SERVER,
 
                     start.getLatitude(), start.getLongitude());
         } else {
-            url = String.format(Locale.US, "%s/viaroute?z=10&alt=false&loc=%.6f,%.6f", Config.OSRM_SERVER_DEFAULT, start.getLatitude(), start.getLongitude());
+            url = String.format(Locale.US, "%s/fast/viaroute?z=10&alt=false&loc=%.6f,%.6f", Config.OSRMv4_SERVER, start.getLatitude(), start.getLongitude());
         }
 
         if (viaPoints != null) {

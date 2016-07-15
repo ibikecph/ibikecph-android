@@ -74,16 +74,14 @@ public class RegularRouteRequester extends RouteRequester {
 
         switch (type) {
             case CARGO:
-                baseURL = Config.OSRM_SERVER_CARGO;
+                baseURL = Config.OSRMv4_SERVER + "/cargo";
                 break;
             case GREEN:
-                baseURL = Config.OSRM_SERVER_GREEN;
+                baseURL = Config.OSRMv4_SERVER + "/green";
                 break;
             case FASTEST:
-                baseURL = Config.OSRM_SERVER_FAST;
-                break;
             default:
-                baseURL = Config.OSRM_SERVER_DEFAULT;
+                baseURL = Config.OSRMv4_SERVER + "/fast";
                 break;
         }
         String url = String.format(Locale.US, "%s/viaroute?z=%d&alt=false&loc=%.6f,%.6f&loc=%.6f,%.6f&instructions=true",

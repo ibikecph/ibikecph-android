@@ -24,35 +24,23 @@ public class RegularRouteRequester extends com.spoiledmilk.ibikecph.navigation.r
     }
 
     protected URL generateURL() {
-        // http://routes.ibikecph.dk/v5/green/route/v1/profile/
-        // 12.53059,55.70903;12.45839,55.68029
-        // ?overview=full
-        // &geometries=polyline
-        // &hints=;
-        // &steps=false
-        // &alternatives=false
-
-        // OSRM directive to not ignore small road fragments
-        int z = 18;
-        String baseURL;
-
+        String baseURL = Config.OSRMv5_SERVER;
         switch (type) {
             case CARGO:
-                baseURL = Config.OSRM_SERVER_CARGO;
+                baseURL += "/cargo";
                 break;
             case GREEN:
-                baseURL = Config.OSRM_SERVER_GREEN;
+                baseURL += "/green";
                 break;
             case FASTEST:
-                baseURL = Config.OSRM_SERVER_FAST;
-                break;
             default:
-                baseURL = Config.OSRM_SERVER_DEFAULT;
+                baseURL += "/fast";
                 break;
         }
+
         String url = String.format(
             Locale.US,
-            "%s/%.6f,%.6f;%.6f,%.6f?overview=full&geometries=polyline&hints=;&steps=true&alternatives=false",
+            "%s/route/%.6f,%.6f;%.6f,%.6f?overview=full&geometries=polyline&hints=;&steps=true&alternatives=false",
             baseURL,
             start.getLongitude(),
             start.getLatitude(),
