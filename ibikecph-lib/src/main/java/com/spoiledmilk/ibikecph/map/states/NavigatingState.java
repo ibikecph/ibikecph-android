@@ -244,12 +244,13 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
         if(nextRoute == null) {
             // We are done with the journey
             turnByTurnFragment.reachedDestination();
+            if(navigationOracle != null) {
+                navigationOracle.reachedDestination();
+            }
         } else {
             // Switch to the next route in the journey
             setRoute(nextRoute);
-        }
-        if(navigationOracle != null) {
-            navigationOracle.reachedDestination();
+            updateRoute();
         }
     }
 
