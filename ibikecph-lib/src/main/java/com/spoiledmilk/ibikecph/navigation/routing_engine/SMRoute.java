@@ -40,9 +40,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     public static final float MAX_DISTANCE_FROM_PATH = 30.0f;
     public static final float MIN_DISTANCE_FOR_RECALCULATION = MAX_DISTANCE_FROM_PATH;
-    public static final int TO_START_STATION = 0;
-    public static final int TO_END_STATION = 1;
-    public static final int TO_DESTINATION = 2;
 
     public List<Location> waypoints;
 
@@ -57,14 +54,13 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     protected ArrayList<SMTurnInstruction> upcomingTurnInstructions;
 
     public List<Location> visitedLocations;
-    float estimatedDistanceLeft;
     float averageSpeed;
     float caloriesBurned;
     public Location locationStart;
     public Location locationEnd;
     public boolean recalculationInProgress;
     protected int estimatedDuration, estimatedDurationLeft;
-    protected int estimatedDistance = -1;
+    protected float estimatedDistance, estimatedDistanceLeft;
     protected String routeChecksum;
     protected String destinationHint;
     public Location lastCorrectedLocation;
