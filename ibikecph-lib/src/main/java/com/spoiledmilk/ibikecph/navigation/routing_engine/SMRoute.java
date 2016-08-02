@@ -58,7 +58,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     public List<Location> visitedLocations;
     float estimatedDistanceLeft;
-    float tripDistance;
     float averageSpeed;
     float caloriesBurned;
     public Location locationStart;
@@ -214,7 +213,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     public void init() {
         estimatedDistanceLeft = -1;
-        tripDistance = -1;
         caloriesBurned = -1;
         averageSpeed = -1;
         lastVisitedWaypointIndex = -1;
@@ -425,7 +423,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public void parseJsonNode(JsonNode jsonRoot) {
         boolean ok = parseFromJson(jsonRoot);
         if (ok) {
-            tripDistance = 0.0f;
             if (IBikeApplication.getService().hasValidLocation()) {
                 updateDistances(IBikeApplication.getService().getLastValidLocation());
                 emitRouteUpdated();
@@ -946,13 +943,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     }
 
     private void updateDistances(Location loc) {
-        if (tripDistance < 0.0) {
-            tripDistance = 0.0f;
-        }
-        if (visitedLocations.size() > 0) {
-            tripDistance += loc.distanceTo(visitedLocations.get(visitedLocations.size() - 1));
-        }
-
         if (estimatedDistanceLeft < 0.0) {
             estimatedDistanceLeft = estimatedDistance;
         }
