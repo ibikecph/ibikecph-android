@@ -10,6 +10,7 @@ import com.spoiledmilk.ibikecph.util.Util;
 
 /**
  * A OSRM v5 reimplementation of the turn instruction
+ * TODO: Move functionality from the SMTurnInstruction into this class as OSRMv4 is phased out.
  * Created by kraen on 12-07-16.
  */
 public class TurnInstruction extends SMTurnInstruction implements Speakable {
@@ -180,6 +181,11 @@ public class TurnInstruction extends SMTurnInstruction implements Speakable {
         name = stepNode.get("name").asText();
         if (name.matches("\\{.+\\:.+\\}")) {
             name = IBikeApplication.getString(name);
+        }
+
+        // TODO: Remove this if we are absolutely sure that this will never occur
+        if(name.contains("{highway")) {
+            throw new RuntimeException("Encountered an untranslated string: '" + name + "'");
         }
 
         double duration = stepNode.get("duration").asDouble();
