@@ -86,6 +86,10 @@ public class SMTurnInstruction {
 	TurnDirection secondaryDirection = null;
 
 	public String name = "";
+	/**
+	 * The distance until this turn instruction should be performed.
+	 * TODO: Consider changing the semantics to match OSRM, to be "Distance until next step".
+	 */
 	public float distance = 0;
 	public int timeInSeconds = 0;
 

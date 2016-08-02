@@ -15,6 +15,7 @@ import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
@@ -125,7 +126,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             sourceText.setText(journey.getStartAddress().getDisplayName());
             destinationText.setText(journey.getEndAddress().getDisplayName());
 
-            distance = journey.getEstimatedDistance();
+            distance = journey.getEstimatedDistance(true);
             duration = journey.getEstimatedDuration();
 
             if (distance > 1000) {

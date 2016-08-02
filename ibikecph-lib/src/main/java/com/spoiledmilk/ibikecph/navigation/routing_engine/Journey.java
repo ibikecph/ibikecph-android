@@ -29,8 +29,7 @@ public class Journey {
     protected JsonNode journeyNode;
 
     public int estimatedDuration;
-    public int totalBikeDistance;
-    public int estimatedDistance;
+    public float estimatedDistance, totalBikeDistance;
     public long arrivalTime;
 
     protected Address startAddress;
@@ -116,42 +115,58 @@ public class Journey {
     }
 
     /**
-     * Returns the estimated duration of the entire journey
+     * Get the estimated distance of any type of transportation
      * @return
      */
-    public int getEstimatedDuration() {
-        int estimatedArrivalTime = 0;
-        for(SMRoute route: getRoutes()) {
-            estimatedArrivalTime += route.estimatedDuration;
-        }
-        return estimatedArrivalTime;
+    public float getEstimatedDistance() {
+        return getEstimatedDistance(false);
     }
 
-    public float getEstimatedDistance() {
+    /**
+     * Get the estimated distance of a specific type of transportation.
+     * @return
+     */
+    public float getEstimatedDistance(boolean nonPublicOnly) {
         float estimatedDistance = 0;
         // Calculate the accumulated estimated distance.
         for(SMRoute route: getRoutes()) {
-            estimatedDistance += route.getEstimatedDistance();
+            if(!nonPublicOnly || !route.transportType.isPublicTransportation()) {
+                estimatedDistance += route.getEstimatedDistance();
+            }
         }
         return estimatedDistance;
     }
 
     public float getEstimatedDistanceLeft() {
+        return getEstimatedDistanceLeft(false);
+    }
+
+    public float getEstimatedDistanceLeft(boolean nonPublicOnly) {
         float distanceLeft = 0;
         // Calculate the accumulated distance left.
         for(SMRoute route: getRoutes()) {
-            distanceLeft += route.getEstimatedDistanceLeft();
+            if(!nonPublicOnly || !route.transportType.isPublicTransportation()) {
+                distanceLeft += route.getEstimatedDistanceLeft();
+            }
         }
         return distanceLeft;
     }
 
+    /**
+     * Returns the estimated duration of the entire journey
+     * @return
+     */
+    public int getEstimatedDuration() {
+        Date departure = new Date(); // Let's assume we can depart, right away
+        return (int) (getArrivalTime().getTime() - departure.getTime()) / 1000;
+    }
+
+    /**
+     * @deprecated Do not differentiate on duration left or duration
+     * @return
+     */
     public int getEstimatedDurationLeft() {
-        int durationLeft = 0;
-        // Calculate the accumulated distance left.
-        for(SMRoute route: getRoutes()) {
-            durationLeft += route.getEstimatedDurationLeft();
-        }
-        return durationLeft;
+        return getEstimatedDuration();
     }
 
     public Date getArrivalTime() {
@@ -159,14 +174,15 @@ public class Journey {
         // improved by the user biking faster
         int nonPublicDurationLeft = 0;
         Date earliestDeparture = new Date(); // Let's assume now
-        // Loop backwards in routes
+        // Looping backwards in routes
         for(int r = getRoutes().size()-1; r >= 0; r--) {
             SMRoute route = getRoutes().get(r);
-            if(!route.isPublicTransportation()) {
-                nonPublicDurationLeft += route.getEstimatedDurationLeft();
-            } else if(route.arrivalTime != -1) {
-                // The last public transporation
+            if(route.isPublicTransportation() && route.arrivalTime != -1) {
+                // The last public transportation
                 earliestDeparture = new Date(route.arrivalTime * 1000);
+                break;
+            } else {
+                nonPublicDurationLeft += route.getEstimatedDurationLeft();
             }
         }
         Calendar c = Calendar.getInstance();

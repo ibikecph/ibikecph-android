@@ -474,8 +474,9 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 estimatedDuration = jsonRoot.path("route_summary").path("total_time").asInt();
             }
             estimatedDurationLeft = estimatedDuration;
-            distancePassed = 0d;
+
             estimatedDistance = jsonRoot.path("route_summary").path("total_distance").asInt();
+            estimatedDistanceLeft = estimatedDistance;
 
             routeChecksum = null;
             destinationHint = null;
@@ -623,11 +624,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     }
 
 
-    public int getEstimatedDistance() {
+    public float getEstimatedDistance() {
         return estimatedDistance;
     }
 
-    protected double distancePassed = 0;
     Location lastLocation;
 
     /**
@@ -636,12 +636,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
      * @param loc
      */
     public void visitLocation(Location loc) {
-        // Accumulating the distance passed
-        // TODO: Consider doing this when the user actually passes a way point and use its location.
-        if (lastLocation != null && loc != null) {
-            distancePassed += loc.distanceTo(lastLocation);
-        }
-
         // TODO: Consider moving this to the end of the method for semantics
         lastLocation = loc;
         visitedLocations.add(loc);
@@ -942,7 +936,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return isNear && upcomingTurnInstructions.size() == 1;
     }
 
-    private void updateDistances(Location loc) {
+    protected void updateDistances(Location loc) {
         if (estimatedDistanceLeft < 0.0) {
             estimatedDistanceLeft = estimatedDistance;
         }
@@ -963,7 +957,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         }
     }
 
-    private float calculateDistanceToNextTurn(Location loc) {
+    protected float calculateDistanceToNextTurn(Location loc) {
         if (upcomingTurnInstructions.size() == 0)
             return 0.0f;
 

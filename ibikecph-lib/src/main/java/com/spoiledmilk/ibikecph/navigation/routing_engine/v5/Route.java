@@ -23,15 +23,36 @@ import java.util.TimeZone;
  */
 public class Route extends SMRoute {
 
+    /**
+     * The assumed biking speed in metres per second.
+     */
+    private static final float AVERAGE_BIKING_SPEED = 15f * 1000f / 3600f;
+
+    /**
+     * The assumed cargo biking speed in metres per second.
+     */
+    private static final float AVERAGE_CARGO_BIKING_SPEED = 10f * 1000f / 3600f;
+
     public Route(Location start, Location end, RouteType type) {
         super(start, end, type);
     }
 
+    /**
+     * The OSRM Version used when parsing JSON.
+     * @deprecated Can be removed once OSRMv4 parsing is no longer supported
+     */
     public enum OsrmVersion {
         V4,
         V5
     }
 
+    /**
+     * Parse JSON from a specific version of OSRM
+     * @deprecated Can be removed once OSRMv4 parsing is no longer supported
+     * @param rootNode
+     * @param version
+     * @return
+     */
     public boolean parseFromJson(JsonNode rootNode, OsrmVersion version) {
         if(version == OsrmVersion.V4) {
             return super.parseFromJson(rootNode);
@@ -102,9 +123,9 @@ public class Route extends SMRoute {
                 estimatedDuration = routeNode.get("duration").asInt();
             }
             estimatedDurationLeft = estimatedDuration;
-            distancePassed = 0d;
             // TODO: This is actually a decimal number
             estimatedDistance = routeNode.get("distance").asInt();
+            estimatedDistanceLeft = estimatedDistance;
 
             // These are no longer available
             routeChecksum = null;
@@ -169,6 +190,7 @@ public class Route extends SMRoute {
     /**
      * Iterating the waypoints and returns the closes after waypointIndex to the location of the
      * instructions provided
+     * @deprecated This should be removed as soon as nothing depends on the waypoint index.
      * @param instruction
      * @param waypointIndex
      * @return
@@ -282,5 +304,31 @@ public class Route extends SMRoute {
             requester.setBearing(location.getBearing());
         }
         requester.execute();
+    }
+
+    @Override
+    public float getEstimatedDuration() {
+        if(transportType.isPublicTransportation()) {
+            return arrivalTime - departureTime;
+        } else if(getType().equals(RouteType.CARGO)) {
+            return getEstimatedDistance() / AVERAGE_CARGO_BIKING_SPEED;
+        } else {
+            return getEstimatedDistance() / AVERAGE_BIKING_SPEED;
+        }
+    }
+
+    @Override
+    public float getEstimatedDurationLeft() {
+        if(transportType.isPublicTransportation() && pastTurnInstructions.isEmpty()) {
+            return arrivalTime - departureTime;
+        } else if(transportType.isPublicTransportation() && !pastTurnInstructions.isEmpty()) {
+            // If past instructions exists the user has departed
+            Date now = new Date();
+            return Math.max(arrivalTime - now.getTime(), 0f);
+        } else if(getType().equals(RouteType.CARGO)) {
+            return getEstimatedDistanceLeft() / AVERAGE_CARGO_BIKING_SPEED;
+        } else {
+            return getEstimatedDistanceLeft() / AVERAGE_BIKING_SPEED;
+        }
     }
 }
