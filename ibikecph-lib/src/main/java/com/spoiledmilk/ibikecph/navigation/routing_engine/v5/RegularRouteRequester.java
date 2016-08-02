@@ -20,6 +20,7 @@ import java.util.Locale;
 public class RegularRouteRequester extends com.spoiledmilk.ibikecph.navigation.routing_engine.RegularRouteRequester {
 
     private Float bearing = null;
+    protected String destinationHint;
 
     public RegularRouteRequester(ILatLng start, ILatLng end, Geocoder.RouteCallback callback, RouteType type) {
         super(start, end, callback, type);
@@ -42,7 +43,7 @@ public class RegularRouteRequester extends com.spoiledmilk.ibikecph.navigation.r
 
         String url = String.format(
             Locale.US,
-            "%s/route/%.6f,%.6f;%.6f,%.6f?overview=full&geometries=polyline&hints=;&steps=true&alternatives=false",
+            "%s/route/%.6f,%.6f;%.6f,%.6f?overview=full&geometries=polyline&steps=true&alternatives=false",
             baseURL,
             start.getLongitude(),
             start.getLatitude(),
@@ -54,6 +55,10 @@ public class RegularRouteRequester extends com.spoiledmilk.ibikecph.navigation.r
             // Tells ORSM to start the route facing in the users direction +- 20 deg
             // and allows OSRM to end the route from any direction
             url += "&bearings=" + Math.round(bearing) + ",20;0,180";
+        }
+
+        if(route != null && route.getDestinationHint() != null) {
+            url += "&hints=;" + route.getDestinationHint();
         }
 
         try {

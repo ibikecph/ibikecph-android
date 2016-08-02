@@ -298,7 +298,6 @@ public class Route extends SMRoute {
                 throw new RuntimeException("Failed to fetch the recalculated route");
             }
         }, getType());
-        requester.setDestinationHint(destinationHint);
         requester.setRoute(this);
         if(location.hasBearing()) {
             requester.setBearing(location.getBearing());

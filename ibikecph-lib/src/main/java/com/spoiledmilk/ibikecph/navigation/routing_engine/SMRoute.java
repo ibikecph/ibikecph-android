@@ -82,6 +82,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     protected List<SMRouteListener> listeners = new CopyOnWriteArrayList<>();
 
+    public String getDestinationHint() {
+        return destinationHint;
+    }
+
     public enum TransportationType {
         BIKE, M, S, WALK, TOG, BUS, IC, LYN, REG, EXB, NB, TB, F;
 
@@ -481,15 +485,19 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             routeChecksum = null;
             destinationHint = null;
 
+            // TODO: Consider if this is used any
             if (!jsonRoot.path("hint_data").path("checksum").isMissingNode()) {
                 routeChecksum = jsonRoot.path("hint_data").path("checksum").asText();
-
             }
 
+            /*
+            // Disabled hinting when getting a OSRMv4 hint, as these should never be sent when
+            // recalculating with OSRMv5.
             JsonNode hint_locations = jsonRoot.path("hint_data").path("locations");
             if (hint_locations != null && !hint_locations.isMissingNode() && hint_locations.size() > 0) {
                 destinationHint = jsonRoot.path("hint_data").path("locations").get(hint_locations.size() - 1).asText();
             }
+            */
 
             JsonNode routeInstructionsArr = jsonRoot.path("route_instructions");
             if (routeInstructionsArr != null && routeInstructionsArr.size() > 0) {
