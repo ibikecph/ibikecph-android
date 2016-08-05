@@ -1,11 +1,13 @@
 dependencies:
   pre:
     - echo y | android update sdk --no-ui --all --filter "tools,platform-tools,android-23"
-    - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.2"
+    - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.3"
     - echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"
     - git submodule update --init
-#test:
-#  override:
+test:
+  override:
+    - (./gradlew assemble):
+       timeout: 900 # 15 minutes
 #    # start the emulator
 #    - emulator -avd circleci-android22 -no-audio -no-window:
 #        background: true
