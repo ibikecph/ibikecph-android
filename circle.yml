@@ -6,7 +6,8 @@ dependencies:
     - git submodule update --init
 test:
   override:
-    - (./gradlew assemble):
+    - export TERM="dumb"
+    - (./gradlew assembleProductionDebug):
        timeout: 900 # 15 minutes
 #    # start the emulator
 #    - emulator -avd circleci-android22 -no-audio -no-window:
