@@ -22,4 +22,11 @@ android:
     # if you need to run emulator(s) during your tests
     # - sys-img-armeabi-v7a-android-22
     # - sys-img-x86-android-17
-    
+script:
+  # Running the default "./gradlew build connectedCheck" will build all variants and fails on lint
+  - ./gradlew clean assembleProductionDebug
+deploy:
+  provider: script
+  script: ./gradlew :cykelplanen:uploadProductionDebugToHockeyApp && ./gradlew :ibikecph-app:uploadProductionDebugToHockeyApp
+  on:
+    branch: develop
