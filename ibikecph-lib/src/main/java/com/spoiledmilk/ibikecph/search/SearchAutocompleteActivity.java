@@ -59,7 +59,7 @@ public class SearchAutocompleteActivity extends Activity {
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_autocomplete_activiy);
+        setContentView(R.layout.search_autocomplete_activity);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
         Bundle data = getIntent().getExtras();
