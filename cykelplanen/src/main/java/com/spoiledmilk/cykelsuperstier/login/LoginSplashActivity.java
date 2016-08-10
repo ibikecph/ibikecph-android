@@ -5,15 +5,7 @@
 // http://mozilla.org/MPL/2.0/.
 package com.spoiledmilk.cykelsuperstier.login;
 
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.view.View;
-import com.spoiledmilk.cykelsuperstier.R;
 import com.spoiledmilk.cykelsuperstier.map.MapActivity;
-import com.spoiledmilk.ibikecph.favorites.FavoritesData;
-import com.spoiledmilk.ibikecph.util.DB;
-
-import java.util.ArrayList;
 
 public class LoginSplashActivity extends com.spoiledmilk.ibikecph.login.LoginSplashActivity {
 
