@@ -257,7 +257,7 @@ public class Route extends SMRoute {
     }
 
     @Override
-    public void recalculateRoute(Location location) {
+    public void recalculateRoute(final Location location) {
         // We need a proper end location and a current location
         Location end = getEndLocation();
         if (location == null || end == null)

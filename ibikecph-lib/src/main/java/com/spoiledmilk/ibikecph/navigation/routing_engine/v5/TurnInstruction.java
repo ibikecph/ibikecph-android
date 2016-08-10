@@ -133,8 +133,8 @@ public class TurnInstruction extends SMTurnInstruction implements Speakable {
             return Modifier.valueOf(modifier.toUpperCase().replace(" ", "_"));
         }
 
-        public String displayName() {
-            return name().toLowerCase().replaceAll("_", " ");
+        public String asHeading() {
+            return IBikeApplication.getString("heading_" + name().toLowerCase());
         }
     }
 
@@ -333,12 +333,12 @@ public class TurnInstruction extends SMTurnInstruction implements Speakable {
                         .replace("{{name}}", name);
             case DEPART:
                 return IBikeApplication.getString("depart")
-                        .replace("{{heading}}", modifier == null ? "" : modifier.displayName())
+                        .replace("{{heading}}", modifier == null ? "" : modifier.asHeading())
                         .replace("{{name}}", name);
             case ARRIVE:
                 return IBikeApplication.getString("arrive")
                         .replace("{{name}}", name)
-                        .replace("{{side}}", modifier == null ? "" : modifier.displayName());
+                        .replace("{{side}}", modifier == null ? "" : modifier.asHeading());
             case ROUNDABOUT:
                 return IBikeApplication.getString("roundabout")
                         .replace("%{exit}", "") // TODO: Make sure this value is read from the JSON
