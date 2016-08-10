@@ -177,24 +177,6 @@ public class IBikeApplication extends Application {
         return PreferenceManager.getDefaultSharedPreferences(getContext()).getString("signature", "");
     }
 
-    public static boolean areFavoritesFetched() {
-        return PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("favorites_fetched", false);
-    }
-
-    public static void setFavoritesFetched(boolean b) {
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("favorites_fetched", b).commit();
-
-    }
-
-    public static boolean isHistoryFetched() {
-        return PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("history_fetched", false);
-    }
-
-    public static void setHistoryFetched(boolean b) {
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("history_fetched", b).commit();
-
-    }
-
     public static void setIsFacebookLogin(boolean b) {
         PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putBoolean("is_facebook_login", b).commit();
     }
