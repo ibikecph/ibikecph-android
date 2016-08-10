@@ -17,13 +17,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.search.AddressParser;
 import com.spoiledmilk.ibikecph.util.*;
-
-import org.json.JSONObject;
 
 /**
  * A Fragment used inside the LeftMenu for editing a favorite.
@@ -35,7 +34,7 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
     protected EditText textAddress;
     protected EditText textFavoriteName;
 
-    private FavoritesData favoritesData = null;
+    private FavoriteListItem favoriteListItem = null;
     private AlertDialog dialog;
 
     @Override
@@ -43,25 +42,27 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
         View ret = super.onCreateView(inflater, container, savedInstanceState);
 
         if (getArguments() != null) {
-            favoritesData = getArguments().getParcelable("favoritesData");
+            favoriteListItem = getArguments().getParcelable("favoriteListItem");
+        } else {
+            throw new RuntimeException("Expected a parcelable argument named favoriteListItem");
         }
 
         this.textFavoriteName = (EditText) ret.findViewById(R.id.textFavoriteName);
         this.textAddress = (EditText) ret.findViewById(R.id.textAddress);
 
-        this.textAddress.setText(favoritesData.getAdress());
-        this.textFavoriteName.setText(favoritesData.getName());
+        this.textAddress.setText(favoriteListItem.getAddress().getFullAddress());
+        this.textFavoriteName.setText(favoriteListItem.getAddress().getName());
 
-        String type = favoritesData.getSubSource();
+        String type = favoriteListItem.getSubSource();
         this.currentFavoriteType = type;
 
-        if (type.equals(favoritesData.favFav)) {
+        if (type.equals(favoriteListItem.favFav)) {
             ((RadioButton) ret.findViewById(R.id.radioButtonFavorite)).setChecked(true);
-        } else if (type.equals(favoritesData.favHome)) {
+        } else if (type.equals(favoriteListItem.favHome)) {
             ((RadioButton) ret.findViewById(R.id.radioButtonHome)).setChecked(true);
-        } else if (type.equals(favoritesData.favSchool)) {
+        } else if (type.equals(favoriteListItem.favSchool)) {
             ((RadioButton) ret.findViewById(R.id.radioButtonSchool)).setChecked(true);
-        } else if (type.equals(favoritesData.favWork)) {
+        } else if (type.equals(favoriteListItem.favWork)) {
             ((RadioButton) ret.findViewById(R.id.radioButtonWork)).setChecked(true);
         }
 
@@ -71,7 +72,7 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
     @Override
     public void onResume() {
         if (getArguments() != null) {
-            favoritesData = getArguments().getParcelable("favoritesData");
+            favoriteListItem = getArguments().getParcelable("favoriteListItem");
         }
 
         super.onResume();
@@ -85,24 +86,20 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
             Bundle b = data.getExtras();
 
             if (b.containsKey("address") && b.containsKey("lat") && b.containsKey("lon")) {
-                favoritesData.setAdress(AddressParser.textFromBundle(b).replaceAll("\n", ""));
-                favoritesData.setLatitude(b.getDouble("lat"));
-                favoritesData.setLongitude(b.getDouble("lon"));
-                String txt = favoritesData.getAdress();
+                favoriteListItem.setFullAddress(AddressParser.textFromBundle(b).replaceAll("\n", ""));
+                double latitude = b.getDouble("lat");
+                double longitude = b.getDouble("lon");
+                favoriteListItem.getAddress().setLocation(new LatLng(latitude, longitude));
+                String txt = favoriteListItem.getAddress().getFullAddress();
                 textAddress.setText(txt);
 
                 if (b.containsKey("poi")) {
-                    favoritesData.setName(b.getString("poi"));
+                    favoriteListItem.getAddress().setName(b.getString("poi"));
                 }
 
                 saveEditedFavorite();
             }
         }
-    }
-
-    private void popFragment() {
-        getActivity().setResult(FavoritesListActivity.RESULT_OK);
-        getActivity().finish();
     }
 
     @Override
@@ -111,18 +108,7 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
         if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
-        if (dialog2 != null && dialog2.isShowing()) {
-            dialog2.dismiss();
-        }
         hideKeyboard();
-    }
-
-    private static boolean isPredefinedName(final String name) {
-        if (name.equals(IBikeApplication.getString("Favorite")) || name.equals(IBikeApplication.getString("School"))
-                || name.equals(IBikeApplication.getString("Work")) || name.equals(IBikeApplication.getString("Home")) || name.equals(""))
-            return true;
-        else
-            return false;
     }
 
     public void hideKeyboard() {
@@ -130,33 +116,6 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
             InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputManager.hideSoftInputFromWindow(textFavoriteName.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
-    }
-
-    private AlertDialog dialog2;
-
-    private void launchErrorDialog(final String msg) {
-        if (getActivity() != null && getView() != null) {
-            getActivity().runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    getView().findViewById(R.id.progress).setVisibility(View.INVISIBLE);
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Error");
-                    builder.setMessage(msg);
-                    builder.setPositiveButton(IBikeApplication.getString("ok"), new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-
-                        }
-                    });
-                    dialog2 = builder.show();
-                }
-            });
-        }
-
     }
 
     @Override
@@ -177,19 +136,20 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
 
     public void saveEditedFavorite() {
         if (Util.isNetworkConnected(getActivity())) {
-            if (favoritesData != null && textFavoriteName.getText().toString() != null
-                    && !textFavoriteName.getText().toString().trim().equals("")) {
-                if (new DB(getActivity()).favoritesForName(textFavoriteName.getText().toString().trim()) < 1
-                        || favoritesData.getName().trim().equalsIgnoreCase(textFavoriteName.getText().toString())) {
-                    String st = favoritesData.getName() + " - (" + favoritesData.getLatitude() + "," + favoritesData.getLongitude()
-                            + ")";
-                    favoritesData.setName(textFavoriteName.getText().toString());
-                    favoritesData.setAdress(textAddress.getText().toString());
-                    favoritesData.setSubSource(currentFavoriteType);
+            String nameString = textFavoriteName.getText().toString().trim();
+            String addressString = textAddress.getText().toString().trim();
+
+            if (favoriteListItem != null && !nameString.isEmpty()) {
+                int existingFavoritesWithName = new DB(getActivity()).favoritesForName(nameString);
+                boolean nameUnchanged = favoriteListItem.getAddress().getName().trim().equalsIgnoreCase(textFavoriteName.getText().toString());
+                if (existingFavoritesWithName < 1 || nameUnchanged) {
+                    favoriteListItem.setFullAddress(addressString);
+                    favoriteListItem.getAddress().setName(nameString);
+                    favoriteListItem.setSubSource(currentFavoriteType);
                     Thread updateThread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            (new DB(getActivity())).updateFavorite(favoritesData, getActivity(), EditFavoriteFragment.this);
+                            (new DB(getActivity())).updateFavorite(favoriteListItem, EditFavoriteFragment.this);
                         }
                     });
                     updateThread.start();
@@ -215,59 +175,4 @@ public class EditFavoriteFragment extends AddFavoriteFragment implements APIList
         }
     }
 
-    public void deleteFavorite() {
-        if (Util.isNetworkConnected(getActivity())) {
-            getView().findViewById(R.id.progress).setVisibility(View.VISIBLE);
-            final FavoritesData temp = favoritesData;
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        final JSONObject postObject = new JSONObject();
-                        postObject.put("auth_token", IBikeApplication.getAuthToken());
-                        if (temp.getApiId() < 0) {
-                            int apiId = new DB(getActivity()).getApiId(temp.getId());
-                            if (apiId != -1) {
-                                temp.setApiId(apiId);
-                            }
-                        }
-                        JsonNode ret = HttpUtils.deleteFromServer(Config.API_URL + "/favourites/" + temp.getApiId(), postObject);
-                        if (ret != null && ret.has("success")) {
-                            if (ret.path("success").asBoolean()) {
-                                if (getActivity() != null) {
-                                    getActivity().runOnUiThread(new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                            String st = favoritesData.getName() + " - (" + favoritesData.getLatitude() + ","
-                                                    + favoritesData.getLongitude() + ")";
-                                            // TODO: Change this to the implementation described here
-                                            // https://developers.google.com/analytics/devguides/collection/android/v4/#send-an-event
-                                            // IBikeApplication.getTracker().sendEvent("Favorites", "Delete", st, (long) 0);
-                                            (new DB(getActivity())).deleteFavorite(favoritesData, getActivity());
-                                            popFragment();
-                                        }
-                                    });
-
-                                }
-
-                            } else {
-                                launchErrorDialog(ret.path("info").asText());
-                            }
-                        } else {
-                            launchErrorDialog("Error");
-                        }
-
-                    } catch (Exception e) {
-                        LOG.e(e.getLocalizedMessage());
-                    }
-                }
-
-            }).start();
-
-        } else {
-            Util.launchNoConnectionDialog(getActivity());
-        }
-    }
 }

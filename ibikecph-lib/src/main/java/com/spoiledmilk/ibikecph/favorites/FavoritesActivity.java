@@ -36,8 +36,8 @@ public class FavoritesActivity extends Activity implements SMLocationListener {
 	private Button btnSave;
 	private Button btnSkip;
 	private TextView textSkip;
-	private FavoritesData homeFavorite = null;
-	private FavoritesData workFavorite = null;
+	private FavoriteListItem homeFavorite = null;
+	private FavoriteListItem workFavorite = null;
 	private static final int REQUEST_CODE_HOME = 1;
 	private static final int REQUEST_CODE_WORK = 2;
 
@@ -80,10 +80,10 @@ public class FavoritesActivity extends Activity implements SMLocationListener {
 				DB db = new DB(FavoritesActivity.this);
 				if (homeFavorite != null || workFavorite != null) {
 					if (homeFavorite != null) {
-						db.saveFavorite(homeFavorite, FavoritesActivity.this, true);
+						db.saveFavorite(homeFavorite, true);
 					}
 					if (workFavorite != null) {
-						db.saveFavorite(workFavorite, FavoritesActivity.this, true);
+						db.saveFavorite(workFavorite, true);
 					}
 					launchMainMapActivity();
 				} else {
@@ -164,11 +164,11 @@ public class FavoritesActivity extends Activity implements SMLocationListener {
 			if (data != null && data.containsKey("address")) {
 				String address = AddressParser.textFromBundle(data);
 				if (requestCode == REQUEST_CODE_HOME) {
-					homeFavorite = new FavoritesData(IBikeApplication.getString("Home"), address, FavoritesData.favHome,
+					homeFavorite = new FavoriteListItem(IBikeApplication.getString("Home"), address, FavoriteListItem.favHome,
 							data.getDouble("lat"), data.getDouble("lon"), -1);
 					textHome.setText(address);
 				} else if (requestCode == REQUEST_CODE_WORK) {
-					workFavorite = new FavoritesData(IBikeApplication.getString("Work"), address, FavoritesData.favWork,
+					workFavorite = new FavoriteListItem(IBikeApplication.getString("Work"), address, FavoriteListItem.favWork,
 							data.getDouble("lat"), data.getDouble("lon"), -1);
 					textWork.setText(address);
 				}

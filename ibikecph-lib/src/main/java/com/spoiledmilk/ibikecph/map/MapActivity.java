@@ -42,7 +42,7 @@ import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.TermsManager;
-import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.favorites.FavoriteListItem;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
 import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.fragments.BreakRouteSelectionFragment;
@@ -633,13 +633,12 @@ public class MapActivity extends BaseMapActivity {
             Address address = (Address) extras.getSerializable("addressObject");
 
             if (address != null) {
-                if (address.getAddressSource() == Address.AddressSource.FAVORITE) {
+                if (address.getSource() == Address.Source.FAVORITE) {
                     address.setHouseNumber("");
                 }
                 state.setDestination(address);
             } else {
-                LatLng destination = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
-                state.setDestination(destination);
+                throw new RuntimeException("Expected an address");
             }
         } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_CANCELED) {
             Log.d(TAG, "Got back from address search were the user canceled!");
@@ -652,8 +651,7 @@ public class MapActivity extends BaseMapActivity {
                 if (address != null) {
                     ((RouteSelectionState) state).setSource(address);
                 } else {
-                    LatLng location = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
-                    ((RouteSelectionState) state).setSource(location);
+                    throw new RuntimeException("Expected an address");
                 }
             }
         } else if (requestCode == REQUEST_CHANGE_DESTINATION_ADDRESS && resultCode == SearchAutocompleteActivity.RESULT_AUTOTOCMPLETE_SET) {
@@ -664,8 +662,7 @@ public class MapActivity extends BaseMapActivity {
                 if (address != null) {
                     ((RouteSelectionState) state).setDestination(address);
                 } else {
-                    LatLng location = new LatLng(extras.getDouble("endLat"), extras.getDouble("endLng"));
-                    ((RouteSelectionState) state).setDestination(location);
+                    throw new RuntimeException("Expected an address");
                 }
             }
         } else if (requestCode == LeftMenu.LAUNCH_FAVORITE) {
@@ -674,8 +671,8 @@ public class MapActivity extends BaseMapActivity {
             if (resultCode == RESULT_OK) {
                 // TODO: Re-implement launching of favorites
                 // throw new UnsupportedOperationException("Launching favorites not yet implemented using MapStates");
-                FavoritesData fd = data.getExtras().getParcelable("ROUTE_TO");
-                Address address = Address.fromFavoritesData(fd);
+                FavoriteListItem fd = data.getExtras().getParcelable("ROUTE_TO");
+                Address address = fd.getAddress();
                 RouteSelectionState state = changeState(RouteSelectionState.class);
                 state.setDestination(address);
                 // mapView.showRoute(fd);

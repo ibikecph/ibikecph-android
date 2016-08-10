@@ -9,25 +9,21 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.location.Location;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IBikeApplication;
-import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.favorites.FavoriteListItem;
 import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
-import com.spoiledmilk.ibikecph.search.HistoryData;
+import com.spoiledmilk.ibikecph.search.Address;
+import com.spoiledmilk.ibikecph.search.HistoryListItem;
 import com.spoiledmilk.ibikecph.search.SearchListItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 public class DB extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
@@ -38,6 +34,7 @@ public class DB extends SQLiteOpenHelper {
     private static final String KEY_NAME = "Name";
     private static final String KEY_ADDRESS = "address";
     private static final String KEY_START_DATE = "startDate";
+    // TODO: Consider removing the endDate as this makes no sense.
     private static final String KEY_END_DATE = "endDate";
     private static final String KEY_SOURCE = "source";
     private static final String KEY_SUBSOURCE = "subsource";
@@ -47,26 +44,6 @@ public class DB extends SQLiteOpenHelper {
 
     public DB(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
-
-    public SQLiteDatabase getReadableDatabase() {
-        SQLiteDatabase db = null;
-        try {
-            db = super.getReadableDatabase();
-        } catch (SQLiteException e) {
-            LOG.e(e.getLocalizedMessage());
-        }
-        return db;
-    }
-
-    public SQLiteDatabase getWritableDatabase() {
-        SQLiteDatabase db = null;
-        try {
-            db = super.getWritableDatabase();
-        } catch (SQLiteException e) {
-            LOG.e(e.getLocalizedMessage());
-        }
-        return db;
     }
 
     @Override
@@ -87,16 +64,28 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public ArrayList<SearchListItem> getSearchHistory() {
+        return getSearchHistory("5");
+    }
 
-        ArrayList<SearchListItem> ret = new ArrayList<SearchListItem>();
+    public ArrayList<SearchListItem> getSearchHistory(String limit) {
+
+        ArrayList<SearchListItem> ret = new ArrayList<>();
 
         SQLiteDatabase db = getReadableDatabase();
-        if (db == null)
-            return null;
 
-        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_START_DATE, KEY_END_DATE, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG};
+        String[] columns = {
+                KEY_ID,
+                KEY_NAME,
+                KEY_ADDRESS,
+                KEY_START_DATE,
+                KEY_END_DATE,
+                KEY_SOURCE,
+                KEY_SUBSOURCE,
+                KEY_LAT,
+                KEY_LONG
+        };
 
-        Cursor cursor = db.query(TABLE_SEARCH_HISTORY, columns, null, null, null, null, KEY_START_DATE + " DESC", null);
+        Cursor cursor = db.query(TABLE_SEARCH_HISTORY, columns, null, null, null, null, KEY_START_DATE + " DESC", limit);
 
         if (cursor != null && cursor.moveToFirst()) {
             while (cursor != null && !cursor.isAfterLast()) {
@@ -110,15 +99,11 @@ public class DB extends SQLiteOpenHelper {
                 int colLat = cursor.getColumnIndex(KEY_LAT);
                 int colLong = cursor.getColumnIndex(KEY_LONG);
 
-                HistoryData hd = new HistoryData(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
+                HistoryListItem hd = new HistoryListItem(
+                        cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
                         cursor.getString(colStartDate), cursor.getString(colEndDate), cursor.getString(colSource),
                         cursor.getString(colSubSource), cursor.getDouble(colLat), cursor.getDouble(colLong));
-                if (hd.getName() != null && !hd.getName().trim().equals("")) {
-                    ret.add(hd);
-                }
-                if (ret.size() > 10) {
-                    break;
-                }
+                ret.add(hd);
                 cursor.moveToNext();
             }
         }
@@ -132,8 +117,7 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public ArrayList<SearchListItem> getSearchHistoryForString(String srchString) {
-
-        ArrayList<SearchListItem> ret = new ArrayList<SearchListItem>();
+        ArrayList<SearchListItem> ret = new ArrayList<>();
 
         SQLiteDatabase db = getReadableDatabase();
         if (db == null)
@@ -156,10 +140,10 @@ public class DB extends SQLiteOpenHelper {
                 int colLat = cursor.getColumnIndex(KEY_LAT);
                 int colLong = cursor.getColumnIndex(KEY_LONG);
 
-                HistoryData hd = new HistoryData(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
+                HistoryListItem hd = new HistoryListItem(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
                         cursor.getString(colStartDate), cursor.getString(colEndDate), cursor.getString(colSource),
                         cursor.getString(colSubSource), cursor.getDouble(colLat), cursor.getDouble(colLong));
-                if (hd.getName() != null && !hd.getName().trim().equals(""))
+                if (hd.getAddress().getName() != null && !hd.getAddress().getName().trim().equals(""))
                     ret.add(hd);
                 cursor.moveToNext();
             }
@@ -197,10 +181,10 @@ public class DB extends SQLiteOpenHelper {
                 int colLat = cursor.getColumnIndex(KEY_LAT);
                 int colLong = cursor.getColumnIndex(KEY_LONG);
 
-                HistoryData hd = new HistoryData(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
+                HistoryListItem hd = new HistoryListItem(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
                         cursor.getString(colStartDate), cursor.getString(colEndDate), cursor.getString(colSource),
                         cursor.getString(colSubSource), cursor.getDouble(colLat), cursor.getDouble(colLong));
-                if (hd.getName() != null && !hd.getName().trim().equals("")) {
+                if (hd.getAddress().getName() != null && !hd.getAddress().getName().trim().equals("")) {
                     ret = hd;
                 }
                 break;
@@ -215,140 +199,92 @@ public class DB extends SQLiteOpenHelper {
         return ret;
     }
 
-    public long saveSearchHistory(HistoryData hd, HistoryData from, Context context) {
+    public long saveSearchHistory(HistoryListItem historyListItem) {
         SQLiteDatabase db = this.getWritableDatabase();
-        if (db == null)
-            return -1;
+
+        if(historyListItem.getAddress().getLocation() == null) {
+            throw new RuntimeException("Cannot update a history with a missing location.");
+        }
+        if(historyListItem.getAddress() == null) {
+            throw new RuntimeException("Cannot update a history with a missing address.");
+        }
+        String name = historyListItem.getAddress().getName() != null ?
+                      historyListItem.getAddress().getName() :
+                      "";
+        String fullAddress = historyListItem.getAddress().getFullAddress() != null ?
+                             historyListItem.getAddress().getFullAddress() :
+                             "";
 
         String[] columns = {KEY_ID, KEY_NAME};
-        long id;
-        Cursor cursor = db.query(TABLE_SEARCH_HISTORY, columns, KEY_NAME + " = ?", new String[]{hd.getName()}, null, null, null, null);
-        if (cursor == null || cursor.isAfterLast()) {
-            ContentValues values = new ContentValues();
-            values.put(KEY_NAME, hd.getName());
-            values.put(KEY_ADDRESS, hd.getAdress());
-            values.put(KEY_START_DATE, hd.getStartDate());
-            values.put(KEY_END_DATE, hd.getEndDate());
-            values.put(KEY_SOURCE, hd.getSource());
-            values.put(KEY_SUBSOURCE, hd.getSubSource());
-            values.put(KEY_LAT, Double.valueOf(hd.getLatitude()));
-            values.put(KEY_LONG, Double.valueOf(hd.getLongitude()));
-            id = db.insert(TABLE_SEARCH_HISTORY, null, values);
-        } else {
-            cursor.moveToFirst();
-            id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
+        long id = -1;
+
+        String selection = KEY_NAME + " = ? AND " + KEY_ADDRESS + " = ?";
+        Cursor cursor = db.query(TABLE_SEARCH_HISTORY, columns, selection, new String[]{ name, fullAddress }, null, null, null, "1");
+
+        if (cursor != null) {
+            if (cursor.getCount() == 0) {
+                ContentValues values = new ContentValues();
+                values.put(KEY_NAME, name);
+                values.put(KEY_ADDRESS, fullAddress);
+                values.put(KEY_START_DATE, historyListItem.getStartDate());
+                values.put(KEY_END_DATE, historyListItem.getEndDate());
+                values.put(KEY_SOURCE, historyListItem.getSource());
+                values.put(KEY_SUBSOURCE, historyListItem.getSubSource());
+                values.put(KEY_LAT, historyListItem.getAddress().getLocation().getLatitude());
+                values.put(KEY_LONG, historyListItem.getAddress().getLocation().getLongitude());
+                id = db.insert(TABLE_SEARCH_HISTORY, null, values);
+            } else {
+                cursor.moveToFirst();
+                id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
+            }
+            cursor.close();
         }
 
-        if (cursor != null)
-            cursor.close();
-
-
         db.close();
-
-        if (context != null && from != null)
-            postHistoryItemToServer(hd, from, context);
 
         return id;
     }
 
-    private void postHistoryItemToServer(HistoryData hd, HistoryData from, Context context) {
-        if (PreferenceManager.getDefaultSharedPreferences(context).contains("auth_token")) {
-            String authToken = PreferenceManager.getDefaultSharedPreferences(context).getString("auth_token", "");
-            final JSONObject postObject = new JSONObject();
-            try {
-                postObject.put("auth_token", authToken);
-                JSONObject routeObject = new JSONObject();
-                if (from.getName() == null || from.getName().trim().equals("")) {
-                    from.setName(IBikeApplication.getString("current_position"));
-                }
-                routeObject.put("from_name", from.getName());
-                routeObject.put("from_lattitude", from.getLatitude());
-                routeObject.put("from_longitude", from.getLongitude());
-                routeObject.put("to_name", hd.getName());
-                routeObject.put("to_lattitude", hd.getLatitude());
-                routeObject.put("to_longitude", hd.getLongitude());
-                routeObject.put("start_date", DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime()));
-                postObject.put("route", routeObject);
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        LOG.d("Server request: " + Config.API_URL + "/routes");
-                        HttpUtils.postToServer(Config.API_URL + "/routes", postObject);
-                    }
-                });
-                thread.start();
-            } catch (JSONException e) {
-                LOG.e(e.getLocalizedMessage());
-            }
-        }
-
-    }
-
-    public ArrayList<SearchListItem> getSearchHistoryFromServer(Context context) {
-        ArrayList<SearchListItem> ret = new ArrayList<SearchListItem>();
-        if (IBikeApplication.isUserLogedIn()) {
-            String authToken = IBikeApplication.getAuthToken();
-            try {
-                JsonNode getObject = HttpUtils.getFromServer(Config.API_URL + "/routes?auth_token=" + authToken);
-                if (getObject != null) {
-                    IBikeApplication.setHistoryFetched(true);
-                    boolean success = getObject.get("success").asBoolean();
-                    if (success) {
-                        JsonNode historyList = getObject.get("data");
-                        for (int i = 0; i < historyList.size(); i++) {
-                            JsonNode data = historyList.get(i);
-                            HistoryData hd = new HistoryData(data.get("toName").asText(), data.get("toLattitude").asDouble(), data.get(
-                                    "toLongitude").asDouble());
-                            if (hd.getName() != null && !hd.getName().trim().equals("")) {
-                                saveSearchHistory(hd, null, null);
-                                ret.add(hd);
-                            }
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                LOG.e(e.getLocalizedMessage());
-            }
-        }
-        return ret;
-    }
-
-    public long saveFavorite(FavoritesData fd, Context context, boolean spawnThread) {
+    public long saveFavorite(FavoriteListItem favoriteListItem, boolean spawnThread) {
         SQLiteDatabase db = this.getWritableDatabase();
-        if (db == null) {
-            LOG.e("db is null in saveFavorite");
-            return -1;
+
+        if(favoriteListItem.getAddress().getLocation() == null) {
+            throw new RuntimeException("Cannot update a favorite with a missing location.");
         }
+        if(favoriteListItem.getAddress() == null) {
+            throw new RuntimeException("Cannot update a favorite with a missing address.");
+        }
+
         long id;
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, fd.getName());
-        values.put(KEY_ADDRESS, fd.getAdress());
-        values.put(KEY_SOURCE, fd.getSource());
-        values.put(KEY_SUBSOURCE, fd.getSubSource());
-        values.put(KEY_LAT, Double.valueOf(fd.getLatitude()));
-        values.put(KEY_LONG, Double.valueOf(fd.getLongitude()));
-        values.put(KEY_API_ID, fd.getApiId());
+        values.put(KEY_NAME, favoriteListItem.getAddress().getName());
+        values.put(KEY_ADDRESS, favoriteListItem.getAddress().getFullAddress());
+        values.put(KEY_SOURCE, favoriteListItem.getSource());
+        values.put(KEY_SUBSOURCE, favoriteListItem.getSubSource());
+        values.put(KEY_LAT, favoriteListItem.getAddress().getLocation().getLatitude());
+        values.put(KEY_LONG, favoriteListItem.getAddress().getLocation().getLongitude());
+        values.put(KEY_API_ID, favoriteListItem.getApiId());
+        Log.d("DB", "Inserting " + values);
         id = db.insert(TABLE_FAVORITES, null, values);
-        fd.setId(id);
+        favoriteListItem.setId(id);
         db.close();
-        if (context != null) {
-            postFavoriteToServer(fd, context, spawnThread);
-        }
+
+        postFavoriteToServer(favoriteListItem, spawnThread);
         return id;
     }
 
-    private void postFavoriteToServer(final FavoritesData fd, Context context, boolean spawnThread) {
+    private void postFavoriteToServer(final FavoriteListItem favoriteListItem, boolean spawnThread) {
         if (IBikeApplication.isUserLogedIn()) {
             String authToken = IBikeApplication.getAuthToken();
             final JSONObject postObject = new JSONObject();
             try {
                 JSONObject favouriteObject = new JSONObject();
-                favouriteObject.put("name", fd.getName());
-                favouriteObject.put("address", fd.getAdress());
-                favouriteObject.put("lattitude", fd.getLatitude());
-                favouriteObject.put("longitude", fd.getLongitude());
-                favouriteObject.put("source", fd.getSource());
-                favouriteObject.put("sub_source", fd.getSubSource());
+                favouriteObject.put("name", favoriteListItem.getAddress().getName());
+                favouriteObject.put("address", favoriteListItem.getAddress().getFullAddress());
+                favouriteObject.put("latitude", favoriteListItem.getAddress().getLocation().getLatitude());
+                favouriteObject.put("longitude", favoriteListItem.getAddress().getLocation().getLongitude());
+                favouriteObject.put("source", favoriteListItem.getSource());
+                favouriteObject.put("sub_source", favoriteListItem.getSubSource());
                 postObject.put("favourite", favouriteObject);
                 postObject.put("auth_token", authToken);
                 if (spawnThread) {
@@ -362,7 +298,7 @@ public class DB extends SQLiteOpenHelper {
                                 SQLiteDatabase db = getWritableDatabase();
                                 if (db == null)
                                     return;
-                                String strFilter = "_id=" + fd.getId();
+                                String strFilter = "_id=" + favoriteListItem.getId();
                                 ContentValues args = new ContentValues();
                                 args.put(KEY_API_ID, id);
                                 db.update(TABLE_FAVORITES, args, strFilter, null);
@@ -379,7 +315,7 @@ public class DB extends SQLiteOpenHelper {
                         SQLiteDatabase db = getWritableDatabase();
                         if (db == null)
                             return;
-                        String strFilter = "_id=" + fd.getId();
+                        String strFilter = "_id=" + favoriteListItem.getId();
                         ContentValues args = new ContentValues();
                         args.put(KEY_API_ID, id);
                         db.update(TABLE_FAVORITES, args, strFilter, null);
@@ -393,20 +329,28 @@ public class DB extends SQLiteOpenHelper {
 
     }
 
-    public ArrayList<FavoritesData> getFavorites(ArrayList<FavoritesData> ret) {
+    public ArrayList<FavoriteListItem> getFavorites(ArrayList<FavoriteListItem> ret) {
         if (ret == null) {
-            ret = new ArrayList<FavoritesData>();
+            ret = new ArrayList<>();
         } else {
             ret.clear();
         }
         SQLiteDatabase db = getReadableDatabase();
-        if (db == null) {
-            return null;
-        }
-        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID};
+
+        String[] columns = {
+            KEY_ID,
+            KEY_NAME,
+            KEY_ADDRESS,
+            KEY_SOURCE,
+            KEY_SUBSOURCE,
+            KEY_LAT,
+            KEY_LONG,
+            KEY_API_ID
+        };
+
         Cursor cursor = db.query(TABLE_FAVORITES, columns, null, null, null, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
-            while (cursor != null && !cursor.isAfterLast()) {
+            while (!cursor.isAfterLast()) {
                 int colId = cursor.getColumnIndex(KEY_ID);
                 int colName = cursor.getColumnIndex(KEY_NAME);
                 int colAddress = cursor.getColumnIndex(KEY_ADDRESS);
@@ -414,7 +358,7 @@ public class DB extends SQLiteOpenHelper {
                 int colLat = cursor.getColumnIndex(KEY_LAT);
                 int colLong = cursor.getColumnIndex(KEY_LONG);
                 int colApiId = cursor.getColumnIndex(KEY_API_ID);
-                FavoritesData fd = new FavoritesData(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
+                FavoriteListItem fd = new FavoriteListItem(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
                         cursor.getString(colSubSource), cursor.getDouble(colLat), cursor.getDouble(colLong), cursor.getInt(colApiId));
                 ret.add(fd);
                 cursor.moveToNext();
@@ -424,45 +368,57 @@ public class DB extends SQLiteOpenHelper {
             cursor.close();
         }
         db.close();
-        LOG.d("favourites count from DB = " + ret.size());
+
         return ret;
     }
 
-    public ArrayList<FavoritesData> getFavoritesFromServer(Context context, ArrayList<FavoritesData> ret) {
+    public ArrayList<FavoriteListItem> getFavoritesFromServer(ArrayList<FavoriteListItem> ret) {
         if (ret == null) {
-            ret = new ArrayList<FavoritesData>();
+            ret = new ArrayList<>();
         } else {
             ret.clear();
         }
         if (IBikeApplication.isUserLogedIn()) {
             String authToken = IBikeApplication.getAuthToken();
-            try {
-                JsonNode getObject = HttpUtils.getFromServer(Config.API_URL + "/favourites?auth_token=" + authToken);
-                if (getObject != null && getObject.has("invalid_token")) {
-                    if (getObject.get("invalid_token").asBoolean()) {
-                        IBikeApplication.logoutWrongToken();
-                    }
+            JsonNode getObject = HttpUtils.getFromServer(Config.API_URL + "/favourites?auth_token=" + authToken);
+            if(getObject != null && getObject.has("invalid_token")) {
+                if (getObject.get("invalid_token").asBoolean()) {
+                    IBikeApplication.logoutWrongToken();
                 }
-                if (getObject != null && getObject.has("data")) {
-                    SQLiteDatabase db = this.getWritableDatabase();
-                    if (db != null) {
+            }
+            if (getObject != null && getObject.has("data")) {
+                SQLiteDatabase db = this.getWritableDatabase();
+                if (db != null) {
+                    db.beginTransaction();
+                    try {
+                        // Delete all existing favorites
                         db.delete(TABLE_FAVORITES, null, null);
+                        // Add the ones that was returned from the API
+                        JsonNode favoritesList = getObject.get("data");
+                        for (JsonNode favoriteNode: favoritesList) {
+                            String name = favoriteNode.get("name").asText();
+                            String address = favoriteNode.get("address").asText();
+                            String source = favoriteNode.get("source").asText();
+                            String subSource = favoriteNode.get("sub_source").asText();
+                            double latitude = favoriteNode.get("lattitude").asDouble();
+                            double longitude = favoriteNode.get("longitude").asDouble();
+                            int id = favoriteNode.get("id").asInt();
+
+                            ContentValues values = new ContentValues();
+                            values.put(KEY_NAME, name);
+                            values.put(KEY_ADDRESS, address);
+                            values.put(KEY_SOURCE, source);
+                            values.put(KEY_SUBSOURCE, subSource);
+                            values.put(KEY_LAT, latitude);
+                            values.put(KEY_LONG, longitude);
+                            values.put(KEY_API_ID, id);
+
+                            db.insert(TABLE_FAVORITES, null, values);
+                        }
+                        db.setTransactionSuccessful();
+                    } finally {
+                        db.endTransaction();
                     }
-                    IBikeApplication.setFavoritesFetched(true);
-                    JsonNode favoritesList = getObject.get("data");
-                    for (int i = 0; i < favoritesList.size(); i++) {
-                        JsonNode data = favoritesList.get(i);
-                        FavoritesData fd = new FavoritesData(data.get("name").asText(), data.get("address").asText(), data
-                                .get("sub_source").asText(), data.get("lattitude").asDouble(), data.get("longitude").asDouble(), data.get(
-                                "id").asInt());
-                        saveFavorite(fd, null, false);
-                        // ret.add(fd);
-                    }
-                    LOG.d("favorites fetched = " + ret);
-                }
-            } catch (Exception e) {
-                if (e != null && e.getLocalizedMessage() != null) {
-                    Log.e("JC", "Favorites fetch exception: " + e.getLocalizedMessage());
                 }
             }
         }
@@ -472,27 +428,22 @@ public class DB extends SQLiteOpenHelper {
 
     public void deleteFavorites() {
         SQLiteDatabase db = this.getWritableDatabase();
-        if (db == null)
-            return;
         db.delete(TABLE_FAVORITES, null, null);
         db.close();
-        IBikeApplication.setFavoritesFetched(false);
     }
 
     public ArrayList<SearchListItem> getFavorites2() {
 
-        ArrayList<SearchListItem> ret = new ArrayList<SearchListItem>();
+        ArrayList<SearchListItem> ret = new ArrayList<>();
 
         SQLiteDatabase db = getReadableDatabase();
-        if (db == null)
-            return null;
 
         String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID};
 
         Cursor cursor = db.query(TABLE_FAVORITES, columns, null, null, null, null, null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
-            while (cursor != null && !cursor.isAfterLast()) {
+            while (!cursor.isAfterLast()) {
                 int colId = cursor.getColumnIndex(KEY_ID);
                 int colName = cursor.getColumnIndex(KEY_NAME);
                 int colAddress = cursor.getColumnIndex(KEY_ADDRESS);
@@ -501,10 +452,10 @@ public class DB extends SQLiteOpenHelper {
                 int colLong = cursor.getColumnIndex(KEY_LONG);
                 int colApiId = cursor.getColumnIndex(KEY_API_ID);
 
-                FavoritesData fd = new FavoritesData(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
+                FavoriteListItem fd = new FavoriteListItem(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
                         cursor.getString(colSubSource), cursor.getDouble(colLat), cursor.getDouble(colLong), cursor.getInt(colApiId));
 
-                ret.add((SearchListItem) fd);
+                ret.add(fd);
                 cursor.moveToNext();
             }
         }
@@ -518,19 +469,26 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public ArrayList<SearchListItem> getFavoritesForString(String srchString) {
-        ArrayList<SearchListItem> ret = new ArrayList<SearchListItem>();
+        ArrayList<SearchListItem> ret = new ArrayList<>();
 
         SQLiteDatabase db = getReadableDatabase();
-        if (db == null)
-            return null;
 
-        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID};
+        String[] columns = {
+            KEY_ID,
+            KEY_NAME,
+            KEY_ADDRESS,
+            KEY_SOURCE,
+            KEY_SUBSOURCE,
+            KEY_LAT,
+            KEY_LONG,
+            KEY_API_ID
+        };
 
         Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " LIKE ? ", new String[]{"%" + srchString + "%"}, null, null,
                 null, null);
 
         if (cursor != null && cursor.moveToFirst()) {
-            while (cursor != null && !cursor.isAfterLast()) {
+            while (!cursor.isAfterLast()) {
                 int colId = cursor.getColumnIndex(KEY_ID);
                 int colName = cursor.getColumnIndex(KEY_NAME);
                 int colAddress = cursor.getColumnIndex(KEY_ADDRESS);
@@ -539,10 +497,10 @@ public class DB extends SQLiteOpenHelper {
                 int colLong = cursor.getColumnIndex(KEY_LONG);
                 int colApiId = cursor.getColumnIndex(KEY_API_ID);
 
-                FavoritesData fd = new FavoritesData(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
+                FavoriteListItem fd = new FavoriteListItem(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
                         cursor.getString(colSubSource), cursor.getDouble(colLat), cursor.getDouble(colLong), cursor.getInt(colApiId));
 
-                ret.add((SearchListItem) fd);
+                ret.add(fd);
                 cursor.moveToNext();
             }
         }
@@ -559,15 +517,22 @@ public class DB extends SQLiteOpenHelper {
         SearchListItem ret = null;
 
         SQLiteDatabase db = getReadableDatabase();
-        if (db == null)
-            return null;
 
-        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID};
+        String[] columns = {
+            KEY_ID,
+            KEY_NAME,
+            KEY_ADDRESS,
+            KEY_SOURCE,
+            KEY_SUBSOURCE,
+            KEY_LAT,
+            KEY_LONG,
+            KEY_API_ID
+        };
 
-        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " = ? ", new String[]{name.trim()}, null, null, null, null);
+        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " = ?", new String[]{name.trim()}, null, null, null, "1");
 
-        if (cursor != null && cursor.moveToFirst()) {
-            while (cursor != null && !cursor.isAfterLast()) {
+        if (cursor != null) {
+            if(cursor.moveToFirst()) {
                 int colId = cursor.getColumnIndex(KEY_ID);
                 int colName = cursor.getColumnIndex(KEY_NAME);
                 int colAddress = cursor.getColumnIndex(KEY_ADDRESS);
@@ -576,33 +541,36 @@ public class DB extends SQLiteOpenHelper {
                 int colLong = cursor.getColumnIndex(KEY_LONG);
                 int colApiId = cursor.getColumnIndex(KEY_API_ID);
 
-                ret = new FavoritesData(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
-                        cursor.getString(colSubSource), cursor.getDouble(colLat), cursor.getDouble(colLong), cursor.getInt(colApiId));
-                break;
+                ret = new FavoriteListItem(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
+                       cursor.getString(colSubSource), cursor.getDouble(colLat), cursor.getDouble(colLong), cursor.getInt(colApiId));
             }
-        }
-
-        if (cursor != null)
             cursor.close();
-
+        }
         db.close();
 
         return ret;
     }
 
-    public FavoritesData getFavoriteByAddressForInfoPane(String name) {
-        FavoritesData ret = null;
+    public FavoriteListItem getFavoriteByAddress(Address address) {
+        FavoriteListItem ret = null;
 
         SQLiteDatabase db = getReadableDatabase();
-        if (db == null)
-            return null;
 
-        String[] columns = {KEY_ID, KEY_NAME, KEY_ADDRESS, KEY_SOURCE, KEY_SUBSOURCE, KEY_LAT, KEY_LONG, KEY_API_ID};
+        String[] columns = {
+            KEY_ID,
+            KEY_NAME,
+            KEY_ADDRESS,
+            KEY_SOURCE,
+            KEY_SUBSOURCE,
+            KEY_LAT,
+            KEY_LONG,
+            KEY_API_ID
+        };
 
-        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_ADDRESS + " = ? ", new String[]{name.trim()}, null, null, null, null);
+        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_ADDRESS + " = ?", new String[]{ address.getFullAddress().trim() }, null, null, null, null);
 
-        if (cursor != null && cursor.moveToFirst()) {
-            while (cursor != null && !cursor.isAfterLast()) {
+        if (cursor != null) {
+            if(cursor.moveToFirst()) {
                 int colId = cursor.getColumnIndex(KEY_ID);
                 int colName = cursor.getColumnIndex(KEY_NAME);
                 int colAddress = cursor.getColumnIndex(KEY_ADDRESS);
@@ -611,46 +579,42 @@ public class DB extends SQLiteOpenHelper {
                 int colLong = cursor.getColumnIndex(KEY_LONG);
                 int colApiId = cursor.getColumnIndex(KEY_API_ID);
 
-                ret = new FavoritesData(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
+                ret = new FavoriteListItem(cursor.getInt(colId), cursor.getString(colName), cursor.getString(colAddress),
                         cursor.getString(colSubSource), cursor.getDouble(colLat), cursor.getDouble(colLong), cursor.getInt(colApiId));
-                break;
             }
-        }
-
-        if (cursor != null)
             cursor.close();
+        }
 
         db.close();
 
         return ret;
     }
 
-    public void updateFavorite(FavoritesData fd, Context context, APIListener listener) {
+    public void updateFavorite(FavoriteListItem favoriteListItem, APIListener listener) {
         SQLiteDatabase db = this.getWritableDatabase();
-        if (db == null)
-            return;
+
+        if(favoriteListItem.getAddress().getLocation() == null) {
+            throw new RuntimeException("Cannot update a favorite with a missing location.");
+        }
+        if(favoriteListItem.getAddress() == null) {
+            throw new RuntimeException("Cannot update a favorite with a missing address.");
+        }
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NAME, fd.getName());
-        values.put(KEY_ADDRESS, fd.getAdress());
-        values.put(KEY_SOURCE, fd.getSource());
-        values.put(KEY_SUBSOURCE, fd.getSubSource());
-        values.put(KEY_LAT, Double.valueOf(fd.getLatitude()));
-        values.put(KEY_LONG, Double.valueOf(fd.getLongitude()));
-        db.update(TABLE_FAVORITES, values, KEY_ID + " = ?", new String[]{"" + fd.getId()});
+        values.put(KEY_NAME, favoriteListItem.getAddress().getName());
+        values.put(KEY_ADDRESS, favoriteListItem.getAddress().getFullAddress());
+        values.put(KEY_SOURCE, favoriteListItem.getSource());
+        values.put(KEY_SUBSOURCE, favoriteListItem.getSubSource());
+        values.put(KEY_LAT, favoriteListItem.getAddress().getLocation().getLatitude());
+        values.put(KEY_LONG, favoriteListItem.getAddress().getLocation().getLongitude());
+        db.update(TABLE_FAVORITES, values, KEY_ID + " = ?", new String[]{"" + favoriteListItem.getId()});
 
         db.close();
 
-        if (context != null)
-            updateFavoriteToServer(fd, context, listener);
-
+        updateFavoriteToServer(favoriteListItem, listener);
     }
 
-    public void updateFavorite(FavoritesData fd, Context context) {
-        updateFavorite(fd, context, null);
-    }
-
-    public void deleteFavorite(FavoritesData fd, Context context) {
+    public void deleteFavorite(FavoriteListItem fd) {
         SQLiteDatabase db = this.getWritableDatabase();
         if (db == null)
             return;
@@ -659,40 +623,19 @@ public class DB extends SQLiteOpenHelper {
 
         db.close();
 
-        if (context != null)
-            deleteFavoriteFromServer(fd, context);
-
+        deleteFavoriteFromServer(fd);
     }
 
-    // public int getApiId(FavoritesData fd) {
-    // int ret = -1;
-    // SQLiteDatabase db = getReadableDatabase();
-    // if (db != null) {
-    // String[] columns = { KEY_ID, KEY_API_ID };
-    // Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_ID + " = ? ", new String[] { "" + fd.getId() }, null,
-    // null, null, null);
-    // if (cursor != null && cursor.moveToFirst()) {
-    // int colApiId = cursor.getColumnIndex(KEY_API_ID);
-    // ret = cursor.getInt(colApiId);
-    // }
-    // if (cursor != null)
-    // cursor.close();
-    // db.close();
-    // }
-    // return ret;
-    // }
-
-    private void updateFavoriteToServer(final FavoritesData fd, Context context, final APIListener listener) {
-
+    private void updateFavoriteToServer(final FavoriteListItem fd, final APIListener listener) {
         if (IBikeApplication.isUserLogedIn()) {
             String authToken = IBikeApplication.getAuthToken();
             final JSONObject postObject = new JSONObject();
             try {
                 JSONObject favouriteObject = new JSONObject();
-                favouriteObject.put("name", fd.getName());
-                favouriteObject.put("address", fd.getAdress());
-                favouriteObject.put("lattitude", fd.getLatitude());
-                favouriteObject.put("longitude", fd.getLongitude());
+                favouriteObject.put("name", fd.getAddress().getName());
+                favouriteObject.put("address", fd.getAddress().getFullAddress());
+                favouriteObject.put("lattitude", fd.getAddress().getLocation().getLatitude());
+                favouriteObject.put("longitude", fd.getAddress().getLocation().getLongitude());
                 favouriteObject.put("source", fd.getSource());
                 favouriteObject.put("sub_source", fd.getSubSource());
                 postObject.put("favourite", favouriteObject);
@@ -703,7 +646,6 @@ public class DB extends SQLiteOpenHelper {
                     boolean success = false;
                     if (node != null && node.has("success") && node.get("success").asBoolean()) {
                         success = true;
-                        Log.d("DV", "Favorite opdateret på serveren!");
                         FavoritesListActivity.fetchFavoritesAfterEdit.updateFavorites();
                     }
                     listener.onRequestCompleted(success);
@@ -714,7 +656,7 @@ public class DB extends SQLiteOpenHelper {
         }
     }
 
-    public void deleteFavoriteFromServer(final FavoritesData fd, Context context) {
+    public void deleteFavoriteFromServer(final FavoriteListItem fd) {
         if (IBikeApplication.isUserLogedIn()) {
             String authToken = IBikeApplication.getAuthToken();
             final JSONObject postObject = new JSONObject();
@@ -729,78 +671,23 @@ public class DB extends SQLiteOpenHelper {
         }
     }
 
-    public void saveFinishedRoute(Location startLocation, Location endLocation, String startName, String endName, String startDate,
-                                  String endDate, String visitedLocations) {
-        if (IBikeApplication.isUserLogedIn()) {
-            String authToken = IBikeApplication.getAuthToken();
-            final JSONObject postObject = new JSONObject();
-            try {
-                postObject.put("auth_token", authToken);
-                JSONObject routeObject = new JSONObject();
-                routeObject.put("from_name", startName);
-                routeObject.put("from_lattitude", startLocation.getLatitude());
-                routeObject.put("from_longitude", startLocation.getLongitude());
-                routeObject.put("to_name", endName);
-                routeObject.put("to_lattitude", endLocation.getLatitude());
-                routeObject.put("to_longitude", endLocation.getLongitude());
-                routeObject.put("start_date", startDate);
-                routeObject.put("end_date", endDate);
-                routeObject.put("route_visited_locations", visitedLocations);
-                routeObject.put("is_finished", true);
-                postObject.put("route", routeObject);
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        HttpUtils.postToServer(Config.API_URL + "/routes", postObject);
-                    }
-                }).start();
-
-            } catch (JSONException e) {
-                LOG.e(e.getLocalizedMessage());
-            }
-        }
-
-    }
-
-    // public void updateApiIds(ArrayList<FavoritesData> favorites) {
-    // Iterator<FavoritesData> it = favorites.iterator();
-    // while (it.hasNext()) {
-    // FavoritesData fd = it.next();
-    // fd.setApiId(getApiId(fd));
-    // }
-    //
-    // }
-
     public int favoritesForName(String name) {
         int ret = 0;
         SQLiteDatabase db = getReadableDatabase();
-        if (db != null) {
-            String[] columns = {KEY_NAME};
-            Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " = ? ", new String[]{"" + name}, null, null, null, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                ret = cursor.getCount();
-            }
-            if (cursor != null)
-                cursor.close();
-            db.close();
-        }
-        return ret;
-    }
 
-    public int getApiId(int id) {
-        int ret = -1;
-        SQLiteDatabase db = getWritableDatabase();
-        if (db == null)
-            return -1;
-        String strFilter = "_id= ?";
-        Cursor cur = db.query(TABLE_FAVORITES, new String[]{KEY_API_ID}, strFilter, new String[]{id + ""}, null, null, null);
-        if (cur != null && cur.moveToFirst()) {
-            if (cur != null && !cur.isAfterLast()) {
-                ret = cur.getInt(cur.getColumnIndex(KEY_API_ID));
-            }
+        String[] columns = {
+            KEY_NAME
+        };
+
+        Cursor cursor = db.query(TABLE_FAVORITES, columns, KEY_NAME + " = ?", new String[]{ name }, null, null, null, null);
+
+        if (cursor != null) {
+            ret = cursor.getCount();
+            cursor.close();
         }
+
         db.close();
+
         return ret;
     }
 }

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
@@ -25,6 +26,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.MapActivity;
@@ -48,9 +50,11 @@ public class SearchAutocompleteActivity extends Activity {
     private AutocompleteAdapter adapter;
     private SearchListItem currentSelection;
     private int lastTextSize = 0;
-    private boolean addressPicked = false, isA = false, isOirestFetched = false, isFoursquareFetched = false, isClose = false,
-            isAddressSearched = false;
-    private Address addr;
+    private boolean addressPicked = false, isA = false, isOirestFetched = false, isFoursquareFetched = false, isClose = false;
+    /**
+     * @deprecated Use the address on the currentSelection SearchListItem instead
+     */
+    private Address address;
     private ProgressBar progressBar;
 
     private Thread kmsThread, foursquareThread;
@@ -86,7 +90,7 @@ public class SearchAutocompleteActivity extends Activity {
         adapter = new AutocompleteAdapter(this, new ArrayList<SearchListItem>(), isA);
         listSearch.setAdapter(adapter);
         if (isA) {
-            adapter.add(new CurrentLocation());
+            adapter.add(new CurrentLocationListItem());
         }
         listSearch.setOnItemClickListener(new OnItemClickListener() {
 
@@ -122,8 +126,8 @@ public class SearchAutocompleteActivity extends Activity {
                 }
             }
             db.close();
-            addr = AddressParser.parseAddressRegex(reuseName);
-            adapter.updateListData(listData, AddressParser.addresWithoutNumber(reuseName), addr);
+            address = AddressParser.parseAddressRegex(reuseName);
+            adapter.updateListData(listData, AddressParser.addresWithoutNumber(reuseName), address);
             textSrch.setText(reuseName);
             textSrch.setSelection(reuseName.length());
         }
@@ -138,10 +142,6 @@ public class SearchAutocompleteActivity extends Activity {
             isFinishing = true;
             finishAndPutData();
         } else if (currentSelection.type == SearchListItem.nodeType.CURRENT_POSITION) {
-            //currentSelection.setLatitude(IBikeApplication.getService().getLastValidLocation().getLatitude());
-            //currentSelection.setLongitude(IBikeApplication.getService().getLastValidLocation().getLongitude());
-            //Log.d("DV", "currentLat = " + currentSelection.getLatitude());
-            //Log.d("DV", "currentLon = " + currentSelection.getLongitude());
             isFinishing = true;
             (new Thread() {
 
@@ -167,15 +167,14 @@ public class SearchAutocompleteActivity extends Activity {
                     });
                 }
             }).start();
-        } else if (currentSelection instanceof KortforData) {
-            if (((KortforData) currentSelection).isPlace()) {
+        } else if (currentSelection instanceof KortforsyningenListItem) {
+            if (((KortforsyningenListItem) currentSelection).isPlace()) {
                 isFinishing = true;
                 finishAndPutData();
             } else {
-                KortforData kd = (KortforData) currentSelection;
-                if (kd.getNumber() != null && !kd.getNumber().equals("") && kd.hasCoordinates()) {
-                    isAddressSearched = true;
-                    addr.setHouseNumber(kd.getNumber());
+                KortforsyningenListItem kd = (KortforsyningenListItem) currentSelection;
+                if (kd.getAddress().getHouseNumber() != null && !kd.getAddress().getHouseNumber().equals("") && kd.hasCoordinates()) {
+                    address.setHouseNumber(kd.getAddress().getHouseNumber());
                     isFinishing = true;
                     finishAndPutData();
                 }
@@ -213,13 +212,13 @@ public class SearchAutocompleteActivity extends Activity {
                 // TODO: nope nope nope nope
 
                 /*
-                if (!addr.hasHouseNumber() && currentSelection != null && currentSelection.getNumber() != null) {
-                    addr.setHouseNumber(currentSelection.getName());
+                if (!address.hasHouseNumber() && currentSelection != null && currentSelection.getNumber() != null) {
+                    address.setHouseNumber(currentSelection.getName());
                 }
                 */
                 finishEditing();
-            } else if (currentSelection != null && currentSelection.getNumber() != null && !currentSelection.number.equals("")) {
-                addr.setHouseNumber(currentSelection.getNumber());
+            } else if (currentSelection != null && currentSelection.getAddress().getHouseNumber() != null && !currentSelection.getAddress().getHouseNumber().isEmpty()) {
+                address.setHouseNumber(currentSelection.getAddress().getHouseNumber());
                 finishEditing();
             }
         }
@@ -228,9 +227,9 @@ public class SearchAutocompleteActivity extends Activity {
 
     private void finishEditing() {
         progressBar.setVisibility(View.VISIBLE);
-        if (addr != null && !addr.hasHouseNumber() && currentSelection != null
-                && currentSelection instanceof KortforData && !((KortforData) currentSelection).isPlace()) {
-            addr.setHouseNumber("1");
+        if (address != null && !address.hasHouseNumber() && currentSelection != null
+                && currentSelection instanceof KortforsyningenListItem && !((KortforsyningenListItem) currentSelection).isPlace()) {
+            address.setHouseNumber("1");
         }
         performGeocode();
     }
@@ -239,40 +238,35 @@ public class SearchAutocompleteActivity extends Activity {
         (new Thread() {
             @Override
             public void run() {
-                isAddressSearched = true;
-                if (addr != null && addr.hasHouseNumber() && !isClose) {
+                if (address != null && address.hasHouseNumber() && !isClose) {
                     JsonNode node;
                     try {
                         if (currentSelection == null) {
-                            currentSelection = new KortforData(AddressParser.addresWithoutNumber(textSrch.getText().toString()), addr.getHouseNumber());
+                            currentSelection = new KortforsyningenListItem(AddressParser.addresWithoutNumber(textSrch.getText().toString()), address.getHouseNumber());
                         }
                         // TODO: Refactor this to Geocoder class
-                        LOG.d("Street searchfor the number " + addr.getHouseNumber());
+                        LOG.d("Street searchfor the number " + address.getHouseNumber());
                         String urlString = "http://geo.oiorest.dk/adresser.json?q="
-                                + URLEncoder.encode(currentSelection.getStreet() + " " + addr.getHouseNumber(), "UTF-8");
+                                + URLEncoder.encode(currentSelection.getAddress().getStreet() + " " + address.getHouseNumber(), "UTF-8");
                         boolean coordinatesFound = false;
-                        if (adapter != null && adapter.getCount() > 0 && adapter.getItem(0) instanceof KortforData) {
-                            KortforData kd = (KortforData) adapter.getItem(0);
-                            LOG.d("search first item number = " + kd.getNumber() + " parsed addres number = " + addr.getHouseNumber()
-                                    + " first item lattitude = " + kd.getLatitude());
-                            if (kd.getNumber() != null && kd.getNumber().equals(addr.getHouseNumber()) && kd.hasCoordinates()) {
-                                currentSelection.setLatitude(kd.getLatitude());
-                                currentSelection.setLongitude(kd.getLongitude());
+                        if (adapter != null && adapter.getCount() > 0 && adapter.getItem(0) instanceof KortforsyningenListItem) {
+                            KortforsyningenListItem kd = (KortforsyningenListItem) adapter.getItem(0);
+                            if (kd.getAddress().getHouseNumber() != null && kd.getAddress().getHouseNumber().equals(address.getHouseNumber()) && kd.hasCoordinates()) {
+                                currentSelection.getAddress().setLocation(kd.getAddress().getLocation());
                                 coordinatesFound = true;
                             }
                         }
                         if (!coordinatesFound) {
-                            node = HTTPAutocompleteHandler.getOiorestGeocode(urlString, "" + addr.getHouseNumber());
+                            node = HTTPAutocompleteHandler.getOiorestGeocode(urlString, "" + address.getHouseNumber());
                             if (node != null) {
-                                if (node.has("wgs84koordinat") && node.get("wgs84koordinat").has("bredde")) {
-                                    currentSelection.setLatitude(Double.parseDouble(node.get("wgs84koordinat").get("bredde").asText()));
-                                }
-                                if (node.has("wgs84koordinat") && node.get("wgs84koordinat").has("længde")) {
-                                    currentSelection.setLongitude(Double.parseDouble(node.get("wgs84koordinat").get("længde").asText()));
+                                if (node.has("wgs84koordinat") && node.get("wgs84koordinat").has("bredde") && node.get("wgs84koordinat").has("længde")) {
+                                    double latitude = Double.parseDouble(node.get("wgs84koordinat").get("bredde").asText());
+                                    double longitude = Double.parseDouble(node.get("wgs84koordinat").get("længde").asText());
+                                    currentSelection.getAddress().setLocation(new LatLng(latitude, longitude));
                                 }
                             }
                         }
-                        if (currentSelection != null && currentSelection.getLatitude() > -1 && currentSelection.getLongitude() > -1)
+                        if (currentSelection != null && currentSelection.getAddress().getLocation().getLatitude() > -1 && currentSelection.getAddress().getLocation().getLongitude() > -1)
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     finishAndPutData();
@@ -303,9 +297,10 @@ public class SearchAutocompleteActivity extends Activity {
         hideKeyboard();
     }
 
-    public void updateListData(List<SearchListItem> list, String tag, Address addr) {
-        if (textSrch.getText().toString().equals(tag)) {
-            adapter.updateListData(list, AddressParser.addresWithoutNumber(textSrch.getText().toString()), addr);
+    public void updateListData(List<SearchListItem> list, String searchText, Address addr) {
+        if (textSrch.getText().toString().equals(searchText)) {
+            // We are currently searching for this
+            adapter.updateListData(list, searchText, addr);
         }
         if (isOirestFetched && isFoursquareFetched) {
             progressBar.setVisibility(View.INVISIBLE);
@@ -326,10 +321,9 @@ public class SearchAutocompleteActivity extends Activity {
             if (foursquareThread != null && foursquareThread.isAlive()) {
                 foursquareThread.interrupt();
             }
-            Address temp;
-            temp = AddressParser.parseAddressRegex(textSrch.getText().toString().replaceAll("\n", ","));
+            final Address newAddress = AddressParser.parseAddressRegex(textSrch.getText().toString().replaceAll("\n", ","));
             LOG.d("after text changed");
-            if (addr == null || !addr.equals(temp)) {
+            if (address == null || !address.equals(newAddress)) {
                 LOG.d("clearing the adapter and spawning the search threads");
                 adapter.clear();
                 if (textSrch.getText().toString().length() >= 2) {
@@ -339,19 +333,21 @@ public class SearchAutocompleteActivity extends Activity {
                     } else {
                         loc1 = Util.COPENHAGEN;
                     }
-                    final String searchText = AddressParser.addresWithoutNumber(textSrch.getText().toString());
+                    // TODO: Consider why we would like to search for only the name
+                    // final String searchText = AddressParser.addresWithoutNumber(textSrch.getText().toString());
+                    final String searchText = textSrch.getText().toString();
+
                     isOirestFetched = false;
                     isFoursquareFetched = !(textSrch.getText().toString().length() > 2);
-                    isAddressSearched = false;
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            spawnSearchThreads(loc1, searchText, addr, textSrch.getText().toString());
+                            spawnSearchThreads(loc1, searchText, newAddress);
                         }
                     }, 500);
 
-                    adapter.updateListData(textSrch.getText().toString(), addr);
+                    adapter.updateListData(textSrch.getText().toString(), newAddress);
 
                     if (textSrch.getText().toString().length() != lastTextSize && textSrch.getText().toString().length() > 1
                             && !addressPicked) {
@@ -361,7 +357,7 @@ public class SearchAutocompleteActivity extends Activity {
                     lastTextSize = textSrch.getText().toString().length();
                 }
             }
-            addr = temp;
+            address = newAddress;
         }
 
         @Override
@@ -375,9 +371,10 @@ public class SearchAutocompleteActivity extends Activity {
         }
     }
 
-    private void spawnSearchThreads(final Location loc, final String searchText, final Address addr, final String tag) {
-
+    private void spawnSearchThreads(final Location loc, final String searchText, final Address addr) {
+        Log.d("SearchAutocomplete", "spawnSearchThreads called with searchText = " + searchText);
         if (lastAddress != null && lastAddress.equals(addr) && adapter != null && adapter.getCount() != 0) {
+            Log.d("SearchAutocomplete", "Apparently there was no need to search, with lastAddress " + lastAddress);
             return;
         } else {
             lastAddress = addr;
@@ -390,6 +387,7 @@ public class SearchAutocompleteActivity extends Activity {
             kmsThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    Log.d("SearchAutocomplete", "Running the kmsThread with searchText=" + searchText);
                     // final List<JsonNode> kortforsyningenList = new ArrayList<JsonNode>();
                     final ArrayList<SearchListItem> data = new ArrayList<SearchListItem>();
                     if (addr.hasStreet()) {
@@ -403,27 +401,18 @@ public class SearchAutocompleteActivity extends Activity {
                                     if (count == 10) {
                                         break;
                                     }
-                                    KortforData kd = new KortforData(node);
-                                    if (kd.getCity() != null && addr.getCity() != null && kd.getCity().toLowerCase(Locale.US).contains(addr.getCity())) {
-                                        LOG.d("kd = " + kd);
-                                    }
-                                    if (addr.getZip() != null && !addr.getZip().equals("") && kd.getZip() != null) {
-                                        if (!addr.getZip().trim().toLowerCase(Locale.UK).equals(kd.getZip().toLowerCase(Locale.UK))) {
+                                    KortforsyningenListItem kd = new KortforsyningenListItem(node);
+                                    if (addr.getZip() != null && !addr.getZip().equals("") && kd.getAddress().getZip() != null) {
+                                        if (!addr.getZip().trim().toLowerCase(Locale.UK).equals(kd.getAddress().getZip().toLowerCase(Locale.UK))) {
                                             continue;
                                         }
                                     }
-                                    LOG.d("kd = " + kd);
-                                    if (kd.getCity() != null && addr.getCity() != null && kd.getCity().toLowerCase(Locale.US).contains(addr.getCity())
-                                            && kd.getCity().contains("Aarhus")) {
-                                        LOG.d("kd.city = " + kd.getCity() + " addr city = " + addr.getCity());
-                                    }
-                                    if (addr.hasCity() && !addr.getCity().equals(addr.getStreet()) && kd.getCity() != null) {
-                                        if (!(addr.getCity().trim().toLowerCase(Locale.UK).contains(kd.getCity().toLowerCase(Locale.UK)) ||
-                                                kd.getCity().trim().toLowerCase(Locale.UK).contains(addr.getCity().toLowerCase(Locale.UK)))) {
+                                    if (addr.hasCity() && !addr.getCity().equals(addr.getStreet()) && kd.getAddress().getCity() != null) {
+                                        if (!(addr.getCity().trim().toLowerCase(Locale.UK).contains(kd.getAddress().getCity().toLowerCase(Locale.UK)) ||
+                                                kd.getAddress().getCity().trim().toLowerCase(Locale.UK).contains(addr.getCity().toLowerCase(Locale.UK)))) {
                                             continue;
                                         }
                                     }
-                                    LOG.d("adding a kd to the list " + kd);
                                     data.add(kd);
                                     count++;
                                 }
@@ -445,16 +434,16 @@ public class SearchAutocompleteActivity extends Activity {
                                     if (count == 10) {
                                         break;
                                     }
-                                    KortforData kd = new KortforData(node);
-                                    if (addr.hasZip() && kd.getZip() != null) {
-                                        if (!addr.getZip().trim().toLowerCase(Locale.UK).equals(kd.getZip().toLowerCase(Locale.UK))) {
+                                    KortforsyningenListItem kd = new KortforsyningenListItem(node);
+                                    if (addr.hasZip() && kd.getAddress().getZip() != null) {
+                                        if (!addr.getZip().trim().toLowerCase(Locale.UK).equals(kd.getAddress().getZip().toLowerCase(Locale.UK))) {
                                             continue;
                                         }
                                     }
                                     if (addr.hasCity() && !addr.getCity().equals(addr.getStreet())
-                                            && kd.getCity() != null) {
-                                        if (!(addr.getCity().trim().toLowerCase(Locale.UK).contains(kd.getCity().toLowerCase(Locale.UK)) || kd
-                                                .getCity().trim().toLowerCase(Locale.UK).contains(addr.getCity().toLowerCase(Locale.UK)))) {
+                                            && kd.getAddress().getCity() != null) {
+                                        if (!(addr.getCity().trim().toLowerCase(Locale.UK).contains(kd.getAddress().getCity().toLowerCase(Locale.UK)) || kd
+                                                .getAddress().getCity().trim().toLowerCase(Locale.UK).contains(addr.getCity().toLowerCase(Locale.UK)))) {
                                             continue;
                                         }
                                     }
@@ -468,7 +457,7 @@ public class SearchAutocompleteActivity extends Activity {
                     isOirestFetched = true;
                     runOnUiThread(new Runnable() {
                         public void run() {
-                            updateListData(data, tag, addr);
+                            updateListData(data, searchText, addr);
 
                         }
                     });
@@ -476,7 +465,7 @@ public class SearchAutocompleteActivity extends Activity {
 
             });
             kmsThread.start();
-            if (textSrch.getText().toString().length() >= 3) { // && addr.isFoursquare() <- was = null...
+            if (textSrch.getText().toString().length() >= 3) { // && address.isFoursquare() <- was = null...
                 // fetch the Foursquare autocomplete
                 foursquareThread = new Thread(new Runnable() {
                     @Override
@@ -494,8 +483,8 @@ public class SearchAutocompleteActivity extends Activity {
                                         && location.get("lng").asDouble() != 0) {
                                     String country = location.has("country") ? location.get("country").asText() : "";
                                     if (country.contains("Denmark") || country.contains("Dansk") || country.contains("Danmark")) {
-                                        FoursquareData fd = new FoursquareData(node);
-                                        fd.setDistance(loc.distanceTo(Util.locationFromCoordinates(fd.getLatitude(), fd.getLongitude())));
+                                        FoursquareListItem fd = new FoursquareListItem(node);
+                                        fd.setDistance(loc.distanceTo(Util.locationFromCoordinates(fd.getAddress().getLocation().getLatitude(), fd.getAddress().getLocation().getLongitude())));
                                         data.add(fd);
                                         count++;
                                     }
@@ -505,7 +494,7 @@ public class SearchAutocompleteActivity extends Activity {
                         isFoursquareFetched = true;
                         runOnUiThread(new Runnable() {
                             public void run() {
-                                updateListData(data, tag, addr);
+                                updateListData(data, searchText, addr);
                             }
                         });
                     }
@@ -519,82 +508,34 @@ public class SearchAutocompleteActivity extends Activity {
 
     boolean isFinishing = false;
 
+    /**
+     * TODO: Clean this up + fix errors when currentSelection.getAddress().getLocation() == null
+     */
     public void finishAndPutData() {
-        runOnUiThread(new Runnable() {
+        progressBar.setVisibility(View.INVISIBLE);
+        if (isFinishing) {
+            return;
+        }
+        isFinishing = true;
 
-            @Override
-            public void run() {
-                progressBar.setVisibility(View.INVISIBLE);
-                if (isFinishing) {
-                    return;
-                }
-                isFinishing = true;
-                Intent intent = new Intent();
+        Intent intent = new Intent();
+        if (currentSelection != null) {
+            currentSelection.getAddress().setSource(Address.Source.SEARCH);
+            intent.putExtra("addressObject", currentSelection.getAddress());
+            setResult(RESULT_AUTOTOCMPLETE_SET, intent);
+        } else {
+            setResult(RESULT_AUTOTOCMPLETE_NOT_SET, intent);
+        }
 
-                if (currentSelection != null) {
-                    if (isAddressSearched && addr != null) {
-                        intent.putExtra("number", addr.getHouseNumber());
-                    }
-                    if (currentSelection instanceof KortforData && !((KortforData) currentSelection).isPlace()) {
-                        String name = currentSelection.getName();
-                        if (addr != null && lastAddress.hasHouseNumber() && !addr.getHouseNumber().equals("1") && AddressParser.containsNumber(addr.getHouseNumber())) {
-                            name += " " + addr.getHouseNumber();
-                        }
-                        if (currentSelection.getZip() != null && !currentSelection.getZip().equals("")) {
-                            name += ", " + currentSelection.getZip();
-                        }
-                        if (currentSelection.getCity() != null && !currentSelection.getCity().equals("")) {
-                            name += " " + currentSelection.getCity();
-                        }
-                        intent.putExtra("name", name);
-
-                        addr.setName(name);
-                    } else {
-                        // addr.setName(currentSelection.getName());// <- null på addr og vi får ingen koordinater.
-                        //intent.putExtra("name", currentSelection.getName());
-                    }
-
-                    if (currentSelection.type == nodeType.FOURSQUARE
-                            || (currentSelection instanceof KortforData && ((KortforData) currentSelection).isPlace()))
-                        intent.putExtra("poi", currentSelection.getName());
-                    if (currentSelection.getAdress() != null) {
-                        String address = currentSelection.getAdress();
-                        intent.putExtra("address", address);
-                    }
-                    intent.putExtra("source", currentSelection.getSource());
-                    intent.putExtra("subsource", currentSelection.getSubSource());
-                    intent.putExtra("lat", currentSelection.getLatitude());
-                    intent.putExtra("lon", currentSelection.getLongitude());
-
-                    if (currentSelection.type != nodeType.CURRENT_POSITION && !intent.hasExtra("poi")) {
-                        String houseNumberFromAddress = "";
-                        try {
-                            houseNumberFromAddress = AddressParser.numberFromAddress(currentSelection.getAdress());
-                        } catch (Exception ex) {
-                        }
-                        if (houseNumberFromAddress != null && !houseNumberFromAddress.equals(addr.getHouseNumber()) && !houseNumberFromAddress.trim().equals("")) {
-                            currentSelection.setNumber(houseNumberFromAddress);
-                        } else {
-                            currentSelection.setNumber(addr.getHouseNumber());
-                        }
-                    }
-
-                    addr = Address.fromSearchListItem(currentSelection);
-                    intent.putExtra("addressObject", addr);
-                    SearchAutocompleteActivity.this.setResult(RESULT_AUTOTOCMPLETE_SET, intent);
-                } else {
-                    SearchAutocompleteActivity.this.setResult(RESULT_AUTOTOCMPLETE_NOT_SET, intent);
-                }
-                SharedPreferences prefs = getPreferences(MODE_PRIVATE);
-                if (currentSelection != null) {
-                    JsonNode node = currentSelection.getJsonNode();
-                    if (node != null) {
-                        prefs.edit().putString("lastSearchItem", node.toString()).commit();
-                    }
-                }
-                finish();
+        // TODO: Consider what this latter part is good for?
+        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        if (currentSelection != null) {
+            JsonNode node = currentSelection.getJsonNode();
+            if (node != null) {
+                prefs.edit().putString("lastSearchItem", node.toString()).commit();
             }
-        });
+        }
+        finish();
     }
 
     @Override

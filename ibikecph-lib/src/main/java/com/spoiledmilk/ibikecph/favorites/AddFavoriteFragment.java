@@ -39,7 +39,7 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
     protected EditText textAddress;
     protected EditText textFavoriteName;
     private Button btnSave;
-    private FavoritesData favoritesData = null;
+    private FavoriteListItem favoriteListItem = null;
     protected String currentFavoriteType = "";
     private AlertDialog dialog;
     boolean isTextChanged = false;
@@ -100,13 +100,11 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
 
     public final void saveFavorite(boolean finish) {
         if (Util.isNetworkConnected(getActivity())) {
-            if (favoritesData != null && textFavoriteName.getText().toString() != null
+            if (favoriteListItem != null && textFavoriteName.getText().toString() != null
                     && !textFavoriteName.getText().toString().trim().equals("")) {
                 if (new DB(getActivity()).favoritesForName(textFavoriteName.getText().toString().trim()) == 0) {
-                    favoritesData.setName(textFavoriteName.getText().toString());
-                    favoritesData.setSubSource(currentFavoriteType);
-                    String st = favoritesData.getName() + " - (" + favoritesData.getLatitude() + "," + favoritesData.getLongitude()
-                            + ")";
+                    favoriteListItem.getAddress().setName(textFavoriteName.getText().toString());
+                    favoriteListItem.setSubSource(currentFavoriteType);
 
 
                     // TODO: Change this to the implementation described here
@@ -116,7 +114,7 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
                     Thread saveThread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            (new DB(getActivity())).saveFavorite(favoritesData, getActivity(), false);
+                            (new DB(getActivity())).saveFavorite(favoriteListItem, false);
                         }
                     });
 
@@ -176,47 +174,36 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.i("JC", "AddFavoriteFragment on address result");
+        Log.i("AddFavoriteFragment", "AddFavoriteFragment on address result");
 
         if (data != null) {
             Bundle b = data.getExtras();
-            Address addresss = (Address) b.getSerializable("addressObject");
-            String address = "";
+            Address addressObject = (Address) b.getSerializable("addressObject");
             if (b.containsKey("address") && b.containsKey("lat") && b.containsKey("lon")) {
                 try {
-                    address = AddressParser.textFromBundle(b).replace("\n", "");
+                    String address = AddressParser.textFromBundle(b).replace("\n", "");
+
+                    if (address != null && !address.isEmpty()) {
+                        favoriteListItem = new FavoriteListItem(textFavoriteName.getText().toString(), address, currentFavoriteType, b.getDouble("lat"),
+                                b.getDouble("lon"), -1);
+                    } else if(addressObject != null) {
+                        address = addressObject.getPrimaryDisplayString();
+                        favoriteListItem = new FavoriteListItem(textFavoriteName.getText().toString(), address, currentFavoriteType, b.getDouble("lat"),
+                                b.getDouble("lon"), -1);
+                    }
+                    textAddress.setText(address);
+
+
+                    if (b.containsKey("poi")) {
+                        textFavoriteName.setText(b.getString("poi"));
+                    } else {
+                        textFavoriteName.setText(address);
+                    }
                 } catch (Exception ex) {
+                    Log.e("AddFavoriteFragment", "Could not parse address from bundle", ex);
                 }
-
-                /*if (address == null) {
-                    address = "";
-                } else if (address.equals("") && addresss != null) {
-                    address = addresss.getDisplayName();
-                }
-
-                favoritesData = new FavoritesData(textFavoriteName.getText().toString(), address, currentFavoriteType, b.getDouble("lat"),
-                        b.getDouble("lon"), -1);*/
-
-                if (!address.equals("") && address != null) {
-                    favoritesData = new FavoritesData(textFavoriteName.getText().toString(), address, currentFavoriteType, b.getDouble("lat"),
-                            b.getDouble("lon"), -1);
-                } else if (address.equals("") && address != null) {
-                    address = Address.street_s + " " + Address.houseNumber_s + ", " + Address.zip_s + " " + Address.city_s;
-                    favoritesData = new FavoritesData(textFavoriteName.getText().toString(), address, currentFavoriteType, Address.lat_s,
-                            Address.lon_s, -1);
-                } else {
-                    address = addresss.getDisplayName();
-                    favoritesData = new FavoritesData(textFavoriteName.getText().toString(), address, currentFavoriteType, b.getDouble("lat"),
-                            b.getDouble("lon"), -1);
-                }
-                textAddress.setText(address);
-
-
-                if (b.containsKey("poi")) {
-                    textFavoriteName.setText(b.getString("poi"));
-                } else {
-                    textFavoriteName.setText(address);
-                }
+            } else {
+                throw new RuntimeException("The bundle is missing some values");
             }
 
         }
@@ -256,22 +243,22 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
             if (isPredefinedName(textFavoriteName.getText().toString()))
                 textFavoriteName.setText(IBikeApplication.getString("Favorite"));
 
-            currentFavoriteType = FavoritesData.favFav;
+            currentFavoriteType = FavoriteListItem.favFav;
         } else if (checkedId == R.id.radioButtonHome) {
             if (isPredefinedName(textFavoriteName.getText().toString()))
                 textFavoriteName.setText(IBikeApplication.getString("Home"));
 
-            currentFavoriteType = FavoritesData.favHome;
+            currentFavoriteType = FavoriteListItem.favHome;
         } else if (checkedId == R.id.radioButtonSchool) {
             if (isPredefinedName(textFavoriteName.getText().toString()))
                 textFavoriteName.setText(IBikeApplication.getString("School"));
 
-            currentFavoriteType = FavoritesData.favSchool;
+            currentFavoriteType = FavoriteListItem.favSchool;
         } else if (checkedId == R.id.radioButtonWork) {
             if (isPredefinedName(textFavoriteName.getText().toString()))
                 textFavoriteName.setText(IBikeApplication.getString("Work"));
 
-            currentFavoriteType = FavoritesData.favWork;
+            currentFavoriteType = FavoriteListItem.favWork;
         }
     }
 }

@@ -234,20 +234,25 @@ public class HTTPAutocompleteHandler {
 			address.setCity(address.getStreet());
 		}
 		try {
-
             // TODO: Removed a wildcard
-			urlString = "http://kortforsyningen.kms.dk/?servicename=RestGeokeys_v2&method=sted&stednavn="
-					+ URLEncoder.encode(address.getStreet(), "UTF-8") + "*&geop=" + ""
+			String stednavn = URLEncoder.encode(address.getStreet(), "UTF-8") + "*";
+			urlString = "http://kortforsyningen.kms.dk/?servicename=RestGeokeys_v2&method=stedv2&stednavn="
+					+ stednavn + "&geop=" + ""
 					+ Util.limitDecimalPlaces(currentLocation.getLongitude(), 6) + "," + ""
 					+ Util.limitDecimalPlaces(currentLocation.getLatitude(), 6)
-					+ "&georef=EPSG:4326&outgeoref=EPSG:4326&login=ibikecph&password=Spoiledmilk123&hits=10&distinct=true";
+					+ "&georef=EPSG:4326&outgeoref=EPSG:4326&login=ibikecph&password=Spoiledmilk123&hits=10";
+
+			// &distinct=true gave an error from the API
+			// DB_SQL_PROBLEM. Error executing SQL: ERROR: syntax error at or near "stednavn" Position: 453
 
 			JsonNode rootNode = performGET(urlString);
 			if (rootNode.has("features")) {
 				JsonNode features = rootNode.get("features");
-				for (int i = 0; i < features.size(); i++) {
-					if (features.get(i).has("properties") && features.get(i).get("properties").has("navn"))
-						list.add(features.get(i));
+				for (JsonNode featureNode: features) {
+					if (featureNode.has("properties") &&
+						featureNode.get("properties").has("stednavneliste") &&
+						featureNode.get("properties").size() > 0)
+						list.add(featureNode);
 				}
 			}
 		} catch (Exception e) {

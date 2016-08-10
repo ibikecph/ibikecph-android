@@ -6,13 +6,13 @@
 package com.spoiledmilk.ibikecph.search;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IBikeApplication;
-import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.favorites.FavoriteListItem;
 
 import java.io.Serializable;
+import java.util.regex.Pattern;
 
 /**
  * Contains address information used in searches.
@@ -30,51 +30,7 @@ public class Address implements Serializable {
     private String zip;
     private String city;
     private String name;
-    private double lat;
-    private double lon;
     private LatLng location;
-
-    /**
-     * Let's not use static fields this way
-     * @deprecated
-     */
-    public static String street_s = "";
-
-    /**
-     * Let's not use static fields this way
-     * @deprecated
-     */
-    public static String name_s = "";
-
-    /**
-     * Let's not use static fields this way
-     * @deprecated
-     */
-    public static String houseNumber_s = "";
-
-    /**
-     * Let's not use static fields this way
-     * @deprecated
-     */
-    public static String zip_s = "";
-
-    /**
-     * Let's not use static fields this way
-     * @deprecated
-     */
-    public static String city_s = "";
-
-    /**
-     * Let's not use static fields this way
-     * @deprecated
-     */
-    public static double lat_s = -1;
-
-    /**
-     * Let's not use static fields this way
-     * @deprecated
-     */
-    public static double lon_s = -1;
 
     public String getStreet() {
         return street;
@@ -114,11 +70,41 @@ public class Address implements Serializable {
         this.name = name;
     }
 
-    public enum AddressSource {
+    public String getFullAddress() {
+        String result = "";
+
+        if(hasStreet()) {
+            result += getStreet();
+            if(hasHouseNumber()) {
+                result += " " + getHouseNumber();
+            }
+        }
+
+        if(!result.isEmpty() && (hasZip() || hasCity())) {
+            result += ", ";
+        }
+
+        if(hasZip() && hasCity()) {
+            result += getZip() + " " + getCity();
+        } else if (hasCity()) {
+            result += getCity();
+        }
+        return result;
+    }
+
+    public void setFullAddress(String fullAddress) {
+        Address parsedAddress = AddressParser.parseAddressRegex(fullAddress);
+        street = parsedAddress.street;
+        houseNumber = parsedAddress.houseNumber;
+        zip = parsedAddress.zip;
+        city = parsedAddress.city;
+    }
+
+    public enum Source {
         SEARCH, HISTORYDATA, FOURSQUARE, FAVORITE
     }
 
-    private AddressSource addressSource;
+    private Source source;
 
 
     public LatLng getLocation() {
@@ -134,8 +120,6 @@ public class Address implements Serializable {
     public void setLocation(LatLng loc) {
         if (!isCurrent) {
             this.location = loc;
-            this.lat = loc.getLatitude();
-            this.lon = loc.getLongitude();
         }
     }
 
@@ -152,8 +136,6 @@ public class Address implements Serializable {
         this.houseNumber = houseNumber;
         this.zip = zip;
         this.city = city;
-        this.lat = lat;
-        this.lon = lon;
         this.location = new LatLng(lat, lon);
     }
 
@@ -162,31 +144,29 @@ public class Address implements Serializable {
         this.houseNumber = houseNumber;
         this.zip = zip;
         this.city = city;
-        this.lat = location.getLatitude();
-        this.lon = location.getLongitude();
         this.location = location;
     }
 
     public String getStreetAddress() {
-        if (isCurrent) {
-            return IBikeApplication.getString("current_position");
-            //Checks and trims and returns name + housenumber if != null, otherwise just the name
-        } else if (this.name != null && this.houseNumber != null && !this.name.trim().equals("") && !this.houseNumber.trim().equals("")) {
-            return this.name + " " + this.houseNumber;
-        } else if (this.name != null && !this.name.trim().equals("")) {
-            return this.name;
-        } else if (this.street != null && this.houseNumber != null && !this.street.trim().equals("") && !this.houseNumber.trim().equals("")) {
-            //Remove "null" from the strings received from Foursquare (occurs often if you search for Tivoli)
-            if (this.street.contains("null")) {
-                this.street = this.street.replace("null", "");
+        if (!isCurrent) {
+            if (this.name != null && this.houseNumber != null && !this.name.trim().isEmpty() && !this.houseNumber.trim().isEmpty()) {
+                return this.name + " " + this.houseNumber;
+            } else if (this.name != null && !this.name.trim().isEmpty()) {
+                return this.name;
+            } else if (this.street != null && this.houseNumber != null && !this.street.trim().equals("") && !this.houseNumber.trim().equals("")) {
+                //Remove "null" from the strings received from Foursquare (occurs often if you search for Tivoli)
+                if (this.street.contains("null")) {
+                    this.street = this.street.replace("null", "");
+                }
+                return this.street + " " + this.houseNumber;
+            } else if (this.street != null && !this.street.trim().equals("")) {
+                if (this.street.contains("null")) {
+                    this.street = this.street.replace("null", "");
+                }
+                return this.street;
             }
-            return this.street + " " + this.houseNumber;
-        } else if (this.street != null && !this.street.trim().equals("")) {
-            if (this.street.contains("null")) {
-                this.street = this.street.replace("null", "");
-            }
-            return this.street;
-        } else return "";
+        }
+        return "";
     }
 
     public String getPostCodeAndCity() {
@@ -216,29 +196,29 @@ public class Address implements Serializable {
         return ret;
     }
 
-    public boolean isFoursquare() {
-        return this.addressSource == AddressSource.FOURSQUARE;
-    }
-
     @Override
     public boolean equals(Object o) {
-        Address a = (Address) o;
-        boolean ret = true;
-        if (this == o) {
-            ret = true;
-        } else if ((a.street == null && street != null) || (a.street != null && street == null)
-                || (a.street != null && street != null && !street.equals(a.street))) {
-            ret = false;
-        } else if ((a.city == null && city != null) || (a.city != null && city == null)
-                || (a.city != null && city != null && !city.equals(a.city))) {
-            ret = false;
-        } else if ((a.zip == null && zip != null) || (a.zip != null && zip == null) || (a.zip != null && zip != null && !zip.equals(a.zip))) {
-            ret = false;
-        } else if ((a.houseNumber == null && houseNumber != null) || (a.houseNumber != null && houseNumber == null)
-                || (a.houseNumber != null && houseNumber != null && !houseNumber.equals(a.houseNumber))) {
-            ret = false;
+        if(this == o) {
+            return true;
+        } else if(o instanceof Address) {
+            Address a = (Address) o;
+            boolean sameStreet = getStreet() == null ?
+                                 a.getStreet() == null :
+                                 getStreet().equals(a.getStreet());
+            boolean sameCity = getCity() == null ?
+                               a.getCity() == null :
+                               getCity().equals(a.getCity());
+            boolean sameZip = getZip() == null ?
+                              a.getZip() == null :
+                              getZip().equals(a.getZip());
+            boolean sameHouseNumber = getHouseNumber() == null ?
+                                      a.getHouseNumber() == null :
+                                      getHouseNumber().equals(a.getHouseNumber());
+            // Do they all match up?
+            return sameStreet && sameCity && sameZip && sameHouseNumber;
+        } else {
+            return false;
         }
-        return ret;
     }
 
     public static Address fromCurLoc() {
@@ -262,203 +242,37 @@ public class Address implements Serializable {
         return ret;
     }
 
+    public static Address fromFullAddress(String fullAddress) {
+        return AddressParser.parseAddressRegex(fullAddress);
+    }
+
     public boolean isCurrentLocation() {
         return isCurrent;
     }
 
-    public static Address fromSearchListItem(SearchListItem searchListItem) {
-
-        Address address = new Address();
-
-        switch (searchListItem.getType()) {
-
-            case FOURSQUARE:
-                address.addressSource = AddressSource.FOURSQUARE;
-                break;
-
-            case HISTORY:
-                address.addressSource = AddressSource.HISTORYDATA;
-                break;
-
-            case CURRENT_POSITION:
-                address.isCurrent = true;
-                break;
-
-            case FAVORITE:
-                address.addressSource = AddressSource.FAVORITE;
-                break;
-
-            default:
-                break;
-        }
-
-        Log.d("DV", "fromSearch");
-
-        if (address.isCurrent) {
-            Log.d("DV", "jsonNode = " + searchListItem.getJsonNode().toString());
-
-            double lat = Double.parseDouble(searchListItem.getJsonNode().get("wgs84koordinat").get("bredde").asText());
-            double lon = Double.parseDouble(searchListItem.getJsonNode().get("wgs84koordinat").get("længde").asText());
-
-            address.street = searchListItem.getJsonNode().get("vejnavn").get("navn").asText();
-            address.name = searchListItem.getJsonNode().get("vejnavn").get("navn").asText();
-            address.houseNumber = searchListItem.getJsonNode().get("husnr").asText();
-            address.zip = searchListItem.getJsonNode().get("postnummer").get("nr").asText();
-            address.city = searchListItem.getJsonNode().get("postnummer").get("navn").asText();
-            address.lat = lat;
-            address.lon = lon;
-
-            street_s = searchListItem.getJsonNode().get("vejnavn").get("navn").asText();
-            name_s = searchListItem.getJsonNode().get("vejnavn").get("navn").asText();
-            houseNumber_s = searchListItem.getJsonNode().get("husnr").asText();
-            zip_s = searchListItem.getJsonNode().get("postnummer").get("nr").asText();
-            city_s = searchListItem.getJsonNode().get("postnummer").get("navn").asText();
-            lat_s = lat;
-            lon_s = lon;
-
-        } else if (address.addressSource == AddressSource.FOURSQUARE) {
-            address.setLocation(new LatLng(searchListItem.getLatitude(), searchListItem.getLongitude()));
-
-            if (searchListItem.getZip() != null && !searchListItem.getZip().trim().equals("")) {
-                address.zip = searchListItem.getZip();
-            } else {
-                address.zip = "";
-            }
-
-            if (searchListItem.getCity() != null && !searchListItem.getCity().trim().equals("")) {
-                address.city = searchListItem.getCity();
-            } else if (searchListItem.getAdress() != null && !searchListItem.getAdress().trim().equals("")) {
-                address.city = searchListItem.getAdress();
-            } else {
-                address.city = "";
-            }
-
-            if (searchListItem.getStreet() != null && !searchListItem.getStreet().trim().equals("")) {
-                address.street = searchListItem.getStreet();
-            } else {
-                address.street = "";
-            }
-
-            if (searchListItem.getName() != null && !searchListItem.getName().trim().equals("")) {
-                address.name = searchListItem.getName();
-            } else {
-                address.name = "";
-            }
-
-            if (searchListItem.getNumber() != null && !searchListItem.getNumber().trim().equals("")) {
-                address.houseNumber = searchListItem.getNumber();
-            } else {
-                address.houseNumber = "";
-            }
-
-        } else {
-            address.setLocation(new LatLng(searchListItem.getLatitude(), searchListItem.getLongitude()));
-
-            if (searchListItem.getZip() != null && !searchListItem.getZip().trim().equals("")) {
-                address.zip = searchListItem.getZip();
-            } else {
-                address.zip = "";
-            }
-
-            if (searchListItem.getCity() != null && !searchListItem.getCity().trim().equals("")) {
-                address.city = searchListItem.getCity();
-            } else if (searchListItem.getAdress() != null && !searchListItem.getAdress().trim().equals("")) {
-                address.city = searchListItem.getAdress();
-            } else {
-                address.city = "";
-            }
-
-            if (searchListItem.getStreet() != null && !searchListItem.getStreet().trim().equals("")) {
-                address.street = searchListItem.getStreet();
-            } else {
-                address.street = "";
-            }
-
-            if (searchListItem.getName() != null && !searchListItem.getName().trim().equals("")) {
-                address.name = searchListItem.getName();
-            } else {
-                address.name = "";
-            }
-
-            if (searchListItem.getNumber() != null && !searchListItem.getNumber().trim().equals("")) {
-                address.houseNumber = searchListItem.getNumber();
-            } else {
-                address.houseNumber = "";
-            }
-
-            //Sometimes city = name -> set city "" instead.
-            if (address.city.equals(address.name)) {
-                address.city = "";
-            }
-        }
-
-        Log.d("DV", "Address-search, city == " + address.city);
-        Log.d("DV", "Address-search, street == " + address.street);
-        Log.d("DV", "Address-search, name == " + address.name);
-        Log.d("DV", "Address-search, zip == " + address.zip);
-        Log.d("DV", "Address-search, houseNumber == " + address.houseNumber);
-        //Log.d("DV", "Address-search, lat == " + address.lat);
-        //Log.d("DV", "Address-search, lon == " + address.lon);
-
-        address.setAddressSource(AddressSource.SEARCH);
-        return address;
-
+    public Source getSource() {
+        return source;
     }
 
-    public static Address fromHistoryData(HistoryData historyData) {
-
-        Address address = AddressParser.parseAddressRegex(historyData.getName());
-        Log.d("DV", "fromHistory");
-
-        address.name = "";
-        address.setAddressSource(AddressSource.HISTORYDATA);
-        address.setLocation(new LatLng(historyData.latitude, historyData.longitude));
-
-        Log.d("DV", "Address-history, street(getAddress) == " + address.street);
-        Log.d("DV", "Address-history, name == " + address.name);
-
-        return address;
-
+    public void setSource(Source source) {
+        this.source = source;
     }
 
-    public static Address fromFavoritesData(FavoritesData favoritesData) {
-
-        Address address = AddressParser.parseAddressRegex(favoritesData.getStreet());
-        Log.d("DV", "fromFavorites");
-
-        address.name = favoritesData.getName();
-        address.setAddressSource(AddressSource.FAVORITE);
-        address.setLocation(new LatLng(favoritesData.latitude, favoritesData.longitude));
-
-        Log.d("DV", "Address-favorites, street == " + address.street);
-        Log.d("DV", "Address-favorites, name == " + address.name);
-
-        return address;
+    public String getName() {
+        return name;
     }
 
-
-    public AddressSource getAddressSource() {
-        return addressSource;
-    }
-
-    public void setAddressSource(AddressSource addressSource) {
-        this.addressSource = addressSource;
-    }
-
+    /**
+     * Get a simple string to display the value of the address. It simply returns the primary
+     * display string.
+     * @return
+     */
     public String getDisplayName() {
-
-        if (hasSpecialName()) {
-            return this.name;
-        }
-
-        return getStreetAddress();
-
+        return getPrimaryDisplayString();
     }
 
     public boolean hasSpecialName() {
-
         return this.name != null && !this.name.equals("");
-
     }
 
 
@@ -478,61 +292,56 @@ public class Address implements Serializable {
         this.city = city;
     }
 
+    /**
+     * Generates the secondary string that is shown below the primary display string.
+     * @return
+     */
+    public String getPrimaryDisplayString() {
+        if(isCurrent) {
+            return IBikeApplication.getString("current_position");
+        } else {
+            if(getName() != null && !getName().isEmpty()) {
+                return getName();
+            } else if(getStreet() != null && !getStreet().isEmpty()) {
+                String result = getStreet();
+                if(!result.isEmpty() && getHouseNumber() != null && !getHouseNumber().isEmpty()) {
+                    result += " " + getHouseNumber();
+                }
+                return result;
+            } else {
+                return "?";
+            }
+        }
+    }
+
+    /**
+     * Generates the secondary string that is shown below the primary display string.
+     * @return
+     */
+    public String getSecondaryDisplayString() {
+        String result = "";
+        if(getName() != null && !getName().isEmpty() && getStreet() != null && !getStreet().isEmpty()) {
+            // Move the address to the secondary string
+            result += getStreet();
+            if(!result.isEmpty() && getHouseNumber() != null && !getHouseNumber().isEmpty()) {
+                result += " " + getHouseNumber();
+            }
+        }
+        boolean hasZip = getZip() != null && !getZip().isEmpty();
+        boolean hasCity = getCity() != null && !getCity().isEmpty();
+        if(!result.isEmpty() && (hasZip || hasCity)) {
+            result += ", ";
+        }
+        if (hasZip) {
+            result += getZip();
+        }
+        if (hasZip && hasCity) {
+            result += " ";
+        }
+        if (hasCity) {
+            result += getCity();
+        }
+        return result;
+    }
+
 }
-
-
-
-/*
-public class Address {
-	public String zip = "";
-	public String street = "";
-	public String city = "";
-	public String number = "";
-
-	@Override
-	public String toString() {
-		return "street: " + street + " " + "number: " + number + " " + "city: " + city + " " + "zip: " + zip;
-	}
-
-	public boolean isAddress() {
-		boolean ret = false;
-		// if ( number != null && !number.equals("") && !number.equals("1")){
-		// ret = true;
-		// }
-		if ((zip != null && !zip.equals("")) || (number != null && !number.equals(""))
-				|| (street != null && city != null && !street.equals("") && !city.equals("") && !city.equals(street))) {
-			ret = true;
-		}
-		return ret;
-	}
-
-	public boolean isFoursquare() {
-		boolean ret = true;
-		if (number != null && !number.equals("")) {
-			ret = false;
-		}
-		return ret;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		Address a = (Address) o;
-		boolean ret = true;
-		if (this == o) {
-			ret = true;
-		} else if ((a.street == null && street != null) || (a.street != null && street == null)
-				|| (a.street != null && street != null && !street.equals(a.street))) {
-			ret = false;
-		} else if ((a.city == null && city != null) || (a.city != null && city == null)
-				|| (a.city != null && city != null && !city.equals(a.city))) {
-			ret = false;
-		} else if ((a.zip == null && zip != null) || (a.zip != null && zip == null) || (a.zip != null && zip != null && !zip.equals(a.zip))) {
-			ret = false;
-		} else if ((a.number == null && number != null) || (a.number != null && number == null)
-				|| (a.number != null && number != null && !number.equals(a.number))) {
-			ret = false;
-		}
-		return ret;
-	}
-}
-*/

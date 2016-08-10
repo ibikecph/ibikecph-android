@@ -41,15 +41,15 @@ public class HistoryAdapter extends ArrayAdapter<SearchListItem> {
         }
         final SearchListItem item = getItem(position);
 
-        String text = item.getName();
-        if (item.getName().length() > 40) {
-            text = item.getName().substring(0, 37) + "...";
+        String text = item.getPrimaryDisplayString();
+        if (text.length() > 40) {
+            text = text.substring(0, 37) + "...";
         }
         holder.textLocation.setText(text);
 
         // Don't show an icon if the resource ID is set to -1
-        if (item.getIconResourceId() != -1) {
-            holder.imgIcon.setImageResource(R.drawable.fav_star);
+        if (item.getIconResourceId() > 0) {
+            holder.imgIcon.setImageResource(item.getIconResourceId());
         } else {
             holder.imgIcon.setVisibility(View.GONE);
         }

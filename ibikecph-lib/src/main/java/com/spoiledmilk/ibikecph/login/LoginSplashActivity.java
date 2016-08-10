@@ -20,7 +20,7 @@ import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.ReadMoreActivity;
 import com.spoiledmilk.ibikecph.favorites.FavoritesActivity;
-import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.favorites.FavoriteListItem;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.util.DB;
 
@@ -133,7 +133,7 @@ public class LoginSplashActivity extends Activity {
             @Override
             public void run() {
                 DB db = new DB(LoginSplashActivity.this);
-                ArrayList<FavoritesData> favorites = db.getFavoritesFromServer(LoginSplashActivity.this, null);
+                ArrayList<FavoriteListItem> favorites = db.getFavoritesFromServer(null);
                 if (favorites == null || favorites.size() == 0) {
                     LoginSplashActivity.this.runOnUiThread(new Runnable() {
                         @Override

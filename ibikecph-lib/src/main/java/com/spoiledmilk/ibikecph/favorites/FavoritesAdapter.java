@@ -28,13 +28,13 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
+public class FavoritesAdapter extends ArrayAdapter<FavoriteListItem> {
 
     public boolean isEditMode = false;
     private LeftMenu fragment;
-    ArrayList<FavoritesData> data;
+    ArrayList<FavoriteListItem> data;
 
-    public FavoritesAdapter(Context context, ArrayList<FavoritesData> objects, LeftMenu fragment) {
+    public FavoritesAdapter(Context context, ArrayList<FavoriteListItem> objects, LeftMenu fragment) {
         super(context, R.layout.list_row_favorite, objects);
         this.fragment = fragment;
         data = objects;
@@ -50,13 +50,13 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View view = inflater.inflate(getListRowLayout(), parent, false);
         TextView tv = (TextView) view.findViewById(R.id.textFavoriteName);
-        String name = getItem(position).getName();
+        String name = getItem(position).getAddress().getName();
         /*if (name.length() > 19)
             name = name.substring(0, 19) + "...";*/
         tv.setText(name);
 
         ImageButton btnEdit = (ImageButton) view.findViewById(R.id.btnEdit);
-        final FavoritesData fd = getItem(position);
+        final FavoriteListItem fd = getItem(position);
         tv.setPadding(getPadding(fd), 0, 0, 0);
 
         final ImageView imgIcon = ((ImageView) view.findViewById(R.id.icon));
@@ -82,7 +82,7 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
                 secondIndex = 0;
             if (secondIndex > data.size() - 1)
                 secondIndex = data.size() - 1;
-            FavoritesData tmp = getItem(firstIndex);
+            FavoriteListItem tmp = getItem(firstIndex);
             data.set(firstIndex, getItem(secondIndex));
             data.set(secondIndex, tmp);
         }
@@ -93,7 +93,7 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
             DB db = new DB(getContext());
             db.deleteFavorites();
             for (int i = 0; i < getCount(); i++) {
-                db.saveFavorite(getItem(i), getContext(), false);
+                db.saveFavorite(getItem(i), false);
             }
 
             final JSONObject postObject = new JSONObject();
@@ -119,13 +119,13 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
         }
     }
 
-    protected int getIconResourceId(FavoritesData fd) {
+    protected int getIconResourceId(FavoriteListItem fd) {
         int ret = R.drawable.fav_star;
-        if (fd.getSubSource().equals(FavoritesData.favHome))
+        if (fd.getSubSource().equals(FavoriteListItem.favHome))
             ret = R.drawable.fav_home;
-        else if (fd.getSubSource().equals(FavoritesData.favWork))
+        else if (fd.getSubSource().equals(FavoriteListItem.favWork))
             ret = R.drawable.fav_work;
-        else if (fd.getSubSource().equals(FavoritesData.favSchool))
+        else if (fd.getSubSource().equals(FavoriteListItem.favSchool))
             ret = R.drawable.fav_school;
         return ret;
     }
@@ -134,7 +134,7 @@ public class FavoritesAdapter extends ArrayAdapter<FavoritesData> {
         return R.layout.list_row_favorite;
     }
 
-    protected int getPadding(FavoritesData fd) {
+    protected int getPadding(FavoriteListItem fd) {
         return 0;
     }
 

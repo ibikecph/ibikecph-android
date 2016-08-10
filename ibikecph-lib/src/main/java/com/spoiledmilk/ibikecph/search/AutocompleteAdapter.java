@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.favorites.FavoriteListItem;
 import com.spoiledmilk.ibikecph.util.DB;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -31,14 +31,10 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 
 	LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-	static final int charCount = (int) ((Util.getScreenWidth() - Util.dp2px(28)) / Util.dp2px(11));
-
 	String[] splitted;
 	private int stringLength = 0;
 	private boolean isA;
 	private ViewHolder viewHolder;
-
-	ArrayList<SearchListItem> newData = new ArrayList<SearchListItem>();
 
 	public AutocompleteAdapter(Context context, ArrayList<SearchListItem> objects, boolean isA) {
 		super(context, R.layout.list_row_search, objects);
@@ -53,6 +49,7 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			viewHolder = new ViewHolder();
 			viewHolder.textLocation = (TextView) view.findViewById(R.id.textLocation);
 			viewHolder.textAddress = (TextView) view.findViewById(R.id.textAddress);
+			// TODO: Move this to a layout instead of changing text size in code
 			if (Util.getDensity() > 1.5f) {
 				viewHolder.textLocation.setTextSize(22);
 				viewHolder.textAddress.setTextSize(20);
@@ -65,49 +62,25 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 		} else {
 			viewHolder = (ViewHolder) view.getTag();
 		}
+
 		final SearchListItem item = getItem(position);
 		final ImageView imgIcon = viewHolder.imgIcon;
 		final TextView textLocation = viewHolder.textLocation;
 		final TextView textAddress = viewHolder.textAddress;
+
 		if (item.type == SearchListItem.nodeType.CURRENT_POSITION) {
-			String name = item.getName();
+			String name = item.getAddress().getName();
 			textLocation.setText(name);
 			textAddress.setVisibility(View.GONE);
 		} else {
-			String name = item.getName();
-			String addr = item.getAdress();
-			if (addr == null || addr.equals(name)) {
-				addr = "";
-				if (item instanceof KortforData && item.getNumber() != null && !item.getNumber().equals("")) {
-					name += " " + item.getNumber();
-				}
-			}
-			if (item.getZip() != null && !item.getZip().equals("") && !(item instanceof HistoryData)) {
-				addr += (addr.equals("") ? "" : ", ") + item.getZip();
-			}
-			if (item.getCity() != null && !item.getCity().equals("") && !(item instanceof HistoryData)) {
-				if (item.getZip() != null && !item.getZip().equals("")) {
-					addr += " ";
-				}
-				addr += item.getCity();
-			}
-			if (!(item instanceof FoursquareData) && !(item instanceof KortforData) && !(item instanceof HistoryData)) {
-				addr = "";
-			} else if (item instanceof HistoryData) {
-				if (item.getAdress() != null && !item.getAdress().equals(item.getName())) {
-					addr = item.getAdress();
-				} else {
-					addr = "";
-				}
-			}
-			if (item instanceof HistoryData) {
-				LOG.d("history item name = " + name + " addr = " + addr);
-			}
-			Spannable WordtoSpan = new SpannableString(name), WordtoSpan2 = new SpannableString(addr);
+			String name = item.getPrimaryDisplayString();
+			String secondary = item.getSecondaryDisplayString();
+
+			Spannable WordtoSpan = new SpannableString(name), WordtoSpan2 = new SpannableString(secondary);
 			boolean found = false, found2 = false;
 			for (String word : splitted) { // iterrate through the search string
 				int index = name.toLowerCase(Locale.US).indexOf(word.toLowerCase(Locale.US));
-				int index2 = addr.toLowerCase(Locale.US).indexOf(word.toLowerCase(Locale.US));
+				int index2 = secondary.toLowerCase(Locale.US).indexOf(word.toLowerCase(Locale.US));
 				if (index >= 0) {
 					try {
 						WordtoSpan.setSpan(new ForegroundColorSpan(Color.BLACK), index, index + word.length(),
@@ -128,7 +101,7 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 				}
 
 			}
-			if (addr == null || addr.equals("")) {
+			if (secondary == null || secondary.equals("")) {
 				textAddress.setVisibility(View.GONE);
 			} else {
 				textAddress.setVisibility(View.VISIBLE);
@@ -141,39 +114,21 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			if (found2) {
 				textAddress.setText(WordtoSpan2);
 			} else {
-				textAddress.setText(addr);
+				textAddress.setText(secondary);
 			}
 		}
-		if (item.type == SearchListItem.nodeType.HISTORY) {
-			textLocation.setPadding(Util.dp2px(18), 0, 0, 0);
-			textAddress.setPadding(Util.dp2px(18), 0, 0, 0);
-		} else if (item.type == SearchListItem.nodeType.CURRENT_POSITION) {
-			textLocation.setPadding(Util.dp2px(38), 0, 0, 0);
-			textAddress.setPadding(Util.dp2px(38), 0, 0, 0);
-		} else if (item.type == SearchListItem.nodeType.KORTFOR) {
-			if (item instanceof KortforData && ((KortforData) item).isPlace()) {
-				textLocation.setPadding(Util.dp2px(28), 0, 0, 0);
-				textAddress.setPadding(Util.dp2px(26), 0, 0, 0);
-			} else {
-				textLocation.setPadding(Util.dp2px(24), 0, 0, 0);
-				textAddress.setPadding(Util.dp2px(24), 0, 0, 0);
-			}
-		} else {
-			textLocation.setPadding(Util.dp2px(28), 0, 0, 0);
-			textAddress.setPadding(Util.dp2px(28), 0, 0, 0);
-		}
-		if (item.getIconResourceId() > 0) {
-			imgIcon.setImageResource(item.getIconResourceId());
-		} else {
-			imgIcon.setImageResource(R.color.Transparent);
-		}
+		imgIcon.setImageResource(item.getIconResourceId());
 		return view;
 	}
 
 	final private Comparator<SearchListItem> comparator = new Comparator<SearchListItem>() {
 		public int compare(SearchListItem e1, SearchListItem e2) {
-			int ret = (int) (e1.getDistance() - e2.getDistance());
-			return ret;
+			int distance = (int) Math.round(e1.getDistance() - e2.getDistance());
+			if(distance == 0) {
+				return e1.getOrder() - e2.getOrder();
+			} else {
+				return distance;
+			}
 		}
 	};
 
@@ -189,26 +144,21 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 		if (searchStr.length() != stringLength) {
 			clear();
 			if (isA) {
-				add(new CurrentLocation());
+				add(new CurrentLocationListItem());
 			}
 			stringLength = searchStr.length();
 			ArrayList<SearchListItem> historyList = new DB(getContext()).getSearchHistoryForString(searchStr);
 			Iterator<SearchListItem> it = historyList.iterator();
 			while (it.hasNext()) {
-				HistoryData sli = (HistoryData) it.next();
-				Address a = AddressParser.parseAddressRegex(sli.getName().replaceAll(",", ""));
-				sli.setName(a.getStreetAddress());
-
-				// TODO: Why the f. are we setting postcode and city inside the address field of a HistoryData?
-				sli.setAddress(a.getPostCodeAndCity());
-				sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getLatitude(), sli.getLongitude())));
+				HistoryListItem sli = (HistoryListItem) it.next();
+				sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getAddress().getLocation().getLatitude(), sli.getAddress().getLocation().getLongitude())));
 				add(sli);
 			}
 			ArrayList<SearchListItem> favoritesList = new DB(getContext()).getFavoritesForString(searchStr);
 			Iterator<SearchListItem> it2 = favoritesList.iterator();
 			while (it2.hasNext()) {
-				FavoritesData sli = (FavoritesData) it2.next();
-				sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getLatitude(), sli.getLongitude())));
+				FavoriteListItem sli = (FavoriteListItem) it2.next();
+				sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getAddress().getLocation().getLatitude(), sli.getAddress().getLocation().getLongitude())));
 				add(sli);
 			}
 		}
@@ -229,9 +179,9 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 		if (searchStr.length() != stringLength) {
 			clear();
 			if (isA) {
-				add(new CurrentLocation());
+				add(new CurrentLocationListItem());
 			}
-			if (list != null && list.size() == 1 && (list.get(0) instanceof FavoritesData || list.get(0) instanceof HistoryData)) {
+			if (list != null && list.size() == 1 && (list.get(0) instanceof FavoriteListItem || list.get(0) instanceof HistoryListItem)) {
 				add(list.get(0));
 			} else {
 				// add local favourites and search history
@@ -239,20 +189,15 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 				ArrayList<SearchListItem> historyList = new DB(getContext()).getSearchHistoryForString(searchStr);
 				Iterator<SearchListItem> it = historyList.iterator();
 				while (it.hasNext()) {
-					HistoryData sli = (HistoryData) it.next();
-					Address a = AddressParser.parseAddressRegex(sli.getName().replaceAll(",", ""));
-					sli.setName(a.getStreetAddress());
-
-					// TODO: konsekvensrettelse
-					sli.setAddress(a.getPostCodeAndCity());
-					sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getLatitude(), sli.getLongitude())));
+					HistoryListItem sli = (HistoryListItem) it.next();
+					sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getAddress().getLocation().getLatitude(), sli.getAddress().getLocation().getLongitude())));
 					add(sli);
 				}
 				ArrayList<SearchListItem> favoritesList = new DB(getContext()).getFavoritesForString(searchStr);
 				Iterator<SearchListItem> it2 = favoritesList.iterator();
 				while (it2.hasNext()) {
-					FavoritesData sli = (FavoritesData) it2.next();
-					sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getLatitude(), sli.getLongitude())));
+					com.spoiledmilk.ibikecph.favorites.FavoriteListItem sli = (FavoriteListItem) it2.next();
+					sli.setDistance(loc.distanceTo(Util.locationFromCoordinates(sli.getAddress().getLocation().getLatitude(), sli.getAddress().getLocation().getLongitude())));
 					add(sli);
 				}
 			}
@@ -262,11 +207,11 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			Iterator<SearchListItem> it = list.iterator();
 			while (it.hasNext()) {
 				SearchListItem s = it.next();
-				if (s instanceof FoursquareData) { // Foursquare
+				if (s instanceof FoursquareListItem) { // Foursquare
 					if (!isForPreviousCleared) {
 						ArrayList<SearchListItem> itemsToRemove = new ArrayList<SearchListItem>();
 						for (int i = 0; i < super.getCount(); i++) {
-							if (getItem(i).getClass().equals(FoursquareData.class)) {
+							if (getItem(i).getClass().equals(FoursquareListItem.class)) {
 								itemsToRemove.add(getItem(i));
 							}
 						}
@@ -279,11 +224,11 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 						isForPreviousCleared = true;
 					}
 					add(s);
-				} else if (s instanceof KortforData) { // Kortforsyningen
+				} else if (s instanceof KortforsyningenListItem) { // Kortforsyningen
 					if (!isKMSPreviousCleared) {
 						ArrayList<SearchListItem> itemsToRemove = new ArrayList<SearchListItem>();
 						for (int i = 0; i < super.getCount(); i++) {
-							if (getItem(i).getClass().equals(KortforData.class)) {
+							if (getItem(i).getClass().equals(KortforsyningenListItem.class)) {
 								itemsToRemove.add(getItem(i));
 							}
 						}
@@ -325,10 +270,6 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			splitted[j] = word;
 			j++;
 		}
-	}
-
-	public int getStringLength() {
-		return stringLength;
 	}
 
 	private class ViewHolder {

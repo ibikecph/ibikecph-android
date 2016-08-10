@@ -36,7 +36,7 @@ public class FavoritesListActivity extends Activity {
     static SortableListView favoritesList;
     private static ListAdapter listAdapter;
     private FavoritesAdapter adapter;
-    protected static ArrayList<FavoritesData> favorites = new ArrayList<FavoritesData>();
+    protected static ArrayList<FavoriteListItem> favorites = new ArrayList<FavoriteListItem>();
     private tFetchFavorites fetchFavorites;
     public ProgressBar progressBar;
     TextView textLogin;
@@ -84,12 +84,12 @@ public class FavoritesListActivity extends Activity {
                                     Util.launchNoConnectionDialog(FavoritesListActivity.this);
                                 } else {
                                     progressBar.setVisibility(View.VISIBLE);
-                                    final FavoritesData fd = (FavoritesData) (favoritesList.getAdapter().getItem(i));
+                                    final FavoriteListItem fd = (FavoriteListItem) (favoritesList.getAdapter().getItem(i));
                                     new AsyncTask<String, Integer, String>() {
                                         @Override
                                         protected String doInBackground(String... strings) {
                                             try {
-                                                new DB(FavoritesListActivity.this).deleteFavorite(fd, FavoritesListActivity.this);
+                                                new DB(FavoritesListActivity.this).deleteFavorite(fd);
                                             } catch (Exception ex) {
                                             }
                                             return null;
@@ -179,13 +179,13 @@ public class FavoritesListActivity extends Activity {
             favoritesEnabled = true;
             Util.launchNoConnectionDialog(this);
         } else {
-            FavoritesData fd = (FavoritesData) (favoritesList.getAdapter().getItem(position));
+            FavoriteListItem fd = (FavoriteListItem) (favoritesList.getAdapter().getItem(position));
 
             // Start editing the fav
             Intent i = new Intent(this, EditFavoriteActivity.class);
 
             // Add the favorite to the intent so it can be passed on to the EditFavoriteFragment later on.
-            i.putExtra("favoritesData", fd);
+            i.putExtra("favoriteListItem", fd);
 
             this.startActivityForResult(i, ADD_FAVORITE);
         }
@@ -225,7 +225,7 @@ public class FavoritesListActivity extends Activity {
             Intent returnIntent = new Intent();
 
             // Return some information as to where to route, so the MapActivity knows and can handle it.
-            returnIntent.putExtra("ROUTE_TO", data.getParcelableExtra("favoritesData"));
+            returnIntent.putExtra("ROUTE_TO", data.getParcelableExtra("favoriteListItem"));
             setResult(RESULT_OK, returnIntent);
             finishActivity(LeftMenu.LAUNCH_FAVORITE);
             finish();
@@ -238,7 +238,7 @@ public class FavoritesListActivity extends Activity {
     }
 
     public static class fetchFavoritesAfterEdit {
-        static ArrayList<FavoritesData> favs = null;
+        static ArrayList<FavoriteListItem> favs = null;
 
         public static void updateFavorites() {
             LOG.d("fetching the favorites from AfterEdit");
@@ -247,7 +247,7 @@ public class FavoritesListActivity extends Activity {
 
                 @Override
                 protected String doInBackground(String... strings) {
-                    favs = (new DB(IBikeApplication.getContext())).getFavoritesFromServer(IBikeApplication.getContext(), null);
+                    favs = (new DB(IBikeApplication.getContext())).getFavoritesFromServer(null);
                     return null;
                 }
 
@@ -264,11 +264,6 @@ public class FavoritesListActivity extends Activity {
                 }
             }.execute();
 
-
-            if (Util.isNetworkConnected(IBikeApplication.getContext())) {
-                // favorites have been fetched
-            }
-
         }
 
     }
@@ -283,7 +278,7 @@ public class FavoritesListActivity extends Activity {
             Log.d("JC", "FavFetcher started");
             while (!interrupted()) {
                 LOG.d("fetching the favorites");
-                final ArrayList<FavoritesData> favs = (new DB(IBikeApplication.getContext())).getFavoritesFromServer(IBikeApplication.getContext(), null);
+                final ArrayList<FavoriteListItem> favs = (new DB(IBikeApplication.getContext())).getFavoritesFromServer(null);
                 runOnUiThread(new Runnable() {
                     public void run() {
                         Log.d("JC", "Got some favorites");

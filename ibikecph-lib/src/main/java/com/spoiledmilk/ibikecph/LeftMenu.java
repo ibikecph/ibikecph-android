@@ -14,11 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 
 import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
-import com.spoiledmilk.ibikecph.favorites.FavoritesData;
+import com.spoiledmilk.ibikecph.favorites.FavoriteListItem;
 import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
 import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
 import com.spoiledmilk.ibikecph.login.LoginActivity;
@@ -52,7 +51,7 @@ public class LeftMenu extends Fragment {
     protected static final int dividerHeight = Util.dp2px(2);
 
     //SortableListView favoritesList;
-    protected ArrayList<FavoritesData> favorites = new ArrayList<FavoritesData>();
+    protected ArrayList<FavoriteListItem> favorites = new ArrayList<FavoriteListItem>();
     protected RelativeLayout favoritesHeaderContainer, favoritesContainer;
     protected ListView menuList;
 
