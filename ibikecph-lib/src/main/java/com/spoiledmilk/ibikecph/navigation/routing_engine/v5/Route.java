@@ -111,8 +111,8 @@ public class Route extends SMRoute {
                 return false;
             }
 
-            upcomingTurnInstructions = new ArrayList<>();
-            pastTurnInstructions = new LinkedList<>();
+            upcomingTurnInstructions.clear();
+            pastTurnInstructions.clear();
             visitedLocations = new ArrayList<>();
             if(departureTime > 0 && arrivalTime > 0) {
                 Log.d("Route", "Overriding duration from difference in arrival and departure");

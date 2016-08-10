@@ -46,12 +46,12 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     /**
      * Turn instructions on the route that the user has passed
      */
-    protected List<SMTurnInstruction> pastTurnInstructions;
+    protected List<SMTurnInstruction> pastTurnInstructions = new LinkedList<>();
 
     /**
      * Turn instructions from the next upcoming instruction to the last
      */
-    protected ArrayList<SMTurnInstruction> upcomingTurnInstructions;
+    protected ArrayList<SMTurnInstruction> upcomingTurnInstructions = new ArrayList<>();
 
     public List<Location> visitedLocations;
     float averageSpeed;
@@ -462,8 +462,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 return false;
             }
 
-            upcomingTurnInstructions = new ArrayList<>();
-            pastTurnInstructions = new LinkedList<>();
+            upcomingTurnInstructions.clear();
+            pastTurnInstructions.clear();
             visitedLocations = new ArrayList<>();
             if(departureTime > 0 && arrivalTime > 0) {
                 Log.d("SMRoute", "Overriding duration from difference in arrival and departure");
@@ -657,86 +657,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         updateDistances(loc);
 
         estimatedDurationLeft = Math.round(estimatedDistanceLeft * estimatedDuration / estimatedDistance);
-
-        /*
-        double destinationRadiusPublic = 300;
-        double leaveLastPublicInfoRadius = 300; // Display two informations in fragment until we are further away than this
-        double leavingLastPublicRadius = 300; // Display "get on transport xx on xx" until we are this distance away, then change to "get off on xx"
-        */
-
-        // TODO: Reimplement a proper behaviour when leaving or changing public transportation
-        /*
-        if (type == RouteType.BREAK) {
-            try {
-                if (NavigationMapHandler.routePos == Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).size() - 1) {
-                    if (!isPublicTransportation(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
-                        //destRadius += "Next stop is final destination and not public, setting distanceToFinish to = ";
-                        destinationRadius = 40.0;
-                    } else {
-                        //destRadius += "Next stop is final destination and public, setting distanceToFinish to = ";
-                        destinationRadius = destinationRadiusPublic;
-                    }
-                } else if (isPublicTransportation(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos + 1).transportType)) {
-                    //destRadius += "Next stop is public, setting distanceToFinish to = ";
-                    destinationRadius = destinationRadiusPublic;
-                }
-
-                //Location of the last public when next step is leaving the public station
-                if (NavigationMapHandler.routePos > 0) {
-                    int pos = NavigationMapHandler.routePos - 1;
-                    //Log.d("DV", "checking with pos = " + pos);
-                    //If last was a public transport type
-                    if (isPublicTransportation(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(pos).transportType)) {
-                        Log.d("DV", "previous transport type was = " + Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(pos).transportType);
-                        Location location = Util.locationFromCoordinates(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLatitude(),
-                                Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLongitude());
-                        double distance = location.distanceTo(lastLocation);
-                        if (distance <= leaveLastPublicInfoRadius) {
-                            NavigationMapHandler.displayExtraField = true;
-                            NavigationMapHandler.isPublicTransportation = false;
-                            NavigationMapHandler.displayGetOffAt = false;
-                            //Log.d("DV", "distance to lastLocation = " + distance);
-                        } else {
-                            NavigationMapHandler.displayExtraField = false;
-                        }
-
-                        //If current is a public transport type
-                        if (isPublicTransportation(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
-                            Log.d("DV", "transport type with current routepos is = " + Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType);
-                            location = Util.locationFromCoordinates(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLatitude(),
-                                    Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLongitude());
-                            distance = location.distanceTo(lastLocation);
-                            if (distance >= leavingLastPublicRadius) {
-                                //Log.d("DV", "2distance to lastLocation = " + distance);
-                                //Log.d("DV", "Setting displayGetOffAt");
-                                NavigationMapHandler.isPublicTransportation = false;
-                                NavigationMapHandler.displayGetOffAt = true;
-                            } else {
-                                NavigationMapHandler.isPublicTransportation = true;
-                            }
-
-                        }
-                        //Location of the last public when next step is leaving the public station with a public transport type
-                    } else if (isPublicTransportation(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType)) {
-                        Log.d("DV", "transport type with current routepos is = " + Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos).transportType);
-                        Location location = Util.locationFromCoordinates(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLatitude(),
-                                Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.get(Geocoder.arrayLists.get(NavigationMapHandler.obsInt.getPageValue()).get(NavigationMapHandler.routePos - 1).waypoints.size() - 1).getLongitude());
-                        double distance = location.distanceTo(lastLocation);
-                        if (distance >= leavingLastPublicRadius) {
-                            //Log.d("DV", "2distance to lastLocation = " + distance);
-                            //Log.d("DV", "Setting displayGetOffAt");
-                            NavigationMapHandler.isPublicTransportation = false;
-                            NavigationMapHandler.displayGetOffAt = true;
-                        } else {
-                        }
-
-                    }
-                }
-            } catch (Exception ex) {
-                Log.d("DV", "Next stop exception = " + ex.getMessage());
-            }
-        }
-        */
 
         // TODO: Consider if this check is need - maybe we only want to reach the destination once.
         if (!reachedDestination) {
