@@ -6,7 +6,6 @@
 package com.spoiledmilk.ibikecph.search;
 
 import java.util.LinkedList;
-import java.util.Locale;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -21,15 +20,21 @@ import com.spoiledmilk.ibikecph.util.Util;
  */
 public abstract class SearchListItem {
 
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public void setFullAddress(String addressFullAddress) {
+		this.address.setFullAddress(addressFullAddress);
+	}
+
 	public enum nodeType {
 		CURRENT_POSITION, FAVORITE, HISTORY, KORTFOR, FOURSQUARE
 	};
-
-	public static final int POINTS_EXACT_NAME = 20;
-	public static final int POINTS_EXACT_ADDRESS = 10;
-	public static final int POINTS_PART_NAME = 1;
-	public static final int POINTS_PART_ADDRESS = 1;
-	public static final int MINIMUM_PASS_LENGTH = 3;
 
 	protected JsonNode jsonNode;
 
@@ -38,10 +43,9 @@ public abstract class SearchListItem {
 	}
 
 	protected nodeType type;
-	protected double latitude = -1, longitude = -1;
-	private int relevance = 0;
 	protected double distance = 0;
-	protected String number = "";
+
+	protected Address address = new Address();
 
 	public SearchListItem(JsonNode jsonNode, nodeType type) {
 		this.jsonNode = jsonNode;
@@ -53,102 +57,16 @@ public abstract class SearchListItem {
 		this.type = type;
 	}
 
-	public abstract String getName();
-
-	public abstract String getAdress();
-
-	public abstract String getStreet();
-
 	public abstract int getOrder();
 
-	public abstract String getZip();
-
-	public abstract String getCity();
-
-	public abstract String getCountry();
-
-	public abstract String getSource();
+	public String getSource() {
+		return address.getSource().toString();
+	}
 
 	public abstract String getSubSource();
 
-	public abstract int getIconResourceId();
-
-	public int getRelevance() {
-		return relevance;
-	}
-
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public String getGeocodeUrl() {
-		return "";
-	}
-
-	public static int pointsForName(String name, String address, String srchString) {
-		LinkedList<String> terms = new LinkedList<String>();
-
-		String srchStringSplit[] = srchString.split(" ");
-
-		for (String str : srchStringSplit) {
-			if (!terms.contains(str))
-				terms.add(str);
-		}
-
-		int total = 0;
-
-		int points = Util.numberOfOccurenciesOfString(name, srchString);
-
-		if (points > 0) {
-			total += points * POINTS_EXACT_NAME;
-		} else {
-			for (String str : terms) {
-				points = Util.numberOfOccurenciesOfString(name, str);
-				if (points > 0) {
-					total += points * POINTS_PART_NAME;
-				}
-			}
-		}
-
-		points = Util.numberOfOccurenciesOfString(address, srchString);
-
-		if (points > 0) {
-			total += points * POINTS_EXACT_ADDRESS;
-		} else {
-			for (String str : terms) {
-				points = Util.numberOfOccurenciesOfString(address, str);
-				if (points > 0) {
-					total += points * POINTS_PART_NAME;
-				}
-			}
-		}
-
-		return total;
-	}
-
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
-	}
-
-	public SearchListItem setRelevance(String srchString) {
-		relevance = 0;
-		if (getName().toLowerCase(Locale.US).contains(srchString.toLowerCase(Locale.US)))
-			relevance += 20;
-		if (getAdress().toLowerCase(Locale.US).contains(srchString.toLowerCase(Locale.US)))
-			relevance += 10;
-		for (String s : srchString.split("[\\p{P} \\t\\n\\r]")) {
-			if (s.toLowerCase(Locale.US).contains(srchString.toLowerCase(Locale.US)))
-				relevance++;
-		}
-		return this;
+	public int getIconResourceId() {
+		return 0;
 	}
 
 	public double getDistance() {
@@ -159,16 +77,20 @@ public abstract class SearchListItem {
 		this.distance = d;
 	}
 
-	public abstract String getFormattedNameForSearch();
-
-	public abstract String getOneLineName();
-
-	public String getNumber() {
-		return number;
-	}
-
-	public void setNumber(String number) {
-		this.number = number;
+	public String getOneLineName() {
+		String result = "";
+		String primary = address.getPrimaryDisplayString();
+		if(primary != null && !primary.isEmpty()) {
+			result += primary;
+		}
+		String secondary = address.getSecondaryDisplayString();
+		if(secondary != null && !secondary.isEmpty()) {
+			if(!result.isEmpty()) {
+				result += ", ";
+			}
+			result += secondary;
+		}
+		return result;
 	}
 
 	public JsonNode getJsonNode() {
@@ -178,11 +100,19 @@ public abstract class SearchListItem {
 	public static SearchListItem instantiate(JsonNode node) {
 		SearchListItem ret = null;
 		if (node.has("location")) {
-			ret = new FoursquareData(node);
+			ret = new FoursquareListItem(node);
 		} else if (node.has("properties")) {
-			ret = new KortforData(node);
+			ret = new KortforsyningenListItem(node);
 		}
 		return ret;
+	}
+
+	public String getPrimaryDisplayString() {
+		return address.getPrimaryDisplayString();
+	}
+
+	public String getSecondaryDisplayString() {
+		return address.getSecondaryDisplayString();
 	}
 
 }
