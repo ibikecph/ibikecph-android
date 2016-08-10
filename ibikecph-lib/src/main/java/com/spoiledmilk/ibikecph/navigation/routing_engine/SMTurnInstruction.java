@@ -272,18 +272,6 @@ public class SMTurnInstruction {
 		}
 	}
 
-	// Full textual representation of the object, used mainly for debugging
-	@Override
-	public String toString() {
-		if (drivingDirection == TurnDirection.GetOnPublicTransportation ||
-			drivingDirection == TurnDirection.GetOffPublicTransportation)
-			return name;
-		else
-			return String.format(Locale.US, "%s %s [SMTurnInstruction: %d, %d, %s, %s, %f, (%f, %f)]", descriptionString, name,
-					distance, timeInSeconds, directionAbbreviation, azimuth, getLocation().getLatitude(), getLocation()
-							.getLongitude());
-	}
-
 	public String getPrefix() {
 		if (transportType != null && transportType != SMRoute.TransportationType.BIKE) {
 			return transportType.toDisplayString() + ": ";
