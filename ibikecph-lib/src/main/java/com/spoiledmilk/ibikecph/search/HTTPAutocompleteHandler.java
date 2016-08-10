@@ -193,7 +193,7 @@ public class HTTPAutocompleteHandler {
 			// + URLEncoder.encode(address.street, "UTF-8") + "*";
 
 			if (address.hasHouseNumber()) {
-				urlString += "&husnr=" + address.getHouseNumber();
+				urlString += "&husnr=" + address.getHouseNumber() + "*";
 			}
 
 			urlString += "&geop=" + Util.limitDecimalPlaces(currentLocation.getLongitude(), 6) + "" + ","
