@@ -24,6 +24,7 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
 import com.spoiledmilk.ibikecph.util.IBikePreferences;
+import com.spoiledmilk.ibikecph.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -154,6 +155,10 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
         this.route = route;
         if(this.route != null) {
             this.route.addListener(this);
+            Location currentLocation = BikeLocationService.getInstance().getLastValidLocation();
+            // To avoid an immediate recalculation of the route - we set the lastRecalcLocation
+            this.route.setLastRecalcLocation(currentLocation);
+            this.route.updateDistances(currentLocation);
             BikeLocationService.getInstance().addLocationListener(this.route);
         }
     }
