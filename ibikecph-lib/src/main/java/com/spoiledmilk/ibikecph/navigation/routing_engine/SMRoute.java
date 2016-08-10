@@ -67,7 +67,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
     public double lastCorrectedHeading;
     public int lastVisitedWaypointIndex;
     public float distanceFromRoute;
-    protected String viaStreets;
     protected Location lastRecalcLocation;
     public String startStationName, endStationName;
     public boolean reachedDestination = false;
@@ -80,6 +79,10 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
     public String getDestinationHint() {
         return destinationHint;
+    }
+
+    public void setLastRecalcLocation(Location lastRecalcLocation) {
+        this.lastRecalcLocation = lastRecalcLocation;
     }
 
     public enum TransportationType {
@@ -687,7 +690,8 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
 
         // Only recalculate if we're walking or biking or transportation type is irrelevant
         if (transportType == TransportationType.BIKE || transportType == TransportationType.WALK) {
-            if (!approachingFinish() && listeners.size() > 0 && isTooFarFromRoute(loc, maximalDistance)) {
+            boolean navigationStarted = pastTurnInstructions.size() > 0;
+            if (navigationStarted && !approachingFinish() && listeners.size() > 0 && isTooFarFromRoute(loc, maximalDistance)) {
                 recalculateRoute(loc);
                 return;
             }
@@ -716,29 +720,20 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
                 while (it.hasNext()) {
                     SMTurnInstruction instruction = it.next();
                     double d = loc.distanceTo(instruction.location);
-                    if (closestWaypointIndex < instruction.waypointsIndex) {
-                        // future instruction, stop the loop
-                        instruction.lastD = loc.distanceTo(instruction.location);
-                        break;
-                    } else if (closestWaypointIndex > instruction.waypointsIndex) {
-                        // we have definitely passed the instruction
+                    if (closestWaypointIndex > instruction.waypointsIndex) {
+                        // We have definitely passed the instruction - remove it
                         it.remove();
                         pastTurnInstructions.add(instruction);
-                    } else if (d < instruction.getTransitionDistance() && (!instruction.plannedForRemoving || d > instruction.lastD)) {
-                        // we are approaching the instruction
-                        LOG.d("routing debug instruction planned for removing = " + instruction.fullDescriptionString + " d = "
-                                + loc.distanceTo(instruction.location));
-                        instruction.plannedForRemoving = true;
-                    } else {
-                        if (d >= instruction.getTransitionDistance() && (instruction.plannedForRemoving || d > instruction.lastD)) {
-                            // remove the instruction
-                            LOG.d("routing debug removing the instruction " + instruction.fullDescriptionString);
-                            it.remove();
-                            pastTurnInstructions.add(instruction);
-                        }
+                    } else if (!instruction.plannedForRemoval && d < instruction.getTransitionDistance()) {
+                        // We are approaching the instruction - should be removed when moving away from it.
+                        Log.d("SMRoute", "Approaching the instruction " + instruction + " (removing it soon)");
+                        instruction.plannedForRemoval = true;
+                    } else if (instruction.plannedForRemoval && d >= instruction.getTransitionDistance()) {
+                        // Now we are moving away from the instruction
+                        Log.d("SMRoute", "Passed the instruction " + instruction + " (removing it)");
+                        it.remove();
+                        pastTurnInstructions.add(instruction);
                     }
-                    instruction.lastD = loc.distanceTo(instruction.location);
-
                 }
             }
 
@@ -860,7 +855,7 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
         return isNear && upcomingTurnInstructions.size() == 1;
     }
 
-    protected void updateDistances(Location loc) {
+    public void updateDistances(Location loc) {
         if (estimatedDistanceLeft < 0.0) {
             estimatedDistanceLeft = estimatedDistance;
         }
@@ -869,9 +864,6 @@ public class SMRoute implements SMHttpRequestListener, LocationListener {
             // Calculate distance from location to the next turn
             SMTurnInstruction nextTurn = upcomingTurnInstructions.get(0);
             nextTurn.distance = calculateDistanceToNextTurn(loc);
-            if (nextTurn.plannedForRemoving && nextTurn.distance < 10) {
-                nextTurn.distance = 0;
-            }
 
             estimatedDistanceLeft = nextTurn.distance;
             // Calculate distance from next turn to the end of the route

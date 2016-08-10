@@ -114,7 +114,7 @@ public class SMTurnInstruction {
 
 	public String descriptionString;
 	public String fullDescriptionString;
-	public boolean plannedForRemoving = false;
+	public boolean plannedForRemoval = false;
 	double lastD = -1;
 
 	public SMTurnInstruction() {

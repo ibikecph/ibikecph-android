@@ -135,7 +135,6 @@ public class BreakRouteRequester extends RouteRequester {
     protected void onPostExecute(Boolean success) {
         super.onPostExecute(success);
         if(success && response != null) {
-            // parseResponse(response.getJsonNode());
             callback.onSuccess(response);
         } else {
             if(response != null) {
