@@ -178,15 +178,7 @@ public class TurnInstruction extends SMTurnInstruction implements Speakable {
             transportType = SMRoute.TransportationType.WALK;
         }
 
-        name = stepNode.get("name").asText();
-        if (name.matches("\\{.+\\:.+\\}")) {
-            name = IBikeApplication.getString(name);
-        }
-
-        // TODO: Remove this if we are absolutely sure that this will never occur
-        if(name.contains("{highway")) {
-            throw new RuntimeException("Encountered an untranslated string: '" + name + "'");
-        }
+        name = translateStepName(stepNode.get("name").asText());
 
         double duration = stepNode.get("duration").asDouble();
         timeInSeconds = (int) Math.round(duration);
@@ -194,6 +186,14 @@ public class TurnInstruction extends SMTurnInstruction implements Speakable {
         if(maneuverNode.get("bearing_after") != null && maneuverNode.get("bearing_after").isNumber()) {
             bearingAfter = maneuverNode.get("bearing_after").asInt();
             directionAbbreviation = generateDirectionAbbreviation(bearingAfter);
+        }
+    }
+
+    public static String translateStepName(String name) {
+        if (name.matches("\\{.+:.*\\}")) {
+            return IBikeApplication.getString(name);
+        } else {
+            return name;
         }
     }
 

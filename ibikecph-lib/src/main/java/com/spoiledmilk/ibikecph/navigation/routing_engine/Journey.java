@@ -2,12 +2,15 @@ package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.v5.Route;
 import com.spoiledmilk.ibikecph.search.Address;
+import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +18,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static com.spoiledmilk.ibikecph.navigation.routing_engine.v5.TurnInstruction.translateStepName;
 
 /**
  * A journey consisting of multiple smaller routes.
@@ -81,13 +86,18 @@ public class Journey {
                 throw new RuntimeException("Expected route_name to be an array with two elements");
             }
 
-            route.startAddress = new Address();
-            route.startAddress.setStreet(routeNode.get("route_name").get(0).textValue());
-            route.startAddress.setLocation(new LatLng(start.getLatitude(), start.getLongitude()));
+            JsonNode routeSummaryNode = routeNode.get("route_summary");
+            if(routeSummaryNode != null) {
+                String startName = translateStepName(routeSummaryNode.get("start_point").textValue());
+                route.startAddress = new Address();
+                route.startAddress.setName(startName);
+                route.startAddress.setLocation(new LatLng(start.getLatitude(), start.getLongitude()));
 
-            route.endAddress = new Address();
-            route.endAddress.setStreet(routeNode.get("route_name").get(1).textValue());
-            route.endAddress.setLocation(new LatLng(end.getLatitude(), end.getLongitude()));
+                String endName = translateStepName(routeSummaryNode.get("end_point").textValue());
+                route.endAddress = new Address();
+                route.endAddress.setName(endName);
+                route.endAddress.setLocation(new LatLng(end.getLatitude(), end.getLongitude()));
+            }
 
             // Add the route to the routes of the journey.
             routes.add(route);
