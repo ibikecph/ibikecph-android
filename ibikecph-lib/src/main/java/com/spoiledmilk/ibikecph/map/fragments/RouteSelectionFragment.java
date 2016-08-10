@@ -85,6 +85,9 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
 
         ((TextView) v.findViewById(R.id.startRouteButtonText)).setText(IBikeApplication.getString("Start"));
 
+        // Trigger the route type changed to update route type buttons.
+        routeTypeChanged(mapState.getType());
+
         return v;
     }
 

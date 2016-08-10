@@ -50,8 +50,7 @@ public class BreakRouteSelectionFragment extends RouteSelectionFragment {
         tabs.setFillColor(getResources().getColor(R.color.PrimaryColor));
 
         // Trigger the route type changed to update route type buttons.
-        RouteSelectionState state = getMapState(RouteSelectionState.class);
-        routeTypeChanged(state.getType());
+        routeTypeChanged(mapState.getType());
 
         return v;
     }
