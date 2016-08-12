@@ -31,8 +31,9 @@ import java.util.Locale;
  */
 public class SMHttpRequest {
 
-    protected static final int GEOCODER_SEARCH_RADIUS = 50;
-
+    /**
+     * @Deprecated Use the RouteRequester classes instead of this.
+     */
     public static final int REQUEST_GET_ROUTE = 2;
     public static final int REQUEST_FIND_NEAREST_LOC = 3;
     public static final int REQUEST_FIND_PLACES_FOR_LOC = 4;
@@ -109,10 +110,6 @@ public class SMHttpRequest {
                 return true;
             }
         });
-    }
-
-    public void getRoute(final Location start, final Location end, List<Location> viaPoints, final SMHttpRequestListener listener) {
-        getRoute(start, end, viaPoints, null, null, null, listener, REQUEST_GET_ROUTE, 18, false, RouteType.FASTEST);
     }
 
     public void getRecalculatedRoute(final Location start, final Location end, List<Location> viaPoints, final String chksum, final String startHint,
