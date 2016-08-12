@@ -94,10 +94,19 @@ public class SMTurnInstruction {
 	public String directionAbbreviation; // N: north, S: south, E: east, W: west, NW:
 									   // North West, ...
 	public float azimuth;
+
 	/**
-	 * @deprecated There is no actual need for an index into the waypoints.
+	 * @deprecated There is no actual need for an index into the points.
 	 */
-	public int waypointsIndex;
+	protected int pointsIndex;
+
+	public void setPointsIndex(int pointsIndex) {
+		this.pointsIndex = pointsIndex;
+	}
+
+	public int getPointsIndex() {
+		return this.pointsIndex;
+	}
 
 	/**
 	 * The location in which this instruction should be taken by the user.
@@ -158,7 +167,7 @@ public class SMTurnInstruction {
 			azimuth = (float) instructionNode.get(7).asDouble();
 
 			generateFullDescriptionString();
-			waypointsIndex = instructionNode.get(3).asInt();
+			pointsIndex = instructionNode.get(3).asInt();
 		}
 	}
 

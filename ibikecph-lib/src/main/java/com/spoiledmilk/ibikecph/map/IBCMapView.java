@@ -130,7 +130,7 @@ public class IBCMapView extends MapView {
     public void zoomToJourney(Journey journey, float padding) {
         List<LatLng> points = new ArrayList<>();
         for(SMRoute route: journey.getRoutes()) {
-            for(Location location: route.getWaypoints()) {
+            for(Location location: route.getPoints()) {
                 points.add(new LatLng(location.getLatitude(), location.getLongitude()));
             }
         }

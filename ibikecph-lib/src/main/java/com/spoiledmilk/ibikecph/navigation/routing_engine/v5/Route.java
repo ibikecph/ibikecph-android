@@ -8,10 +8,7 @@ import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.*;
-import com.spoiledmilk.ibikecph.util.LOG;
-import com.spoiledmilk.ibikecph.util.Util;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -19,6 +16,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 /**
+ * This route models a route from the OSRMv5 or the IBikeCPH journey API.
  * Created by kraen on 12-07-16.
  */
 public class Route extends SMRoute {
@@ -33,37 +31,53 @@ public class Route extends SMRoute {
      */
     private static final float AVERAGE_CARGO_BIKING_SPEED = 10f * 1000f / 3600f;
 
+    protected List<Leg> legs = new ArrayList<>();
+
     public Route(Location start, Location end, RouteType type) {
         super(start, end, type);
     }
 
-    /**
-     * The OSRM Version used when parsing JSON.
-     * @deprecated Can be removed once OSRMv4 parsing is no longer supported
-     */
-    public enum OsrmVersion {
-        V4,
-        V5
-    }
-
-    /**
-     * Parse JSON from a specific version of OSRM
-     * @deprecated Can be removed once OSRMv4 parsing is no longer supported
-     * @param rootNode
-     * @param version
-     * @return
-     */
-    public boolean parseFromJson(JsonNode rootNode, OsrmVersion version) {
-        if(version == OsrmVersion.V4) {
-            return super.parseFromJson(rootNode);
+    @Override
+    public Location getStartLocation() {
+        if(legs.size() > 0) {
+            Leg firstLeg = legs.get(0);
+            return firstLeg.getStartLocation();
         } else {
-            return parseFromJson(rootNode);
+            return null;
         }
     }
 
     @Override
+    public LatLng getRealStartLocation() {
+        return startAddress.getLocation();
+    }
+
+    @Override
+    public Location getEndLocation() {
+        if(legs.size() > 0) {
+            Leg lastLeg = legs.get(legs.size()-1);
+            return lastLeg.getEndLocation();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public LatLng getRealEndLocation() {
+        return endAddress.getLocation();
+    }
+
+    @Override
+    public List<Location> getPoints() {
+        List<Location> result = new ArrayList<>();
+        for(Leg leg: legs) {
+            result.addAll(leg.getPoints());
+        }
+        return result;
+    }
+
+    @Override
     public boolean parseFromJson(JsonNode rootNode) {
-        // Log.d("Route", "parseFromJson() json = " + rootNode);
         synchronized (this) {
             if (rootNode == null) {
                 return false;
@@ -74,7 +88,7 @@ public class Route extends SMRoute {
                 if(rootNode.get("route_summary").get("type") != null) {
                     String transportType = rootNode.get("route_summary").path("type").textValue();
                     if (transportType != null) {
-                        this.transportType = SMRoute.TransportationType.valueOf(transportType);
+                        this.transportType = TransportationType.valueOf(transportType);
                     }
                 }
                 if(rootNode.get("route_summary").get("name") != null) {
@@ -104,12 +118,6 @@ public class Route extends SMRoute {
                 throw new RuntimeException("Expected a single element in the 'routes' field");
             }
             JsonNode routeNode = rootNode.get("routes").get(0);
-            // Decode the polyline geometry of the primary route
-            waypoints = decodePolyline(routeNode.get("geometry").textValue(), null);
-
-            if (waypoints == null || waypoints.size() < 2) {
-                return false;
-            }
 
             upcomingTurnInstructions.clear();
             pastTurnInstructions.clear();
@@ -138,123 +146,26 @@ public class Route extends SMRoute {
 
             if (routeNode.get("legs") == null ||
                 !routeNode.get("legs").isArray() ||
-                routeNode.get("legs").size() != 1) {
-                throw new RuntimeException("Expected a single item in the routes 'legs' field");
+                routeNode.get("legs").size() == 0) {
+                throw new RuntimeException("Expected at least one item in the routes 'legs' field");
             }
 
-            // An index into the waypoints that will make sure that
-            int waypointIndex = 0;
+            for(JsonNode legNode: routeNode.get("legs")) {
+                Leg leg = new Leg(legNode);
+                legs.add(leg);
+            }
 
-            JsonNode stepsJson = routeNode.get("legs").get(0).get("steps");
-            if (stepsJson != null && stepsJson.size() > 0) {
-                boolean isFirst = true;
-                int distanceToNextInstruction = 0;
-
-                for (JsonNode stepNode: stepsJson) {
-                    TurnInstruction instruction = new TurnInstruction(stepNode);
-                    // Sets the distance from the previous instruction
-                    instruction.setDistance(distanceToNextInstruction);
-                    distanceToNextInstruction = (int) Math.round(stepNode.get("distance").asDouble());
-
-                    instruction.waypointsIndex = getWaypointIndex(instruction, waypointIndex);
-                    waypointIndex = instruction.waypointsIndex;
-
-                    // Generate a special description if this is the first instruction on the route.
-                    if (isFirst) {
-                        instruction.generateStartDescriptionString();
-                        isFirst = false;
-                    } else {
-                        instruction.generateDescriptionString();
-                    }
-
-                    // If the vehicle was not given by the journey API, just choose the general
-                    // transportation type of the route.
-                    if(instruction.transportType == null && transportType != null) {
-                        instruction.transportType = transportType;
-                    } else if(instruction.transportType == null) {
-                        instruction.transportType = TransportationType.BIKE;
-                    }
-
-                    if(instruction.getDescription() == null) {
-                        instruction.setDescription(description);
-                    }
-
-                    upcomingTurnInstructions.add(instruction);
+            if(legs.size() == 1) {
+                Leg onlyLeg = legs.get(0);
+                if(onlyLeg.getPoints().size() == 0) {
+                    onlyLeg.decodePointsFromPolyline(routeNode.get("geometry").textValue());
                 }
             }
-            lastVisitedWaypointIndex = 0;
+
         }
         return true;
     }
 
-    /**
-     * Iterating the waypoints and returns the closes after waypointIndex to the location of the
-     * instructions provided
-     * @deprecated This should be removed as soon as nothing depends on the waypoint index.
-     * @param instruction
-     * @param waypointIndex
-     * @return
-     */
-    protected int getWaypointIndex(SMTurnInstruction instruction, int waypointIndex) {
-        int result = waypointIndex;
-        float minimalDistance = Float.MAX_VALUE;
-        for(int i = waypointIndex; i < waypoints.size(); i++) {
-            float distance = instruction.getLocation().distanceTo(waypoints.get(i));
-            if(distance < minimalDistance) {
-                minimalDistance = distance;
-                result = i;
-            }
-        }
-        return result;
-    }
-
-
-    /**
-     * Decoder for the Encoded Polyline Algorithm Format
-     * @see <a href="https://developers.google.com/maps/documentation/utilities/polylinealgorithm">Encoded Polyline Algorithm Format</a>
-     */
-    public static List<Location> decodePolyline(String encodedString, TransportationType type) {
-        if (encodedString == null)
-            return null;
-
-        byte[] bytes;
-        try {
-            bytes = encodedString.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            LOG.e("decodePolyline() UnsupportedEncodingException", e);
-            return null;
-        }
-
-        int len = encodedString.length();
-
-        int lat = 0, lng = 0;
-
-        List<Location> locations = new ArrayList<Location>();
-        for (int i = 0; i < len; ) {
-            for (int k = 0; k < 2; k++) {
-
-                int delta = 0;
-                int shift = 0;
-
-                byte c;
-                do {
-                    c = (byte) (bytes[i++] - 63);
-                    delta |= (c & 0x1f) << shift;
-                    shift += 5;
-                } while ((c & 0x20) != 0);
-
-                delta = ((delta & 0x1) != 0) ? ((~delta >> 1) | 0x80000000) : (delta >> 1);
-                if (k == 0)
-                    lat += delta;
-                else
-                    lng += delta;
-            }
-            Location loc = Util.locationFromCoordinates((double) lat / GEOMETRY_SCALING_V5, (double) lng / GEOMETRY_SCALING_V5);
-            locations.add(loc);
-        }
-
-        return locations;
-    }
 
     @Override
     public void recalculateRoute(final Location location) {
@@ -307,13 +218,17 @@ public class Route extends SMRoute {
 
     @Override
     public float getEstimatedDuration() {
-        if(transportType.isPublicTransportation()) {
-            return arrivalTime - departureTime;
-        } else if(getType().equals(RouteType.CARGO)) {
-            return getEstimatedDistance() / AVERAGE_CARGO_BIKING_SPEED;
-        } else {
-            return getEstimatedDistance() / AVERAGE_BIKING_SPEED;
+        float result = 0f;
+        for(Leg leg: legs) {
+            if(transportType.isPublicTransportation()) {
+               result += leg.arrivalTime - leg.departureTime;
+            } else if(getType().equals(RouteType.CARGO)) {
+                result += leg.getEstimatedDistance() / AVERAGE_CARGO_BIKING_SPEED;
+            } else {
+                result += leg.getEstimatedDistance() / AVERAGE_BIKING_SPEED;
+            }
         }
+        return result;
     }
 
     @Override
@@ -328,6 +243,49 @@ public class Route extends SMRoute {
             return getEstimatedDistanceLeft() / AVERAGE_CARGO_BIKING_SPEED;
         } else {
             return getEstimatedDistanceLeft() / AVERAGE_BIKING_SPEED;
+        }
+    }
+
+    @Override
+    public List<SMTurnInstruction> getUpcomingTurnInstructions() {
+        List<SMTurnInstruction> result = new LinkedList<>();
+        for(Leg leg: legs) {
+            result.addAll(leg.upcomingSteps);
+        }
+        return result;
+    }
+
+    @Override
+    public List<SMTurnInstruction> getPastTurnInstructions() {
+        List<SMTurnInstruction> result = new LinkedList<>();
+        for(Leg leg: legs) {
+            result.addAll(leg.passedSteps);
+        }
+        return result;
+    }
+
+    @Override
+    public float getEstimatedDistance() {
+        float result = 0f;
+        for(Leg leg: legs) {
+            result += leg.getEstimatedDistance();
+        }
+        return result;
+    }
+
+    @Override
+    public float getEstimatedDistanceLeft() {
+        float result = 0f;
+        for(Leg leg: legs) {
+            result += leg.getEstimatedDistanceLeft();
+        }
+        return result;
+    }
+
+    @Override
+    public void addListener(SMRouteListener listener) {
+        if(listener != null && !listeners.contains(listener)) {
+            listeners.add(listener);
         }
     }
 }
