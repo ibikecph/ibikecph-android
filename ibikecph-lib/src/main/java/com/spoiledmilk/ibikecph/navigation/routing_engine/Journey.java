@@ -24,7 +24,7 @@ import static com.spoiledmilk.ibikecph.navigation.routing_engine.v5.TurnInstruct
 /**
  * A journey consisting of multiple smaller routes.
  * The result of a call to the break route journey API.
- * TODO: Implement a route listener that adds and removes itself when route destinations are reached.
+ * @deprecated Use the Route instead
  * Created by kraen on 27-06-16.
  */
 public class Journey {
@@ -79,7 +79,7 @@ public class Journey {
             Location start = parseViaPoint(routeNode.get("via_points").get(0));
             Location end = parseViaPoint(routeNode.get("via_points").get(routeNode.get("via_points").size() - 1));
             Route route = new Route(start, end, RouteType.BREAK);
-            route.parseFromJson(routeNode, Route.OsrmVersion.V4);
+            route.parseFromJson(routeNode);
 
             // Set the start and end addresses on the route.
             if(!routeNode.get("route_name").isArray() || routeNode.get("route_name").size() != 2) {
