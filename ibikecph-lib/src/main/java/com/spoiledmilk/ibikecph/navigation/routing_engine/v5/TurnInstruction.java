@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.navigation.read_aloud.Speakable;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType;
 import com.spoiledmilk.ibikecph.util.Util;
 
 /**
@@ -173,9 +173,9 @@ public class TurnInstruction extends SMTurnInstruction implements Speakable {
 
         String mode = stepNode.get("mode").asText();
         if(mode.equals("cycling")) {
-            transportType = SMRoute.TransportationType.BIKE;
+            transportType = TransportationType.BIKE;
         } else if(mode.equals("pushing bike")) {
-            transportType = SMRoute.TransportationType.WALK;
+            transportType = TransportationType.WALK;
         }
 
         name = translateStepName(stepNode.get("name").asText());

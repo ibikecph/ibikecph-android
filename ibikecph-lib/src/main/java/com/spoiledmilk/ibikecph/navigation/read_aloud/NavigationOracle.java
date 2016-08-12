@@ -21,7 +21,7 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Locale;
 
-import static com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute.TransportationType.isPublicTransportation;
+import static com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType.isPublicTransportation;
 
 /**
  * The Navigation oracle speaks

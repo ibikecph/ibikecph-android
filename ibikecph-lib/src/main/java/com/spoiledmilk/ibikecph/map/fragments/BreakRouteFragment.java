@@ -19,6 +19,7 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
 /**
@@ -133,7 +134,7 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
                 }
 
                 // Update the route type icon
-                int typeIconId = journey.getRoutes().get(i).transportType.getDrawableId(SMRoute.TransportationType.DrawableSize.SMALL);
+                int typeIconId = journey.getRoutes().get(i).transportType.getDrawableId(TransportationType.DrawableSize.SMALL);
                 typeIconIV.setImageResource(typeIconId);
 
                 // Add the views
@@ -177,12 +178,12 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
             startTime[i] = timeStampFormat(route.departureTime);
             arrivalTime[i] = timeStampFormat(route.arrivalTime);
 
-            if (route.transportType == SMRoute.TransportationType.BIKE) {
+            if (route.transportType == TransportationType.BIKE) {
                 typeAndTime[i] = IBikeApplication.getString("vehicle_1") + " ";
                 typeAndTime[i] += formatDistance(route.getEstimatedDuration()) + " ";
                 typeAndTime[i] += "(" + formatTime(route.getEstimatedDuration()) + ")";
                 fromTo[i] = from + to;
-            } else if (route.transportType == SMRoute.TransportationType.WALK) {
+            } else if (route.transportType == TransportationType.WALK) {
                 typeAndTime[i] = IBikeApplication.getString("vehicle_2") + " ";
                 typeAndTime[i] += formatDistance(route.getEstimatedDuration()) + " ";
                 typeAndTime[i] += "(" + formatTime(route.getEstimatedDuration()) + ")";

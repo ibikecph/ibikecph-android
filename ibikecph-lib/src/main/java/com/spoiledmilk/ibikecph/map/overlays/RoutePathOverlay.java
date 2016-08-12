@@ -7,8 +7,7 @@ import android.graphics.Color;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
 import com.mapbox.mapboxsdk.views.MapView;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.map.RouteType;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType;
 
 /**
  * A PathOverlay making the draw method available for the RouteOverlay
@@ -21,14 +20,14 @@ public class RoutePathOverlay extends PathOverlay {
         CYCLE
     }
 
-    public RoutePathOverlay(Context context, SMRoute.TransportationType type) {
+    public RoutePathOverlay(Context context, TransportationType type) {
         super(getColor(context, type), 10);
     }
 
-    protected static int getColor(Context context, SMRoute.TransportationType type) {
-        if(type == SMRoute.TransportationType.BIKE) {
+    protected static int getColor(Context context, TransportationType type) {
+        if(type == TransportationType.BIKE) {
             return context.getResources().getColor(R.color.PrimaryColor);
-        } else if(type == SMRoute.TransportationType.WALK) {
+        } else if(type == TransportationType.WALK) {
             return Color.GRAY;
         } else {
             return Color.GRAY;

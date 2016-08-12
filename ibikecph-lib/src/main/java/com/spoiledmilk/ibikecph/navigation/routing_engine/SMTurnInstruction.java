@@ -11,9 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 
-import java.util.Locale;
-
-import static com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute.TransportationType.isPublicTransportation;
+import static com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType.isPublicTransportation;
 
 public class SMTurnInstruction {
 
@@ -121,7 +119,7 @@ public class SMTurnInstruction {
 
 	}
 
-	public SMRoute.TransportationType transportType;
+	public TransportationType transportType;
 
 	public SMTurnInstruction(JsonNode instructionNode) {
 		// Splitting on a dash an using the first value as an integer to indicate
@@ -146,13 +144,13 @@ public class SMTurnInstruction {
 			if (instructionNode.size() > 8) {
 				int vehicle = instructionNode.get(8).asInt();
 				if(vehicle == 1) {
-					transportType = SMRoute.TransportationType.BIKE;
+					transportType = TransportationType.BIKE;
 				} else if(vehicle == 2) {
-					transportType = SMRoute.TransportationType.WALK;
+					transportType = TransportationType.WALK;
 				} else if(vehicle == 3) {
-					transportType = SMRoute.TransportationType.F;
+					transportType = TransportationType.F;
 				} else if(vehicle == 4) {
-					transportType = SMRoute.TransportationType.TOG;
+					transportType = TransportationType.TOG;
 				}
 
 			}
@@ -273,7 +271,7 @@ public class SMTurnInstruction {
 	}
 
 	public String getPrefix() {
-		if (transportType != null && transportType != SMRoute.TransportationType.BIKE) {
+		if (transportType != null && transportType != TransportationType.BIKE) {
 			return transportType.toDisplayString() + ": ";
 		} else {
 			return "";

@@ -15,6 +15,7 @@ import com.spoiledmilk.ibikecph.map.IBCMarker;
 import com.spoiledmilk.ibikecph.map.MarkerType;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,13 +54,13 @@ public class JourneyOverlay extends Overlay implements LocationListener {
         // Crate a walk path, from the users current location to the route.
         // TODO: Fix the walk path for journeys computed with the breaking route API
         if(journey.getRoutes().size() > 0 && journey.getRoutes().get(0).startAddress.isCurrentLocation()) {
-            startingWalkPath = new RoutePathOverlay(mapView.getContext(), SMRoute.TransportationType.WALK);
+            startingWalkPath = new RoutePathOverlay(mapView.getContext(), TransportationType.WALK);
             updateStartingWalkPath(BikeLocationService.getInstance().getLastValidLocation());
             overlays.add(startingWalkPath);
         }
 
         // Create a walk path, from the last point in the overlay to the location the user tapped.
-        endingWalkPath = new RoutePathOverlay(mapView.getContext(), SMRoute.TransportationType.WALK);
+        endingWalkPath = new RoutePathOverlay(mapView.getContext(), TransportationType.WALK);
         if(journey.getRoutes().size() > 0) {
             SMRoute lastRoute = journey.getRoutes().get(journey.getRoutes().size()-1);
             endingWalkPath.addPoint(new LatLng(lastRoute.getEndLocation()));
