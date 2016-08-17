@@ -301,9 +301,9 @@ public class TurnInstruction implements Speakable {
 
     public double getTransitionDistance() {
         if (isPublicTransportation(transportType)) {
-            return 20d;
+            return 100d;
         } else {
-            return 10d;
+            return 20d;
         }
     }
 
