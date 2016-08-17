@@ -3,7 +3,6 @@ package com.spoiledmilk.ibikecph.map.states;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
-import android.os.Bundle;
 
 import com.mapbox.mapboxsdk.geometry.LatLng;
 
@@ -16,8 +15,7 @@ import com.spoiledmilk.ibikecph.map.fragments.BreakRouteSelectionFragment;
 import com.spoiledmilk.ibikecph.map.fragments.RouteSelectionFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
 import com.spoiledmilk.ibikecph.search.Address;
 
 import java.util.ArrayList;
@@ -35,8 +33,7 @@ public class RouteSelectionState extends MapState {
     protected RouteType routeType = RouteType.FASTEST;
 
     // A representation of the route after it's been fetched from the geocoder
-    protected SMRoute route;
-    protected Journey journey;
+    protected Route route;
 
     protected RouteSelectionFragment routeSelectionFragment;
 
@@ -122,7 +119,7 @@ public class RouteSelectionState extends MapState {
 
     /**
      * Set the route type
-     * @param routeType
+     * @param routeType the type of route
      */
     public void setType(RouteType routeType) {
         this.routeType = routeType;
@@ -163,20 +160,20 @@ public class RouteSelectionState extends MapState {
         if(source == null) {
             new RuntimeException("A route from nowhere - that doesn't make any sense");
         }
-        LatLng sourceLocation = source.getLocation();
+        final LatLng sourceLocation = source.getLocation();
         LatLng destinationLocation = destination.getLocation();
 
         Geocoder.RouteCallback routeCallback = new Geocoder.RouteCallback() {
             @Override
-            public void onSuccess(SMRoute route) {
-                route.startAddress = source;
-                route.endAddress = destination;
-                // TODO: Make the route callback called with a Journey instead.
-                setJourney(new Journey(route));
+            public void onSuccess(Route route) {
+                route.setStartAddress(source);
+                route.setEndAddress(destination);
+                setRoute(route);
             }
 
             @Override
             public void onSuccess(BreakRouteResponse breakRouteResponse) {
+                // TODO: Make the Geocoder.getRoute accept Address as arguments instead of LatLng
                 breakRouteResponse.setStartAddress(source);
                 breakRouteResponse.setEndAddress(destination);
                 if(routeSelectionFragment instanceof BreakRouteSelectionFragment) {
@@ -197,14 +194,14 @@ public class RouteSelectionState extends MapState {
     }
 
     /**
-     * Sets the journey to be displayed and to be used, if navigation is started.
+     * Sets the route to be displayed and to be used, if navigation is started.
      * This overload should be used to display a broken route instead of a regular route.
-     * @param journey
+     * @param route the route
      */
-    public void setJourney(Journey journey) {
-        this.journey = journey;
-        activity.getMapView().showJourney(journey);
-        activity.getMapView().zoomToJourney(journey);
+    public void setRoute(Route route) {
+        this.route = route;
+        activity.getMapView().showRoute(route);
+        activity.getMapView().zoomToRoute(route);
         routeSelectionFragment.refreshView();
     }
 
@@ -238,21 +235,12 @@ public class RouteSelectionState extends MapState {
 
     public void startNavigation() {
         // Using a local variable here, as transitioning away will reset the route on the state.
-        Journey journeyToNavigate = null;
-        if(route != null) {
-            journeyToNavigate = new Journey(route);
-        } else if(journey != null) {
-            journeyToNavigate = journey;
-        }
+        Route routeToNavigate = route;
         NavigatingState state = activity.changeState(NavigatingState.class);
-        state.setJourney(journeyToNavigate);
+        state.setRoute(routeToNavigate);
     }
 
-    public SMRoute getRoute() {
+    public Route getRoute() {
         return route;
-    }
-
-    public Journey getJourney() {
-        return journey;
     }
 }

@@ -11,20 +11,19 @@ import android.widget.Toast;
 
 import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
-import com.spoiledmilk.ibikecph.BikeLocationService;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.IssuesActivity;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.fragments.NavigationETAFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
+import com.spoiledmilk.ibikecph.navigation.NavigationState;
+import com.spoiledmilk.ibikecph.navigation.NavigationStateListener;
 import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.read_aloud.NavigationOracle;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRouteListener;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.RouteListener;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.TurnInstruction;
 import com.spoiledmilk.ibikecph.util.IBikePreferences;
-import com.spoiledmilk.ibikecph.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -33,10 +32,9 @@ import java.util.ArrayList;
  * The user is navigating a particular route from the current location towards a destination.
  * Created by kraen on 02-05-16.
  */
-public class NavigatingState extends MapState implements SMRouteListener, LocationListener, Serializable {
+public class NavigatingState extends MapState implements NavigationStateListener, LocationListener, Serializable {
 
-    protected SMRoute route;
-    protected Journey journey;
+    protected NavigationState navigationState;
 
     protected NavigationOracle navigationOracle;
     protected IBikePreferences preferences;
@@ -55,6 +53,9 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
     public void transitionTowards(MapState from, FragmentTransaction fragmentTransaction) {
         // Save the state we came from to be able to transition back.
         previousState = from;
+
+        navigationState = new NavigationState(this);
+        navigationState.addListener(this);
 
         // The users location should be recorded and the map should rotate accordingly
         activity.getMapView().setUserLocationEnabled(true);
@@ -107,6 +108,8 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
         if(navigationOracle != null) {
             navigationOracle.disable();
         }
+        // Remove this as a listener of the NavigationState.
+        navigationState.removeListener(this);
     }
 
     @Override
@@ -129,48 +132,27 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
                 .commit();
     }
 
-    public void setJourney(Journey journey) {
-        this.journey = journey;
+    public void setRoute(Route route) {
         // Lock the map view to the users current location
         activity.getMapView()
                 .getUserLocationOverlay()
                 .setTrackingMode(UserLocationOverlay.TrackingMode.FOLLOW_BEARING);
         // Zoom in on the current location
         activity.getMapView().setZoom(17f);
-        // Show the Journey on the map view
-        activity.getMapView().showJourney(journey);
-        // Set the current route
-        setRoute(journey.getRoutes().get(0));
+        // Show the Route on the map view
+        activity.getMapView().showRoute(route);
+
+        navigationState.setRoute(route);
+
         // Called to show the button from the action bar, that prompts the user to report problems
         activity.invalidateOptionsMenu();
         // Show the ETA and turn-by-turn fragments
         addFragments();
     }
 
-    protected void setRoute(SMRoute route) {
-        if(this.route != null) {
-            this.route.removeListener(this);
-            BikeLocationService.getInstance().removeLocationListener(this.route);
-        }
-        this.route = route;
-        if(this.route != null) {
-            this.route.addListener(this);
-            Location currentLocation = BikeLocationService.getInstance().getLastValidLocation();
-            // To avoid an immediate recalculation of the route - we set the lastRecalcLocation
-            this.route.setLastRecalcLocation(currentLocation);
-            this.route.updateDistances(currentLocation);
-            BikeLocationService.getInstance().addLocationListener(this.route);
-        }
-    }
-
-    public SMRoute getRoute() {
-        return route;
-    }
-
-    public SMRoute getNextRoute() {
-        int currentRouteIndex = journey.getRoutes().indexOf(route);
-        if(currentRouteIndex < journey.getRoutes().size()-1) {
-            return journey.getRoutes().get(currentRouteIndex+1);
+    public Route getRoute() {
+        if(navigationState != null) {
+            return navigationState.getRoute();
         } else {
             return null;
         }
@@ -241,42 +223,27 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
         if(navigationOracle != null && navigationOracle.isEnabled()) {
             navigationOracle.onLocationChanged(location);
         }
-    }
-
-    @Override
-    public void reachedDestination() {
-        SMRoute nextRoute = getNextRoute();
-        if(nextRoute == null) {
-            // We are done with the journey
-            turnByTurnFragment.reachedDestination();
-            if(navigationOracle != null) {
-                navigationOracle.reachedDestination();
-            }
-        } else {
-            // Switch to the next route in the journey
-            setRoute(nextRoute);
-            updateRoute();
-        }
-    }
-
-    @Override
-    public void updateRoute() {
-        // When the route is updated, the fragments should re-render, if added to an activity.
         if(turnByTurnFragment != null && turnByTurnFragment.isAdded()) {
             turnByTurnFragment.render();
         }
         if(navigationETAFragment != null && navigationETAFragment.isAdded()) {
             navigationETAFragment.render();
         }
+    }
+
+    @Override
+    public void destinationReached() {
+        // We are done with the journey
+        turnByTurnFragment.reachedDestination();
         if(navigationOracle != null) {
-            navigationOracle.updateRoute();
+            navigationOracle.destinationReached();
         }
     }
 
     @Override
-    public void startRoute() {
+    public void navigationStarted() {
         if(navigationOracle != null) {
-            navigationOracle.startRoute();
+            navigationOracle.navigationStarted();
         }
     }
 
@@ -295,9 +262,9 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
     }
 
     @Override
-    public void routeRecalculationDone() {
+    public void routeRecalculationCompleted() {
         if(navigationOracle != null) {
-            navigationOracle.routeRecalculationDone();
+            navigationOracle.routeRecalculationCompleted();
         }
     }
 
@@ -309,21 +276,22 @@ public class NavigatingState extends MapState implements SMRouteListener, Locati
         Toast.makeText(activity, IBikeApplication.getString("error_route_not_found"), Toast.LENGTH_SHORT).show();
     }
 
-    public Journey getJourney() {
-        return journey;
-    }
-
     public void reportProblem() {
         Intent i = new Intent(activity, IssuesActivity.class);
         ArrayList<String> turnsArray = new ArrayList<>();
-        for (SMTurnInstruction instruction : route.getUpcomingTurnInstructions()) {
-            turnsArray.add(instruction.fullDescriptionString);
+        for (TurnInstruction instruction: navigationState.getUpcomingSteps()) {
+            turnsArray.add(instruction.toDisplayString());
         }
+        Route route = getRoute();
         i.putStringArrayListExtra("turns", turnsArray);
         i.putExtra("startLoc", route.getStartLocation().toString());
         i.putExtra("endLoc", route.getEndLocation().toString());
-        i.putExtra("startName", route.startStationName);
-        i.putExtra("endName", route.endStationName);
+        i.putExtra("startName", route.getStartAddress().getName());
+        i.putExtra("endName", route.getEndAddress().getName());
         activity.startActivity(i);
+    }
+
+    public NavigationState getNavigationState() {
+        return navigationState;
     }
 }

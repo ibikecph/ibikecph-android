@@ -2,6 +2,8 @@ package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.search.Address;
 
 import java.util.ArrayList;
@@ -13,50 +15,52 @@ import java.util.List;
  */
 public class BreakRouteResponse {
 
-    protected ArrayNode jsonNodes;
+    protected ObjectNode jsonNodes;
 
-    protected List<Journey> alternativeJourneys = new ArrayList<>();
+    protected List<Route> alternativeRoutes = new ArrayList<>();
 
-    public BreakRouteResponse(ArrayNode jsonNodes) {
+    public BreakRouteResponse(ObjectNode jsonNodes) {
         this.jsonNodes = jsonNodes;
-        parseJson();
+        parseJson(jsonNodes);
     }
 
-    protected void parseJson() {
-        alternativeJourneys.clear();
-        for(JsonNode journeyNode: jsonNodes) {
-            Journey journey = new Journey(journeyNode);
-            alternativeJourneys.add(journey);
+    protected void parseJson(ObjectNode jsonNodes) {
+        alternativeRoutes.clear();
+        if(!jsonNodes.has("routes") || !jsonNodes.get("routes").isArray()) {
+            throw new RuntimeException("Expected a 'routes' field of type array");
+        }
+        for(JsonNode routeNode: jsonNodes.get("routes")) {
+            Route route = new Route(RouteType.BREAK);
+            route.parseFromJson(routeNode);
+            alternativeRoutes.add(route);
         }
     }
 
-    public ArrayNode getJsonNode() {
+    public ObjectNode getJsonNode() {
         return jsonNodes;
     }
 
-    public Journey getJourney(int position) {
-        return alternativeJourneys.get(position);
+    public Route getRoute(int position) {
+        return alternativeRoutes.get(position);
     }
 
     /**
      * Sets the startAddress on all alternative journeys in the response.
-     * TODO: Consider moving this to a Journey constructor, passed along when calling Geocoder
-     * @param startAddress
+     * @param startAddress the start address
      */
     public void setStartAddress(Address startAddress) {
-        for(Journey journey: alternativeJourneys) {
-            journey.startAddress = startAddress;
+        for(Route route: alternativeRoutes) {
+            route.setStartAddress(startAddress);
         }
     }
 
     /**
      * Sets the endAddress on all alternative journeys in the response.
-     * TODO: Consider moving this to a Journey constructor, passed along when calling Geocoder
-     * @param endAddress
+     * @param endAddress the start address
      */
     public void setEndAddress(Address endAddress) {
-        for(Journey journey: alternativeJourneys) {
-            journey.endAddress = endAddress;
+        for(Route route: alternativeRoutes) {
+            route.setEndAddress(endAddress);
         }
     }
 }

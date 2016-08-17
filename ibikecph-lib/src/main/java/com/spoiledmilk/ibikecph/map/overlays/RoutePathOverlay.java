@@ -10,15 +10,10 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType;
 
 /**
- * A PathOverlay making the draw method available for the RouteOverlay
+ * A PathOverlay making the draw method available for the LegOverlay
  * Created by kraen on 03-07-16.
  */
 public class RoutePathOverlay extends PathOverlay {
-
-    enum Type {
-        WALK,
-        CYCLE
-    }
 
     public RoutePathOverlay(Context context, TransportationType type) {
         super(getColor(context, type), 10);

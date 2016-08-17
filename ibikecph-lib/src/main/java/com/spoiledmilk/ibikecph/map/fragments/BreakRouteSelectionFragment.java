@@ -15,9 +15,8 @@ import android.widget.ProgressBar;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
-import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
 import com.viewpagerindicator.CirclePageIndicator;
 
 /**
@@ -86,8 +85,8 @@ public class BreakRouteSelectionFragment extends RouteSelectionFragment {
 
             @Override
             public void onPageSelected(int position) {
-                Journey journey = response.getJourney(position);
-                mapState.setJourney(journey);
+                Route route = response.getRoute(position);
+                mapState.setRoute(route);
             }
 
             @Override

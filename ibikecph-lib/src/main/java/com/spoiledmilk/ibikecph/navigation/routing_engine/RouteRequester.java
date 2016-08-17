@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.spoiledmilk.ibikecph.map.Geocoder;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.v5.Route;
 
 /**
  * Created by kraen on 10-07-16.

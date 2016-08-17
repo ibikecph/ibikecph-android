@@ -1,17 +1,12 @@
 package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
-import android.location.Location;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mapbox.mapboxsdk.api.ILatLng;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.map.Geocoder;
-import com.spoiledmilk.ibikecph.map.RouteType;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
-import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -21,7 +16,6 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -113,7 +107,7 @@ public class BreakRouteRequester extends RouteRequester {
                 return null;
             } else if(connection.getResponseCode() == 200) {
                 Log.d("BreakRouteRequester", "Journey is ready!");
-                ArrayNode json = Util.getJsonObjectMapper().readValue(connection.getInputStream(), ArrayNode.class);
+                ObjectNode json = Util.getJsonObjectMapper().readValue(connection.getInputStream(), ObjectNode.class);
                 return new BreakRouteResponse(json);
             } else {
                 throw new RuntimeException("Unexpected status code: " + connection.getResponseCode());

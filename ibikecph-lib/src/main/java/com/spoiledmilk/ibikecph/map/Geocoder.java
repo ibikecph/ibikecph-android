@@ -5,9 +5,9 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteRequester;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.v5.RegularRouteRequester;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.RegularRouteRequester;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.RouteRequester;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Config;
 
@@ -29,7 +29,7 @@ public class Geocoder {
     }
 
     public interface RouteCallback {
-        void onSuccess(SMRoute route);
+        void onSuccess(Route route);
         void onSuccess(BreakRouteResponse breakRouteResponse);
         void onFailure();
     }

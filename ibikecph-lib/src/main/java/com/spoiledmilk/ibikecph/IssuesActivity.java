@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * The activity for reporting issues with a route.
  * @author SpoiledMilk
  *
- * TODO: Have this Activity take a SMRoute instead of all this string passing.
+ * TODO: Have this Activity take a Route instead of all this string passing.
  */
 public class IssuesActivity extends Activity {
 

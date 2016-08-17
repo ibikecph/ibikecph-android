@@ -223,7 +223,7 @@ public class Address implements Serializable {
 
     public static Address fromCurLoc() {
 
-        // First we need an SMRoute. Let's create one from the address
+        // First we need an Route. Let's create one from the address
         Location curLoc = IBikeApplication.getService().getLastValidLocation();
 
         // If we don't have a fresh GPS coordinate, go with the best that we have.

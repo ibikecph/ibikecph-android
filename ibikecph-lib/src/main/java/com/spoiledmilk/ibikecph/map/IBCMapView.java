@@ -20,9 +20,9 @@ import com.mapbox.mapboxsdk.views.MapView;
 import com.mapbox.mapboxsdk.views.MapViewListener;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.handlers.IBCMapHandler;
-import com.spoiledmilk.ibikecph.map.overlays.JourneyOverlay;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.map.overlays.RouteOverlay;
+import com.spoiledmilk.ibikecph.map.states.NavigatingState;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -43,9 +43,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class IBCMapView extends MapView {
 
     public static IBCMarker destinationPreviewMarker;
-    private CopyOnWriteArrayList<IBCMarker> markers = new CopyOnWriteArrayList<IBCMarker>();
 
-    protected JourneyOverlay journeyOverlay;
+    protected RouteOverlay routeOverlay;
 
     private MapViewListener currentListener;
     private BaseMapActivity parentActivity;
@@ -107,32 +106,31 @@ public class IBCMapView extends MapView {
 
     /**
      * Show a journey that consists of one or more routes.
+     * @param state
      */
-    public void showJourney(Journey journey) {
-        clearJourneyOverlay();
-        journeyOverlay = new JourneyOverlay(this, journey);
-        addOverlay(journeyOverlay);
+    public void showRoute(Route route) {
+        clearRouteOverlay();
+        routeOverlay = new RouteOverlay(this, route);
+        addOverlay(routeOverlay);
     }
 
     /**
      * Zoom the map to a route, with a default 20% padding
-     * @param journey
+     * @param route the route to be zoomed to
      */
-    public void zoomToJourney(Journey journey) {
-        zoomToJourney(journey, 0.2f);
+    public void zoomToRoute(Route route) {
+        zoomToRoute(route, 0.2f);
     }
 
     /**
-     * Zoom the map to a journey of routes, with a default padding around the path.
-     * @param journey
-     * @param padding
+     * Zoom the map to a route of legs, with a default padding around the path.
+     * @param route the route to be zoomed to
+     * @param padding additional padding around the route
      */
-    public void zoomToJourney(Journey journey, float padding) {
+    public void zoomToRoute(Route route, float padding) {
         List<LatLng> points = new ArrayList<>();
-        for(SMRoute route: journey.getRoutes()) {
-            for(Location location: route.getPoints()) {
-                points.add(new LatLng(location.getLatitude(), location.getLongitude()));
-            }
+        for(Location location: route.getPoints()) {
+            points.add(new LatLng(location.getLatitude(), location.getLongitude()));
         }
         BoundingBox boundingBox = BoundingBox.fromLatLngs(points);
         double north = boundingBox.getLatNorth();
@@ -224,18 +222,18 @@ public class IBCMapView extends MapView {
     @Override
     public void clear() {
         removeDestinationPreviewMarker();
-        clearJourneyOverlay();
+        clearRouteOverlay();
         super.clear();
     }
 
     /**
      * Removes all route overlays and markers from the map
      */
-    public void clearJourneyOverlay() {
-        if(journeyOverlay != null) {
-            journeyOverlay.onDetach(this);
-            removeOverlay(journeyOverlay);
-            journeyOverlay = null;
+    public void clearRouteOverlay() {
+        if(routeOverlay != null) {
+            routeOverlay.onDetach(this);
+            removeOverlay(routeOverlay);
+            routeOverlay = null;
         }
     }
 }

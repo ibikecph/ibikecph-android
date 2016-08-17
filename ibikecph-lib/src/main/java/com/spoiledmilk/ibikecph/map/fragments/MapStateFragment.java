@@ -4,7 +4,6 @@ import android.app.Fragment;
 
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.states.MapState;
-import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
 
 /**
  * Any fragment intended for the map activity when using the map states.

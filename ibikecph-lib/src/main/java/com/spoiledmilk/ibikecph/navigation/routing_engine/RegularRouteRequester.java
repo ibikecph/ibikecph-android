@@ -1,4 +1,4 @@
-package com.spoiledmilk.ibikecph.navigation.routing_engine.v5;
+package com.spoiledmilk.ibikecph.navigation.routing_engine;
 
 import android.util.Log;
 
@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.spoiledmilk.ibikecph.map.Geocoder;
 import com.spoiledmilk.ibikecph.map.RouteType;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.RouteRequester;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -23,9 +21,9 @@ public class RegularRouteRequester extends RouteRequester {
 
     private Float bearing = null;
     protected RouteType type;
-    protected SMRoute route;
+    protected Route route;
 
-    public void setRoute(SMRoute route) {
+    public void setRoute(Route route) {
         this.route = route;
     }
 
@@ -103,11 +101,19 @@ public class RegularRouteRequester extends RouteRequester {
         }
     }
 
-    protected SMRoute parseJSON(JsonNode node) {
+    protected Route parseJSON(JsonNode node) {
         if (route == null) {
-            route = new Route(Util.locationFromGeoPoint(start), Util.locationFromGeoPoint(end), type);
+            route = new Route(type);
         }
-        route.parseFromJson(node);
+
+        if (node.get("routes") == null ||
+            !node.get("routes").isArray() ||
+            node.get("routes").size() != 1) {
+            throw new RuntimeException("Expected a single element in the 'routes' field");
+        }
+
+        JsonNode routeNode = node.get("routes").get(0);
+        route.parseFromJson(routeNode);
         return route;
     }
 
@@ -116,7 +122,7 @@ public class RegularRouteRequester extends RouteRequester {
         super.onPostExecute(success);
         if(success && route != null) {
             callback.onSuccess(route);
-            route.emitRouteUpdated();
+            route.emitRouteChanged();
         } else {
             callback.onFailure();
         }

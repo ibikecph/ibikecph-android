@@ -13,9 +13,9 @@ import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.fragments.MapStateFragment;
 import com.spoiledmilk.ibikecph.map.states.NavigatingState;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMTurnInstruction;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Leg;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.TurnInstruction;
 
 import java.text.SimpleDateFormat;
 
@@ -28,7 +28,7 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
     private TextView textDistance;
     private TextView textWayname, textLastWayNameXtra;
     private RelativeLayout XtraView;
-    private SMTurnInstruction nextTurnInstruction;
+    private TurnInstruction nextTurnInstruction;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,36 +59,44 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
      * TODO: Have this method implement some of the behaviour from renderForBreakRoute
      */
     public void render() {
-        NavigatingState state = getMapState(NavigatingState.class);
-        SMTurnInstruction instruction = state.getJourney().getUpcomingInstruction();
+        NavigationState state = getMapState(NavigatingState.class).getNavigationState();
+        TurnInstruction instruction = state.getNextStep();
         if (instruction != null) {
-            SMRoute route = state.getRoute();
             if (!instruction.transportType.isPublicTransportation()) {
                 textWayname.setText(instruction.name);
-                textDistance.setText(Math.round(instruction.distance) + " m");
+                float distance = state.getDistanceToStep(instruction);
+                String distanceString = Math.round(distance) + " m";
+                textDistance.setText(distanceString);
                 imgDirectionIcon.setImageResource(instruction.getSmallDirectionResourceId());
-            } else if(instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOnPublicTransportation) {
-                SMTurnInstruction nextInstruction = state.getJourney().getUpcomingInstruction(1);
-                String from = instruction.name;
-                String take = instruction.getDescription();
-                String to = nextInstruction.name;
+            } else {
+                // This is public transportation
+                Leg leg = state.getLeg();
+                String instructionString;
+                String timeString;
 
-                String instructionString = IBikeApplication.getString("direction_18");
-                instructionString = instructionString.replace("%@", "%s");
-                instructionString = String.format(instructionString, from, take, to);
+                if (instruction.getType().equals(TurnInstruction.Type.DEPART)) {
+                    String from = instruction.name;
+                    String take = instruction.getDescription();
+                    String to = leg.getEndAddress().getDisplayName();
 
-                String departureTime = timeStampFormat(route.departureTime);
+                    instructionString = IBikeApplication.getString("direction_18");
+                    instructionString = instructionString.replace("%@", "%s");
+                    instructionString = String.format(instructionString, from, take, to);
+
+                    timeString = timeStampFormat(leg.getDepartureTime());
+                } else if (instruction.getType().equals(TurnInstruction.Type.ARRIVE)) {
+                    instructionString = IBikeApplication.getString("direction_19");
+                    instructionString = instructionString + " " + instruction.name;
+
+                    timeString = timeStampFormat(state.getLeg().getArrivalTime());
+                } else {
+                    throw new RuntimeException("Encountered an unexpected turn instruction");
+                }
+
                 textWayname.setText(instructionString);
-                // Use time instead of metres when next stop is public transportation
-                textDistance.setText(departureTime);
-                imgDirectionIcon.setImageResource(instruction.getSmallDirectionResourceId());
-            } else if(instruction.drivingDirection == SMTurnInstruction.TurnDirection.GetOffPublicTransportation) {
-                String instructionString = IBikeApplication.getString("direction_19");
-                String arrivalTime = timeStampFormat(route.arrivalTime);
-                textWayname.setText(instructionString + " " + instruction.name);
-                // Use time instead of metres when next stop is public transportation
-                textDistance.setText(arrivalTime);
-                imgDirectionIcon.setImageResource(instruction.getSmallDirectionResourceId());
+                textDistance.setText(timeString);
+                int transportationTypeResId = leg.getTransportType().getDrawableId();
+                imgDirectionIcon.setImageResource(transportationTypeResId);
             }
         } else {
             textWayname.setText("");
@@ -104,48 +112,6 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
     }
 
     public String timeStampFormat(long seconds) {
-
-        String time;
-        seconds = seconds * 1000;
-
-        // 24-hour format
-        if (DateFormat.is24HourFormat(this.getActivity())) {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            time = sdf.format(seconds).toString();
-        }
-        // 12-hour format
-        else {
-            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a");
-            time = sdf.format(seconds).toString();
-        }
-
-        return time;
-    }
-
-    /**
-     * Loops through the journey's routes and returns the first upcoming instruction
-     * @return
-     */
-    public SMTurnInstruction getNextTurnInstruction() {
-        NavigatingState state = getMapState(NavigatingState.class);
-        // Let's try the current route, right away
-        SMRoute currentRoute = state.getRoute();
-        if(currentRoute.getUpcomingTurnInstructions().size() > 0) {
-            return currentRoute.getUpcomingTurnInstructions().get(0);
-        } else {
-            // Let's start the looping
-            Journey journey = state.getJourney();
-            int currentRouteIndex = journey.getRoutes().indexOf(state.getRoute());
-            if(currentRouteIndex == -1) {
-                return null;
-            }
-            for(int r = currentRouteIndex+1; r < journey.getRoutes().size(); r++) {
-                SMRoute route = journey.getRoutes().get(r);
-                if(route.getUpcomingTurnInstructions().size() > 0) {
-                    return route.getUpcomingTurnInstructions().get(0);
-                }
-            }
-            return null;
-        }
+        return IBikeApplication.getTimeFormat().format(seconds * 1000);
     }
 }

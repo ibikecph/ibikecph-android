@@ -14,14 +14,11 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by jens on 6/1/15.
@@ -118,35 +115,32 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
     }
 
     public void refreshView() {
-        Journey journey = mapState.getJourney();
-        if(journey == null) {
+        Route route = mapState.getRoute();
+        if(route == null) {
             sourceText.setText("");
             destinationText.setText("");
         } else {
-            float distance;
-            float duration;
+            sourceText.setText(route.getStartAddress().getDisplayName());
+            destinationText.setText(route.getEndAddress().getDisplayName());
 
-            sourceText.setText(journey.getStartAddress().getDisplayName());
-            destinationText.setText(journey.getEndAddress().getDisplayName());
-
-            distance = journey.getEstimatedDistance(true);
-            duration = journey.getEstimatedDuration();
+            double distance = route.getEstimatedDistance(true);
+            double duration = route.getDuration();
 
             if (distance > 1000) {
                 distance /= 1000;
                 lengthText.setText(String.format("%.1f km", distance));
             } else {
-                lengthText.setText(String.format("%d m", (int) distance));
+                lengthText.setText(String.format("%d m", Math.round(distance)));
             }
 
             // Set the duration label
             durationText.setText(TrackListAdapter.durationToFormattedTime(duration));
 
-            etaText.setText(dateFormat.format(journey.getArrivalTime()));
+            etaText.setText(dateFormat.format(route.getArrivalTime()));
 
             // Only show the go button if the route starts at the current location or the route type
             // is break route.
-            if (journey.getStartAddress().isCurrentLocation() || mapState.getType() == RouteType.BREAK) {
+            if (route.getStartAddress().isCurrentLocation() || mapState.getType() == RouteType.BREAK) {
                 v.findViewById(R.id.startRouteButton).setVisibility(View.VISIBLE);
             } else {
                 v.findViewById(R.id.startRouteButton).setVisibility(View.GONE);
@@ -156,7 +150,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
 
     /**
      * A way to get the fragment, as a method to enable override.
-     * @return
+     * @return the layout id
      */
     protected int getLayoutResource() {
         return R.layout.route_selection_fragment;

@@ -10,13 +10,11 @@ import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.states.NavigatingState;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.SMRoute;
+import com.spoiledmilk.ibikecph.navigation.NavigationState;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by jens on 7/15/15.
@@ -53,22 +51,19 @@ public class NavigationETAFragment extends MapStateFragment {
     }
 
     public void render() {
-        Journey journey = getMapState(NavigatingState.class).getJourney();
-        if (journey == null) {
-            return;
-        } else {
-            float distanceLeft = journey.getEstimatedDistanceLeft(true);
-            this.lengthText.setText(getFormattedDistance(Math.round(distanceLeft)));
+        NavigationState state = getMapState(NavigatingState.class).getNavigationState();
 
-            // Set the address text
-            textAddress.setText(journey.getEndAddress().getDisplayName());
+        float distanceLeft = state.getEstimatedDistanceLeft(true);
+        this.lengthText.setText(getFormattedDistance(Math.round(distanceLeft)));
 
-            // Set the duration label
-            int durationLeft = journey.getEstimatedDurationLeft();
-            durationText.setText(TrackListAdapter.durationToFormattedTime(durationLeft));
+        // Set the address text
+        textAddress.setText(state.getRoute().getEndAddress().getDisplayName());
 
-            etaText.setText(dateFormat.format(journey.getArrivalTime()));
-        }
+        // Set the duration label
+        double durationLeft = state.getEstimatedDurationLeft();
+        durationText.setText(TrackListAdapter.durationToFormattedTime(durationLeft));
+
+        etaText.setText(dateFormat.format(state.getArrivalTime()));
     }
 
     public String getFormattedDistance(float distanceInMeters) {

@@ -1,26 +1,21 @@
 package com.spoiledmilk.ibikecph.map.overlays;
 
-import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 
 import com.mapbox.mapboxsdk.overlay.ItemizedIconOverlay;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.views.MapView;
-import com.spoiledmilk.ibikecph.map.IBCMarker;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Journey;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by kraen on 03-07-16.
  */
-public class JourneyMarkerOverlay extends ItemizedIconOverlay {
+public class RouteMarkerOverlay extends ItemizedIconOverlay {
 
     protected MapView mapView;
 
-    public JourneyMarkerOverlay(MapView mapView) {
+    public RouteMarkerOverlay(MapView mapView) {
         super(mapView.getContext(), new ArrayList<Marker>(), new OnItemGestureListener<Marker>() {
             @Override
             public boolean onItemSingleTapUp(int index, Marker item) {

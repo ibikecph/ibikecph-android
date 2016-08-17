@@ -33,6 +33,7 @@ import com.spoiledmilk.ibikecph.util.IBikePreferences.Language;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.SMDictionary;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -51,6 +52,10 @@ public class IBikeApplication extends Application {
     protected static int primaryColor = R.color.PrimaryColor;
 
     protected Tracker gaTracker;
+
+    public static DateFormat getTimeFormat() {
+        return android.text.format.DateFormat.getTimeFormat(instance);
+    }
 
     /**
      * An overrideable method that returns if the app is build in debug mode
