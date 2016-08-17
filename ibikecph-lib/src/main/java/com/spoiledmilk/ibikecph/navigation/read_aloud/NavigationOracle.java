@@ -236,6 +236,13 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         // Log.d("NavigationOracle", "Got onLocationChanged");
         TurnInstruction instruction = state.getNextStep();
         if(state.getRoute() != null && instruction != null) {
+            // If the next instruction arrival but we are not on the last leg
+            // This prevents the oracle from stating that we've arrived before we actually have
+            if (instruction.getType().equals(TurnInstruction.Type.ARRIVE) &&
+                !state.onLastLeg()) {
+                return; // Skip the instruction
+            }
+
             String instructionSentence = generateInstructionSentence(instruction);
             // If we are close enough and the instruction has not been read aloud
             if (lastCloseInstruction != instruction &&
