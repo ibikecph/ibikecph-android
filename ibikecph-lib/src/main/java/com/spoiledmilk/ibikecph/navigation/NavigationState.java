@@ -448,27 +448,22 @@ public class NavigationState implements LocationListener {
     }
 
     public double getEstimatedDurationLeft(Leg leg) {
-        if(leg.getTransportType().isPublicTransportation()) {
-            if(this.leg.equals(leg)) {
+        // Does the leg have explicit departure and arrival times?
+        if(this.leg.equals(leg)) {
+            if(leg.getTransportType().isPublicTransportation()) {
                 Date now = new Date();
                 return Math.max(0, leg.getArrivalTime() - now.getTime());
             } else {
-                return leg.getArrivalTime() - leg.getDepartureTime();
+                double distance = leg.getEstimatedDistanceLeft(stepIndex);
+                // Adjusting for the average speed on this type of route.
+                if(route.getType().equals(RouteType.CARGO)) {
+                    return distance / Route.AVERAGE_CARGO_BIKING_SPEED;
+                } else {
+                    return distance / Route.AVERAGE_BIKING_SPEED;
+                }
             }
         } else {
-            double distance;
-            // What is the distance remaining on the leg?
-            if(this.leg.equals(leg)) {
-                distance = leg.getEstimatedDistanceLeft(stepIndex);
-            } else {
-                distance = leg.getDistance();
-            }
-            // Adjusting for the average speed on this type of route.
-            if(route.getType().equals(RouteType.CARGO)) {
-                return distance / Route.AVERAGE_CARGO_BIKING_SPEED;
-            } else {
-                return distance / Route.AVERAGE_BIKING_SPEED;
-            }
+            return route.getDuration(leg);
         }
     }
 
@@ -527,6 +522,7 @@ public class NavigationState implements LocationListener {
         }
         return estimatedDistance;
     }
+
     public boolean onLastLeg() {
         return getRoute().getLegs().indexOf(leg) == getRoute().getLegs().size()-1;
     }
