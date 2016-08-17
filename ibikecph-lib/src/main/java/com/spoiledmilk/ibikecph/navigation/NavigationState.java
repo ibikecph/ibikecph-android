@@ -30,6 +30,11 @@ public class NavigationState implements LocationListener {
 
     protected static final float DESTINATION_REACHED_THRESHOLD = 10.0f;
     protected static final float DISTANCE_TO_ROUTE_THRESHOLD = 20.0f;
+    /**
+     * How often may the route be recalculated at maximum.
+     * Unit is milliseconds.
+     */
+    private static final int RECALCULATE_THROTTLE = 10000; // Once every 10 secs
 
     /**
      * The state of the map used to visualize the navigation.
@@ -55,6 +60,11 @@ public class NavigationState implements LocationListener {
      * Are we in the progress of recalculating the route?
      */
     protected boolean isRecalculating;
+
+    /**
+     * The last time the route was recalculated.
+     */
+    protected long lastRecalculateTime;
 
     /**
      * Constructs a new NavigationState, takes a Navigating(Map)State as argument.
@@ -119,7 +129,9 @@ public class NavigationState implements LocationListener {
         if(!isDestinationReached && !isRecalculating) {
             boolean inPublicTransportation = leg.getTransportType().isPublicTransportation();
             boolean hasLeftRoute = hasLeftRoute(location);
-            if(!inPublicTransportation && hasLeftRoute) {
+            long now = new Date().getTime();
+            boolean tooSoon = (now - lastRecalculateTime) <= RECALCULATE_THROTTLE;
+            if(!inPublicTransportation && hasLeftRoute && !tooSoon) {
                 recalculate(location);
             } else {
                 updateStepIndex(location);
@@ -171,6 +183,8 @@ public class NavigationState implements LocationListener {
     protected void recalculate(Location location) {
         Log.d("NavigationState", "Recalculating route");
         isRecalculating = true;
+        lastRecalculateTime = new Date().getTime();
+
         emitRouteRecalculationStarted();
 
         Geocoder.RouteCallback callback = new Geocoder.RouteCallback() {
@@ -238,6 +252,7 @@ public class NavigationState implements LocationListener {
      * Restarts the navigation, from the first leg in the route
      */
     protected void restartNavigation() {
+        lastRecalculateTime = new Date().getTime();
         if(getRoute().getLegs().size() > 0) {
             restartNavigation(getRoute().getLegs().get(0));
         } else {
