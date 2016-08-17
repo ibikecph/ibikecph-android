@@ -190,7 +190,8 @@ public class Route {
     }
 
     public double getDuration(Leg leg) {
-        if(leg.getTransportType().isPublicTransportation()) {
+        // If departure and arrival time is specified, the duration is the difference
+        if(leg.getDepartureTime() > 0 && leg.getArrivalTime() > 0) {
             return leg.arrivalTime - leg.departureTime;
         } else if(getType().equals(RouteType.CARGO)) {
             return leg.getDistance() / AVERAGE_CARGO_BIKING_SPEED;
