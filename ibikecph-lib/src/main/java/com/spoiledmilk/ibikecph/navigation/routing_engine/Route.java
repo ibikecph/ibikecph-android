@@ -264,6 +264,7 @@ public class Route {
         if(legs.contains(oldLeg)) {
             int oldLegIndex = legs.indexOf(oldLeg);
             legs.set(oldLegIndex, newLeg);
+            emitRouteChanged();
         } else {
             throw new RuntimeException("Was asked to replace a leg that was not a part of the route");
         }
