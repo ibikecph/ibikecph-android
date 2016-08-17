@@ -209,13 +209,25 @@ public class TurnInstruction implements Speakable {
                     return IBikeApplication.getString(languageKey)
                             .replace("{{name}}", speakableName);
                 case DEPART:
+                    String heading = "";
+                    if(modifier != null) {
+                        heading = modifier.asHeading();
+                    } else if(directionAbbreviation != null) {
+                        heading = IBikeApplication.getString("direction_" + directionAbbreviation);
+                    }
                     return IBikeApplication.getString("depart")
-                            .replace("{{heading}}", modifier == null ? "" : modifier.asHeading())
+                            .replace("{{heading}}", heading)
                             .replace("{{name}}", speakableName);
                 case ARRIVE:
+                    String side = "";
+                    if(modifier != null) {
+                        side = modifier.asHeading();
+                    } else if(directionAbbreviation != null) {
+                        side = IBikeApplication.getString("direction_" + directionAbbreviation);
+                    }
                     return IBikeApplication.getString("arrive")
                             .replace("{{name}}", speakableName)
-                            .replace("{{side}}", modifier == null ? "" : modifier.asHeading());
+                            .replace("{{side}}", side);
                 case ROUNDABOUT:
                     return IBikeApplication.getString("roundabout")
                             .replace("%{exit}", "") // TODO: Make sure this value is read from the JSON
