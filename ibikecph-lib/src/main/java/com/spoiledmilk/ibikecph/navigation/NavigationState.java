@@ -487,7 +487,7 @@ public class NavigationState implements LocationListener {
 
         // Calculate the index to which we should calculate down to.
         int earliestLegIndex;
-        if(state.getLeg() != null) {
+        if(state != null && state.getLeg() != null) {
             earliestLegIndex = route.getLegs().indexOf(state.getLeg());
         } else {
             earliestLegIndex = 0;
