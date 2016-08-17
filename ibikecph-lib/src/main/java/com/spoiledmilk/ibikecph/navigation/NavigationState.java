@@ -527,4 +527,7 @@ public class NavigationState implements LocationListener {
         }
         return estimatedDistance;
     }
+    public boolean onLastLeg() {
+        return getRoute().getLegs().indexOf(leg) == getRoute().getLegs().size()-1;
+    }
 }
