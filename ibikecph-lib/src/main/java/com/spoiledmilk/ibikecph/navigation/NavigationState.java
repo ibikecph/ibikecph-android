@@ -164,7 +164,7 @@ public class NavigationState implements LocationListener {
 
     protected void setStepIndex(int newStepIndex) {
         if(newStepIndex > leg.getSteps().size()-1) {
-            // The step index has exeded the steps in the current route leg
+            // The step index has exceeded the steps in the current route leg
             // We should change to the next leg
             int legIndex = route.getLegs().indexOf(leg);
             if(legIndex < route.getLegs().size()-1) {
@@ -172,8 +172,8 @@ public class NavigationState implements LocationListener {
                 leg = route.getLegs().get(legIndex+1);
                 stepIndex = 0;
             } else {
-                // This was the final leg of the route
-                emitDestinationReached();
+                // Destination reached - let's just set the step index on the final step
+                stepIndex = leg.getSteps().size()-1;
             }
         } else {
             stepIndex = newStepIndex;
