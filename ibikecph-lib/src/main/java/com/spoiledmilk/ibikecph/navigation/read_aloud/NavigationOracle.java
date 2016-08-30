@@ -14,7 +14,6 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.states.NavigatingState;
 import com.spoiledmilk.ibikecph.navigation.NavigationState;
 import com.spoiledmilk.ibikecph.navigation.NavigationStateListener;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.RouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.TurnInstruction;
 
 import java.math.BigInteger;
@@ -238,11 +237,6 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
         if(state.getRoute() != null && instruction != null) {
             // If the next instruction arrival but we are not on the last leg
             // This prevents the oracle from stating that we've arrived before we actually have
-            if (instruction.getType().equals(TurnInstruction.Type.ARRIVE) &&
-                !state.onLastLeg()) {
-                return; // Skip the instruction
-            }
-
             String instructionSentence = generateInstructionSentence(instruction);
             // If we are close enough and the instruction has not been read aloud
             if (lastCloseInstruction != instruction &&
@@ -265,8 +259,8 @@ public class NavigationOracle implements LocationListener, TextToSpeech.OnInitLi
 
             if(lastSpeakLocation != null &&
                location.distanceTo(lastSpeakLocation) > MAX_SILENCE_DISTANCE &&
-               !state.getLeg().getTransportType().isPublicTransportation()) {
-                int minutesToArrival = (int) Math.round(state.getEstimatedDurationLeft() / 60.0f);
+               !instruction.getTransportType().isPublicTransportation()) {
+                int minutesToArrival = (int) Math.round(state.getBikingDuration() / 60.0f);
                 String encouragement = generateEncouragementSentence(minutesToArrival);
                 // If we want to say an encouragement - let's speak
                 if(encouragement != null) {

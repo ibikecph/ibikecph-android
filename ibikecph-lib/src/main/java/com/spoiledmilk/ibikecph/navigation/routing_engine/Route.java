@@ -15,6 +15,7 @@ import com.spoiledmilk.ibikecph.search.Address;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -24,16 +25,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * these locations.
  */
 public class Route {
-
-    /**
-     * The assumed biking speed in metres per second.
-     */
-    public static final float AVERAGE_BIKING_SPEED = 15f * 1000f / 3600f;
-
-    /**
-     * The assumed cargo biking speed in metres per second.
-     */
-    public static final float AVERAGE_CARGO_BIKING_SPEED = 10f * 1000f / 3600f;
 
     /**
      * A route has one or more legs, each of which might have a different transportation type and
@@ -176,36 +167,12 @@ public class Route {
                     onlyLeg.decodePointsFromPolyline(routeNode.get("geometry").textValue());
                 }
             }
-
-            for(Leg leg: legs) {
-                // Update the pointIndex on all steps
-                leg.updateStepPointIndices();
-            }
         }
         return true;
     }
 
     public RouteType getType() {
         return type;
-    }
-
-    public double getDuration(Leg leg) {
-        // If departure and arrival time is specified, the duration is the difference
-        if(leg.getDepartureTime() > 0 && leg.getArrivalTime() > 0) {
-            return leg.arrivalTime - leg.departureTime;
-        } else if(getType().equals(RouteType.CARGO)) {
-            return leg.getDistance() / AVERAGE_CARGO_BIKING_SPEED;
-        } else {
-            return leg.getDistance() / AVERAGE_BIKING_SPEED;
-        }
-    }
-
-    /**
-     * Get the estimated distance of a specific type of transportation.
-     * @return distance in metres
-     */
-    public double getEstimatedDistance(boolean nonPublicOnly) {
-        return NavigationState.getEstimatedDistance(nonPublicOnly, this);
     }
 
     public void setStartAddress(Address startAddress) {
@@ -229,22 +196,6 @@ public class Route {
     }
 
     /**
-     * Returns the estimated duration of the entire journey
-     * @return duration in seconds
-     */
-    public int getDuration() {
-        int result = 0;
-        for(Leg leg: legs) {
-            result += getDuration(leg);
-        }
-        return result;
-    }
-
-    public Date getArrivalTime() {
-        return NavigationState.getArrivalTime(this);
-    }
-
-    /**
      * Does the route currently have a navigation state?
      * @return true if the route currently has a navigation state associated, false otherwise.
      */
@@ -252,6 +203,11 @@ public class Route {
         return state != null;
     }
 
+    /**
+     * Get the navigation state that is currently handling navigation of this route
+     * @deprecated find another way to get this state, the route can be derived from that.
+     * @return the navigation state
+     */
     public NavigationState getState() {
         return state;
     }
@@ -268,5 +224,17 @@ public class Route {
         } else {
             throw new RuntimeException("Was asked to replace a leg that was not a part of the route");
         }
+    }
+
+    public List<TurnInstruction> getSteps() {
+        List<TurnInstruction> result = new LinkedList<>();
+        for(Leg leg: legs) {
+            result.addAll(leg.getSteps());
+        }
+        return result;
+    }
+
+    public double getDuration() {
+        return NavigationState.getBikingDuration(this);
     }
 }

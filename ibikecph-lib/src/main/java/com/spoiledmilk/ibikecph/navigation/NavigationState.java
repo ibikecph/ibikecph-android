@@ -13,23 +13,41 @@ import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Leg;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.RegularRouteRequester;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.RouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.SMGPSUtil;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.TurnInstruction;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The state of a users navigation along a Route.
  * Created by kraen on 16-08-16.
  */
-public class NavigationState implements LocationListener {
+public class NavigationState implements LocationListener, RouteListener {
 
     protected static final float DESTINATION_REACHED_THRESHOLD = 10.0f;
+
     protected static final float DISTANCE_TO_ROUTE_THRESHOLD = 20.0f;
+
+    /**
+     * The assumed biking speed in metres per second.
+     */
+    public static final float AVERAGE_BIKING_SPEED = 15f * 1000f / 3600f;
+
+    /**
+     * The assumed cargo biking speed in metres per second.
+     */
+    public static final float AVERAGE_CARGO_BIKING_SPEED = 10f * 1000f / 3600f;
+
     /**
      * How often may the route be recalculated at maximum.
      * Unit is milliseconds.
@@ -47,16 +65,6 @@ public class NavigationState implements LocationListener {
     protected Route route;
 
     /**
-     * The leg within the currently active route, that is currently active.
-     */
-    protected Leg leg;
-
-    /**
-     * An index in to the current leg's list of steps.
-     */
-    protected int stepIndex;
-
-    /**
      * Are we in the progress of recalculating the route?
      */
     protected boolean isRecalculating;
@@ -67,6 +75,32 @@ public class NavigationState implements LocationListener {
     protected long lastRecalculateTime;
 
     /**
+     * A linked list of all upcoming steps across legs
+     */
+    protected List<TurnInstruction> upcomingSteps = new LinkedList<>();
+
+    /**
+     * A linked list of all steps that has been visited.
+     * A step may be considered both visited and upcoming at the same time, when approaching it.
+     */
+    protected Set<TurnInstruction> visitedSteps = new HashSet<>();
+
+    /**
+     * All points along the route, across all it's legs
+     */
+    protected List<Location> points = new LinkedList<>();
+
+    /**
+     * A map which translates a step to the index of the closest point in the list of points
+     */
+    protected Map<TurnInstruction, Integer> stepToPointIndex = new HashMap<>();
+
+    /**
+     * A map which translates a step to the previous distance
+     */
+    protected Map<TurnInstruction, Double> stepToDistance = new HashMap<>();
+
+    /**
      * Constructs a new NavigationState, takes a Navigating(Map)State as argument.
      * @param mapState the state of the map, used to visualize the navigation.
      */
@@ -75,35 +109,16 @@ public class NavigationState implements LocationListener {
     }
 
     public List<TurnInstruction> getUpcomingSteps() {
-        List<TurnInstruction> result = new LinkedList<>();
-        if(route != null && leg != null) {
-            // Add the current legs upcoming steps.
-            List<TurnInstruction> stepsInLeg = leg.getSteps();
-            if(stepIndex >= 0 && stepIndex <= stepsInLeg.size()) {
-                List<TurnInstruction> upcomingStepsInLeg = stepsInLeg.subList(stepIndex, stepsInLeg.size());
-                result.addAll(upcomingStepsInLeg);
-            }
-            // Add all steps of subsequent legs.
-            int activeLegIndex = route.getLegs().indexOf(leg);
-            if(activeLegIndex >= 0 && activeLegIndex+1 <= route.getLegs().size()-1) {
-                List<Leg> upcomingLegs = route.getLegs().subList(activeLegIndex+1, route.getLegs().size()-1);
-                for(Leg leg: upcomingLegs) {
-                    result.addAll(leg.getSteps());
-                }
-            }
-        }
-        return result;
+        return upcomingSteps;
     }
 
+    /**
+     * Checks if the navigation has started by checking if the next upcoming step is the first.
+     *
+     * @return true if the navigation has started.
+     */
     public boolean hasStarted() {
-        // We have to have at least one leg in the route and an active leg.
-        if(route.getLegs().size() > 0 && leg != null) {
-            // If started, the stepIndex has increased or we are not on the first leg.
-            boolean onFirstLeg = route.getLegs().get(0).equals(leg);
-            return !onFirstLeg || stepIndex > 0;
-        } else {
-            return false;
-        }
+        return visitedSteps.contains(getFirstStep());
     }
 
     public Route getRoute() {
@@ -125,16 +140,17 @@ public class NavigationState implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        boolean isDestinationReached = isDestinationReached(location);
+        boolean isDestinationReached = isDestinationReached();
         if(!isDestinationReached && !isRecalculating) {
-            boolean inPublicTransportation = leg.getTransportType().isPublicTransportation();
+            TurnInstruction nextStep = getNextStep();
+            boolean inPublicTransportation = nextStep.getTransportType().isPublicTransportation();
             boolean hasLeftRoute = hasLeftRoute(location);
             long now = new Date().getTime();
             boolean tooSoon = (now - lastRecalculateTime) <= RECALCULATE_THROTTLE;
             if(!inPublicTransportation && hasLeftRoute && !tooSoon) {
                 recalculate(location);
             } else {
-                updateStepIndex(location);
+                updateUpcomingSteps(location);
             }
         } else if(isDestinationReached) {
             Log.d("NavigationState", "Destination reached!");
@@ -144,58 +160,86 @@ public class NavigationState implements LocationListener {
     }
 
     /**
-     * Updates the stepIndex to reflect what navigation the user should do next
+     * Updates the upcoming steps to reflect what navigation the user should do next
      * @param location the current location of the user
      */
-    protected void updateStepIndex(Location location) {
-        Location nearestPoint = leg.getNearestPoint(location);
-        int nearestPointIndex = leg.getPoints().indexOf(nearestPoint);
+    protected void updateUpcomingSteps(Location location) {
+        synchronized (this) {
+            int nearestPointIndex = getNearestPointIndex(location);
+            Iterator<TurnInstruction> upcomingStepsIterator = upcomingSteps.iterator();
+            while(upcomingStepsIterator.hasNext()) {
+                TurnInstruction step = upcomingStepsIterator.next();
+                Double previousDistance = stepToDistance.get(step);
+                // At what index within the points list is this step nearest?
+                int stepsPointIndex = stepToPointIndex.get(step);
 
-        // Update the stepIndex to reflect what navigation the user should do next
-        for(int s = stepIndex; s < leg.getSteps().size(); s++) {
-            TurnInstruction step = leg.getSteps().get(s);
-            float distance = location.distanceTo(step.getLocation());
-            if(step.getPointsIndex() <= nearestPointIndex && distance > step.getTransitionDistance()) {
-                // We have passed the step, let's increase the stepIndex
-                setStepIndex(s+1);
+                double transitionDistance = step.getTransitionDistance();
+                double euclideanDistance = step.getLocation().distanceTo(location);
+
+                // Save this new distance in the step to distance map
+                stepToDistance.put(step, transitionDistance);
+
+                // Are we moving away from the step's location?
+                boolean isMovingAway = previousDistance != null &&
+                                       previousDistance < euclideanDistance;
+
+                if(stepsPointIndex < nearestPointIndex) {
+                    // We have moved beyond this instruction already
+                    if(upcomingStepsIterator.hasNext()) {
+                        // Let's never remove the last upcoming step
+                        upcomingStepsIterator.remove();
+                    }
+                    visitedSteps.add(step);
+                } else if(euclideanDistance < transitionDistance) {
+                    // We are close enough to consider the step visited
+                    visitedSteps.add(step);
+                } else if(visitedSteps.contains(step) && isMovingAway) {
+                    // We have visited the step and are now moving away from it
+                    if(upcomingStepsIterator.hasNext()) {
+                        // Let's never remove the last upcoming step
+                        upcomingStepsIterator.remove();
+                    }
+                }
             }
         }
     }
 
-    protected void setStepIndex(int newStepIndex) {
-        if(newStepIndex > leg.getSteps().size()-1) {
-            // The step index has exceeded the steps in the current route leg
-            // We should change to the next leg
-            int legIndex = route.getLegs().indexOf(leg);
-            if(legIndex < route.getLegs().size()-1) {
-                // Change leg
-                leg = route.getLegs().get(legIndex+1);
-                stepIndex = 0;
-            } else {
-                // Destination reached - let's just set the step index on the final step
-                stepIndex = leg.getSteps().size()-1;
-            }
-        } else {
-            stepIndex = newStepIndex;
-        }
+    private int getNearestPointIndex(Location location) {
+        return getNearestPointIndex(location, 0);
     }
 
-    protected void recalculate(Location location) {
+    private int getNearestPointIndex(Location location, int fromIndex) {
+        float minimalDistance = Float.MAX_VALUE;
+        int nearestPointIndex = 0;
+        for(int p = fromIndex; p < points.size(); p++) {
+            Location point = points.get(p);
+            float distance = location.distanceTo(point);
+            if(distance < minimalDistance) {
+                minimalDistance = distance;
+                nearestPointIndex = p;
+            }
+        }
+        return nearestPointIndex;
+    }
+
+    protected void recalculate(final Location location) {
         Log.d("NavigationState", "Recalculating route");
         isRecalculating = true;
         lastRecalculateTime = new Date().getTime();
+        final Leg currentLeg = getCurrentLeg();
 
         emitRouteRecalculationStarted();
 
         Geocoder.RouteCallback callback = new Geocoder.RouteCallback() {
             @Override
             public void onSuccess(Route route) {
-                if(NavigationState.this.route.getType().equals(RouteType.BREAK)) {
+                if (NavigationState.this.route.getType().equals(RouteType.BREAK)) {
                     // Replace the current leg with the only leg from the server
-                    if(route.getLegs().size() == 1) {
+                    if (route.getLegs().size() == 1) {
                         Leg recalculatedLeg = route.getLegs().get(0);
-                        NavigationState.this.route.replaceLeg(leg, recalculatedLeg);
-                        restartNavigation(recalculatedLeg);
+                        NavigationState.this.route.replaceLeg(currentLeg, recalculatedLeg);
+                        restartNavigation();
+                        updateUpcomingSteps(location);
                     } else {
                         throw new RuntimeException("Expected a single leg in the new route.");
                     }
@@ -220,12 +264,12 @@ public class NavigationState implements LocationListener {
         };
 
         RegularRouteRequester requester;
-        if(route.getType().equals(RouteType.BREAK)) {
+        if (route.getType().equals(RouteType.BREAK)) {
             // Recalculate the current leg only
             LatLng start = new LatLng(location);
-            LatLng end = new LatLng(leg.getEndLocation());
+            LatLng end = new LatLng(currentLeg.getEndLocation());
             requester = new RegularRouteRequester(start, end, callback, RouteType.FASTEST);
-            if(location.hasBearing()) {
+            if (location.hasBearing()) {
                 requester.setBearing(location.getBearing());
             }
             requester.execute();
@@ -239,25 +283,15 @@ public class NavigationState implements LocationListener {
     }
 
     /**
-     * Restarts the navigation, from a particular leg in the route
-     * @param leg the leg to start from
-     */
-    protected void restartNavigation(Leg leg) {
-        // Reset the navigation within the current leg.
-        stepIndex = 0;
-        this.leg = leg;
-    }
-
-    /**
      * Restarts the navigation, from the first leg in the route
      */
     protected void restartNavigation() {
         lastRecalculateTime = new Date().getTime();
-        if(getRoute().getLegs().size() > 0) {
-            restartNavigation(getRoute().getLegs().get(0));
-        } else {
-            throw new RuntimeException("Cannot restart navigation on a route without legs");
-        }
+        upcomingSteps.clear();
+        upcomingSteps.addAll(route.getSteps());
+        points.clear();
+        points.addAll(route.getPoints());
+        updateStepPointIndices();
     }
 
     /**
@@ -267,7 +301,9 @@ public class NavigationState implements LocationListener {
      */
     protected boolean hasLeftRoute(Location location) {
         float maximalDistanceAllowed = DISTANCE_TO_ROUTE_THRESHOLD + location.getAccuracy() / 3;
-        return distanceToRoute(location) > maximalDistanceAllowed;
+        double distanceToRoute = distanceToRoute(location);
+        Log.d("NavigationState", "distanceToRoute = " + distanceToRoute);
+        return distanceToRoute > maximalDistanceAllowed;
     }
 
     /**
@@ -389,82 +425,102 @@ public class NavigationState implements LocationListener {
         }
     }
 
-    public boolean isDestinationReached(Location location) {
-        // Are we navigating on the last leg of the route?
-        int legIndex = route.getLegs().indexOf(leg);
-        boolean lastLeg = legIndex == route.getLegs().size()-1;
-        // Are we navigating towards the last step of the route?
-        boolean lastStep = stepIndex == leg.getSteps().size()-1;
-        // Are we close enough to the location of the last step of the route?
-        TurnInstruction step = leg.getSteps().get(stepIndex);
-        boolean closeEnough = location.distanceTo(step.getLocation()) <= DESTINATION_REACHED_THRESHOLD;
-        // All at once?
-        return lastLeg && lastStep && closeEnough;
+    public boolean isDestinationReached() {
+        if(upcomingSteps.isEmpty()) {
+            // It is actually very unlikely that queue of steps will get completely empty
+            return true;
+        } else {
+            TurnInstruction finalStep = upcomingSteps.get(upcomingSteps.size()-1);
+            return visitedSteps.contains(finalStep);
+        }
     }
 
     public TurnInstruction getNextStep() {
-        if(route != null && leg != null && stepIndex >= 0 && stepIndex < leg.getSteps().size()) {
-            return leg.getSteps().get(stepIndex);
-        } else {
+        if(upcomingSteps.size() == 0) {
             return null;
+        } else {
+            return upcomingSteps.get(0);
         }
-    }
-
-    public Leg getLeg() {
-        return leg;
-    }
-
-    public float getDistanceToStep(TurnInstruction step) {
-        Location location = BikeLocationService.getInstance().getLastValidLocation();
-        return leg.getDistanceToStep(location, step);
     }
 
     /**
-     * Get the estimated distance left of the entire journey.
-     * @return distance in metres
+     * Calculates the distance from the users location to a particular step.
+     * TODO: Implement a non-euclidean calculation, that follows the geometry / points of the route.
+     * @param step the particular step
+     * @return
      */
-    public float getEstimatedDistanceLeft(boolean nonPublicOnly) {
-        float distanceLeft = 0;
-        // Sum over the current and all future legs
-        for(int l = route.getLegs().indexOf(leg); l < route.getLegs().size(); l++) {
-            Leg leg = route.getLegs().get(l);
-            if(!nonPublicOnly || !leg.getTransportType().isPublicTransportation()) {
-                if(this.leg.equals(leg)) {
-                    distanceLeft += leg.getEstimatedDistanceLeft(stepIndex);
-                } else {
-                    distanceLeft += leg.getDistance();
-                }
-            }
-        }
-        return distanceLeft;
+    public static float getDistanceToStep(TurnInstruction step) {
+        Location location = BikeLocationService.getInstance().getLastValidLocation();
+        return step.getLocation().distanceTo(location);
     }
 
-    public double getEstimatedDurationLeft() {
-        double result = 0;
-        for(int l = route.getLegs().indexOf(leg); l < route.getLegs().size(); l++) {
-            result += getEstimatedDurationLeft(leg);
-        }
-        return result;
+    /**
+     * Estimates the duration left, as a difference in the current time and projected arrival time.
+     * @return duration in seconds
+     */
+    public double getBikingDuration() {
+        return getBikingDuration(route.getType(), upcomingSteps, null);
     }
 
-    public double getEstimatedDurationLeft(Leg leg) {
-        // Does the leg have explicit departure and arrival times?
-        if(this.leg.equals(leg)) {
-            if(leg.getTransportType().isPublicTransportation()) {
-                Date now = new Date();
-                return Math.max(0, leg.getArrivalTime() - now.getTime());
-            } else {
-                double distance = leg.getEstimatedDistanceLeft(stepIndex);
-                // Adjusting for the average speed on this type of route.
-                if(route.getType().equals(RouteType.CARGO)) {
-                    return distance / Route.AVERAGE_CARGO_BIKING_SPEED;
-                } else {
-                    return distance / Route.AVERAGE_BIKING_SPEED;
-                }
-            }
+    /**
+     * Estimates the duration left, as a difference in the current time and projected arrival time.
+     * @param route the route to calculate the duration for
+     * @return duration in seconds
+     */
+    public static double getBikingDuration(Route route) {
+        return getBikingDuration(route.getType(), route.getSteps(), null);
+    }
+
+    /**
+     * Estimate the total duration, on a particular leg.
+     * This will not take into account that navigation might have started.
+     * @param leg the leg that we want to calculate duration for
+     * @return duration in seconds
+     */
+    public static double getBikingDuration(Route route, Leg leg) {
+        return getBikingDuration(route.getType(), leg.getSteps(), null);
+    }
+
+    /**
+     * Estimates the duration left, as a sum over all legs
+     * @param type the type of route that we want to calculate duration for, vehicle affects speed.
+     * @param steps the list of steps that the user is expected to take
+     * @return duration in seconds
+     */
+    public static double getBikingDuration(RouteType type, List<TurnInstruction> steps, Location location) {
+        double distance = getBikingDistance(steps, location);
+        // The type of route affects the speed at which the user can travel.
+        if(type.equals(RouteType.CARGO)) {
+            return distance / AVERAGE_CARGO_BIKING_SPEED;
         } else {
-            return route.getDuration(leg);
+            return distance / AVERAGE_BIKING_SPEED;
         }
+    }
+
+    public double getBikingDistance() {
+        return getBikingDuration(route.getType(), upcomingSteps, null);
+    }
+
+    public static double getBikingDistance(Route route) {
+        return getBikingDuration(route.getType(), route.getSteps(), null);
+    }
+
+    public static double getBikingDistance(List<TurnInstruction> steps, Location location) {
+        double distance = 0.0;
+
+        // If a current location is known, we take into account the distance to the next step too.
+        if(steps.size() > 0 && location != null) {
+            distance += steps.get(0).getLocation().distanceTo(location);
+        }
+
+        // Sum over the distance of every step.
+        for(TurnInstruction step: steps) {
+            if(!step.getTransportType().isPublicTransportation()) {
+                distance += step.getDistance();
+            }
+        }
+
+        return distance;
     }
 
     public Date getArrivalTime() {
@@ -475,55 +531,114 @@ public class NavigationState implements LocationListener {
         return getArrivalTime(route, null);
     }
 
+    /**
+     * Calculate the projected arrival time.
+     * @param route a route to project arrival time for
+     * @param state the state of navigation, if any.
+     * @return the projected time of arrival.
+     */
     public static Date getArrivalTime(Route route, NavigationState state) {
-        // Find the last non-public legs - only these can have their arrival time
-        // improved by the user biking faster
-        Date earliestDeparture = new Date(); // Let's assume now
-
-        // Calculate the index to which we should calculate down to.
-        int earliestLegIndex;
-        if(state != null && state.getLeg() != null) {
-            earliestLegIndex = route.getLegs().indexOf(state.getLeg());
+        List<TurnInstruction> upcomingSteps;
+        if(state != null) {
+            upcomingSteps = state.getUpcomingSteps();
         } else {
-            earliestLegIndex = 0;
+            upcomingSteps = route.getSteps();
         }
 
-        // Looping backwards in routes, summing up the estimated duration.
-        int nonPublicDurationLeft = 0;
-        for(int r = route.getLegs().size()-1; r >= earliestLegIndex; r--) {
-            Leg leg = route.getLegs().get(r);
-            long arrivalTime = leg.getArrivalTime();
-            if(leg.getTransportType().isPublicTransportation() && arrivalTime > 0) {
-                // The last public transportation
-                earliestDeparture = new Date(arrivalTime * 1000);
-                break;
-            } else {
-                if(state != null) {
-                    nonPublicDurationLeft += state.getEstimatedDurationLeft(leg);
-                } else {
-                    nonPublicDurationLeft += route.getDuration(leg);
-                }
-            }
+        TurnInstruction firstStepAffectingArrival = getFirstStepAffectingArrival(upcomingSteps);
+        Log.d("NavigationState", "firstStepAffectingArrival.getTime() = " + firstStepAffectingArrival.getTime());
+
+        // Figure out when the earliest departure can happen
+        Date earliestDeparture;
+        if(firstStepAffectingArrival != null && firstStepAffectingArrival.getTime() > 0) {
+            earliestDeparture = new Date(firstStepAffectingArrival.getTime() * 1000);
+        } else {
+            earliestDeparture = new Date();
         }
+
+        // Traverse the list of upcoming non-public steps, summing over the distance
+        int firstStepAffectingArrivalIndex = upcomingSteps.indexOf(firstStepAffectingArrival);
+        // Get the list of steps affecting arrival (those after the last leg with public transport).
+        List<TurnInstruction> stepsAffectingArrival = upcomingSteps.subList(firstStepAffectingArrivalIndex, upcomingSteps.size()-1);
+
+        Location location = null;
+        if(firstStepAffectingArrivalIndex == 0) {
+            // We are on the route and can affect the arrival time with our location
+            location = BikeLocationService.getInstance().getLastValidLocation();
+        }
+        double duration = getBikingDuration(route.getType(), stepsAffectingArrival, location);
 
         Calendar c = Calendar.getInstance();
         c.setTime(earliestDeparture);
-        c.add(Calendar.SECOND, nonPublicDurationLeft);
+        c.add(Calendar.SECOND, (int) Math.round(duration));
         return c.getTime();
     }
 
-    public static double getEstimatedDistance(boolean nonPublicOnly, Route route) {
-        float estimatedDistance = 0;
-        // Calculate the accumulated estimated distance.
-        for(Leg leg: route.getLegs()) {
-            if(!nonPublicOnly || !leg.getTransportType().isPublicTransportation()) {
-                estimatedDistance += leg.getDistance();
+    private static TurnInstruction getFirstStepAffectingArrival(List<TurnInstruction> upcomingSteps) {
+        TurnInstruction lastNonPublicStep = null;
+        // Traverse backwards through upcoming steps to find the last, that does not use a public
+        // transportation type
+        for(int s = upcomingSteps.size()-1; s >= 0; s--) {
+            TurnInstruction step = upcomingSteps.get(s);
+            if(step.getTransportType().isPublicTransportation()) {
+                return lastNonPublicStep;
+            } else {
+                lastNonPublicStep = step;
             }
         }
-        return estimatedDistance;
+        return lastNonPublicStep;
     }
 
-    public boolean onLastLeg() {
-        return getRoute().getLegs().indexOf(leg) == getRoute().getLegs().size()-1;
+    /**
+     * Updates the pointIndex field on all steps in the route.
+     * This should be called after all points and steps has been added
+     */
+    public void updateStepPointIndices() {
+        stepToPointIndex.clear();
+        if(!points.isEmpty() && !upcomingSteps.isEmpty()) {
+            int pointIndex = 0;
+            for(TurnInstruction step: upcomingSteps) {
+                pointIndex = getNearestPointIndex(step.getLocation(), pointIndex);
+                stepToPointIndex.put(step, pointIndex);
+            }
+        } else {
+            throw new RuntimeException("Got a route without points or steps");
+        }
+    }
+
+    @Override
+    public void routeChanged() {
+        updateStepPointIndices();
+        // Load all turn instructions into the internal unified list of upcoming instructions
+        // Fast forward to the nearest step on the route
+    }
+
+    /**
+     * Loops through legs to find the one that has the next upcoming step in it
+     * @return
+     */
+    public Leg getCurrentLeg() {
+        TurnInstruction nextStep = getNextStep();
+        for(Leg leg: route.getLegs()) {
+            for(TurnInstruction step: leg.getSteps()) {
+                if(step.equals(nextStep)) {
+                    return leg;
+                }
+            }
+        }
+        return null;
+    }
+
+    public TurnInstruction getFirstStep() {
+        if(route != null) {
+            List<Leg> legs = route.getLegs();
+            if(legs.size() > 0) {
+                List<TurnInstruction> firstLegsSteps = legs.get(0).getSteps();
+                if(firstLegsSteps.size() > 0) {
+                    return firstLegsSteps.get(0);
+                }
+            }
+        }
+        return null;
     }
 }

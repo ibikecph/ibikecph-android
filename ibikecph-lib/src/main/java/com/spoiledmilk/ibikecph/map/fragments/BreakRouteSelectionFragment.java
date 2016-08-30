@@ -102,8 +102,8 @@ public class BreakRouteSelectionFragment extends RouteSelectionFragment {
     @Override
     public void routeTypeChanged(RouteType newType) {
         super.routeTypeChanged(newType);
-        if(breakRouteContainer != null && breakRouteContainer != null) {
-            if(newType == RouteType.BREAK) {
+        if(breakRouteContainer != null) {
+            if(newType.equals(RouteType.BREAK)) {
                 progressBarHolder.setVisibility(View.VISIBLE);
                 breakRouteContainer.setVisibility(View.GONE);
             } else {

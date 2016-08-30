@@ -70,17 +70,14 @@ public class Leg {
                     instruction.setDescription(summary);
                 }
 
-                // If the transportation type is public
-                if(transportType.isPublicTransportation()) {
-                    // And the instruction is departure or arrival - add time directly on them
-                    if(instruction.getType().equals(TurnInstruction.Type.DEPART)) {
-                        instruction.setTime(departureTime);
-                        if(summary != null && !summary.isEmpty()) {
-                            instruction.setDescription(summary);
-                        }
-                    } else if(instruction.getType().equals(TurnInstruction.Type.ARRIVE)) {
-                        instruction.setTime(arrivalTime);
-                    }
+                // And the instruction is departure or arrival - add time directly on them
+                if(departureTime > 0 && instruction.getType().equals(TurnInstruction.Type.DEPART)) {
+                    instruction.setTime(departureTime);
+                } else if(instruction.getType().equals(TurnInstruction.Type.ARRIVE)) {
+                    instruction.setTime(arrivalTime);
+                }
+                if(summary != null && !summary.isEmpty()) {
+                    instruction.setDescription(summary);
                 }
 
                 steps.add(instruction);
@@ -101,13 +98,13 @@ public class Leg {
         }
     }
 
-    /**
+    /*
      * Iterating the points and returns the closes after pointIndex to the location of the
      * instruction provided as argument.
      * @param instruction The instruction that the index is determined for.
      * @param pointIndex Any offset from which the search should start from.
      * @return The index into the points array, closest to the location of the instruction.
-     */
+     * /
     protected int getPointIndex(TurnInstruction instruction, int pointIndex) {
         int result = pointIndex;
         float minimalDistance = Float.MAX_VALUE;
@@ -120,6 +117,7 @@ public class Leg {
         }
         return result;
     }
+    */
 
     public List<Location> getPoints() {
         return points;
@@ -200,19 +198,6 @@ public class Leg {
         }
     }
 
-    /**
-     * Get the estimated distance left of the leg
-     * @return the distance in metres
-     */
-    public double getEstimatedDistanceLeft(int stepIndex) {
-        float result = 0f;
-        for(int s = stepIndex; s < steps.size(); s++) {
-            TurnInstruction step = steps.get(s);
-            result += step.distance;
-        }
-        return result;
-    }
-
     public double getDistance() {
         return distance;
     }
@@ -249,50 +234,12 @@ public class Leg {
         return steps;
     }
 
-    public Location getNearestPoint(Location location) {
-        float minimalDistance = Float.MAX_VALUE;
-        Location result = null;
-        for(Location p: points) {
-            float distance = location.distanceTo(p);
-            if(distance < minimalDistance) {
-                minimalDistance = distance;
-                result = p;
-            }
-        }
-        return result;
-    }
-
-    public TurnInstruction getStepAfterPointIndex(int pointIndex) {
-        for(TurnInstruction step: steps) {
-            if(step.getPointsIndex() > pointIndex) {
-                return step;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Updates the pointIndex field on all steps in the route.
-     * This should be called after all points and steps has been added
-     */
-    public void updateStepPointIndices() {
-        if(!points.isEmpty() && !steps.isEmpty()) {
-            int pointIndex = 0;
-            for(TurnInstruction step: steps) {
-                pointIndex = getPointIndex(step, pointIndex);
-                step.setPointsIndex(pointIndex);
-            }
-        } else {
-            throw new RuntimeException("Got a route without points or steps");
-        }
-    }
-
-    /**
+    /*
      * Calculates the distance along the points path of the route, until the step
      * @param location the current location to calculate distance from
      * @param step the step to calculate the distance to
      * @return distance in metres
-     */
+     * /
     public float getDistanceToStep(Location location, TurnInstruction step) {
         Location nearestPoint = getNearestPoint(location);
         int nearestPointIndex = points.indexOf(nearestPoint);
@@ -311,4 +258,5 @@ public class Leg {
         }
         return result;
     }
+    */
 }

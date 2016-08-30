@@ -21,7 +21,6 @@ import com.spoiledmilk.ibikecph.navigation.NavigationStateListener;
 import com.spoiledmilk.ibikecph.navigation.TurnByTurnInstructionFragment;
 import com.spoiledmilk.ibikecph.navigation.read_aloud.NavigationOracle;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.RouteListener;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.TurnInstruction;
 import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
@@ -233,6 +232,7 @@ public class NavigatingState extends MapState implements NavigationStateListener
 
     @Override
     public void destinationReached() {
+        Log.d("NavigatingState", "destinationReached called");
         // We are done with the journey
         turnByTurnFragment.reachedDestination();
         if(navigationOracle != null) {

@@ -56,7 +56,7 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
     }
 
     /**
-     * TODO: Have this method implement some of the behaviour from renderForBreakRoute
+     * Updates the TextViews and Images, to show the next upcoming step.
      */
     public void render() {
         NavigationState state = getMapState(NavigatingState.class).getNavigationState();
@@ -70,7 +70,7 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
                 imgDirectionIcon.setImageResource(instruction.getSmallDirectionResourceId());
             } else {
                 // This is public transportation
-                Leg leg = state.getLeg();
+                Leg leg = state.getCurrentLeg();
                 String instructionString;
                 String timeString;
 
@@ -88,7 +88,7 @@ public class TurnByTurnInstructionFragment extends MapStateFragment {
                     instructionString = IBikeApplication.getString("direction_19");
                     instructionString = instructionString + " " + instruction.name;
 
-                    timeString = timeStampFormat(state.getLeg().getArrivalTime());
+                    timeString = timeStampFormat(leg.getArrivalTime());
                 } else {
                     throw new RuntimeException("Encountered an unexpected turn instruction");
                 }

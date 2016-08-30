@@ -11,7 +11,6 @@ import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.states.NavigatingState;
 import com.spoiledmilk.ibikecph.navigation.NavigationState;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
 
 import java.text.SimpleDateFormat;
@@ -53,14 +52,14 @@ public class NavigationETAFragment extends MapStateFragment {
     public void render() {
         NavigationState state = getMapState(NavigatingState.class).getNavigationState();
 
-        float distanceLeft = state.getEstimatedDistanceLeft(true);
+        double distanceLeft = state.getBikingDistance();
         this.lengthText.setText(getFormattedDistance(Math.round(distanceLeft)));
 
         // Set the address text
         textAddress.setText(state.getRoute().getEndAddress().getDisplayName());
 
         // Set the duration label
-        double durationLeft = state.getEstimatedDurationLeft();
+        double durationLeft = state.getBikingDuration();
         durationText.setText(TrackListAdapter.durationToFormattedTime(durationLeft));
 
         etaText.setText(dateFormat.format(state.getArrivalTime()));

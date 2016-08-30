@@ -14,6 +14,7 @@ import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.map.states.RouteSelectionState;
+import com.spoiledmilk.ibikecph.navigation.NavigationState;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
 import com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity;
 import com.spoiledmilk.ibikecph.tracking.TrackListAdapter;
@@ -123,8 +124,8 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             sourceText.setText(route.getStartAddress().getDisplayName());
             destinationText.setText(route.getEndAddress().getDisplayName());
 
-            double distance = route.getEstimatedDistance(true);
-            double duration = route.getDuration();
+            double distance = NavigationState.getBikingDistance(route);
+            double duration = NavigationState.getBikingDuration(route);
 
             if (distance > 1000) {
                 distance /= 1000;
@@ -136,7 +137,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             // Set the duration label
             durationText.setText(TrackListAdapter.durationToFormattedTime(duration));
 
-            etaText.setText(dateFormat.format(route.getArrivalTime()));
+            etaText.setText(dateFormat.format(NavigationState.getArrivalTime(route)));
 
             // Only show the go button if the route starts at the current location or the route type
             // is break route.

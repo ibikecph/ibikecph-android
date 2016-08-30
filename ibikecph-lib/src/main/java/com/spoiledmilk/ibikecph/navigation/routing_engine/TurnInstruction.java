@@ -17,6 +17,7 @@ import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Util;
 
 import java.text.DateFormat;
+import java.util.Date;
 
 import static com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType.isPublicTransportation;
 
@@ -176,7 +177,7 @@ public class TurnInstruction implements Speakable {
                             .replace("{{description}}", description == null ? "?" : description)
                             .replace("{{name}}", speakableName);
                 case ARRIVE:
-                    String arrivalTime = timeFormat.format(time);
+                    String arrivalTime = timeFormat.format(time * 1000);
                     return IBikeApplication.getString("arrive_with_train")
                             .replace("{{name}}", speakableName)
                             .replace("{{arrivalTime}}", arrivalTime);
@@ -269,20 +270,6 @@ public class TurnInstruction implements Speakable {
     public String directionAbbreviation; // N: north, S: south, E: east, W: west, NW: North West, ...
 
     /**
-     * The index into the Leg's list of points.
-     * TODO: Consider moving this data to the Leg class, as this class has no reference to the Leg.
-     */
-    protected int pointsIndex;
-
-    public void setPointsIndex(int pointsIndex) {
-        this.pointsIndex = pointsIndex;
-    }
-
-    public int getPointsIndex() {
-        return this.pointsIndex;
-    }
-
-    /**
      * The location in which this instruction should be taken by the user.
      */
     Location location;
@@ -315,7 +302,7 @@ public class TurnInstruction implements Speakable {
         if (isPublicTransportation(transportType)) {
             return 100d;
         } else {
-            return 20d;
+            return 10d;
         }
     }
 
@@ -363,6 +350,18 @@ public class TurnInstruction implements Speakable {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public TransportationType getTransportType() {
+        return transportType;
+    }
+
+    /**
+     * A timestamp at which the turn instruction should preferably happen
+     * @return timestamp as seconds since unix epoc
+     */
+    public long getTime() {
+        return time;
     }
 
     /**

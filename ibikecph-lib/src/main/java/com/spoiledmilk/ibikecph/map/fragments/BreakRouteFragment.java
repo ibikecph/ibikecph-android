@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.navigation.NavigationState;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.BreakRouteResponse;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Leg;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
@@ -174,15 +175,17 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
             startTime[i] = timeStampFormat(leg.getDepartureTime());
             arrivalTime[i] = timeStampFormat(leg.getArrivalTime());
 
+            double duration = NavigationState.getBikingDuration(route, leg);
+
             if (leg.getTransportType() == TransportationType.BIKE) {
                 typeAndTime[i] = IBikeApplication.getString("vehicle_1") + " ";
-                typeAndTime[i] += formatDistance(route.getDuration(leg)) + " ";
-                typeAndTime[i] += "(" + formatTime(route.getDuration(leg)) + ")";
+                typeAndTime[i] += formatDistance(leg.getDistance()) + " ";
+                typeAndTime[i] += "(" + formatTime(duration) + ")";
                 fromTo[i] = from + to;
             } else if (leg.getTransportType() == TransportationType.WALK) {
                 typeAndTime[i] = IBikeApplication.getString("vehicle_2") + " ";
-                typeAndTime[i] += formatDistance(route.getDuration(leg)) + " ";
-                typeAndTime[i] += "(" + formatTime(route.getDuration(leg)) + ")";
+                typeAndTime[i] += formatDistance(leg.getDistance()) + " ";
+                typeAndTime[i] += "(" + formatTime(duration) + ")";
                 fromTo[i] = from + to;
             } else {
                 typeAndTime[i] = leg.getStartAddress().getDisplayName();
