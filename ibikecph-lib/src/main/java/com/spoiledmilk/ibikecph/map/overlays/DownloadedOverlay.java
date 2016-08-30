@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.overlay.Overlay;
 import com.mapbox.mapboxsdk.overlay.PathOverlay;
+import com.spoiledmilk.ibikecph.BuildConfig;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 
 import java.io.File;
@@ -287,7 +288,8 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
      */
     public URL getURL() {
         try {
-            return new URL("http://assets.ibikecph.dk/geodata/" + getFilename());
+            String baseUrl = getBaseUrl();
+            return new URL(baseUrl + getFilename());
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -316,4 +318,7 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    public String getBaseUrl() {
+        return "http://assets.ibikecph.dk/geodata/";
+    }
 }

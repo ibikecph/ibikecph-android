@@ -35,7 +35,7 @@ public class BikeLocationService extends Service implements LocationListener {
     WakeLock wakeLock;
 
     public boolean locationServicesEnabledOnPhone;
-    CopyOnWriteArrayList<LocationListener> locationListeners = new CopyOnWriteArrayList<LocationListener>();
+    CopyOnWriteArrayList<LocationListener> locationListeners = new CopyOnWriteArrayList<>();
 
     // TODO: Consider if there is a more Android way of achieving a singleton service.
     private static BikeLocationService instance;
