@@ -268,10 +268,10 @@ public class HTTPAutocompleteHandler {
 	}
 
 	public static String normalizeToAlphabet(String s) {
-		String ret = new String(s);
-		ret = ret.replaceAll("ø|Ø", "o");
-		ret = ret.replaceAll("å|Å", "a");
-		ret = ret.replaceAll("æ|Æ", "ae");
-		return ret;
+		if(s == null) {
+			return "";
+		} else {
+			return s.replaceAll("ø|Ø", "o").replaceAll("å|Å", "a").replaceAll("æ|Æ", "ae");
+		}
 	}
 }
