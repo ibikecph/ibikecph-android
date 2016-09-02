@@ -2,8 +2,7 @@ package dk.kk.ibikecph.map.overlays;
 
 import com.spoiledmilk.ibikecph.map.overlays.DownloadedOverlay;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import dk.kk.ibikecph.BuildConfig;
 
 /**
  * The green paths overlay, will show green paths in Copenhagen.
@@ -14,5 +13,14 @@ public class HarborRingOverlay extends DownloadedOverlay {
     @Override
     public String getFilename() {
         return "havneringen.geojson";
+    }
+
+    @Override
+    public String getBaseUrl() {
+        if(BuildConfig.FLAVOR.equals("local")) {
+            return "http://10.0.2.2:3000/geodata/";
+        } else {
+            return "http://assets.ibikecph.dk/geodata/";
+        }
     }
 }
