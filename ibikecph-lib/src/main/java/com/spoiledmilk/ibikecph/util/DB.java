@@ -279,7 +279,9 @@ public class DB extends SQLiteOpenHelper {
             final JSONObject postObject = new JSONObject();
             try {
                 JSONObject favouriteObject = new JSONObject();
-                favouriteObject.put("name", favoriteListItem.getAddress().getName());
+                String name = favoriteListItem.getAddress().getName();
+                // The API requires that the name of the favorite item is set
+                favouriteObject.put("name", name != null ? name : favoriteListItem.getAddress().getDisplayName());
                 favouriteObject.put("address", favoriteListItem.getAddress().getFullAddress());
                 favouriteObject.put("latitude", favoriteListItem.getAddress().getLocation().getLatitude());
                 favouriteObject.put("longitude", favoriteListItem.getAddress().getLocation().getLongitude());

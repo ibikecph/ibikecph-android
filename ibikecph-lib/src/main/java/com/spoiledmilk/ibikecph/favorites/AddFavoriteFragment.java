@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.search.Address;
@@ -44,6 +46,10 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
     private AlertDialog dialog;
     boolean isTextChanged = false;
 
+    public enum RequestCode {
+        SearchForAddress
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -56,7 +62,7 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
             public void onClick(View arg0) {
                 Intent i = new Intent(getActivity(), SearchAutocompleteActivity.class);
                 i.putExtra("isA", true);
-                getActivity().startActivityForResult(i, 2);
+                getActivity().startActivityForResult(i, RequestCode.SearchForAddress.ordinal());
             }
         });
 
@@ -171,43 +177,36 @@ public class AddFavoriteFragment extends Fragment implements RadioGroup.OnChecke
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
 
-        Log.i("AddFavoriteFragment", "AddFavoriteFragment on address result");
-
-        if (data != null) {
-            Bundle b = data.getExtras();
+        // Figure out what request generated the result
+        if(requestCode < 0 || RequestCode.values().length <= requestCode) {
+            throw new RuntimeException("Unexpected activity result - requestCode out of bounds");
+        }
+        RequestCode request = RequestCode.values()[requestCode];
+        if(request.equals(RequestCode.SearchForAddress)) {
+            // The user wanted to search for an address
+            Bundle b = intent.getExtras();
             Address addressObject = (Address) b.getSerializable("addressObject");
-            if (b.containsKey("address") && b.containsKey("lat") && b.containsKey("lon")) {
-                try {
-                    String address = AddressParser.textFromBundle(b).replace("\n", "");
 
-                    if (address != null && !address.isEmpty()) {
-                        favoriteListItem = new FavoriteListItem(textFavoriteName.getText().toString(), address, currentFavoriteType, b.getDouble("lat"),
-                                b.getDouble("lon"), -1);
-                    } else if(addressObject != null) {
-                        address = addressObject.getPrimaryDisplayString();
-                        favoriteListItem = new FavoriteListItem(textFavoriteName.getText().toString(), address, currentFavoriteType, b.getDouble("lat"),
-                                b.getDouble("lon"), -1);
-                    }
-                    textAddress.setText(address);
-
-
-                    if (b.containsKey("poi")) {
-                        textFavoriteName.setText(b.getString("poi"));
-                    } else {
-                        textFavoriteName.setText(address);
-                    }
-                } catch (Exception ex) {
-                    Log.e("AddFavoriteFragment", "Could not parse address from bundle", ex);
-                }
-            } else {
-                throw new RuntimeException("The bundle is missing some values");
+            if(addressObject == null) {
+                throw new RuntimeException("Expected an addressObject");
             }
 
-        }
+            String address = addressObject.getPrimaryDisplayString();
+            LatLng location = addressObject.getLocation();
+            favoriteListItem = new FavoriteListItem(textFavoriteName.getText().toString(), address, currentFavoriteType, location.getLatitude(), location.getLongitude(), -1);
+            textAddress.setText(address);
 
+            if (b.containsKey("poi")) {
+                textFavoriteName.setText(b.getString("poi"));
+            } else {
+                textFavoriteName.setText(address);
+            }
+        } else {
+            throw new RuntimeException("Unexpected activity result - requestCode not implemented");
+        }
     }
 
     @Override
