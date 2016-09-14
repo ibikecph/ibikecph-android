@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.spoiledmilk.cykelsuperstier"
     android:versionCode="80"
-    android:versionName="2.2.0">
+    android:versionName="2.2.2">
 
     <uses-sdk android:targetSdkVersion="23" />
 
