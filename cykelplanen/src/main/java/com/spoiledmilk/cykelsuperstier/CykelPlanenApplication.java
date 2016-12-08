@@ -23,7 +23,7 @@ public class CykelPlanenApplication extends IBikeApplication {
 
 		initializeGoogleAnalytics(R.xml.global_tracker);
 
-		Config.generateUrls(BuildConfig.API_URL);
+		Config.generateUrls(BuildConfig.BASE_URL);
 	}
 
 
