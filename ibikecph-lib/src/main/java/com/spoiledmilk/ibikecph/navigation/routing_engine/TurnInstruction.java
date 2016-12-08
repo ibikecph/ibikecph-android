@@ -34,6 +34,10 @@ public class TurnInstruction implements Speakable {
 
     protected static DateFormat timeFormat = IBikeApplication.getTimeFormat();
 
+    public TurnInstruction() {
+
+    }
+
     public TurnInstruction(JsonNode stepNode) {
         JsonNode maneuverNode = stepNode.get("maneuver");
         if (maneuverNode == null || !maneuverNode.isObject()) {
@@ -280,7 +284,7 @@ public class TurnInstruction implements Speakable {
      */
     protected String description;
 
-    public TransportationType transportType;
+    public TransportationType transportType = TransportationType.BIKE;
 
     public String getDescription() {
         return description;
@@ -312,6 +316,10 @@ public class TurnInstruction implements Speakable {
 
     public Type getType() {
         return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public static String translateStepName(String name) {

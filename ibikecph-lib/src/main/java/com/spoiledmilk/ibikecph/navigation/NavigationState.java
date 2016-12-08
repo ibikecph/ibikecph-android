@@ -55,11 +55,6 @@ public class NavigationState implements LocationListener, RouteListener {
     private static final int RECALCULATE_THROTTLE = 10000; // Once every 10 secs
 
     /**
-     * The state of the map used to visualize the navigation.
-     */
-    protected final NavigatingState mapState;
-
-    /**
      * The currently active route.
      */
     protected Route route;
@@ -100,12 +95,13 @@ public class NavigationState implements LocationListener, RouteListener {
      */
     protected Map<TurnInstruction, Double> stepToDistance = new HashMap<>();
 
+    protected Location lastKnownLocation;
+
     /**
-     * Constructs a new NavigationState, takes a Navigating(Map)State as argument.
-     * @param mapState the state of the map, used to visualize the navigation.
+     * Constructs a new NavigationState
      */
-    public NavigationState(NavigatingState mapState) {
-        this.mapState = mapState;
+    public NavigationState() {
+
     }
 
     public List<TurnInstruction> getUpcomingSteps() {
@@ -140,6 +136,8 @@ public class NavigationState implements LocationListener, RouteListener {
 
     @Override
     public void onLocationChanged(Location location) {
+        // Update the last known location
+        lastKnownLocation = location;
         boolean isDestinationReached = isDestinationReached();
         if(!isDestinationReached && !isRecalculating) {
             TurnInstruction nextStep = getNextStep();
@@ -498,11 +496,11 @@ public class NavigationState implements LocationListener, RouteListener {
     }
 
     public double getBikingDistance() {
-        return getBikingDuration(route.getType(), upcomingSteps, null);
+        return getBikingDistance(upcomingSteps, lastKnownLocation);
     }
 
     public static double getBikingDistance(Route route) {
-        return getBikingDuration(route.getType(), route.getSteps(), null);
+        return getBikingDistance(route.getSteps(), null);
     }
 
     public static double getBikingDistance(List<TurnInstruction> steps, Location location) {
