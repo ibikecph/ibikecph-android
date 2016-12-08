@@ -80,11 +80,6 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
 
         File file = new File(context.getFilesDir(), getFilename());
 
-        // If the update is forced, lets delete the file.
-        if(file.exists() && forced) {
-            file.delete();
-        }
-
         // Check internet connection
         boolean hasInternet = isNetworkAvailable(context);
 
@@ -96,7 +91,7 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 // If the GeoJSON has already been downloaded, we add the if-modified-since header
-                if(file.exists()) {
+                if(file.exists() && !forced) {
                     long localLastModified = file.lastModified();
                     String ifModifiedSince = HTTP_DATE.format(new Date(localLastModified -
                                                                        EXPECTED_MODIFICATION_DELAY));
@@ -108,7 +103,7 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
                 }
 
                 if(connection.getResponseCode() == 200) { // OK
-                    Log.d("DownloadedOverlay", "Local file didn't exist or remote file was modified!");
+                    Log.d("DownloadedOverlay", "Downloaded a fresh version of the " + getClass().getSimpleName());
 
                     // Download the content of the updated overlay
                     input = connection.getInputStream();
