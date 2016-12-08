@@ -86,6 +86,18 @@
                 android:textColor="@color/White"
                 android:textSize="18sp" />
 
+            <Button
+                android:id="@+id/btnForgotPassword"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/stroke_button_inverted_red"
+                android:textColor="@color/White"
+                android:textSize="18sp" />
+
+
 
             <!-- <TextView -->
             <!-- android:id="@+id/textFacebookLogin" -->
