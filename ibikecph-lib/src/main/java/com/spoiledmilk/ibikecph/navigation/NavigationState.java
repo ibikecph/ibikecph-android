@@ -536,22 +536,28 @@ public class NavigationState implements LocationListener, RouteListener {
         // While we're iterating the steps, we calculate the remaining distance along the steps.
         TurnInstruction nextStep = null;
         for(TurnInstruction step: steps) {
-            // Either the visited steps was not provided or we have a step that has not been
-            // visited yet.
-            if(nextStep == null && (visitedSteps == null || !visitedSteps.contains(step))) {
-                Log.d("NavigationState", "Found a next upcoming step that was not yet visited: " + step);
+            boolean notVisited = visitedSteps == null || !visitedSteps.contains(step);
+            if(nextStep == null && (notVisited || step.getTransportType().isPublicTransportation())) {
+                // Either the visited steps was not provided or we have a step that has not been
+                // visited yet .. or alternatively the next step is public transportation.
+                // - and this is the first of it's kind
+                // Log.d("NavigationState", "Found a next upcoming step that was not yet visited: " + step);
                 nextStep = step;
             }
             // If we have found the next step - let's sum over the remaining step's distances
             if(nextStep != null) {
-                Log.d("NavigationState", "Adding " + step.getDistance() + "m to the distance");
                 // Step 2, from the methods doc-string
-                distance += step.getDistance();
+                if(!step.getTransportType().isPublicTransportation()) {
+                    // Log.d("NavigationState", "Adding " + step.getDistance() + "m to the distance for " + step);
+                    distance += step.getDistance();
+                }
             }
         }
 
         // If we found a next upcoming step that was not visited yet and have the users location
-        if(nextStep != null && location != null) {
+        // and this next step is not public transportation.
+        // NB: We always have a non-public step just before departure with public transportation.
+        if(nextStep != null && location != null && !nextStep.getTransportType().isPublicTransportation()) {
             // Let's first iterate points on the route to find the closest to the next step
             int nextStepPointIndex;
             if(stepToPointIndex != null) {
@@ -589,12 +595,12 @@ public class NavigationState implements LocationListener, RouteListener {
                 // Save this for the next iteration
                 previousPoint = p;
             }
-            Log.d("NavigationState", "Adding distanceFromNextStep = " + distanceFromNextStep);
+            // Log.d("NavigationState", "Adding distanceFromNextStep = " + distanceFromNextStep);
             distance += distanceFromNextStep;
             // And add the distance between the closest point and the users location
             Location minimalDistanceLocation = points.get(minimalDistanceIndex);
             double locationToMinimalDistanceLocation = minimalDistanceLocation.distanceTo(location);
-            Log.d("NavigationState", "Adding the remaining " + locationToMinimalDistanceLocation + "m");
+            // Log.d("NavigationState", "Adding the remaining " + locationToMinimalDistanceLocation + "m");
             distance += locationToMinimalDistanceLocation;
         }
 

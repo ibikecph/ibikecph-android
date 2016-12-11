@@ -6,14 +6,18 @@ import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
 import com.spoiledmilk.ibikecph.BikeLocationService;
+import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.navigation.NavigationState;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.TurnInstruction;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static dk.kk.ibikecph.test.RouteFactory.DEFAULT_DEPARTURE;
@@ -27,7 +31,7 @@ import static dk.kk.ibikecph.test.RouteFactory.generateStraightRoute;
 public class NavigationTest {
 
     static String LOG_TAG = NavigationTest.class.getSimpleName();
-    static double STRAIGHT_DISTANCE = 600.0;
+    static double DEFAULT_DISTANCE = 600.0;
 
     @Before
     public void setUp() throws Exception {
@@ -35,7 +39,7 @@ public class NavigationTest {
 
     @Test
     public void testSimpleRouteCreation() {
-        Route route = generateStraightRoute(STRAIGHT_DISTANCE);
+        Route route = generateStraightRoute(DEFAULT_DISTANCE);
 
         Log.d(LOG_TAG, "Created a route: " + route.toString());
         Assert.assertNotEquals(0, route.getLegs().size());
@@ -52,12 +56,13 @@ public class NavigationTest {
         Log.d(LOG_TAG, "Route has " + state.getUpcomingSteps().size() + " upcoming steps");
 
         BikeLocationService locationService = BikeLocationService.getInstance();
+        locationService.setMocked(true);
         // Let's position ourselves at the beginning of the route
         Location startLocation = RouteFactory.getOffsetLocation(points.get(0), -10.0, -10.0);
         locationService.onLocationChanged(startLocation);
 
         double distance = state.getBikingDistance();
-        Assert.assertEquals("Distance is right", STRAIGHT_DISTANCE + (Math.sqrt(2) * 10.0), distance, 0.25);
+        Assert.assertEquals("Distance is right", DEFAULT_DISTANCE + (Math.sqrt(2) * 10.0), distance, 0.25);
     }
 
     public static void followRoute(NavigationState state, double distanceToRoute) {
@@ -67,6 +72,7 @@ public class NavigationTest {
 
         // Emulate location changes
         BikeLocationService locationService = BikeLocationService.getInstance();
+        locationService.setMocked(true);
         double lastDistance = Double.MAX_VALUE;
 
         final double MAXIMAL_EXPECTED_DISTANCE = NavigationState.getBikingDistance(state.getRoute()) + distanceToRoute;
@@ -100,7 +106,7 @@ public class NavigationTest {
     public void testMultilegRouteCreation() {
         final int LEGS = 3;
         // Create a three-legged straight route
-        Route route = generateStraightRoute(STRAIGHT_DISTANCE, LEGS);
+        Route route = generateStraightRoute(DEFAULT_DISTANCE, LEGS);
 
         for(Location l: route.getPoints()) {
             Log.d(LOG_TAG, l.getLatitude() + "," + l.getLongitude());
@@ -117,11 +123,12 @@ public class NavigationTest {
         // Let's start at a distance to the route
         final double DISTANCE_TO_ROUTE = -1.0;
         Location location = RouteFactory.getOffsetLocation(DEFAULT_DEPARTURE, DISTANCE_TO_ROUTE, DISTANCE_TO_ROUTE);
-        final double MAXIMAL_EXPECTED_DISTANCE = Math.sqrt(Math.abs(DISTANCE_TO_ROUTE)*2) + STRAIGHT_DISTANCE;
+        final double MAXIMAL_EXPECTED_DISTANCE = Math.sqrt(Math.abs(DISTANCE_TO_ROUTE)*2) + DEFAULT_DISTANCE;
 
         // Emulate location changes
         final double STEP_SIZE = 5.0;
         BikeLocationService locationService = BikeLocationService.getInstance();
+        locationService.setMocked(true);
         double lastDistance = Double.MAX_VALUE;
         // Cannot use the followRoute method as this test is trying to move more independently from
         // the points on the route, to provoke an error
@@ -151,7 +158,7 @@ public class NavigationTest {
     public void testHalfCircularRouteCreation() {
         final int LEGS = 3;
         // Create a three-legged straight route
-        Route route = RouteFactory.generateHalfCircularRoute(STRAIGHT_DISTANCE, LEGS);
+        Route route = RouteFactory.generateHalfCircularRoute(DEFAULT_DISTANCE, LEGS);
 
         for(Location l: route.getPoints()) {
             Log.d(LOG_TAG, l.getLatitude() + "," + l.getLongitude());
@@ -164,6 +171,33 @@ public class NavigationTest {
         NavigationState state = new NavigationState();
         state.setRoute(route);
 
+        Log.d(LOG_TAG, "Starting navigation on a " + state.getBikingDistance() + "m circular route");
+        followRoute(state, 1.0);
+    }
+
+    @Test
+    public void testPublicRouteCreation() {
+        // Three types. Middle being public transportation
+        List<TransportationType> legTypes = new ArrayList<>();
+        legTypes.add(TransportationType.BIKE);
+        legTypes.add(TransportationType.BUS); // Public
+        legTypes.add(TransportationType.BIKE);
+
+        // Create a three-legged straight route
+        Route route = RouteFactory.generateHalfCircularRoute(DEFAULT_DISTANCE, legTypes);
+
+        for(Location l: route.getPoints()) {
+            Log.d(LOG_TAG, l.getLatitude() + "," + l.getLongitude());
+        }
+
+        Assert.assertEquals(legTypes.size(), route.getLegs().size());
+        // 10 points per half + arrival point on LEGS circles
+        Assert.assertEquals(41 * legTypes.size(), route.getPoints().size());
+
+        Assert.assertEquals("Expected two thirds distance", DEFAULT_DISTANCE / 3.0 * 2.0, NavigationState.getBikingDistance(route), 0.1);
+
+        NavigationState state = new NavigationState();
+        state.setRoute(route);
         Log.d(LOG_TAG, "Starting navigation on a " + state.getBikingDistance() + "m circular route");
         followRoute(state, 1.0);
     }

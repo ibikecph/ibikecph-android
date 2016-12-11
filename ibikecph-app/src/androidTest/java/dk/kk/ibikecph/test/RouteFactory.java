@@ -1,11 +1,11 @@
 package dk.kk.ibikecph.test;
 
 import android.location.Location;
-import android.util.Log;
 
 import com.spoiledmilk.ibikecph.map.RouteType;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Leg;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
+import com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType;
 import com.spoiledmilk.ibikecph.navigation.routing_engine.TurnInstruction;
 import com.spoiledmilk.ibikecph.search.Address;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -31,7 +31,7 @@ public class RouteFactory {
     }
     static double EARTHS_RADIUS = 6378137;
 
-    enum LegType {
+    enum LegGeometry {
         STRAIGHT,
         HALF_CIRCULAR
     }
@@ -95,8 +95,14 @@ public class RouteFactory {
 
     static Leg generateLeg(List<Location> points, List<TurnInstruction> instructions, double distance) {
         Leg leg = new Leg();
-        leg.getPoints().addAll(points);
+        for(int i = 0; i < instructions.size(); i++) {
+            TurnInstruction instruction = instructions.get(i);
+            if(instruction.name == null || instruction.name.isEmpty()) {
+                instruction.name = "#" + i + " of leg " + leg.hashCode();
+            }
+        }
         leg.getSteps().addAll(instructions);
+        leg.getPoints().addAll(points);
         leg.setDistance(distance);
         return leg;
     }
@@ -194,14 +200,27 @@ public class RouteFactory {
     }
 
     static Route generateStraightRoute(double distance, int legs) {
-        return generateRoute(distance, legs, LegType.STRAIGHT);
+        return generateRoute(distance, legs, LegGeometry.STRAIGHT);
     }
 
     static Route generateHalfCircularRoute(double distance, int legs) {
-        return generateRoute(distance, legs, LegType.HALF_CIRCULAR);
+        return generateRoute(distance, legs, LegGeometry.HALF_CIRCULAR);
     }
 
-    static Route generateRoute(double distance, int legs, LegType legType) {
+    static Route generateHalfCircularRoute(double distance, List<TransportationType> legTransportationTypes) {
+        return generateRoute(distance, legTransportationTypes, LegGeometry.HALF_CIRCULAR);
+    }
+
+    static Route generateRoute(double distance, int legs, LegGeometry legGeometry) {
+        List<TransportationType> legTransportationTypes = new ArrayList<>();
+        for(int l = 0; l < legs; l++) {
+            legTransportationTypes.add(TransportationType.BIKE);
+        }
+        return generateRoute(distance, legTransportationTypes, legGeometry);
+    }
+
+    static Route generateRoute(double distance, List<TransportationType> legTransportTypes, LegGeometry legGeometry) {
+        int legs = legTransportTypes.size();
         if(legs < 1) {
             throw new RuntimeException("Expected at least one leg");
         }
@@ -211,12 +230,18 @@ public class RouteFactory {
         Location start = DEFAULT_DEPARTURE;
         for(int l = 0; l < legs; l++) {
             Leg leg;
-            if(legType.equals(LegType.STRAIGHT)) {
+            if(legGeometry.equals(LegGeometry.STRAIGHT)) {
                 leg = generateStraightLeg(distance / legs, start);
-            } else if(legType.equals(LegType.HALF_CIRCULAR)) {
+            } else if(legGeometry.equals(LegGeometry.HALF_CIRCULAR)) {
                 leg = generateHalfCircularLeg(distance / legs, start);
             } else {
-                throw new RuntimeException("Unexpected leg type: " + legType);
+                throw new RuntimeException("Unexpected leg type: " + legGeometry);
+            }
+            // Overwrite the transportation type
+            TransportationType transportType = legTransportTypes.get(l);
+            leg.setTransportType(transportType);
+            for(TurnInstruction step: leg.getSteps()) {
+                step.transportType = transportType;
             }
             route.getLegs().add(leg);
             start = leg.getEndLocation();

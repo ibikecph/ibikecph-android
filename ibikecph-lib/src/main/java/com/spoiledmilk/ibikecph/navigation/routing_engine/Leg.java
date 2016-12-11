@@ -242,6 +242,10 @@ public class Leg {
         return steps;
     }
 
+    public void setTransportType(TransportationType transportType) {
+        this.transportType = transportType;
+    }
+
     /*
      * Calculates the distance along the points path of the route, until the step
      * @param location the current location to calculate distance from
