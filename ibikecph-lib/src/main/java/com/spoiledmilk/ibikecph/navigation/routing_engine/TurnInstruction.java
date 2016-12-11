@@ -34,6 +34,9 @@ public class TurnInstruction implements Speakable {
 
     protected static DateFormat timeFormat = IBikeApplication.getTimeFormat();
 
+    public static double DEFAULT_TRASITION_DISTANCE = 10.0;
+    public static double PUBLIC_TRASITION_DISTANCE = 100.0;
+
     public TurnInstruction() {
 
     }
@@ -304,9 +307,9 @@ public class TurnInstruction implements Speakable {
 
     public double getTransitionDistance() {
         if (isPublicTransportation(transportType)) {
-            return 100d;
+            return PUBLIC_TRASITION_DISTANCE;
         } else {
-            return 10d;
+            return DEFAULT_TRASITION_DISTANCE;
         }
     }
 
