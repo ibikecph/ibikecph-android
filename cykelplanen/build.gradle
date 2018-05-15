@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':ibikecph-lib')
-
-    compile 'com.google.android.gms:play-services-analytics:8.4.0'
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api project(':ibikecph-lib')
+    implementation 'com.google.android.gms:play-services-analytics:15.0.2'
+    implementation 'com.android.support:support-v4:27.1.1'
 }
 
 android {
@@ -12,16 +12,16 @@ android {
         development {
             keyAlias secret('DEV_KEY_ALIAS')
             keyPassword secret('DEV_KEY_PASSWORD')
-            storeFile file('../development-keystore.jks')
+            storeFile file('../debug.keystore')
             storePassword secret('DEV_KEYSTORE_PASSWORD')
         }
     }
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.spoiledmilk.cykelsuperstier"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 27
         manifestPlaceholders = [HOCKEYAPP_APP_ID: ""]
         // versionCode 1
         // versionName "1.0"
@@ -43,20 +43,25 @@ android {
             signingConfig signingConfigs.development
         }
     }
+    flavorDimensions "default"
+
     productFlavors {
         local {
             applicationIdSuffix ".local"
             resValue "string", "app_name", "CykelPlanen (local)"
             buildConfigField "String", "BASE_URL", "\"http://10.0.2.2:3000\""
+            dimension "default"
         }
         staging {
             applicationIdSuffix ".staging"
             resValue "string", "app_name", "CykelPlanen (staging)"
             buildConfigField "String", "BASE_URL", "\"https://staging.ibikecph.dk\""
+            dimension "default"
         }
         production {
             resValue "string", "app_name", "CykelPlanen"
             buildConfigField "String", "BASE_URL", "\"https://www.ibikecph.dk\""
+            dimension "default"
         }
     }
 }

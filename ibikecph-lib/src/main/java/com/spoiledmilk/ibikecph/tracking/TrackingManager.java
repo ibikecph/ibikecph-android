@@ -107,7 +107,7 @@ public class TrackingManager implements LocationListener {
      */
     private void makeAndSaveTrack() {
         // Save the track to the DB
-        realm = Realm.getInstance(IBikeApplication.getContext());
+        realm = Realm.getDefaultInstance();
         realm.beginTransaction();
 
         Log.d("MF", "############## makeAndSaveTrack ##############");
@@ -126,9 +126,7 @@ public class TrackingManager implements LocationListener {
         Track track;
         // last track
         try {
-            Track lastTrack = realm.where(Track.class)
-                    .findAllSorted("timestamp", Sort.DESCENDING)
-                    .first();
+            Track lastTrack = realm.where(Track.class).sort("timestamp", Sort.DESCENDING).findAll().first();
 
             Log.d("MF", "last track time: " + lastTrack.getLocations().last().getTimestamp().getTime());
 
@@ -229,7 +227,7 @@ public class TrackingManager implements LocationListener {
             @Override
             public void run() {
 
-                Realm realm = Realm.getInstance(IBikeApplication.getContext());
+                Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
                 RealmResults<Track> tracksToUpload = null;
 
@@ -349,7 +347,7 @@ public class TrackingManager implements LocationListener {
 
     public static void deleteTrack(final int id) {
 
-        Realm realm = Realm.getInstance(IBikeApplication.getContext());
+        Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmResults<Track> trackToDelete = null;
 
@@ -380,7 +378,7 @@ public class TrackingManager implements LocationListener {
                         Log.d("DV", "responseNode = " + responseNode.toString());
                         if (responseNode.get("success").asBoolean() || statusCode == 404) {
                             Log.d("DV", "Track deleted from the server!");
-                            trackToDelete.get(0).removeFromRealm();
+                            trackToDelete.get(0).deleteFromRealm();
                             realm.commitTransaction();
                             realm.close();
                             Log.d("DV", "Track deleted from the APP!");
@@ -410,7 +408,7 @@ public class TrackingManager implements LocationListener {
     //Test method
     public static void createFakeTrack() {
         Log.d("DV", "Creating fake track!");
-        Realm realm = Realm.getInstance(IBikeApplication.getContext());
+        Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
 
         Track track;
@@ -443,7 +441,7 @@ public class TrackingManager implements LocationListener {
             @Override
             public void run() {
 
-                Realm realm = Realm.getInstance(IBikeApplication.getContext());
+                Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
                 RealmResults<Track> tracksToUpload = null;
 
@@ -553,7 +551,7 @@ public class TrackingManager implements LocationListener {
     }
 
     public static void printAllTracks() {
-        Realm realm = Realm.getInstance(IBikeApplication.getContext());
+        Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         RealmResults<Track> tracksToUpload = null;
         try {
@@ -585,7 +583,7 @@ public class TrackingManager implements LocationListener {
     @Override
     public void onLocationChanged(Location givenLocation) {
         // TODO: The `realm` field would be nice to have on the class instead of potentially constructing it on each GPS update
-        realm = Realm.getInstance(IBikeApplication.getContext());
+        realm = Realm.getDefaultInstance();
 
         if (isTracking && givenLocation.getAccuracy() <= MAX_INACCURACY) {
             Log.d("JC", "Got new GPS coord");

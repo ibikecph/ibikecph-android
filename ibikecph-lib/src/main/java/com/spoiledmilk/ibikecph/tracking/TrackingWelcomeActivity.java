@@ -16,8 +16,8 @@ import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.ReadMoreActivity;
-import com.spoiledmilk.ibikecph.login.LoginActivity;
-import com.spoiledmilk.ibikecph.login.SignatureActivity;
+//import com.spoiledmilk.ibikecph.login.LoginActivity;
+//import com.spoiledmilk.ibikecph.login.SignatureActivity;
 import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 public class TrackingWelcomeActivity extends Activity {
@@ -39,7 +39,7 @@ public class TrackingWelcomeActivity extends Activity {
         initStrings();
     }
 
-    public void onTrackingEnableClick(View v) {
+   /* public void onTrackingEnableClick(View v) {
         // IF the user is not logged in, spawn a dialog saying so.
         if (!IBikeApplication.isUserLogedIn() && !IBikeApplication.isFacebookLogin()) {
             MustLogInDialogFragment loginDialog = new MustLogInDialogFragment();
@@ -69,7 +69,7 @@ public class TrackingWelcomeActivity extends Activity {
                 finish();
             }
         }
-    }
+    }*/
 
     public void onReadMoreClick(View v) {
         Intent i = new Intent(TrackingWelcomeActivity.this, ReadMoreActivity.class);
@@ -105,7 +105,7 @@ public class TrackingWelcomeActivity extends Activity {
         super.onStop();
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    /*public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         // If we got back from a login box AND the used successfully logged in, go on.
         if (requestCode == LeftMenu.LAUNCH_LOGIN && resultCode == RESULT_OK) {
@@ -116,10 +116,10 @@ public class TrackingWelcomeActivity extends Activity {
         if (requestCode == 99) {
             Log.d("DV", "Result code = 99");
         }
-    }
+    }*/
 
 
-    public static class MustLogInDialogFragment extends DialogFragment {
+    /*public static class MustLogInDialogFragment extends DialogFragment {
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the Builder class for convenient dialog construction
@@ -139,6 +139,6 @@ public class TrackingWelcomeActivity extends Activity {
             // Create the AlertDialog object and return it
             return builder.create();
         }
-    }
+    }*/
 }
 

@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.spoiledmilk.ibikecph.introduction.IntroductionActivity;
-import com.spoiledmilk.ibikecph.login.LoginSplashActivity;
+//import com.spoiledmilk.ibikecph.login.LoginSplashActivity;
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.util.Util;
 /**
@@ -47,11 +47,11 @@ public class SplashActivity extends Activity {
 			@Override
 			public void run() {
 				Class<? extends Activity> nextActivity;
-				if (IBikeApplication.isUserLogedIn()) {
-					nextActivity = getMapActivityClass();
-				} else {
-					nextActivity = getLoginActivityClass();
-				}
+				//if (IBikeApplication.isUserLogedIn()) {
+				nextActivity = getMapActivityClass();
+				//} else {
+				//	nextActivity = getLoginActivityClass();
+				//}
 
 				// First - let's launch the map activity class or login activity.
 				Intent i = new Intent(SplashActivity.this, nextActivity);
@@ -71,8 +71,8 @@ public class SplashActivity extends Activity {
 		return MapActivity.class;
 	}
 
-	protected Class<? extends Activity> getLoginActivityClass() {
+	/*protected Class<? extends Activity> getLoginActivityClass() {
 		return LoginSplashActivity.class;
-	}
+	}*/
 
 }

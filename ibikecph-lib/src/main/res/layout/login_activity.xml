@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent">
 
-    <ScrollView
+   <!-- <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -95,7 +95,7 @@
                 android:layout_marginTop="15dp"
                 android:background="@drawable/stroke_button_inverted_red"
                 android:textColor="@color/White"
-                android:textSize="18sp" />
+                android:textSize="18sp" />-->
 
 
 
@@ -109,7 +109,7 @@
             <!-- android:text="" -->
             <!-- android:textColor="@color/White" -->
             <!-- android:textSize="12sp" /> -->
-            <FrameLayout
+            <!--<FrameLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"></FrameLayout>
@@ -136,6 +136,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:visibility="gone" />-->
 
 </RelativeLayout>

@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Locale;
 
 import io.realm.exceptions.RealmMigrationNeededException;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class IBikeApplication extends Application {
     protected static String APP_NAME = "I Bike CPH";
@@ -94,6 +96,11 @@ public class IBikeApplication extends Application {
 
         // Register a weekly notification
         registerWeeklyNotification();
+
+        //Create default realm
+        Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder().name("IBikeCPHrealm.realm").build();
+        Realm.setDefaultConfiguration(config);
 
         // Ensure all tracks have been geocoded.
         try {
@@ -360,4 +367,5 @@ public class IBikeApplication extends Application {
     public boolean breakRouteIsEnabled() {
         return getResources().getBoolean(R.bool.breakRouteEnabled);
     }
+
 }

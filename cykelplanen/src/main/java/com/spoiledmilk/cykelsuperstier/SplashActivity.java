@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import com.spoiledmilk.cykelsuperstier.login.LoginSplashActivity;
+//import com.spoiledmilk.cykelsuperstier.login.LoginSplashActivity;
 import com.spoiledmilk.cykelsuperstier.map.MapActivity;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.util.Util;
@@ -31,9 +31,9 @@ public class SplashActivity extends com.spoiledmilk.ibikecph.SplashActivity {
 		return MapActivity.class;
 	}
 
-	@Override
+	/*@Override
 	protected Class<? extends Activity> getLoginActivityClass() {
 		return LoginSplashActivity.class;
-	}
+	}*/
 
 }

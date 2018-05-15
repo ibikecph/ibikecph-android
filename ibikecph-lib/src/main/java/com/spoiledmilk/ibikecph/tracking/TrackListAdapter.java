@@ -19,6 +19,7 @@ import com.spoiledmilk.ibikecph.persist.Track;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
+import io.realm.RealmQuery;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 import java.text.SimpleDateFormat;
@@ -37,8 +38,10 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
 
     public TrackListAdapter(Context context) {
         // Get all tracks from the DB
-        Realm realm = Realm.getInstance(context);
-        this.tracks = realm.allObjects(Track.class);
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Track> query = realm.where(Track.class);
+        RealmResults<Track> results = query.findAll();
+        this.tracks = results;
 
         // We want to see the newest track first
         this.tracks.sort("timestamp", Sort.DESCENDING);
@@ -127,7 +130,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
                             public void onClick(DialogInterface dialog, int which) {
                                 Log.d("JC", "Deleted a track");
                                 Track t = null;
-                                Realm realm = Realm.getInstance(context);
+                                Realm realm = Realm.getDefaultInstance();
                                 realm.beginTransaction();
 
                                 // Only send to the server, if ID > 0. Otherwise just delete, since it hasn't been uploaded to the server yet.
@@ -152,7 +155,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
                                             }
                                         }.execute();
                                     } else {
-                                        t.removeFromRealm();
+                                        t.deleteFromRealm();
                                         realm.commitTransaction();
                                         realm.close();
                                         notifyDataSetInvalidated();
@@ -160,7 +163,7 @@ public class TrackListAdapter extends BaseAdapter implements StickyListHeadersAd
                                     }
                                 } catch (Exception ex) {
                                     Log.d("DV", "Tracket havde ikke noget ID grundet oprettelse med gammel Track-model... Fjerner track!");
-                                    t.removeFromRealm();
+                                    t.deleteFromRealm();
                                     realm.commitTransaction();
                                     realm.close();
                                     notifyDataSetInvalidated();

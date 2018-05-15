@@ -21,6 +21,7 @@ import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
+import io.realm.RealmQuery;
 
 import java.util.ArrayList;
 
@@ -43,8 +44,10 @@ public class TrackMapView extends BaseMapActivity {
         //mapView.setMaxZoomLevel(19f);
 
         // Get the route
-        Realm realm = Realm.getInstance(this);
-        RealmResults<Track> tracks = realm.allObjects(Track.class);
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Track> query = realm.where(Track.class);
+        RealmResults<Track> tracks = query.findAll();
+
 
         // We want to see the newest track first
         tracks.sort("timestamp", Sort.DESCENDING);

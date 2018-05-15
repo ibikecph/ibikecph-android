@@ -16,6 +16,8 @@ import com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity;
 import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
 
@@ -63,8 +65,11 @@ public class LeftMenu extends com.spoiledmilk.ibikecph.LeftMenu {
     public void spawnTrackingActivity() {
         Intent i;
         IBikePreferences settings = IBikeApplication.getSettings();
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Track> query = realm.where(Track.class);
+        RealmResults<Track> results = query.findAll();
         if (!settings.getTrackingEnabled() &&
-                Realm.getInstance(IBikeApplication.getContext()).allObjects(Track.class).size() == 0) {
+                results.size() == 0) {
             i = new Intent(getActivity(), TrackingWelcomeActivity.class);
         } else {
             i = new Intent(getActivity(), TrackingActivity.class);
