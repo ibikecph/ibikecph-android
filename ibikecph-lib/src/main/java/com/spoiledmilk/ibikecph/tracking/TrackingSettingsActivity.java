@@ -119,9 +119,6 @@ public class TrackingSettingsActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        // Tell Google Analytics that the user has resumed on this screen.
-        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
-
         if (trackingEnableSwitch.isChecked()) {
             if (IBikeApplication.getSignature().equals("")) {
                 checkedFromResume = true;

@@ -13,7 +13,6 @@ public class IBikeCPHApplication extends IBikeApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        initializeGoogleAnalytics(R.xml.global_tracker);
         Config.generateUrls(BuildConfig.BASE_URL);
     }
 

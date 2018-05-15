@@ -78,9 +78,6 @@ public class LoginSplashActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-
-//        // Tell Google Analytics that the user has resumed on this screen.
-//        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 //
 //        boolean trackingEnabled = getResources().getBoolean(R.bool.trackingEnabled);
 //        if (IBikeApplication.isWelcomeScreenSeen() || !trackingEnabled) {

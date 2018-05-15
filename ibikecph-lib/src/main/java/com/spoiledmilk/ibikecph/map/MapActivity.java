@@ -197,9 +197,6 @@ public class MapActivity extends BaseMapActivity {
     public void onResume() {
         super.onResume();
 
-        // Tell Google Analytics that the user has resumed on this screen.
-        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
-
         attemptToRegisterLocationListener();
 
         /*

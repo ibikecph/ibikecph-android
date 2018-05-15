@@ -17,10 +17,6 @@ import android.preference.PreferenceManager;
 import android.text.Spanned;
 import android.util.Log;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.analytics.GoogleAnalytics;
-
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlay;
 import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlayFactory;
@@ -53,8 +49,6 @@ public class IBikeApplication extends Application {
     private static TrackingManager trackingManager;
     protected static int primaryColor = R.color.PrimaryColor;
 
-    protected Tracker gaTracker;
-
     public static DateFormat getTimeFormat() {
         return android.text.format.DateFormat.getTimeFormat(instance);
     }
@@ -83,10 +77,6 @@ public class IBikeApplication extends Application {
         normalFont = Typeface.DEFAULT; //Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Md.ttf");
         boldFont = Typeface.DEFAULT_BOLD; //Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Bd.ttf");
         italicFont = Typeface.defaultFromStyle(Typeface.ITALIC); // Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
-
-        // Let's run Google Analytics in dry running mode when debugging, to prevent bloat of the
-        // Google Analytics reports
-        GoogleAnalytics.getInstance(this).setDryRun(isDebugging());
 
         this.startService(new Intent(this, BikeLocationService.class));
 
@@ -125,15 +115,6 @@ public class IBikeApplication extends Application {
      * Gets the default {@link Tracker} for this {@link Application}.
      * @return tracker
      */
-    synchronized public Tracker getDefaultTracker() {
-        if (gaTracker == null) {
-            String msg = "The Google Analytics tracker is not ready yet. " +
-                         "Concrete applications should initialize this from their onCreate method.";
-            throw new RuntimeException(msg);
-        }
-        return gaTracker;
-    }
-
 
     public static Spanned getSpanned(String key) {
         return instance.dictionary.get(key);
@@ -328,24 +309,6 @@ public class IBikeApplication extends Application {
             // regardless of the user's preference, but will only actually *make* the notification if the user wants it.
             alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
         }
-    }
-
-    protected void initializeGoogleAnalytics(int configResId) {
-        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-        gaTracker = analytics.newTracker(configResId);
-        // Enable reporting of exceptions to Google Analytics.
-        gaTracker.enableExceptionReporting(true);
-    }
-
-    public static void sendGoogleAnalyticsEvent(Activity activity, String category, String action) {
-        Tracker gaTracker = ((IBikeApplication) activity.getApplication()).getDefaultTracker();
-        gaTracker.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).build());
-    }
-
-    public static void sendGoogleAnalyticsActivityEvent(Activity activity) {
-        Tracker gaTracker = ((IBikeApplication) activity.getApplication()).getDefaultTracker();
-        gaTracker.setScreenName(activity.getClass().getSimpleName());
-        gaTracker.send(new HitBuilders.ScreenViewBuilder().build());
     }
 
     public static String getAppName() {

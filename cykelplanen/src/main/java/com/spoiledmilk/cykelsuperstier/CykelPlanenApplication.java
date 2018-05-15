@@ -21,8 +21,6 @@ public class CykelPlanenApplication extends IBikeApplication {
         IBikeApplication.APP_NAME = "CykelPlanen";
         primaryColor = R.color.PrimaryColor;
 
-		initializeGoogleAnalytics(R.xml.global_tracker);
-
 		Config.generateUrls(BuildConfig.BASE_URL);
 	}
 

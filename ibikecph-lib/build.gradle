@@ -17,7 +17,6 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.facebook.android:facebook-android-sdk:4.32.0'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
-    implementation 'com.google.android.gms:play-services-analytics:15.0.2'
     implementation 'se.emilsjolander:stickylistheaders:2.6.0'
     implementation 'com.balysv.materialmenu:material-menu:1.5.3'
     implementation 'com.loopj.android:android-async-http:1.4.9'

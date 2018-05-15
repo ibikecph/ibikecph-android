@@ -73,9 +73,6 @@ public class AboutActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 
-        // Tell Google Analytics that the user has resumed on this screen.
-        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
-
 		IBikePreferences preferences = IBikeApplication.getSettings();
 		CheckBox crashReportingCheckBox = (CheckBox) findViewById(R.id.crashReportingCheckBox);
 		crashReportingCheckBox.setChecked(preferences.isCrashReportingEnabled());

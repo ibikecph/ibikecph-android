@@ -96,11 +96,6 @@ public class IssuesActivity extends Activity {
 		textOption5.setText(IBikeApplication.getString("report_wrong_instruction"));
 		textOption6.setText(IBikeApplication.getString("report_other"));
 		btnSend.setText(IBikeApplication.getString("report_send"));
-
-        // Tell Google Analytics that the user has resumed on this screen.
-        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
-        // TODO: Consider if this double event tracking is needed.
-        IBikeApplication.sendGoogleAnalyticsEvent(this, "Report", "Start");
 	}
 	
 	// TODO: Don't repeat yourself /jc 
@@ -224,7 +219,6 @@ public class IssuesActivity extends Activity {
 						jsonPost.put("issue", jsonIssue);
 						response = HttpUtils.postToServer(Config.API_URL + "/issues", jsonPost);
 
-                        IBikeApplication.sendGoogleAnalyticsEvent(IssuesActivity.this, "Report", "Completed");
 					} catch (JSONException e) {
 						LOG.e(e.getLocalizedMessage());
 					} finally {

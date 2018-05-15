@@ -91,9 +91,6 @@ public class TrackingActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        // Tell Google Analytics that the user has resumed on this screen.
-        //IBikeApplication.sendGoogleAnalyticsActivityEvent(this); Remove GA
-
         updateSummaryStatistics();
         updateStrings();
         updateListOfTracks();
