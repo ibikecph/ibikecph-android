@@ -28,7 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
-//import com.balysv.materialmenu.MaterialMenuIcon;
+import com.balysv.materialmenu.MaterialMenuIcon;
 import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.events.MapListener;
@@ -95,7 +95,7 @@ public class MapActivity extends BaseMapActivity {
 
     protected LeftMenu leftMenu;
     private DrawerLayout drawerLayout;
-    private MaterialMenuDrawable materialMenu;
+    private MaterialMenuIcon materialMenu;
     protected IBCMapView mapView;
 
     /**
@@ -369,19 +369,19 @@ public class MapActivity extends BaseMapActivity {
                 .commit();
 
         // We want the hamburger in the ActionBar
-        materialMenu = new MaterialMenuDrawable(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
-        materialMenu.animateIconState(MaterialMenuDrawable.IconState.BURGER);
+        materialMenu = new MaterialMenuIcon(this, Color.WHITE, MaterialMenuDrawable.Stroke.THIN);
+        materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
 
         // When the drawer opens or closes, we want the icon to animate between "burger" and "arrow"
         drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerOpened(View drawerView) {
-                materialMenu.animateIconState(MaterialMenuDrawable.IconState.ARROW);
+                materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
-                materialMenu.animateIconState(MaterialMenuDrawable.IconState.BURGER);
+                materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
             }
 
             @Override
@@ -513,11 +513,11 @@ public class MapActivity extends BaseMapActivity {
         if (drawerLayout.isDrawerOpen(Gravity.LEFT)) {
             drawerLayout.closeDrawer(Gravity.LEFT);
             // Start the animation right away, instead of waiting for the drawer to settle.
-            materialMenu.animateIconState(MaterialMenuDrawable.IconState.BURGER);
+            materialMenu.animateState(MaterialMenuDrawable.IconState.BURGER);
         } else {
             drawerLayout.openDrawer(Gravity.LEFT);
             // Start the animation right away, instead of waiting for the drawer to settle.
-            materialMenu.animateIconState(MaterialMenuDrawable.IconState.ARROW);
+            materialMenu.animateState(MaterialMenuDrawable.IconState.ARROW);
         }
     }
 
@@ -580,13 +580,13 @@ public class MapActivity extends BaseMapActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        //materialMenu.syncState(savedInstanceState);
+        materialMenu.syncState(savedInstanceState);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //materialMenu.onSaveInstanceState(outState);
+        materialMenu.onSaveInstanceState(outState);
     }
 
     @Override
