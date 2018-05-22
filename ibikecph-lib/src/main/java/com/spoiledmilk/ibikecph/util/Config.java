@@ -9,6 +9,7 @@ import com.spoiledmilk.ibikecph.BuildConfig;
 
 public class Config {
 
+    public static String BASE_URL;
     public static String API_URL;
     public static String API_SERVER_LOGIN;
     public static String API_SERVER_REGISTER;
@@ -53,14 +54,15 @@ public class Config {
      * @param baseUrl
      */
     public static void generateUrls(final String baseUrl) {
-        API_URL = baseUrl;
-        API_SERVER_LOGIN = baseUrl + "/login";
-        API_SERVER_REGISTER = baseUrl + "/users";
+        BASE_URL = baseUrl;
+        API_URL = BASE_URL + "/api";
+        API_SERVER_LOGIN = API_URL + "/login";
+        API_SERVER_REGISTER = API_URL + "/users";
         API_SERVER_ADD_PASSWORD = API_SERVER_REGISTER + "/add_password";
         API_SERVER_HAS_PASSWORD = API_SERVER_REGISTER + "/has_password";
         API_SERVER_CHANGE_PASSWORD = API_SERVER_REGISTER + "/change_password";
-        API_UPLOAD_TRACKS = baseUrl + "/tracks";
-        API_BREAK_ROUTE = baseUrl + "/journeys";
-        TRACKING_TERMS_JSON_URL = baseUrl + "/terms";
+        API_UPLOAD_TRACKS = API_URL + "/tracks";
+        API_BREAK_ROUTE = API_URL + "/journeys";
+        TRACKING_TERMS_JSON_URL = API_URL + "/terms";
     }
 }

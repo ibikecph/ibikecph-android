@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,6 +32,7 @@ import com.facebook.Session.NewPermissionsRequest;
 import com.facebook.model.GraphUser;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
+import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
@@ -43,6 +45,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
     EditText textEmail;
     EditText textPassword;
     Button btnLogin;
+    Button btnForgotPassword;
     TextView textOr;
     Button btnFacebookLogin;
     Button btnRegister;
@@ -98,6 +101,16 @@ public class LoginActivity extends Activity implements FBLoginListener {
                 }
             }
 
+        });
+
+        btnForgotPassword = (Button) findViewById(R.id.btnForgotPassword);
+        btnForgotPassword.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String FORGOT_PASSWORD_URL = Config.BASE_URL + "/users/password/new";
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(FORGOT_PASSWORD_URL));
+                v.getContext().startActivity(browserIntent);
+            }
         });
 
         if (handler == null) {
@@ -264,6 +277,7 @@ public class LoginActivity extends Activity implements FBLoginListener {
         textPassword.setHint(IBikeApplication.getString("register_password_placeholder"));
         textPassword.setHintTextColor(getResources().getColor(R.color.HintColor));
         btnLogin.setText(IBikeApplication.getString("log_in"));
+        btnForgotPassword.setText(IBikeApplication.getString("forgot_password"));
         btnFacebookLogin.setText(IBikeApplication.getString("login_with_fb"));
         btnRegister.setText(IBikeApplication.getString("register_with_mail"));
     }

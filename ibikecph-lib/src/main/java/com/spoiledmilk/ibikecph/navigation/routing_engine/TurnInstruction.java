@@ -34,6 +34,13 @@ public class TurnInstruction implements Speakable {
 
     protected static DateFormat timeFormat = IBikeApplication.getTimeFormat();
 
+    public static double DEFAULT_TRASITION_DISTANCE = 10.0;
+    public static double PUBLIC_TRASITION_DISTANCE = 100.0;
+
+    public TurnInstruction() {
+
+    }
+
     public TurnInstruction(JsonNode stepNode) {
         JsonNode maneuverNode = stepNode.get("maneuver");
         if (maneuverNode == null || !maneuverNode.isObject()) {
@@ -280,7 +287,7 @@ public class TurnInstruction implements Speakable {
      */
     protected String description;
 
-    public TransportationType transportType;
+    public TransportationType transportType = TransportationType.BIKE;
 
     public String getDescription() {
         return description;
@@ -300,9 +307,9 @@ public class TurnInstruction implements Speakable {
 
     public double getTransitionDistance() {
         if (isPublicTransportation(transportType)) {
-            return 100d;
+            return PUBLIC_TRASITION_DISTANCE;
         } else {
-            return 10d;
+            return DEFAULT_TRASITION_DISTANCE;
         }
     }
 
@@ -312,6 +319,10 @@ public class TurnInstruction implements Speakable {
 
     public Type getType() {
         return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public static String translateStepName(String name) {

@@ -53,7 +53,7 @@ public class NavigatingState extends MapState implements NavigationStateListener
         // Save the state we came from to be able to transition back.
         previousState = from;
 
-        navigationState = new NavigationState(this);
+        navigationState = new NavigationState();
         navigationState.addListener(this);
 
         // The users location should be recorded and the map should rotate accordingly

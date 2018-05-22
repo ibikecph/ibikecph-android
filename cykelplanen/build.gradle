@@ -47,16 +47,16 @@ android {
         local {
             applicationIdSuffix ".local"
             resValue "string", "app_name", "CykelPlanen (local)"
-            buildConfigField "String", "API_URL", "\"http://10.0.2.2:3000/api\""
+            buildConfigField "String", "BASE_URL", "\"http://10.0.2.2:3000\""
         }
         staging {
             applicationIdSuffix ".staging"
             resValue "string", "app_name", "CykelPlanen (staging)"
-            buildConfigField "String", "API_URL", "\"https://staging.ibikecph.dk/api\""
+            buildConfigField "String", "BASE_URL", "\"https://staging.ibikecph.dk\""
         }
         production {
             resValue "string", "app_name", "CykelPlanen"
-            buildConfigField "String", "API_URL", "\"https://www.ibikecph.dk/api\""
+            buildConfigField "String", "BASE_URL", "\"https://www.ibikecph.dk\""
         }
     }
 }

@@ -46,6 +46,8 @@ public class BikeLocationService extends Service implements LocationListener {
     final static long INTERVAL = 5000;
     final static long FASTEST_INTERVAL = 2000;
 
+    private boolean mocked = false;
+
     public ActivityRecognitionClient getActivityRecognitionClient() {
         return activityRecognitionClient;
     }
@@ -62,6 +64,11 @@ public class BikeLocationService extends Service implements LocationListener {
     }
 
     protected boolean startLocationUpdates() {
+        if(isMocked()) {
+            Log.d("BikeLocationService", "Mocking locations - no need to receive location updates");
+            return true;
+        }
+
         Log.d("BikeLocationService", "Starting to receive location updates.");
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(INTERVAL);
@@ -211,6 +218,14 @@ public class BikeLocationService extends Service implements LocationListener {
 
     public boolean hasValidLocation() {
         return lastValidLocation != null;
+    }
+
+    public boolean isMocked() {
+        return mocked;
+    }
+
+    public void setMocked(boolean mocked) {
+        this.mocked = mocked;
     }
 
     public class BikeLocationServiceBinder extends Binder {

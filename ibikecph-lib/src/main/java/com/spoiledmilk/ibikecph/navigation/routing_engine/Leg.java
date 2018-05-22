@@ -37,6 +37,10 @@ public class Leg {
 
     public static final double GEOMETRY_SCALING = 1e5;
 
+    public Leg() {
+
+    }
+
     public Leg(JsonNode legNode) {
         if(legNode.has("type")) {
             String typeString = legNode.get("type").asText();
@@ -202,6 +206,10 @@ public class Leg {
         return distance;
     }
 
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
     public TransportationType getTransportType() {
         return transportType;
     }
@@ -232,6 +240,10 @@ public class Leg {
 
     public List<TurnInstruction> getSteps() {
         return steps;
+    }
+
+    public void setTransportType(TransportationType transportType) {
+        this.transportType = transportType;
     }
 
     /*
