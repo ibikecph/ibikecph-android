@@ -19,9 +19,9 @@ import android.widget.RelativeLayout;
 import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
 import com.spoiledmilk.ibikecph.favorites.FavoriteListItem;
 import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
-import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
-import com.spoiledmilk.ibikecph.login.LoginActivity;
-import com.spoiledmilk.ibikecph.login.ProfileActivity;
+//import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
+//import com.spoiledmilk.ibikecph.login.LoginActivity;
+//import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.overlays.OverlaysActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
@@ -31,6 +31,8 @@ import com.spoiledmilk.ibikecph.util.LOG;
 import com.spoiledmilk.ibikecph.util.Util;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -164,7 +166,7 @@ public class LeftMenu extends Fragment {
         //getActivity().overridePendingTransition(com.spoiledmilk.ibikecph.R.anim.slide_in_right, com.spoiledmilk.ibikecph.R.anim.slide_out_left);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    /*@SuppressWarnings("UnusedDeclaration")
     public void spawnLoginActivity() {
         if (!Util.isNetworkConnected(getActivity())) {
             Util.launchNoConnectionDialog(getActivity());
@@ -182,14 +184,19 @@ public class LeftMenu extends Fragment {
             }
             getActivity().startActivityForResult(i, LAUNCH_LOGIN);
         }
-    }
+    }*/
 
     @SuppressWarnings("UnusedDeclaration")
     public void spawnTrackingActivity() {
         Intent i;
         IBikePreferences settings = IBikeApplication.getSettings();
+        Realm realm = Realm.getDefaultInstance();
+
+        RealmQuery<Track> query = realm.where(Track.class);
+        RealmResults<Track> results = query.findAll();
+
         if (!settings.getTrackingEnabled() &&
-                Realm.getInstance(IBikeApplication.getContext()).allObjects(Track.class).size() == 0) {
+                results.size() == 0) {
 
             i = new Intent(getActivity(), TrackingWelcomeActivity.class);
 
@@ -198,6 +205,18 @@ public class LeftMenu extends Fragment {
         } else {
             i = new Intent(getActivity(), TrackingActivity.class);
         }
+
+        if (!settings.getTrackingEnabled() &&
+                results.size() == 0) {
+
+            i = new Intent(getActivity(), TrackingWelcomeActivity.class);
+
+            // We don't want this pushed to the back stack.
+            //i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        } else {
+            i = new Intent(getActivity(), TrackingActivity.class);
+        }
+
         getActivity().startActivityForResult(i, LAUNCH_TRACKING);
 
     }

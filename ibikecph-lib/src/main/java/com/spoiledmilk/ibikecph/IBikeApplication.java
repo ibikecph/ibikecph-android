@@ -17,10 +17,6 @@ import android.preference.PreferenceManager;
 import android.text.Spanned;
 import android.util.Log;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-import com.google.android.gms.analytics.GoogleAnalytics;
-
 import com.spoiledmilk.ibikecph.map.MapActivity;
 import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlay;
 import com.spoiledmilk.ibikecph.map.overlays.TogglableOverlayFactory;
@@ -40,6 +36,8 @@ import java.util.List;
 import java.util.Locale;
 
 import io.realm.exceptions.RealmMigrationNeededException;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class IBikeApplication extends Application {
     protected static String APP_NAME = "I Bike CPH";
@@ -50,8 +48,6 @@ public class IBikeApplication extends Application {
 
     private static TrackingManager trackingManager;
     protected static int primaryColor = R.color.PrimaryColor;
-
-    protected Tracker gaTracker;
 
     public static DateFormat getTimeFormat() {
         return android.text.format.DateFormat.getTimeFormat(instance);
@@ -82,10 +78,6 @@ public class IBikeApplication extends Application {
         boldFont = Typeface.DEFAULT_BOLD; //Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-Bd.ttf");
         italicFont = Typeface.defaultFromStyle(Typeface.ITALIC); // Typeface.createFromAsset(getAssets(), "fonts/HelveticaNeueLTCom-It.ttf");
 
-        // Let's run Google Analytics in dry running mode when debugging, to prevent bloat of the
-        // Google Analytics reports
-        GoogleAnalytics.getInstance(this).setDryRun(isDebugging());
-
         this.startService(new Intent(this, BikeLocationService.class));
 
         initializeSelectableOverlays();
@@ -94,6 +86,11 @@ public class IBikeApplication extends Application {
 
         // Register a weekly notification
         registerWeeklyNotification();
+
+        //Create default realm
+        Realm.init(this);
+        RealmConfiguration config = new RealmConfiguration.Builder().name("IBikeCPHrealm.realm").build();
+        Realm.setDefaultConfiguration(config);
 
         // Ensure all tracks have been geocoded.
         try {
@@ -118,15 +115,6 @@ public class IBikeApplication extends Application {
      * Gets the default {@link Tracker} for this {@link Application}.
      * @return tracker
      */
-    synchronized public Tracker getDefaultTracker() {
-        if (gaTracker == null) {
-            String msg = "The Google Analytics tracker is not ready yet. " +
-                         "Concrete applications should initialize this from their onCreate method.";
-            throw new RuntimeException(msg);
-        }
-        return gaTracker;
-    }
-
 
     public static Spanned getSpanned(String key) {
         return instance.dictionary.get(key);
@@ -323,24 +311,6 @@ public class IBikeApplication extends Application {
         }
     }
 
-    protected void initializeGoogleAnalytics(int configResId) {
-        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-        gaTracker = analytics.newTracker(configResId);
-        // Enable reporting of exceptions to Google Analytics.
-        gaTracker.enableExceptionReporting(true);
-    }
-
-    public static void sendGoogleAnalyticsEvent(Activity activity, String category, String action) {
-        Tracker gaTracker = ((IBikeApplication) activity.getApplication()).getDefaultTracker();
-        gaTracker.send(new HitBuilders.EventBuilder().setCategory(category).setAction(action).build());
-    }
-
-    public static void sendGoogleAnalyticsActivityEvent(Activity activity) {
-        Tracker gaTracker = ((IBikeApplication) activity.getApplication()).getDefaultTracker();
-        gaTracker.setScreenName(activity.getClass().getSimpleName());
-        gaTracker.send(new HitBuilders.ScreenViewBuilder().build());
-    }
-
     public static String getAppName() {
         return APP_NAME;
     }
@@ -360,4 +330,5 @@ public class IBikeApplication extends Application {
     public boolean breakRouteIsEnabled() {
         return getResources().getBoolean(R.bool.breakRouteEnabled);
     }
+
 }

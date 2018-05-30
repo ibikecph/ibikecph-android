@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.login.SignatureActivity;
+//import com.spoiledmilk.ibikecph.login.SignatureActivity;
 import com.spoiledmilk.ibikecph.util.Config;
 import com.spoiledmilk.ibikecph.util.HttpUtils;
 import com.spoiledmilk.ibikecph.util.IBikePreferences;
@@ -61,7 +61,7 @@ public class TrackingSettingsActivity extends Activity {
 
         loggedIn = IBikeApplication.isUserLogedIn() || IBikeApplication.isFacebookLogin();
 
-        this.trackingEnableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*this.trackingEnableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d("DV", "isChecked = " + isChecked);
@@ -88,8 +88,8 @@ public class TrackingSettingsActivity extends Activity {
                     spawnLoginBox();
                 }
             }
-        });
-        this.notifyMilestoneCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        });*/
+        /*this.notifyMilestoneCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (loggedIn) {
@@ -108,7 +108,7 @@ public class TrackingSettingsActivity extends Activity {
                     spawnLoginBox();
                 }
             }
-        });
+        });*/
 
         initStrings();
 
@@ -118,9 +118,6 @@ public class TrackingSettingsActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        // Tell Google Analytics that the user has resumed on this screen.
-        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
 
         if (trackingEnableSwitch.isChecked()) {
             if (IBikeApplication.getSignature().equals("")) {
@@ -134,7 +131,7 @@ public class TrackingSettingsActivity extends Activity {
 
     }
 
-    public void onEnableTrackingClick(boolean isChecked) {
+    /*public void onEnableTrackingClick(boolean isChecked) {
         if (!loggedIn) {
             trackingEnableSwitch.setChecked(false);
             TrackingWelcomeActivity.MustLogInDialogFragment mustLogInDialogFragment = new TrackingWelcomeActivity.MustLogInDialogFragment();
@@ -145,7 +142,7 @@ public class TrackingSettingsActivity extends Activity {
 
             updateEnablednessOfMilestoneSwitches();
         }
-    }
+    }*/
 
     private void updateEnablednessOfMilestoneSwitches() {
         // If we disabled tracking, then gray out the milestone notification
@@ -170,7 +167,7 @@ public class TrackingSettingsActivity extends Activity {
         this.settings.setNotifyWeekly(isChecked);
     }
 
-    public void spawnLoginBox() {
+    /*public void spawnLoginBox() {
         // TODO: This should be enumerated somehow
         trackingEnableSwitch.setChecked(false);
         notifyMilestoneCheckbox.setChecked(false);
@@ -178,7 +175,7 @@ public class TrackingSettingsActivity extends Activity {
 
         TrackingWelcomeActivity.MustLogInDialogFragment mustLogInDialogFragment = new TrackingWelcomeActivity.MustLogInDialogFragment();
         mustLogInDialogFragment.show(getFragmentManager(), "MustLoginDialog");
-    }
+    }*/
 
     public void onShareData(View v) {
         this.settings.setShareData(this.shareDataSwitch.isChecked());

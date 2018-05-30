@@ -10,6 +10,8 @@ import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 
 import java.util.ArrayList;
 
@@ -59,7 +61,7 @@ public class TrackHelper implements SMHttpRequestListener {
              */
 
             // Get the most recent track
-            Realm realm = Realm.getInstance(IBikeApplication.getContext());
+            Realm realm = Realm.getDefaultInstance();
             realm.beginTransaction();
 
             TrackLocation start = _track.getLocations().first();
@@ -127,9 +129,11 @@ public class TrackHelper implements SMHttpRequestListener {
     }
 
     public static void ensureAllTracksGeocoded() {
-        Realm realm = Realm.getInstance(IBikeApplication.getContext());
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Track> query = realm.where(Track.class);
+        RealmResults<Track> results = query.findAll();
 
-        for (Track t : Realm.getInstance(IBikeApplication.getContext()).allObjects(Track.class)) {
+        for (Track t : results) {
             if (!t.getHasBeenGeocoded()) {
                 TrackHelper th = new TrackHelper(t);
                 th.geocodeTrack();

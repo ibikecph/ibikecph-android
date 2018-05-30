@@ -15,6 +15,7 @@ import com.spoiledmilk.ibikecph.util.IBikePreferences;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.RealmQuery;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -38,7 +39,7 @@ public class TrackingStatisticsFragment extends Fragment {
         midnight = cal.getTime();
 
         // We use that Date object to get all Tracks whose timestamps are set after midnight
-        Realm realm = Realm.getInstance(IBikeApplication.getContext());
+        Realm realm = Realm.getDefaultInstance();
         RealmResults<Track> tracks = realm.where(Track.class).greaterThan("timestamp", midnight).findAll();
 
         double totalDistance = 0;
@@ -69,8 +70,13 @@ public class TrackingStatisticsFragment extends Fragment {
                 // TODO: This is not DRY -- copied from LeftMenu code.
                 Intent i;
                 IBikePreferences settings = IBikeApplication.getSettings();
+                Realm realm = Realm.getDefaultInstance();
+
+                RealmQuery<Track> query = realm.where(Track.class);
+                RealmResults<Track> results = query.findAll();
+
                 if (!settings.getTrackingEnabled() &&
-                        Realm.getInstance(IBikeApplication.getContext()).allObjects(Track.class).size() == 0) {
+                        results.size() == 0) {
 
                     i = new Intent(getActivity(), TrackingWelcomeActivity.class);
 

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-import com.spoiledmilk.ibikecph.login.SignatureActivity;
+//import com.spoiledmilk.ibikecph.login.SignatureActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import com.spoiledmilk.ibikecph.util.IBikePreferences;
@@ -20,6 +20,7 @@ import com.spoiledmilk.ibikecph.util.Util;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.RealmQuery;
 import io.realm.Sort;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -90,9 +91,6 @@ public class TrackingActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        // Tell Google Analytics that the user has resumed on this screen.
-        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
-
         updateSummaryStatistics();
         updateStrings();
         updateListOfTracks();
@@ -145,9 +143,9 @@ public class TrackingActivity extends Activity {
         this.activityText.setText(IBikeApplication.getString("stats_description"));
 
         // Get the timestamp of the first recorded TrackLocation
-        Realm realm = Realm.getInstance(this);
-        RealmResults<TrackLocation> results = realm.allObjects(TrackLocation.class);
-
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<TrackLocation> query = realm.where(TrackLocation.class);
+        RealmResults<TrackLocation> results = query.findAll();
         try {
             Date firstActivity = results.first().getTimestamp();
             String formattedDate = new SimpleDateFormat(DATE_FORMAT).format(firstActivity);
@@ -160,9 +158,12 @@ public class TrackingActivity extends Activity {
     }
 
     public int getNumberOfDaysSinceFirstCycled() {
+        int totalDays;
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Track> query = realm.where(Track.class);
+        RealmResults<Track> results = query.findAll();
+
         try {
-            Realm realm = Realm.getInstance(IBikeApplication.getContext());
-            RealmResults<Track> results = realm.allObjects(Track.class);
             results.sort("timestamp", Sort.ASCENDING);
 
             Calendar firstTrip = Calendar.getInstance();
@@ -170,34 +171,39 @@ public class TrackingActivity extends Activity {
 
             Calendar now = Calendar.getInstance();
 
-            int totalDays = (int) (now.getTimeInMillis() - firstTrip.getTimeInMillis()) / (1000 * 60 * 60 * 24);
-
-            // It's counter-intuitive, but at a certain day, you want to count both today AND yesterday, even though it's
-            // technically only one day ago.
-            return totalDays + 1;
-        } catch (ArrayIndexOutOfBoundsException e) {
+            totalDays = (int) (now.getTimeInMillis() - firstTrip.getTimeInMillis()) / (1000 * 60 * 60 * 24);
+        }
+        catch (ArrayIndexOutOfBoundsException e) {
             // We have no tracks.
             return 1;
         }
+
+         // It's counter-intuitive, but at a certain day, you want to count both today AND yesterday, even though it's
+            // technically only one day ago.
+        return totalDays + 1;
     }
 
     /**
      * Updates the overview of the bicycling activities.
      */
     public void updateSummaryStatistics() {
-        Realm realm = Realm.getInstance(this);
-        RealmResults<Track> results = realm.allObjects(Track.class);
-
+        Realm realm = Realm.getDefaultInstance();
         double totalDistance = 0;
         double totalSeconds = 0;
-
         int totalDays = getNumberOfDaysSinceFirstCycled();
+
+
+        RealmQuery<Track> query = realm.where(Track.class);
+        RealmResults<Track> results = query.findAll();
+
+
         Log.d("JC", "It is " + getNumberOfDaysSinceFirstCycled() + " days since first cycled.");
 
         for (Track t : results) {
             totalDistance += t.getLength();
             totalSeconds += t.getDuration();
         }
+
 
         distanceTextView.setText(String.format("%d", Math.round(totalDistance / 1000)));
 
@@ -223,7 +229,7 @@ public class TrackingActivity extends Activity {
         Log.d("JC", "Current max length ordinal: " + IBikeApplication.getSettings().getLengthNotificationOrdinal());
     }
 
-    public void onReactivateButtonClick(View v) {
+    /*public void onReactivateButtonClick(View v) {
         if (!Util.isNetworkConnected(TrackingActivity.this)) {
             Util.launchNoConnectionDialog(TrackingActivity.this);
             return;
@@ -259,7 +265,7 @@ public class TrackingActivity extends Activity {
             }
         }
 
-    }
+    }*/
 
 
     void updateReactivateButtonVisibility() {

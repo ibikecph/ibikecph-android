@@ -41,7 +41,7 @@ public class MilestoneManager extends IntentService {
     }
 
     public static void checkForMilestones() {
-        Realm realm = Realm.getInstance(IBikeApplication.getContext());
+        Realm realm = Realm.getDefaultInstance();
 
         // Total length
         int totalLength = getTotalLength();
@@ -102,7 +102,7 @@ public class MilestoneManager extends IntentService {
      * Pop up a notification on Sunday evening with a summary of the bicycling activity.
      */
     public Pair<Double, Pair<Integer,Integer>> getSundaySummary() {
-        Realm realm = Realm.getInstance(IBikeApplication.getContext());
+        Realm realm = Realm.getDefaultInstance();
 
         // We want to find all TrackLocation objects during this week, then figure out what Track objects they belong
         // to, and then sum the distances and times of those.
@@ -240,8 +240,9 @@ public class MilestoneManager extends IntentService {
 
 
     public static int getTotalLength() {
-        Realm realm = Realm.getInstance(IBikeApplication.getContext());
-        RealmResults<Track> results = realm.allObjects(Track.class);
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Track> query = realm.where(Track.class);
+        RealmResults<Track> results = query.findAll();
 
         double totalDist = 0;
 
@@ -254,7 +255,7 @@ public class MilestoneManager extends IntentService {
 
     public static int daysInARow() {
         // Go though all TrackLocation objects
-        Realm realm = Realm.getInstance(IBikeApplication.getContext());
+        Realm realm = Realm.getDefaultInstance();
 
         int curStreak = 0;
         boolean stop = false;

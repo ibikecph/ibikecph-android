@@ -31,7 +31,6 @@ public class BikeActivityService extends WakefulIntentService {
             DetectedActivity mostProbableActivity = result.getMostProbableActivity();
             final int confidence = mostProbableActivity.getConfidence();
             final int activityType = mostProbableActivity.getType();
-            mostProbableActivity.getVersionCode();
 
             Log.d("JC", "BikeActivityService: Activity: " + getNameFromType(activityType) + ", confidence: " + confidence);
 

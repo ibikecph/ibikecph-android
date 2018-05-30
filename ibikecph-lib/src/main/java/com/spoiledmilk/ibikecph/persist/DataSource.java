@@ -9,6 +9,6 @@ abstract public class DataSource {
     protected Realm realm;
 
     public DataSource(Context context) {
-        this.realm = Realm.getInstance(context);
+        this.realm = Realm.getDefaultInstance();
     }
 }

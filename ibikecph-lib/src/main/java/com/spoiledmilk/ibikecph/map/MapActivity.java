@@ -28,8 +28,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
-import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.balysv.materialmenu.MaterialMenuIcon;
+import com.balysv.materialmenu.MaterialMenuDrawable;
 import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.events.MapListener;
 import com.mapbox.mapboxsdk.events.RotateEvent;
@@ -43,8 +43,8 @@ import com.spoiledmilk.ibikecph.LeftMenu;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.TermsManager;
 import com.spoiledmilk.ibikecph.favorites.FavoriteListItem;
-import com.spoiledmilk.ibikecph.login.LoginActivity;
-import com.spoiledmilk.ibikecph.login.ProfileActivity;
+//import com.spoiledmilk.ibikecph.login.LoginActivity;
+//import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.fragments.BreakRouteSelectionFragment;
 import com.spoiledmilk.ibikecph.map.fragments.RouteSelectionFragment;
 import com.spoiledmilk.ibikecph.map.handlers.OverviewMapHandler;
@@ -197,9 +197,6 @@ public class MapActivity extends BaseMapActivity {
     public void onResume() {
         super.onResume();
 
-        // Tell Google Analytics that the user has resumed on this screen.
-        IBikeApplication.sendGoogleAnalyticsActivityEvent(this);
-
         attemptToRegisterLocationListener();
 
         /*
@@ -227,7 +224,7 @@ public class MapActivity extends BaseMapActivity {
         TermsManager.checkTerms(this);
 
         // Check if the user was logged out/deleted and spawn a dialog
-        Intent intent = getIntent();
+        /*Intent intent = getIntent();
         if (intent.hasExtra("loggedOut")) {
 
             if (intent.getExtras().getBoolean("loggedOut")) {
@@ -265,7 +262,7 @@ public class MapActivity extends BaseMapActivity {
                 dialog.show();
             }
             intent.removeExtra("deleteUser");
-        }
+        }*/
 
         // Ensure all tracks have been geocoded.
         try {
@@ -545,7 +542,7 @@ public class MapActivity extends BaseMapActivity {
 
     AlertDialog loginDlg;
 
-    private void launchLoginDialog() {
+   /* private void launchLoginDialog() {
         if (loginDlg == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(IBikeApplication.getString("login"));
@@ -569,7 +566,7 @@ public class MapActivity extends BaseMapActivity {
             loginDlg = builder.create();
         }
         loginDlg.show();
-    }
+    }*/
 
     @Override
     public void onPause() {
@@ -612,19 +609,21 @@ public class MapActivity extends BaseMapActivity {
             }
             leftMenu.populateMenu();
             */
-        } else if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
-            Log.d(TAG, "Got back from deleting the user");
-            AlertDialog dialog;
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(IBikeApplication.getString("account_deleted"));
-            builder.setPositiveButton(IBikeApplication.getString("close"), new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
-            dialog = builder.create();
-            dialog.show();
-        } else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_OK) {
+        }
+//        else if (resultCode == ProfileActivity.RESULT_USER_DELETED) {
+//            Log.d(TAG, "Got back from deleting the user");
+//            AlertDialog dialog;
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            builder.setMessage(IBikeApplication.getString("account_deleted"));
+//            builder.setPositiveButton(IBikeApplication.getString("close"), new DialogInterface.OnClickListener() {
+//                public void onClick(DialogInterface dialog, int id) {
+//                    dialog.dismiss();
+//                }
+//            });
+//            dialog = builder.create();
+//            dialog.show();
+//        }
+        else if (requestCode == REQUEST_SEARCH_ADDRESS && resultCode == RESULT_OK) {
             Log.d(TAG, "Got back from address search, with an OK result");
             // Change state right away
             DestinationPreviewState state = this.changeState(DestinationPreviewState.class);
