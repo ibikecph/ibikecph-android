@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.R;
-//import com.spoiledmilk.ibikecph.login.SignatureActivity;
+import com.spoiledmilk.ibikecph.login.SignatureActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.persist.TrackLocation;
 import com.spoiledmilk.ibikecph.util.IBikePreferences;
@@ -229,7 +229,7 @@ public class TrackingActivity extends Activity {
         Log.d("JC", "Current max length ordinal: " + IBikeApplication.getSettings().getLengthNotificationOrdinal());
     }
 
-    /*public void onReactivateButtonClick(View v) {
+    public void onReactivateButtonClick(View v) {
         if (!Util.isNetworkConnected(TrackingActivity.this)) {
             Util.launchNoConnectionDialog(TrackingActivity.this);
             return;
@@ -265,7 +265,7 @@ public class TrackingActivity extends Activity {
             }
         }
 
-    }*/
+    }
 
 
     void updateReactivateButtonVisibility() {
