@@ -19,9 +19,9 @@ import android.widget.RelativeLayout;
 import com.spoiledmilk.ibikecph.favorites.AddFavoriteFragment;
 import com.spoiledmilk.ibikecph.favorites.FavoriteListItem;
 import com.spoiledmilk.ibikecph.favorites.FavoritesListActivity;
-//import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
-//import com.spoiledmilk.ibikecph.login.LoginActivity;
-//import com.spoiledmilk.ibikecph.login.ProfileActivity;
+import com.spoiledmilk.ibikecph.login.FacebookProfileActivity;
+import com.spoiledmilk.ibikecph.login.LoginActivity;
+import com.spoiledmilk.ibikecph.login.ProfileActivity;
 import com.spoiledmilk.ibikecph.map.overlays.OverlaysActivity;
 import com.spoiledmilk.ibikecph.persist.Track;
 import com.spoiledmilk.ibikecph.tracking.TrackingActivity;
@@ -166,7 +166,7 @@ public class LeftMenu extends Fragment {
         //getActivity().overridePendingTransition(com.spoiledmilk.ibikecph.R.anim.slide_in_right, com.spoiledmilk.ibikecph.R.anim.slide_out_left);
     }
 
-    /*@SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings("UnusedDeclaration")
     public void spawnLoginActivity() {
         if (!Util.isNetworkConnected(getActivity())) {
             Util.launchNoConnectionDialog(getActivity());
@@ -184,7 +184,7 @@ public class LeftMenu extends Fragment {
             }
             getActivity().startActivityForResult(i, LAUNCH_LOGIN);
         }
-    }*/
+    }
 
     @SuppressWarnings("UnusedDeclaration")
     public void spawnTrackingActivity() {

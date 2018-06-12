@@ -15,7 +15,7 @@ realm {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.facebook.android:facebook-android-sdk:4.32.0'
+    implementation 'com.facebook.android:facebook-android-sdk:3.22.0'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'se.emilsjolander:stickylistheaders:2.6.0'
     implementation 'com.balysv.materialmenu:material-menu:1.5.3'
