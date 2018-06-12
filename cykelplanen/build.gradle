@@ -21,7 +21,7 @@ android {
         applicationId "com.spoiledmilk.cykelsuperstier"
         minSdkVersion 16
         targetSdkVersion 27
-        manifestPlaceholders = [HOCKEYAPP_APP_ID: ""]
+        manifestPlaceholders = [HOCKEYAPP_APP_ID: "cec6c0e595db43ffa1e9a60bfab16161"]
         // versionCode 1
         // versionName "1.0"
     }
@@ -32,7 +32,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.development
-            manifestPlaceholders = [HOCKEYAPP_APP_ID: "bfcca234bd157f6eba719e4be7e09445"]
+            manifestPlaceholders = [HOCKEYAPP_APP_ID: "cec6c0e595db43ffa1e9a60bfab16161"]
         }
         release {
             minifyEnabled false

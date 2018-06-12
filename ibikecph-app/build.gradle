@@ -37,7 +37,7 @@ android {
         applicationId "dk.kk.ibikecph"
         minSdkVersion 16
         targetSdkVersion 27
-        manifestPlaceholders = [HOCKEYAPP_APP_ID: ""]
+        manifestPlaceholders = [HOCKEYAPP_APP_ID: "085d3271f48c40c1bf7e58cb6818c79b"]
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         // versionCode 1
         // versionName "1.0"
@@ -49,7 +49,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.development
-            manifestPlaceholders = [HOCKEYAPP_APP_ID: "d10e63f39cdbe7e8e3af275207388b2a"]
+            manifestPlaceholders = [HOCKEYAPP_APP_ID: "085d3271f48c40c1bf7e58cb6818c79b"]
         }
         release {
             minifyEnabled false

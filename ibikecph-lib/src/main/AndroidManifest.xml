@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.spoiledmilk.ibikecph"
-    android:versionCode="82"
-    android:versionName="2.2.3">
+    android:versionCode="83"
+    android:versionName="2.2.4">
 
-    <uses-sdk android:targetSdkVersion="23" android:minSdkVersion="16" />
+    <uses-sdk android:targetSdkVersion="27" android:minSdkVersion="16" />
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -39,7 +39,6 @@
         android:hardwareAccelerated="true"
         android:largeHeap="true"
         android:screenOrientation="portrait">
-        <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait" />
