@@ -16,7 +16,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.spoiledmilk.ibikecph.IBikeApplication;
 import com.spoiledmilk.ibikecph.login.HTTPDeleteWithBody;
-//import com.spoiledmilk.ibikecph.login.UserData;
+import com.spoiledmilk.ibikecph.login.UserData;
 import com.spoiledmilk.ibikecph.tracking.TrackingManager;
 
 import org.apache.http.HttpResponse;
@@ -283,7 +283,7 @@ public class HttpUtils {
         return ret;
     }
 
-    /*public static Message JSONtoUserDataMessage(JsonNode result, UserData userData) {
+    public static Message JSONtoUserDataMessage(JsonNode result, UserData userData) {
         Message ret = new Message();
         Bundle data = new Bundle();
         if (result != null) {
@@ -308,7 +308,7 @@ public class HttpUtils {
             ret.setData(data);
         }
         return ret;
-    }*/
+    }
 
     public static void openLinkInBrowser(Context context, String url) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

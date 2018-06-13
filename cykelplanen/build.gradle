@@ -74,6 +74,3 @@ hockeyapp {
     notes = git.head().fullMessage
     status = 2
 }
-
-// This line needs to be in the bottom of the file
-apply plugin: 'com.google.gms.google-services'
