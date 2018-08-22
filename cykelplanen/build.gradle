@@ -15,12 +15,12 @@ android {
             storePassword secret('DEV_KEYSTORE_PASSWORD')
         }
     }
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
     defaultConfig {
         applicationId "com.spoiledmilk.cykelsuperstier"
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "cec6c0e595db43ffa1e9a60bfab16161"]
         // versionCode 1
         // versionName "1.0"

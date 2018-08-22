@@ -14,7 +14,7 @@ realm {
 }
 
 dependencies {
-    api fileTree(dir: 'libs', include: ['*.jar'])
+    api fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.facebook.android:facebook-android-sdk:3.22.0'
     implementation 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'se.emilsjolander:stickylistheaders:2.6.0'
@@ -33,8 +33,8 @@ dependencies {
 
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
     sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/fav_work'] } }
     packagingOptions {
         exclude 'META-INF/NOTICE'

@@ -31,12 +31,12 @@ android {
             storePassword secret('DEV_KEYSTORE_PASSWORD')
         }
     }
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
     defaultConfig {
         applicationId "dk.kk.ibikecph"
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "085d3271f48c40c1bf7e58cb6818c79b"]
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         // versionCode 1
@@ -83,6 +83,7 @@ android {
     }
 }
 
+// https://github.com/x2on/gradle-hockeyapp-plugin
 apply plugin: 'de.felixschulze.gradle.hockeyapp'
 hockeyapp {
     apiToken = secret('HOCKEY_APP_TOKEN')
@@ -90,5 +91,5 @@ hockeyapp {
     teams = 65310
     commitSha = git.head().id
     notes = git.head().fullMessage
-    status = 2
+    status = 2      // 2 mean make  version available for download
 }
