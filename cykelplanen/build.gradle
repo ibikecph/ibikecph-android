@@ -22,8 +22,8 @@ android {
         minSdkVersion 16
         targetSdkVersion 28
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "cec6c0e595db43ffa1e9a60bfab16161"]
-        // versionCode 1
-        // versionName "1.0"
+        versionCode 84
+        versionName "2.2.4"
     }
     packagingOptions {
         exclude 'META-INF/NOTICE'

@@ -39,8 +39,8 @@ android {
         targetSdkVersion 28
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "085d3271f48c40c1bf7e58cb6818c79b"]
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        // versionCode 1
-        // versionName "1.0"
+        versionCode 84
+        versionName "2.2.4"
     }
     packagingOptions {
         exclude 'META-INF/NOTICE'
