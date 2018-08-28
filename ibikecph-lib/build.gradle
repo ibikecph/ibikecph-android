@@ -41,6 +41,13 @@ android {
         exclude 'META-INF/LICENSE'
     }
 
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 84
+        versionName "2.2.4"
+    }
+
     // TODO: Migrate away from this
     // See http://stackoverflow.com/questions/32153318/httpclient-wont-import-in-android-studio
     useLibrary 'org.apache.http.legacy'
