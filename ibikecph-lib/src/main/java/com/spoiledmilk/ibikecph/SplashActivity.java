@@ -93,10 +93,10 @@ public class SplashActivity extends Activity {
 			ProviderInstaller.installIfNeeded(this);
 		} catch (GooglePlayServicesRepairableException e) {
 			// Indicates that Google Play services is out of date, disabled, etc.
-			LOG.d("Google Play services needs to be updated");
+			LOG.d("Google Play services needs to be updated, asking user to update");
 			// Prompt the user to install/update/enable Google Play services.
 			Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(this, e.getConnectionStatusCode(), REQUEST_CODE_RECOVER_PLAY_SERVICES);
-			dialog.setCancelable(false);	// don't let user dismiss dialg
+			dialog.setCancelable(false);	// don't let user dismiss dialog
 			dialog.show();
 			return false;
 
@@ -115,7 +115,7 @@ public class SplashActivity extends Activity {
 
 		// If this is reached, you know that the provider was already up-to-date,
 		// or was successfully updated.
-		LOG.d("Checking Google Play services up to date");
+		LOG.d("Google Play services are up to date");
 		return true;
 	}
 

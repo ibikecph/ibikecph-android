@@ -78,26 +78,6 @@
         android:layout_marginTop="30dp"
         android:background="@null"
         android:padding="5dp" >
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/textReport"
-            android:layout_alignTop="@+id/textReport"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/textReport"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/warning_icon" />
-
-        <TextView
-            android:id="@+id/textReport"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:clickable="true"
-            android:gravity="center"
-            android:text=""
-            android:textColor="#4c4c4c" />
     </RelativeLayout>
 
 </RelativeLayout>

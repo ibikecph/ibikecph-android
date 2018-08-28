@@ -101,10 +101,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/iBikeCPHTheme.ActionBar" />
         <activity
-            android:name="com.spoiledmilk.ibikecph.IssuesActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/iBikeCPHTheme.ActionBar"/>
-        <activity
             android:name="com.spoiledmilk.ibikecph.login.FacebookProfileActivity"
             android:screenOrientation="portrait"
             android:theme="@style/iBikeCPHTheme.ActionBar"/>

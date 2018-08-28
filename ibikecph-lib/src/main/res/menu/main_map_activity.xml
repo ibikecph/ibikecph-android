@@ -36,12 +36,4 @@
         android:orderInCategory="100"
         android:showAsAction="always"
         android:title="" />
-
-    <item
-        android:id="@+id/ab_problem"
-        android:orderInCategory="100"
-        android:showAsAction="always"
-        android:text="Problem"
-        android:title="Problem"
-        android:visible="false" />
 </menu>

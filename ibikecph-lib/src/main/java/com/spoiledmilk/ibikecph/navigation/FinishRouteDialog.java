@@ -38,18 +38,6 @@ public class FinishRouteDialog extends DialogFragment {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         View view = inflater.inflate(R.layout.dialog_stop, container);
-        textReport = (TextView) view.findViewById(R.id.textReport);
-        textReport.setText(IBikeApplication.getString("ride_report_a_problem"));
-        textReport.setTypeface(IBikeApplication.getBoldFont());
-        textReport.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                // FIXME: Find an Activity to launch this from
-
-                //((SMRouteNavigationActivity) getActivity()).launchReportIssuesActivity();
-            }
-
-        });
 
         textTitle = (TextView) view.findViewById(R.id.textTitle);
         textTitle.setText(IBikeApplication.getString("route_stop_title"));

@@ -20,7 +20,7 @@ public class HarborRingOverlay extends DownloadedOverlay {
         if(BuildConfig.FLAVOR.equals("local")) {
             return "http://10.0.2.2:3000/geodata/";
         } else {
-            return "http://assets.ibikecph.dk/geodata/";
+            return "https://assets.ibikecph.dk/geodata/";
         }
     }
 }

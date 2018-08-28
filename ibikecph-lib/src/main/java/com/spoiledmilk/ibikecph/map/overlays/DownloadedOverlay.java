@@ -314,6 +314,6 @@ public abstract class DownloadedOverlay implements TogglableOverlay {
     }
 
     public String getBaseUrl() {
-        return "http://assets.ibikecph.dk/geodata/";
+        return "https://assets.ibikecph.dk/geodata/";
     }
 }

@@ -96,9 +96,6 @@
             android:name="com.spoiledmilk.cykelsuperstier.favorites.FavoritesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.spoiledmilk.ibikecph.IssuesActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.spoiledmilk.ibikecph.login.FacebookProfileActivity"
             android:screenOrientation="portrait" />
         <activity

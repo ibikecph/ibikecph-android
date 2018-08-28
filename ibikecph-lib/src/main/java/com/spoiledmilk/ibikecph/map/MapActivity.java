@@ -479,11 +479,6 @@ public class MapActivity extends BaseMapActivity {
             Intent i = new Intent(MapActivity.this, SearchActivity.class);
             startActivityForResult(i, REQUEST_SEARCH_ADDRESS);
             overridePendingTransition(R.anim.slide_in_down, R.anim.fixed);
-        } else if (id == R.id.ab_problem) {
-            if(state instanceof NavigatingState) {
-                NavigatingState navigatingState = (NavigatingState) state;
-                navigatingState.reportProblem();
-            }
         }
         // Toggle the drawer when tapping the app icon.
         else if (id == android.R.id.home) {
@@ -592,7 +587,6 @@ public class MapActivity extends BaseMapActivity {
 
         // Show the button to report problems, when in the navigating state.
         boolean navigating = state instanceof NavigatingState;
-        menu.findItem(R.id.ab_problem).setVisible(navigating);
 
         return true;
     }

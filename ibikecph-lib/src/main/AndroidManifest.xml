@@ -85,9 +85,6 @@
             android:name=".favorites.FavoritesActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".IssuesActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".login.FacebookProfileActivity"
             android:screenOrientation="portrait" />
         <activity

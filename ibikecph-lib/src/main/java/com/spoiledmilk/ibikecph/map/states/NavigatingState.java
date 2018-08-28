@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.google.android.gms.location.LocationListener;
 import com.mapbox.mapboxsdk.overlay.UserLocationOverlay;
 import com.spoiledmilk.ibikecph.IBikeApplication;
-import com.spoiledmilk.ibikecph.IssuesActivity;
 import com.spoiledmilk.ibikecph.R;
 import com.spoiledmilk.ibikecph.map.fragments.NavigationETAFragment;
 import com.spoiledmilk.ibikecph.map.handlers.NavigationMapHandler;
@@ -275,22 +274,7 @@ public class NavigatingState extends MapState implements NavigationStateListener
         }
         Toast.makeText(activity, IBikeApplication.getString("error_route_not_found"), Toast.LENGTH_SHORT).show();
     }
-
-    public void reportProblem() {
-        Intent i = new Intent(activity, IssuesActivity.class);
-        ArrayList<String> turnsArray = new ArrayList<>();
-        for (TurnInstruction instruction: navigationState.getUpcomingSteps()) {
-            turnsArray.add(instruction.toDisplayString());
-        }
-        Route route = getRoute();
-        i.putStringArrayListExtra("turns", turnsArray);
-        i.putExtra("startLoc", route.getStartLocation().toString());
-        i.putExtra("endLoc", route.getEndLocation().toString());
-        i.putExtra("startName", route.getStartAddress().getName());
-        i.putExtra("endName", route.getEndAddress().getName());
-        activity.startActivity(i);
-    }
-
+    
     public NavigationState getNavigationState() {
         return navigationState;
     }
