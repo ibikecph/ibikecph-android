@@ -41,7 +41,11 @@ release mode, this involves a few steps:
 - Checkout the tag related to the release we want to make.
 - From the "Build" menu in the top menu and choose "Generate Signed APK"
   and follow along with the wizard.
-
+- For older version of Android, you must enable V1 (in addition to V2)
+  signing when building the sigend app.
+  Otherwise the app will fail to install with a simple
+  message the the app failed to install, without further details.
+ 
 ## Code structure
 
 As stated, this project brings together three separate projects,
