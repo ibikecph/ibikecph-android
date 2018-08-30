@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:background="@color/Black" >
 
-        <com.spoiledmilk.ibikecph.controls.MapGridView
+        <dk.kk.ibikecphlib.controls.MapGridView
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

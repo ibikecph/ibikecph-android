@@ -50,7 +50,7 @@
             android:layout_height="0dp"
             android:layout_weight="0.05" />
 
-        <com.spoiledmilk.ibikecph.controls.TexturedButton
+        <dk.kk.ibikecphlib.controls.TexturedButton
             android:id="@+id/btnStop"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

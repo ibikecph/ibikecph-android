@@ -1,14 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'realm-android'
 
-repositories {
-    maven {
-        url "http://dl.bintray.com/populov/maven"
-    }
-    mavenCentral()
-    jcenter()
-}
-
 realm {
     syncEnabled = true
 }

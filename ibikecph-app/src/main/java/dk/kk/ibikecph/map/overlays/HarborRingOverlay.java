@@ -1,6 +1,6 @@
 package dk.kk.ibikecph.map.overlays;
 
-import com.spoiledmilk.ibikecph.map.overlays.DownloadedOverlay;
+import dk.kk.ibikecphlib.map.overlays.DownloadedOverlay;
 
 import dk.kk.ibikecph.BuildConfig;
 

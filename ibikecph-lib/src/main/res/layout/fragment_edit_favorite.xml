@@ -202,7 +202,7 @@
                 android:layout_below="@+id/buttonsContainer"
                 android:layout_centerHorizontal="true" >
 
-                <com.spoiledmilk.ibikecph.controls.TexturedButton
+                <dk.kk.ibikecphlib.controls.TexturedButton
                     android:id="@+id/btnSave"
                     android:layout_width="130dp"
                     android:layout_height="40dp"

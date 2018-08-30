@@ -5,12 +5,12 @@ import android.support.test.filters.LargeTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.spoiledmilk.ibikecph.BikeLocationService;
-import com.spoiledmilk.ibikecph.map.RouteType;
-import com.spoiledmilk.ibikecph.navigation.NavigationState;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.TurnInstruction;
+import dk.kk.ibikecphlib.BikeLocationService;
+import dk.kk.ibikecphlib.map.RouteType;
+import dk.kk.ibikecphlib.navigation.NavigationState;
+import dk.kk.ibikecphlib.navigation.routing_engine.Route;
+import dk.kk.ibikecphlib.navigation.routing_engine.TransportationType;
+import dk.kk.ibikecphlib.navigation.routing_engine.TurnInstruction;
 
 import org.junit.Assert;
 import org.junit.Before;

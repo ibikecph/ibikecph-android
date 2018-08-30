@@ -27,7 +27,7 @@
 # The following is taken from https://github.com/krschultz/android-proguard-snippets/pull/114/files
 # Proguard configuration for Jackson 2.x (fasterxml package instead of codehaus package)
 -keepnames class com.fasterxml.jackson.annotation.** { *; }
--keep public class com.spoiledmilk.ibikecph.persist.* {
+-keep public class dk.kk.ibikecph.persist.* {
     public void set*(*);
     public ** get*();
 }

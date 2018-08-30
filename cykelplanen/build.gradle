@@ -18,7 +18,7 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.2'
     defaultConfig {
-        applicationId "com.spoiledmilk.cykelsuperstier"
+        applicationId "dk.kk.cykelsuperstier"
         minSdkVersion 16
         targetSdkVersion 28
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "cec6c0e595db43ffa1e9a60bfab16161"]

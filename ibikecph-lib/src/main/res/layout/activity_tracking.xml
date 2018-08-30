@@ -4,5 +4,5 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/tripListView" android:layout_gravity="center_horizontal"
-        tools:context="com.spoiledmilk.ibikecph.tracking.TrackingActivity"
+        tools:context="dk.kk.ibikecphlib.tracking.TrackingActivity"
         />

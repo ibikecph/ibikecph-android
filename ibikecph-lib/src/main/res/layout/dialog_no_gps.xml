@@ -27,7 +27,7 @@
         android:text=""
         android:textColor="#4c4c4c" />
 
-    <com.spoiledmilk.ibikecph.controls.TexturedButton
+    <dk.kk.ibikecphlib.controls.TexturedButton
         android:id="@+id/btnActivateGps"
         android:layout_width="140dp"
         android:layout_height="45dp"

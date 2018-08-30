@@ -62,6 +62,6 @@ Supercykelstier also relies on the library for most of its
 functionality, but also implements some additional things, among other
 things the "Knæk ruten" functionality.
 
-The Java code is published under the `com.spoiledmilk` namespace, and
+The Java code is published under the `dk.kk` namespace, and
 split into packages that reflect what part of the app they pertain to.
 Model class names are suffixed with  `Data`.

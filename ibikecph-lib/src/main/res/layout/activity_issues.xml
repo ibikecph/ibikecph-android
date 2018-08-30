@@ -286,14 +286,14 @@
         android:background="@color/DarkGrey"
         android:padding="5dp" >
 
-        <com.spoiledmilk.ibikecph.controls.TexturedButton
+        <dk.kk.ibikecphlib.controls.TexturedButton
             android:id="@+id/btnSend"
             android:layout_width="150dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:background="@null"
             android:onClick="onButtonSendClick" >
-        </com.spoiledmilk.ibikecph.controls.TexturedButton>
+        </dk.kk.ibikecphlib.controls.TexturedButton>
     </RelativeLayout>
 
 </RelativeLayout>

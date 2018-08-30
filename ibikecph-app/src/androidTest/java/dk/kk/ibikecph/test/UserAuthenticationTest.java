@@ -1,7 +1,7 @@
 package dk.kk.ibikecph.test;
 
-import com.spoiledmilk.ibikecph.map.MapActivity;
-import com.spoiledmilk.ibikecph.R;
+import dk.kk.ibikecphlib.map.MapActivity;
+import dk.kk.ibikecphlib.R;
 
 import org.junit.Rule;
 import org.junit.Test;
