@@ -37,7 +37,6 @@ public class IBikePreferences {
     public static final String PREFS_NOTIFY_MILESTONE = "notifyMilestone";
     public static final String PREFS_NOTIFY_WEEKLY    = "notifyWeekly";
     public static final String PREFS_SHARE_DATA       = "shareData";
-    public static final String CRASH_REPORTING = "crashReporting";
     public static final String LENGTH_NOTIFICATION    = "lengthNotification";
     public static final String STREAK_NOTIFICATION    = "streakNotification";
     public static final String NEWEST_TERMS_ACCEPTED  = "newest_terms_accepted";
@@ -187,14 +186,6 @@ public class IBikePreferences {
 
     public void setNewestTermsAccepted(int newestTermsAccepted) {
         getPreferences().edit().putInt(NEWEST_TERMS_ACCEPTED, newestTermsAccepted).commit();
-    }
-
-    public boolean isCrashReportingEnabled() {
-        return getPreferences().getBoolean(CRASH_REPORTING, true);
-    }
-
-    public void setCrashReporting(boolean enabled) {
-        getPreferences().edit().putBoolean(CRASH_REPORTING, enabled).commit();
     }
 
     public boolean getReadAloud() {

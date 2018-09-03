@@ -63,9 +63,6 @@ import dk.kk.ibikecphlib.tracking.TrackingManager;
 import dk.kk.ibikecphlib.tracking.TrackingStatisticsFragment;
 import dk.kk.ibikecphlib.util.Util;
 
-import net.hockeyapp.android.CrashManager;
-import net.hockeyapp.android.UpdateManager;
-
 import java.util.List;
 
 import dk.kk.ibikecphlib.IBikeApplication;
@@ -158,12 +155,6 @@ public class MapActivity extends BaseMapActivity {
 
         initializeSelectableOverlays();
 
-        // Check for HockeyApp updates
-        try {
-            UpdateManager.register(this);
-        } catch (IllegalArgumentException e) {
-            Log.i("HockeyApp", "No HockeyApp app identifier provided - HockeyApp is disabled");
-        }
 
         // Check if the user accepts the newest terms
         // TermsManager.checkTerms(this);
@@ -229,7 +220,6 @@ public class MapActivity extends BaseMapActivity {
         if (!Util.isNetworkConnected(this)) {
             Util.launchNoConnectionDialog(this);
         }
-        checkForCrashes();
         // TODO: Check if this is even needed as the menu has been added using the fragment manager.
         leftMenu.onResume();
 
@@ -531,21 +521,6 @@ public class MapActivity extends BaseMapActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         leftMenu.onResume();
-    }
-
-    /**
-     * Uses hockey app (if enabled) to check for crashes that can be reported back to Hockey App.
-     */
-    protected void checkForCrashes() {
-        try {
-            if (IBikeApplication.getSettings().isCrashReportingEnabled()) {
-                CrashManager.register(this);
-            } else {
-                Log.i("HockeyApp", "User turned off crash reporting - HockeyApp is disabled");
-            }
-        } catch (IllegalArgumentException e) {
-            Log.i("HockeyApp", "No HockeyApp app identifier provided - HockeyApp is disabled");
-        }
     }
 
     AlertDialog loginDlg;

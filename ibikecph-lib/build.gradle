@@ -18,7 +18,6 @@ dependencies {
     api('com.mapbox.mapboxsdk:mapbox-android-sdk:0.7.4@aar') {
         transitive = true
     }
-    implementation 'net.hockeyapp.android:HockeySDK:5.1.0'
     api project(path: ':viewpagerindicator', configuration: 'default')
     implementation 'com.android.support:multidex:1.0.3'
 }

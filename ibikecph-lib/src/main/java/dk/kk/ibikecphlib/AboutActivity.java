@@ -19,8 +19,6 @@ import android.widget.TextView;
 import dk.kk.ibikecphlib.R;
 import dk.kk.ibikecphlib.util.IBikePreferences;
 
-import net.hockeyapp.android.CrashManager;
-
 import java.text.SimpleDateFormat;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -45,28 +43,6 @@ public class AboutActivity extends Activity {
 		textAboutText.setClickable(true);
 
         this.getActionBar().setTitle(IBikeApplication.getString("about_app_ibc"));
-
-		// Create the debugging controls if we've build an app in debug mode.
-		View debuggingControls = findViewById(R.id.debuggingControls);
-		Log.d("AboutActivity", "Are we debugging? " + IBikeApplication.isDebugging(this));
-		if (IBikeApplication.isDebugging(this)) {
-			final IBikePreferences preferences = IBikeApplication.getSettings();
-			CheckBox crashReportingCheckBox = (CheckBox) findViewById(R.id.crashReportingCheckBox);
-			debuggingControls.setVisibility(View.VISIBLE);
-
-			crashReportingCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					preferences.setCrashReporting(isChecked);
-					if(isChecked) {
-						CrashManager.register(AboutActivity.this);
-					}
-				}
-			});
-		} else {
-			debuggingControls.setVisibility(View.GONE);
-		}
-
 		//getBuildInfo();
 	}
 
@@ -75,9 +51,6 @@ public class AboutActivity extends Activity {
 		super.onResume();
 
 		IBikePreferences preferences = IBikeApplication.getSettings();
-		CheckBox crashReportingCheckBox = (CheckBox) findViewById(R.id.crashReportingCheckBox);
-		crashReportingCheckBox.setChecked(preferences.isCrashReportingEnabled());
-
 		initStrings();
 	}
 
