@@ -52,7 +52,7 @@ public class SearchAutocompleteActivity extends Activity {
     private AutocompleteAdapter adapter;
     private SearchListItem currentSelection;
     private int lastTextSize = 0;
-    private boolean addressPicked = false, isA = false, isOirestFetched = false, isFoursquareFetched = false, isClose = false;
+    private boolean addressPicked = false, isA = false, isFoursquareFetched = false, isClose = false;
     /**
      * @deprecated Use the address on the currentSelection SearchListItem instead
      */
@@ -143,7 +143,9 @@ public class SearchAutocompleteActivity extends Activity {
         if (currentSelection.type != SearchListItem.nodeType.KORTFOR && currentSelection.type != SearchListItem.nodeType.CURRENT_POSITION) {
             isFinishing = true;
             finishAndPutData();
-        } else if (currentSelection.type == SearchListItem.nodeType.CURRENT_POSITION) {
+        }
+        /*
+        else if (currentSelection.type == SearchListItem.nodeType.CURRENT_POSITION) {
             isFinishing = true;
             (new Thread() {
 
@@ -169,7 +171,9 @@ public class SearchAutocompleteActivity extends Activity {
                     });
                 }
             }).start();
-        } else if (currentSelection instanceof KortforsyningenListItem) {
+        }
+         */
+        else if (currentSelection instanceof KortforsyningenListItem) {
             if (((KortforsyningenListItem) currentSelection).isPlace()) {
                 isFinishing = true;
                 finishAndPutData();
@@ -246,7 +250,10 @@ public class SearchAutocompleteActivity extends Activity {
                         if (currentSelection == null) {
                             currentSelection = new KortforsyningenListItem(AddressParser.addresWithoutNumber(textSrch.getText().toString()), address.getHouseNumber());
                         }
-                        // TODO: Refactor this to Geocoder class
+
+                        /*
+                         TODO: Refactor this to Geocoder class
+
                         LOG.d("Street searchfor the number " + address.getHouseNumber());
                         String urlString = "http://geo.oiorest.dk/adresser.json?q="
                                 + URLEncoder.encode(currentSelection.getAddress().getStreet() + " " + address.getHouseNumber(), "UTF-8");
@@ -268,6 +275,8 @@ public class SearchAutocompleteActivity extends Activity {
                                 }
                             }
                         }
+                        */
+
                         if (currentSelection != null && currentSelection.getAddress().getLocation().getLatitude() > -1 && currentSelection.getAddress().getLocation().getLongitude() > -1)
                             runOnUiThread(new Runnable() {
                                 public void run() {
@@ -304,7 +313,7 @@ public class SearchAutocompleteActivity extends Activity {
             // We are currently searching for this
             adapter.updateListData(list, searchText, addr);
         }
-        if (isOirestFetched && isFoursquareFetched) {
+        if (isFoursquareFetched) {
             progressBar.setVisibility(View.INVISIBLE);
         }
     }
@@ -339,7 +348,6 @@ public class SearchAutocompleteActivity extends Activity {
                     // final String searchText = AddressParser.addresWithoutNumber(textSrch.getText().toString());
                     final String searchText = textSrch.getText().toString();
 
-                    isOirestFetched = false;
                     isFoursquareFetched = !(textSrch.getText().toString().length() > 2);
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
@@ -456,7 +464,6 @@ public class SearchAutocompleteActivity extends Activity {
                             }
                         }
                     }
-                    isOirestFetched = true;
                     runOnUiThread(new Runnable() {
                         public void run() {
                             updateListData(data, searchText, addr);

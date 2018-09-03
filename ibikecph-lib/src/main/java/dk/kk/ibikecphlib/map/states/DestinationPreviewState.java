@@ -12,8 +12,7 @@ import dk.kk.ibikecphlib.map.Geocoder;
 import dk.kk.ibikecphlib.map.handlers.OverviewMapHandler;
 import dk.kk.ibikecphlib.search.Address;
 
-import dk.kk.ibikecphlib.map.Geocoder;
-import dk.kk.ibikecphlib.search.Address;
+import dk.kk.ibikecphlib.util.LOG;
 
 /**
  * The user has selected a potential destination location.
@@ -53,6 +52,8 @@ public class DestinationPreviewState extends MapState {
         Geocoder.getAddressForLocation(destinationLatLng, new Geocoder.GeocoderCallback() {
             @Override
             public void onSuccess(Address address) {
+                LOG.d("Got new geocoded adress:" + address.getFullAddress() );
+
                 DestinationPreviewState.this.setDestination(address);
             }
 

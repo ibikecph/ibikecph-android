@@ -37,52 +37,8 @@ public class HTTPAutocompleteHandler {
 	static final String PLACES_SEARCH_RADIUS = "20000";
 	static final String FOURSQUARE_SEARCH_RADIUS = "20000";
 	static final String PLACES_LANGUAGE = "da";
-	static final String OIOREST_SEARCH_RADIUS = "50";
-	static final String OIOREST_AUTOCOMPLETE_SEARCH_RADIUS = "20000";
-	static final String OIOREST_GET_ADDRESS_URL = "https://geo.oiorest.dk/adresser/";
 	static final String FOURSQUARE_CATEGORIES = "4d4b7104d754a06370d81259,4d4b7105d754a06372d81259,4d4b7105d754a06373d81259,4d4b7105d754a06374d81259,4d4b7105d754a06376d81259,4d4b7105d754a06377d81259,4d4b7105d754a06375d81259,5032891291d4c4b30a586d68,4f2a210c4b9023bd5841ed28,4d4b7105d754a06378d81259,4bf58dd8d48988d1ed931735,4e4c9077bd41f78e849722f9,4bf58dd8d48988d12d951735,4bf58dd8d48988d1fa931735,4bf58dd8d48988d1fc931735,4e74f6cabd41c4836eac4c31,4bf58dd8d48988d1ef941735,4f4530164b9074f6e4fb00ff,4bf58dd8d48988d129951735";
 	static final String FOURSQUARE_LIMIT = "10";
-
-	public static JsonNode getOiorestGeocode(String urlString, String houseNumber) {
-		JsonNode rootNode = performGET(urlString);
-		JsonNode ret = null;
-		if (rootNode != null && rootNode.size() != 0) {
-			ret = rootNode.get(0);
-			for (int i = 0; i < rootNode.size(); i++) {
-				if (rootNode.get(i).has("husnr") && rootNode.get(i).get("husnr").asText().toLowerCase(Locale.US).equals(houseNumber)) {
-					ret = rootNode.get(i);
-					break;
-				}
-			}
-		}
-		if (ret != null && ret.has("husnr")) {
-			LOG.d("Geocode succesfull, searched number = " + houseNumber + " foundNumber = " + ret.get("husnr").asText());
-		}
-		return ret;
-
-	}
-
-	public static JsonNode getOiorestAddress(double lat, double lon) {
-		JsonNode rootNode = performGET(OIOREST_GET_ADDRESS_URL + lat + "," + lon + ".json");
-		return rootNode;
-
-	}
-
-	public static List<JsonNode> getOiorestAutocomplete(String searchText) {
-		String urlString;
-		List<JsonNode> list = null;
-		try {
-			urlString = "http://geo.oiorest.dk/adresser.json?q=" + URLEncoder.encode(searchText, "UTF-8") + "&maxantal=50";
-			JsonNode rootNode = performGET(urlString);
-			list = Util.JsonNodeToList(rootNode);
-		} catch (UnsupportedEncodingException e) {
-
-			LOG.e(e.getLocalizedMessage());
-		}
-
-		return list;
-
-	}
 
 	@SuppressLint("NewApi")
 	public static List<JsonNode> getFoursquareAutocomplete(Address address, Context context, Location location) {

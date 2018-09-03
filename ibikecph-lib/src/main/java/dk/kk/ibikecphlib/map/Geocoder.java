@@ -3,27 +3,25 @@ package dk.kk.ibikecphlib.map;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.mapbox.mapboxsdk.api.ILatLng;
+
 import dk.kk.ibikecphlib.navigation.routing_engine.BreakRouteRequester;
 import dk.kk.ibikecphlib.navigation.routing_engine.BreakRouteResponse;
 import dk.kk.ibikecphlib.navigation.routing_engine.RegularRouteRequester;
 import dk.kk.ibikecphlib.navigation.routing_engine.RouteRequester;
 import dk.kk.ibikecphlib.navigation.routing_engine.Route;
 import dk.kk.ibikecphlib.search.Address;
-import dk.kk.ibikecphlib.util.Config;
+import dk.kk.ibikecphlib.util.LOG;
 
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import android.net.Uri;
 
-import dk.kk.ibikecphlib.navigation.routing_engine.BreakRouteRequester;
-import dk.kk.ibikecphlib.navigation.routing_engine.BreakRouteResponse;
-import dk.kk.ibikecphlib.navigation.routing_engine.RegularRouteRequester;
-import dk.kk.ibikecphlib.navigation.routing_engine.Route;
-import dk.kk.ibikecphlib.navigation.routing_engine.RouteRequester;
-import dk.kk.ibikecphlib.search.Address;
+import org.apache.http.Header;
 
 /**
  * Created by jens on 5/30/15.
@@ -48,24 +46,54 @@ public class Geocoder {
      * @param callback
      */
     public static void getAddressForLocation(final ILatLng location, final GeocoderCallback callback) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        String url = String.format(Locale.US, "%s/%f,%f.json", Config.GEOCODER, location.getLatitude(), location.getLongitude());
-        client.get(url, new JsonHttpResponseHandler() {
-            public void onSuccess(int statusCode, org.apache.http.Header[] headers, org.json.JSONObject response) {
-                try {
-                    Address address = new Address(
-                            ((JSONObject) response.get("vejnavn")).getString("navn"),
-                            response.getString("husnr"),
-                            ((JSONObject) response.get("postnummer")).getString("nr"),
-                            ((JSONObject) response.get("postnummer")).getString("navn"),
-                            location.getLatitude(),
-                            location.getLongitude());
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https")
+                .authority("kortforsyningen.kms.dk")
+                .appendPath("search")
+                .appendQueryParameter("servicename", "RestGeokeys_v2")
+                .appendQueryParameter("hits", "1")
+                .appendQueryParameter("method", "nadresse")
+                .appendQueryParameter("geop", String.format(Locale.US, "%f,%f", location.getLongitude(), location.getLatitude()) )
+                .appendQueryParameter("georef", "EPSG:4326")
+                .appendQueryParameter("georad", "50")
+                .appendQueryParameter("outgeoref", "EPSG:4326")
+                .appendQueryParameter("login", "ibikecph")
+                .appendQueryParameter("password", "Spoiledmilk123")
+                .appendQueryParameter("geometry", "false");
 
-                    callback.onSuccess(address);
-                } catch (JSONException e) {
+        String url = builder.build().toString();
+        LOG.d("Geocoding url: " + url);
+
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get(url, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, org.json.JSONObject response) {
+                if (statusCode != 200) {
                     callback.onFailure();
+                } else {
+                    try {
+                        LOG.d("Got response: " + response);
+
+                        JSONArray features = response.getJSONArray("features");
+                        JSONObject feature = features.getJSONObject(0);
+                        JSONObject properties = feature.getJSONObject("properties");
+
+                        String vejnavn = properties.getString("vej_navn");
+                        String husnr = properties.getString("husnr");
+                        String postnr = properties.getString("postdistrikt_kode");
+                        String by = properties.getString("postdistrikt_navn");
+
+                        Address address = new Address( vejnavn, husnr, postnr, by , location.getLatitude(), location.getLongitude());
+
+                        callback.onSuccess(address);
+                    } catch (JSONException e) {
+                        LOG.d( "Exception: " + e);
+                        callback.onFailure();
+                    }
                 }
             }
+
         });
     }
 

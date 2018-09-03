@@ -1,7 +1,7 @@
 // Copyright (C) 2013 City of Copenhagen.
 //
 // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
-// If a copy of the MPL was not distributed with this file, You can obtain one at 
+// If a copy of the MPL was not distributed with this file, You can obtain one at
 // http://mozilla.org/MPL/2.0/.
 package dk.kk.ibikecphlib.map;
 
@@ -117,7 +117,7 @@ public class SMHttpRequest {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String url = String.format(Locale.US, "%s/%f,%f.json", Config.GEOCODER, loc.getLatitude(), loc.getLongitude()); // ,%d
+                String url = String.format(Locale.US, "%s/%f,%f.json", "deprecated", loc.getLatitude(), loc.getLongitude()); // ,%d
 
                 // GEOCODER_SEARCH_RADIUS
                 JsonNode response = HttpUtils.get(url, false);
