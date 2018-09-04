@@ -16,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import dk.kk.ibikecphlib.R;
 import dk.kk.ibikecphlib.favorites.AddFavoriteFragment;
 import dk.kk.ibikecphlib.favorites.FavoriteListItem;
 import dk.kk.ibikecphlib.favorites.FavoritesListActivity;
@@ -24,26 +23,8 @@ import dk.kk.ibikecphlib.login.FacebookProfileActivity;
 import dk.kk.ibikecphlib.login.LoginActivity;
 import dk.kk.ibikecphlib.login.ProfileActivity;
 import dk.kk.ibikecphlib.map.overlays.OverlaysActivity;
-import dk.kk.ibikecphlib.persist.Track;
-import dk.kk.ibikecphlib.tracking.TrackingActivity;
-import dk.kk.ibikecphlib.tracking.TrackingWelcomeActivity;
-import dk.kk.ibikecphlib.util.IBikePreferences;
 import dk.kk.ibikecphlib.util.LOG;
 import dk.kk.ibikecphlib.util.Util;
-
-import dk.kk.ibikecphlib.favorites.AddFavoriteFragment;
-import dk.kk.ibikecphlib.favorites.FavoriteListItem;
-import dk.kk.ibikecphlib.favorites.FavoritesListActivity;
-import dk.kk.ibikecphlib.login.FacebookProfileActivity;
-import dk.kk.ibikecphlib.login.LoginActivity;
-import dk.kk.ibikecphlib.login.ProfileActivity;
-import dk.kk.ibikecphlib.persist.Track;
-import dk.kk.ibikecphlib.tracking.TrackingActivity;
-import dk.kk.ibikecphlib.tracking.TrackingWelcomeActivity;
-import dk.kk.ibikecphlib.util.Util;
-import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -120,21 +101,12 @@ public class LeftMenu extends Fragment {
         this.menuItems = new ArrayList<LeftMenuItem>();
 
         menuItems.add(new LeftMenuItem("favorites", R.drawable.fav_star, "spawnFavoritesListActivity"));
-        //menuItems.add(new LeftMenuItem("voice", R.drawable.ic_menu_voice_guide, "spawnTTSSettingsActivity"));
-        // Kortlag
+
         if(application.getTogglableOverlayClasses().size() > 0) {
             menuItems.add(new LeftMenuItem("map_overlays",
                                            R.drawable.ic_menu_overlays,
                                            "spawnOverlaysActivity"));
         }
-        // Rutetype
-        // Tracking
-        if (getResources().getBoolean(R.bool.trackingEnabled)) {
-            menuItems.add(new LeftMenuItem("tracking",
-                                           R.drawable.ic_menu_tracking,
-                                           "spawnTrackingActivity"));
-        }
-        // Påmindelser
 
         if (IBikeApplication.isUserLogedIn() || IBikeApplication.isFacebookLogin()) {
             menuItems.add(new LeftMenuItem("account", R.drawable.ic_menu_profile, "spawnLoginActivity"));
@@ -197,40 +169,6 @@ public class LeftMenu extends Fragment {
         }
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public void spawnTrackingActivity() {
-        Intent i;
-        IBikePreferences settings = IBikeApplication.getSettings();
-        Realm realm = Realm.getDefaultInstance();
-
-        RealmQuery<Track> query = realm.where(Track.class);
-        RealmResults<Track> results = query.findAll();
-
-        if (!settings.getTrackingEnabled() &&
-                results.size() == 0) {
-
-            i = new Intent(getActivity(), TrackingWelcomeActivity.class);
-
-            // We don't want this pushed to the back stack.
-            //i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        } else {
-            i = new Intent(getActivity(), TrackingActivity.class);
-        }
-
-        if (!settings.getTrackingEnabled() &&
-                results.size() == 0) {
-
-            i = new Intent(getActivity(), TrackingWelcomeActivity.class);
-
-            // We don't want this pushed to the back stack.
-            //i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        } else {
-            i = new Intent(getActivity(), TrackingActivity.class);
-        }
-
-        getActivity().startActivityForResult(i, LAUNCH_TRACKING);
-
-    }
 
     @SuppressWarnings("UnusedDeclaration")
     public void spawnAboutActivity() {

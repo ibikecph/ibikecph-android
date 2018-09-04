@@ -8,17 +8,10 @@ package dk.kk.cykelsuperstier;
 import android.content.Intent;
 import android.util.Log;
 
-import dk.kk.cykelsuperstier.R;
 import dk.kk.ibikecphlib.IBikeApplication;
 import dk.kk.ibikecphlib.LeftMenuItem;
-import dk.kk.ibikecphlib.persist.Track;
-import dk.kk.ibikecphlib.tracking.TrackingActivity;
-import dk.kk.ibikecphlib.tracking.TrackingWelcomeActivity;
 import dk.kk.ibikecphlib.util.IBikePreferences;
 
-import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 
 public class LeftMenu extends dk.kk.ibikecphlib.LeftMenu {
 
@@ -62,21 +55,4 @@ public class LeftMenu extends dk.kk.ibikecphlib.LeftMenu {
         getActivity().startActivity(i);
         getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
-
-    public void spawnTrackingActivity() {
-        Intent i;
-        IBikePreferences settings = IBikeApplication.getSettings();
-        Realm realm = Realm.getDefaultInstance();
-        RealmQuery<Track> query = realm.where(Track.class);
-        RealmResults<Track> results = query.findAll();
-        if (!settings.getTrackingEnabled() &&
-                results.size() == 0) {
-            i = new Intent(getActivity(), TrackingWelcomeActivity.class);
-        } else {
-            i = new Intent(getActivity(), TrackingActivity.class);
-        }
-        getActivity().startActivity(i);
-        getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
-
 }

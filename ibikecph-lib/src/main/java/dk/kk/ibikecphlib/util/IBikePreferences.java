@@ -33,12 +33,6 @@ public class IBikePreferences {
     public static final String PREFS_SHOW_COMPASS     = "showCompass";
     public static final String PREFS_LANGUAGE         = "language";
     public static final String PREFS_OVERLAYS         = "overlays";
-    public static final String PREFS_TRACKING_ENABLED = "trackingEnabled";
-    public static final String PREFS_NOTIFY_MILESTONE = "notifyMilestone";
-    public static final String PREFS_NOTIFY_WEEKLY    = "notifyWeekly";
-    public static final String PREFS_SHARE_DATA       = "shareData";
-    public static final String LENGTH_NOTIFICATION    = "lengthNotification";
-    public static final String STREAK_NOTIFICATION    = "streakNotification";
     public static final String NEWEST_TERMS_ACCEPTED  = "newest_terms_accepted";
     public static final String READ_ALOUD             = "read_aloud";
 
@@ -104,53 +98,6 @@ public class IBikePreferences {
         return languageNames;
     }
 
-    public void setTrackingEnabled(boolean enabled) {
-        getPreferences().edit().putBoolean(PREFS_TRACKING_ENABLED, enabled).commit();
-        // Check if the app is build with the tracking enabled.
-        boolean trackingEnabled = context.getResources().getBoolean(R.bool.trackingEnabled);
-        if (trackingEnabled) {
-            // Make sure the user's choice is immediately respected.
-            if (enabled) {
-                Log.d("DV", "tracking sat til true");
-                //IBikeApplication.getService().getActivityRecognitionClient().setTracking(true);
-                IBikeApplication.getService().getActivityRecognitionClient().requestActivityUpdates();
-            } else {
-                Log.d("DV", "tracking released");
-                IBikeApplication.getService().getActivityRecognitionClient().releaseActivityUpdates();
-            }
-        }
-    }
-
-    public boolean getTrackingEnabled() {
-        boolean trackingEnabled = context.getResources().getBoolean(R.bool.trackingEnabled);
-        return trackingEnabled && getPreferences().getBoolean(PREFS_TRACKING_ENABLED, false);
-    }
-
-    public void setNotifyMilestone(boolean notifyMilestone) {
-        getPreferences().edit().putBoolean(PREFS_NOTIFY_MILESTONE, notifyMilestone).commit();
-    }
-
-    public boolean getNotifyMilestone() {
-        return getPreferences().getBoolean(PREFS_NOTIFY_MILESTONE, true);
-    }
-
-    public void setNotifyWeekly(boolean notifyWeekly) {
-        getPreferences().edit().putBoolean(PREFS_NOTIFY_WEEKLY, notifyWeekly).commit();
-
-        IBikeApplication.registerWeeklyNotification();
-    }
-
-    public boolean getNotifyWeekly() {
-        return getPreferences().getBoolean(PREFS_NOTIFY_WEEKLY, true);
-    }
-
-    public boolean getShareData() {
-        return getPreferences().getBoolean(PREFS_SHARE_DATA, false);
-    }
-
-    public void setShareData(boolean shareData) {
-        getPreferences().edit().putBoolean(PREFS_SHARE_DATA, shareData).commit();
-    }
 
     public void setOverlay(TogglableOverlay overlay, boolean value) {
         getPreferences().edit().putBoolean(getOverlayKey(overlay), value).commit();
@@ -162,22 +109,6 @@ public class IBikePreferences {
 
     public String getOverlayKey(TogglableOverlay overlay) {
         return String.format("%s_%s", PREFS_OVERLAYS, overlay.getClass().getName());
-    }
-    public int getLengthNotificationOrdinal() {
-        return getPreferences().getInt(LENGTH_NOTIFICATION, -1);
-    }
-
-    public void setLengthNotificationOrdinal(int ordinal) {
-        getPreferences().edit().putInt(LENGTH_NOTIFICATION, ordinal).commit();
-    }
-
-
-    public int getMaxStreakLength() {
-        return getPreferences().getInt(STREAK_NOTIFICATION, 0);
-    }
-
-    public void setMaxStreakLength(int streakLength) {
-        getPreferences().edit().putInt(STREAK_NOTIFICATION, streakLength).commit();
     }
 
     public int getNewestTermsAccepted() {

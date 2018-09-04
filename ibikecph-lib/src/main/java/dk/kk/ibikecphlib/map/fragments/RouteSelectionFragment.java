@@ -3,6 +3,7 @@ package dk.kk.ibikecphlib.map.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +18,9 @@ import dk.kk.ibikecphlib.map.states.RouteSelectionState;
 import dk.kk.ibikecphlib.navigation.NavigationState;
 import dk.kk.ibikecphlib.navigation.routing_engine.Route;
 import dk.kk.ibikecphlib.search.SearchAutocompleteActivity;
-import dk.kk.ibikecphlib.tracking.TrackListAdapter;
+import dk.kk.ibikecphlib.util.DurationFormatter;
 
 import java.text.SimpleDateFormat;
-
-import dk.kk.ibikecphlib.IBikeApplication;
-import dk.kk.ibikecphlib.map.MapActivity;
-import dk.kk.ibikecphlib.map.RouteType;
-import dk.kk.ibikecphlib.map.states.RouteSelectionState;
-import dk.kk.ibikecphlib.navigation.NavigationState;
-import dk.kk.ibikecphlib.navigation.routing_engine.Route;
-import dk.kk.ibikecphlib.search.SearchAutocompleteActivity;
-import dk.kk.ibikecphlib.tracking.TrackListAdapter;
 
 /**
  * Created by jens on 6/1/15.
@@ -144,7 +136,7 @@ public class RouteSelectionFragment extends MapStateFragment implements View.OnC
             }
 
             // Set the duration label
-            durationText.setText(TrackListAdapter.durationToFormattedTime(duration));
+            durationText.setText(DurationFormatter.formatDuration(duration));
 
             etaText.setText(dateFormat.format(NavigationState.getArrivalTime(route)));
 

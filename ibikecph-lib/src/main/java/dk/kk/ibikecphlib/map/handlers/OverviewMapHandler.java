@@ -1,28 +1,17 @@
 package dk.kk.ibikecphlib.map.handlers;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.util.Log;
-import android.view.View;
 
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.overlay.Marker;
 import com.mapbox.mapboxsdk.views.MapView;
 import dk.kk.ibikecphlib.IBikeApplication;
-import dk.kk.ibikecphlib.R;
 import dk.kk.ibikecphlib.map.IBCMapView;
 import dk.kk.ibikecphlib.map.MapActivity;
 import dk.kk.ibikecphlib.map.states.BrowsingState;
 import dk.kk.ibikecphlib.map.states.DestinationPreviewState;
-import dk.kk.ibikecphlib.tracking.TrackingStatisticsFragment;
 import dk.kk.ibikecphlib.util.IBikePreferences;
 
-import dk.kk.ibikecphlib.IBikeApplication;
-import dk.kk.ibikecphlib.map.IBCMapView;
-import dk.kk.ibikecphlib.map.MapActivity;
-import dk.kk.ibikecphlib.map.states.BrowsingState;
-import dk.kk.ibikecphlib.map.states.DestinationPreviewState;
-import dk.kk.ibikecphlib.tracking.TrackingStatisticsFragment;
 
 /**
  * Created by jens on 5/29/15.
@@ -39,22 +28,6 @@ public class OverviewMapHandler extends IBCMapHandler {
         settings = IBikeApplication.getSettings();
     }
 
-    private void showStatisticsInfoPane() {
-        MapActivity.topFragment.setVisibility(View.VISIBLE);
-        FragmentManager fm = mapView.getParentActivity().getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.topFragment, new TrackingStatisticsFragment());
-        ft.commit();
-
-        isWatchingAddress = false;
-    }
-
-
-    private void disableStatisticsInfoPane() {
-        MapActivity.topFragment.setVisibility(View.GONE);
-        Log.d("DV", "Infopanefragment removed!");
-        //OverviewMapHandler.isWatchingAddress = false;
-    }
 
     @Override
     public void destructor() {
@@ -118,11 +91,6 @@ public class OverviewMapHandler extends IBCMapHandler {
      */
     public boolean onBackPressed() {
         if (isWatchingAddress) {
-            if (settings.getTrackingEnabled()) {
-                showStatisticsInfoPane();
-            } else {
-                disableStatisticsInfoPane();
-            }
             this.mapView.removeDestinationPreviewMarker();
 
             isWatchingAddress = false;

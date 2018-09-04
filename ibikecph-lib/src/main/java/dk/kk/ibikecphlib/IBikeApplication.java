@@ -23,9 +23,6 @@ import dk.kk.ibikecphlib.map.MapActivity;
 import dk.kk.ibikecphlib.map.overlays.TogglableOverlay;
 import dk.kk.ibikecphlib.map.overlays.TogglableOverlayFactory;
 import dk.kk.ibikecphlib.map.overlays.RefreshOverlaysTask;
-import dk.kk.ibikecphlib.tracking.MilestoneManager;
-import dk.kk.ibikecphlib.tracking.TrackHelper;
-import dk.kk.ibikecphlib.tracking.TrackingManager;
 import dk.kk.ibikecphlib.util.IBikePreferences;
 import dk.kk.ibikecphlib.util.IBikePreferences.Language;
 import dk.kk.ibikecphlib.util.LOG;
@@ -37,12 +34,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import dk.kk.ibikecphlib.tracking.MilestoneManager;
-import dk.kk.ibikecphlib.tracking.TrackHelper;
-import dk.kk.ibikecphlib.tracking.TrackingManager;
-import io.realm.exceptions.RealmMigrationNeededException;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 public class IBikeApplication extends Application {
     protected static String APP_NAME = "I Bike CPH";
@@ -51,7 +42,6 @@ public class IBikeApplication extends Application {
     public SMDictionary dictionary;
     private static Typeface normalFont, boldFont, italicFont;
 
-    private static TrackingManager trackingManager;
     protected static int primaryColor = R.color.PrimaryColor;
 
     public static DateFormat getTimeFormat() {
@@ -86,29 +76,6 @@ public class IBikeApplication extends Application {
         this.startService(new Intent(this, BikeLocationService.class));
 
         initializeSelectableOverlays();
-
-        trackingManager = TrackingManager.getInstance();
-
-        // Register a weekly notification
-        registerWeeklyNotification();
-
-        //Create default realm
-        Realm.init(this);
-        RealmConfiguration config = new RealmConfiguration.Builder().name("IBikeCPHrealm.realm").build();
-        Realm.setDefaultConfiguration(config);
-
-        // Ensure all tracks have been geocoded.
-        try {
-            TrackHelper.ensureAllTracksGeocoded();
-        } catch (RealmMigrationNeededException e) {
-            // If we need to migrate Realm, just delete the file
-            /* FIXME: This should clearly not go into production. We should decide on a proper DB schema, and make proper
-               migrations if we need to change it. */
-            Log.d("JC", "Migration needed, deleting the Realm file!");
-            // FIXME²: This method has been removed from Realm.
-            // Might be useful: https://realm.io/docs/java/latest/api/io/realm/Realm.html#deleteRealm-io.realm.RealmConfiguration-
-            // Realm.deleteRealmFile(this);
-        }
     }
 
     protected void initializeSelectableOverlays() {
@@ -116,10 +83,6 @@ public class IBikeApplication extends Application {
         new RefreshOverlaysTask(this).execute();
     }
 
-    /**
-     * Gets the default {@link Tracker} for this {@link Application}.
-     * @return tracker
-     */
 
     public static Spanned getSpanned(String key) {
         return instance.dictionary.get(key);
@@ -137,9 +100,6 @@ public class IBikeApplication extends Application {
         return BikeLocationService.getInstance();
     }
 
-    public static TrackingManager getTrackingManager() {
-        return trackingManager;
-    }
 
     public void changeLanguage(Language language) {
         if (prefs.getLanguage() != language) {
@@ -210,19 +170,6 @@ public class IBikeApplication extends Application {
     public static void logout() {
         IBikeApplication.setIsFacebookLogin(false);
 
-        // Disable tracking
-        IBikeApplication.getSettings().setTrackingEnabled(false);
-        IBikeApplication.getSettings().setNotifyMilestone(false);
-        IBikeApplication.getSettings().setNotifyWeekly(false);
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("email").commit();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("signature").commit();
-
-        // TODO: Move this somewhere more natural
-        if (BikeLocationService.getInstance().getActivityRecognitionClient() != null) {
-            BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
-        }
         Intent intent = new Intent(MapActivity.mapActivityContext, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         MapActivity.mapActivityContext.startActivity(intent);
     }
@@ -230,19 +177,6 @@ public class IBikeApplication extends Application {
     public static void logoutWrongToken() {
         IBikeApplication.setIsFacebookLogin(false);
 
-        // Disable tracking
-        IBikeApplication.getSettings().setTrackingEnabled(false);
-        IBikeApplication.getSettings().setNotifyMilestone(false);
-        IBikeApplication.getSettings().setNotifyWeekly(false);
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("email").commit();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("signature").commit();
-
-        // TODO: Move this somewhere more natural
-        if (BikeLocationService.getInstance().getActivityRecognitionClient() != null) {
-            BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
-        }
         Intent intent = new Intent(MapActivity.mapActivityContext, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("loggedOut", true);
         MapActivity.mapActivityContext.startActivity(intent);
@@ -252,68 +186,10 @@ public class IBikeApplication extends Application {
     public static void logoutDeleteUser() {
         IBikeApplication.setIsFacebookLogin(false);
 
-        // Disable tracking
-        IBikeApplication.getSettings().setTrackingEnabled(false);
-        IBikeApplication.getSettings().setNotifyMilestone(false);
-        IBikeApplication.getSettings().setNotifyWeekly(false);
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("email").commit();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("auth_token").commit();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("id").commit();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().remove("signature").commit();
-
-        // TODO: Move this somewhere more natural
-        if (BikeLocationService.getInstance().getActivityRecognitionClient() != null) {
-            BikeLocationService.getInstance().getActivityRecognitionClient().releaseActivityUpdates();
-        }
         Intent intent = new Intent(MapActivity.mapActivityContext, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("deleteUser", true);
         MapActivity.mapActivityContext.startActivity(intent);
 
-    }
-
-    /**
-     * Registers an intent to be delivered every Sunday at 8pm. We want to tell the user how much
-     * she's been cycling the past week.
-     */
-    public static void registerWeeklyNotification() {
-        // Let's only do this if the app was actually build with tracking
-        // TODO: Consider also checking for the tracking preference to be enabled.
-        boolean trackingEnabled = getContext().getResources().getBoolean(R.bool.trackingEnabled);
-        if (trackingEnabled) {
-            Context ctx = IBikeApplication.getContext();
-            AlarmManager alarmMgr = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-            Intent intent = new Intent(ctx, MilestoneManager.class);
-            intent.putExtra("weekly", true);
-            PendingIntent alarmIntent = PendingIntent.getService(ctx, 0, intent, 0);
-
-            Calendar nextSunday = Calendar.getInstance();
-
-            // Without resorting to third party libraries, there's no real elegant way of doing this...
-            // Add a day
-            while (!(nextSunday.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY && nextSunday.get(Calendar.HOUR_OF_DAY) < 18)) {
-                nextSunday.add(Calendar.DAY_OF_WEEK, 1);
-
-                // If today is Sunday but it's after 8, make sure to at least trigger on the *next* Sunday! :)
-                nextSunday.set(Calendar.HOUR_OF_DAY, 12);
-            }
-
-            nextSunday.set(Calendar.HOUR_OF_DAY, 18);
-            nextSunday.set(Calendar.MINUTE, 0);
-            nextSunday.set(Calendar.SECOND, 0);
-
-            // Great, nextSunday now reflects the time 18:00 on the coming Sunday, or today if called on a Sunday.
-
-            /*
-            // DEBUG CODE. Will schedule the notification ten seconds after starting, repeating every 20 secs.
-            nextSunday = Calendar.getInstance();
-            nextSunday.add(Calendar.SECOND, 10);
-            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 20, alarmIntent);
-            */
-
-            // Run the notification next Sunday, repeating every Sunday. MilestoneManager will receive the Intent
-            // regardless of the user's preference, but will only actually *make* the notification if the user wants it.
-            alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, nextSunday.getTimeInMillis(), 1000 * 60 * 60 * 24 * 7, alarmIntent);
-        }
     }
 
     public static String getAppName() {

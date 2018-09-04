@@ -11,14 +11,10 @@ import dk.kk.ibikecphlib.IBikeApplication;
 import dk.kk.ibikecphlib.R;
 import dk.kk.ibikecphlib.map.states.NavigatingState;
 import dk.kk.ibikecphlib.navigation.NavigationState;
-import dk.kk.ibikecphlib.tracking.TrackListAdapter;
+import dk.kk.ibikecphlib.util.DurationFormatter;
 
 import java.text.SimpleDateFormat;
 
-import dk.kk.ibikecphlib.IBikeApplication;
-import dk.kk.ibikecphlib.map.states.NavigatingState;
-import dk.kk.ibikecphlib.navigation.NavigationState;
-import dk.kk.ibikecphlib.tracking.TrackListAdapter;
 
 /**
  * Created by jens on 7/15/15.
@@ -65,7 +61,8 @@ public class NavigationETAFragment extends MapStateFragment {
 
         // Set the duration label
         double durationLeft = state.getBikingDuration();
-        durationText.setText(TrackListAdapter.durationToFormattedTime(durationLeft));
+        durationText.setText(DurationFormatter.formatDuration(durationLeft));
+
 
         etaText.setText(dateFormat.format(state.getArrivalTime()));
     }

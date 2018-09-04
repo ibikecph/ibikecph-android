@@ -58,27 +58,10 @@ import dk.kk.ibikecphlib.map.states.RouteSelectionState;
 import dk.kk.ibikecphlib.search.Address;
 import dk.kk.ibikecphlib.search.SearchActivity;
 import dk.kk.ibikecphlib.search.SearchAutocompleteActivity;
-import dk.kk.ibikecphlib.tracking.TrackHelper;
-import dk.kk.ibikecphlib.tracking.TrackingManager;
-import dk.kk.ibikecphlib.tracking.TrackingStatisticsFragment;
 import dk.kk.ibikecphlib.util.Util;
+import dk.kk.ibikecphlib.util.LOG;
 
 import java.util.List;
-
-import dk.kk.ibikecphlib.IBikeApplication;
-import dk.kk.ibikecphlib.LeftMenu;
-import dk.kk.ibikecphlib.TermsManager;
-import dk.kk.ibikecphlib.favorites.FavoriteListItem;
-import dk.kk.ibikecphlib.login.LoginActivity;
-import dk.kk.ibikecphlib.login.ProfileActivity;
-import dk.kk.ibikecphlib.search.Address;
-import dk.kk.ibikecphlib.search.SearchActivity;
-import dk.kk.ibikecphlib.search.SearchAutocompleteActivity;
-import dk.kk.ibikecphlib.tracking.TrackHelper;
-import dk.kk.ibikecphlib.tracking.TrackingManager;
-import dk.kk.ibikecphlib.tracking.TrackingStatisticsFragment;
-import dk.kk.ibikecphlib.util.Util;
-import io.realm.exceptions.RealmMigrationNeededException;
 
 /**
  * The main map view.
@@ -177,8 +160,6 @@ public class MapActivity extends BaseMapActivity {
             }
         });
 
-        // Uploads tracks to the server - TODO: consider removing this call and class entirely.
-        TrackingManager.uploadTracksToServer();
     }
 
     protected void initializeSelectableOverlays() {
@@ -202,18 +183,6 @@ public class MapActivity extends BaseMapActivity {
         super.onResume();
 
         attemptToRegisterLocationListener();
-
-        /*
-        LOG.d("Map activity onResume");
-        if (IBikeApplication.getSettings().getTrackingEnabled() && !fromSearch && !OverviewMapHandler.isWatchingAddress) {
-            showStatisticsInfoPane();
-        } else if (!fromSearch && OverviewMapHandler.isWatchingAddress) {
-            MapActivity.topFragment.setVisibility(View.VISIBLE);
-            //mapView.showAddress(OverviewMapHandler.addressBeingWatched);
-        } else if (!fromSearch && !OverviewMapHandler.isWatchingAddress) {
-            disableStatisticsInfoPane();
-        }
-        */
 
         fromSearch = false;
 
@@ -265,21 +234,7 @@ public class MapActivity extends BaseMapActivity {
                 dialog.show();
             }
             intent.removeExtra("deleteUser");
-        }
-
-        // Ensure all tracks have been geocoded.
-        try {
-            TrackHelper.ensureAllTracksGeocoded();
-        } catch (RealmMigrationNeededException e) {
-            // If we need to migrate Realm, just delete the file
-            /* FIXME: This should clearly not go into production. We should decide on a proper DB schema, and make proper
-               migrations if we need to change it. */
-            Log.d("JC", "Migration needed, deleting the Realm file!");
-            // FIXME²: This method has been removed from Realm.
-            // Might be useful: https://realm.io/docs/java/latest/api/io/realm/Realm.html#deleteRealm-io.realm.RealmConfiguration-
-            // Realm.deleteRealmFile(this);
-        }
-    }
+        } }
 
     /**
      * Transition the map activity to another state.
@@ -421,6 +376,7 @@ public class MapActivity extends BaseMapActivity {
 
             Log.d("MapActivity", "Adding map's locationListener to the LocationService.");
             // We need a LocationListener to have the service be able to provide GPS coordinates.
+            LOG.d( "locationservice: " + IBikeApplication.getService());
             IBikeApplication.getService().addLocationListener(locationListener);
         }
     }
@@ -486,15 +442,6 @@ public class MapActivity extends BaseMapActivity {
         // Toggle the drawer when tapping the app icon.
         else if (id == android.R.id.home) {
             toggleDrawer();
-        } else if (id == R.id.uploadFakeTrack) {
-            TrackingManager.uploadeFakeTrack();
-            //TrackingManager.printAllTracks();
-        } else if (id == R.id.createFakeTrack) {
-            TrackingManager.createFakeTrack();
-        } else if (id == R.id.resetSignature) {
-            PreferenceManager.getDefaultSharedPreferences(MapActivity.this).edit().remove("signature").commit();
-        } else if (id == R.id.resetAuthToken) {
-            PreferenceManager.getDefaultSharedPreferences(MapActivity.this).edit().putString("auth_token", "123").commit();
         }
 
         return super.onOptionsItemSelected(item);
@@ -668,21 +615,6 @@ public class MapActivity extends BaseMapActivity {
         }
     }
 
-    private void showStatisticsInfoPane() {
-        boolean trackingEnabled = getResources().getBoolean(R.bool.trackingEnabled);
-        if (trackingEnabled) {
-            topFragment.setVisibility(View.VISIBLE);
-            FragmentManager fm = mapView.getParentActivity().getFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.replace(R.id.topFragment, new TrackingStatisticsFragment());
-            ft.commit();
-            Log.d("DV", "Infopanefragment added!");
-
-            OverviewMapHandler.isWatchingAddress = false;
-        } else {
-            Log.i(TAG, "showStatisticsInfoPane was called, but tracking is disabled.");
-        }
-    }
 
     /**
      * Checks with all registered fragments if they're OK with letting back be pressed.

@@ -5,7 +5,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.4'
-        classpath 'io.realm:realm-gradle-plugin:5.1.0'
         classpath 'de.felixschulze.gradle:gradle-hockeyapp-plugin:3.6'
         classpath 'org.ajoberstar:grgit:2.2.0'
         classpath 'com.google.android.gms:play-services-base:15.0.1'

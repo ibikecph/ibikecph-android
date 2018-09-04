@@ -13,18 +13,10 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mapbox.mapboxsdk.api.ILatLng;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import dk.kk.ibikecphlib.persist.TrackLocation;
-import dk.kk.ibikecphlib.util.Config;
 import dk.kk.ibikecphlib.util.HttpUtils;
-import dk.kk.ibikecphlib.util.LOG;
 import dk.kk.ibikecphlib.util.Util;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
-
-import dk.kk.ibikecphlib.persist.TrackLocation;
-import dk.kk.ibikecphlib.util.Util;
 
 /**
  * Implements the API calls to search for routes, find nearest points, etc.
@@ -143,13 +135,6 @@ public class SMHttpRequest {
         findPlacesForLocation(new LatLng(loc), listener);
     }
 
-
-    public void findPlacesForLocation(final TrackLocation loc, final SMHttpRequestListener listener) {
-        Location lloc = new Location("SMHttpRequest");
-        lloc.setLatitude(loc.getLatitude());
-        lloc.setLongitude(loc.getLongitude());
-        findPlacesForLocation(lloc, listener);
-    }
 
     public static void sendMsg(int what, Object response, SMHttpRequestListener listener) {
         if (listener != null) {

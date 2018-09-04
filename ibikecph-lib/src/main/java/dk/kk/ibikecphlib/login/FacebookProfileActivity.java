@@ -155,11 +155,6 @@ public class FacebookProfileActivity extends Activity {
         (new DB(FacebookProfileActivity.this)).deleteFavorites();
         IBikeApplication.setIsFacebookLogin(false);
 
-        // Disable tracking
-        IBikeApplication.getSettings().setTrackingEnabled(false);
-        IBikeApplication.getSettings().setNotifyMilestone(false);
-        IBikeApplication.getSettings().setNotifyWeekly(false);
-
         Session session = Session.getActiveSession();
         if (session != null) { // && !session.isClosed()
             session.closeAndClearTokenInformation();

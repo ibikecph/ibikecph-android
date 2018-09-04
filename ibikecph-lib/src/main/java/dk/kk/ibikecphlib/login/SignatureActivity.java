@@ -24,15 +24,12 @@ import com.makeramen.roundedimageview.RoundedImageView;
 import dk.kk.ibikecphlib.IBikeApplication;
 import dk.kk.ibikecphlib.R;
 import dk.kk.ibikecphlib.map.MapActivity;
-import dk.kk.ibikecphlib.tracking.TrackingActivity;
 import dk.kk.ibikecphlib.util.IBikePreferences;
 import dk.kk.ibikecphlib.util.LOG;
 import dk.kk.ibikecphlib.util.Util;
 
 import java.io.InputStream;
 import java.net.URL;
-
-import dk.kk.ibikecphlib.util.Util;
 
 /**
  * Created by Udvikler on 11-09-2015.
@@ -155,11 +152,8 @@ public class SignatureActivity extends Activity {
                                     Log.d("DV", "Vi har modtaget signature = " + signature);
                                     PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).edit().putString("signature", signature).commit();
                                     IBikePreferences settings = IBikeApplication.getSettings();
-                                    settings.setTrackingEnabled(true);
-                                    settings.setNotifyMilestone(true);
-                                    settings.setNotifyWeekly(true);
                                     dismissProgressDialog();
-                                    startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                    //FIXME startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 } else {
                                     dismissProgressDialog();
                                     final String msg = data.getString("info");//data.containsKey("errors") ? data.getString("errors") : data.getString("info");
@@ -297,14 +291,11 @@ public class SignatureActivity extends Activity {
                                 Log.d("DV", "Vi har modtaget signature = " + signature);
                                 PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).edit().putString("signature", signature).commit();
                                 IBikePreferences settings = IBikeApplication.getSettings();
-                                settings.setTrackingEnabled(true);
-                                settings.setNotifyMilestone(true);
-                                settings.setNotifyWeekly(true);
                                 dismissProgressDialog();
                                 if (fromSplashScreen) {
                                     startActivity(new Intent(SignatureActivity.this, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 } else {
-                                    startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                    //FIXME startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 }
                                 finish();
                             } else {
@@ -439,14 +430,11 @@ public class SignatureActivity extends Activity {
                                 PreferenceManager.getDefaultSharedPreferences(SignatureActivity.this).edit().putString("signature", signature).commit();
                                 Log.d("DV", "We got a signature, enabling tracking!");
                                 IBikePreferences settings = IBikeApplication.getSettings();
-                                settings.setTrackingEnabled(true);
-                                settings.setNotifyMilestone(true);
-                                settings.setNotifyWeekly(true);
                                 if (fromSplashScreen) {
                                     startActivity(new Intent(SignatureActivity.this, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
                                 } else {
-                                    startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                    //FIXME startActivity(new Intent(SignatureActivity.this, TrackingActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 }
                                 finish();
                             } else {

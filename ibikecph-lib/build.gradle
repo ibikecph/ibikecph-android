@@ -1,9 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'realm-android'
-
-realm {
-    syncEnabled = true
-}
 
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')

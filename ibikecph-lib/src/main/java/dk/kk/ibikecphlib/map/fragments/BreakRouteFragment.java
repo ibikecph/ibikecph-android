@@ -14,6 +14,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import android.text.format.DateUtils;
+
 import dk.kk.ibikecphlib.IBikeApplication;
 import dk.kk.ibikecphlib.R;
 import dk.kk.ibikecphlib.navigation.NavigationState;
@@ -22,16 +24,8 @@ import dk.kk.ibikecphlib.navigation.routing_engine.Leg;
 import dk.kk.ibikecphlib.navigation.routing_engine.Route;
 import dk.kk.ibikecphlib.navigation.routing_engine.TransportationType;
 import dk.kk.ibikecphlib.search.Address;
-import dk.kk.ibikecphlib.tracking.TrackListAdapter;
+import dk.kk.ibikecphlib.util.DurationFormatter;
 
-import dk.kk.ibikecphlib.IBikeApplication;
-import dk.kk.ibikecphlib.navigation.NavigationState;
-import dk.kk.ibikecphlib.navigation.routing_engine.BreakRouteResponse;
-import dk.kk.ibikecphlib.navigation.routing_engine.Leg;
-import dk.kk.ibikecphlib.navigation.routing_engine.Route;
-import dk.kk.ibikecphlib.navigation.routing_engine.TransportationType;
-import dk.kk.ibikecphlib.search.Address;
-import dk.kk.ibikecphlib.tracking.TrackListAdapter;
 
 /**
  * Created by Daniel on 12-11-2015.
@@ -231,7 +225,7 @@ public class BreakRouteFragment extends Fragment implements View.OnClickListener
     }
 
     public String formatTime(double seconds) {
-        String time = TrackListAdapter.durationToFormattedTime(seconds);
+        String time = DurationFormatter.formatDuration(seconds);
         return time;
     }
 

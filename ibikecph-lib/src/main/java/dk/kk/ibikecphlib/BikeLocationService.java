@@ -26,7 +26,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * A Service responsible for keeping track of GPS updates. This is done so that
  * we can still keep track of a navigation context, even if the screen is off.
- * And we can use it for recording tracks when the app is in the background.
  *
  * @author jens
  */
@@ -48,12 +47,6 @@ public class BikeLocationService extends Service implements LocationListener {
     final static long FASTEST_INTERVAL = 2000;
 
     private boolean mocked = false;
-
-    public ActivityRecognitionClient getActivityRecognitionClient() {
-        return activityRecognitionClient;
-    }
-
-    private ActivityRecognitionClient activityRecognitionClient;
 
     /**
      * Instantiates a location manager and an (as yet unused) wake lock.
@@ -107,14 +100,6 @@ public class BikeLocationService extends Service implements LocationListener {
         // We're not acquiring it until the user starts navigation.
         PowerManager pm = (PowerManager) context.getSystemService(Service.POWER_SERVICE);
         this.wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BikeLocationService");
-
-        boolean trackingEnabled = getResources().getBoolean(R.bool.trackingEnabled);
-        if (trackingEnabled && activityRecognitionClient == null) {
-            Log.d("JC", "Spawning new ActivityRecognitionClient");
-
-            activityRecognitionClient = new ActivityRecognitionClient();
-            activityRecognitionClient.connect();
-        }
 
         // Create a Google API client for the location API.
         locationApiClient = new GoogleApiClient.Builder(this)

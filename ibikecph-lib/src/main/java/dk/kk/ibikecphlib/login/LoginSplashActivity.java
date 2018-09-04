@@ -165,27 +165,4 @@ public class LoginSplashActivity extends Activity {
         Intent i = new Intent(this, LoginActivity.class);
         startActivityForResult(i, LOGIN_REQUEST);
     }
-
-    public void onEnableTrackingClick(View v) {
-
-        if (IBikeApplication.getSignature().equals("")) {
-            if (IBikeApplication.isFacebookLogin()) {
-                Log.d("DV", "Prompting Facebookuser to create a password!");
-                Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                i.putExtra("fromSplashScreen", true);
-                IBikeApplication.setWelcomeScreenSeen(true);
-                startActivity(i);
-            } else if (IBikeApplication.isUserLogedIn()) {
-                Log.d("DV", "Prompting login for user!");
-                Intent i = new Intent(LoginSplashActivity.this, SignatureActivity.class).putExtra("normalUser", true).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                IBikeApplication.setWelcomeScreenSeen(true);
-                startActivity(i);
-            }
-        } else {
-            Log.d("DV", "We got a signature, enabling tracking!");
-            IBikeApplication.getSettings().setTrackingEnabled(true);
-            launchMainMapActivity();
-        }
-
-    }
 }

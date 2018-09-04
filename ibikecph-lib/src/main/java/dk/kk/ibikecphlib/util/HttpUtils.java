@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import dk.kk.ibikecphlib.IBikeApplication;
 import dk.kk.ibikecphlib.login.HTTPDeleteWithBody;
 import dk.kk.ibikecphlib.login.UserData;
-import dk.kk.ibikecphlib.tracking.TrackingManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -40,11 +39,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import dk.kk.ibikecphlib.IBikeApplication;
-import dk.kk.ibikecphlib.login.HTTPDeleteWithBody;
-import dk.kk.ibikecphlib.login.UserData;
-import dk.kk.ibikecphlib.tracking.TrackingManager;
 
 public class HttpUtils {
 
@@ -238,7 +232,6 @@ public class HttpUtils {
             se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
             httpdelete.setEntity(se);
             HttpResponse response = httpclient.execute(httpdelete);
-            TrackingManager.statusCode = response.getStatusLine().getStatusCode();
             String serverResponse = EntityUtils.toString(response.getEntity());
             LOG.d("API response = " + serverResponse);
             ret = Util.stringToJsonNode(serverResponse);
