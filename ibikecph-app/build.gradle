@@ -35,11 +35,11 @@ android {
     buildToolsVersion '28.0.2'
     defaultConfig {
         applicationId "dk.kk.ibikecph"
-        minSdkVersion 16
+        minSdkVersion 22
         targetSdkVersion 28
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "085d3271f48c40c1bf7e58cb6818c79b"]
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        versionCode 84
+        versionCode 85
         versionName "2.2.4"
     }
     packagingOptions {
