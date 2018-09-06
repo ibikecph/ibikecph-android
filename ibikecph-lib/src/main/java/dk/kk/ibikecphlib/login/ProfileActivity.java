@@ -51,146 +51,142 @@ public class ProfileActivity extends Activity implements ImagerPrefetcherListene
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
-//        requestWindowFeature(Window.FEATURE_ACTION_BAR);
-//        actionbar = getActionBar();
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        actionbar = getActionBar();
 
-        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.profile_activity);
-//        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-//        pictureContainer = (ImageView) findViewById(R.id.pictureContainer);
-//
-//        btnLogout = (Button) findViewById(R.id.btnLogout);
-//        btnLogout.setVisibility(View.VISIBLE);
-//        btnLogout.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                IBikeApplication.logout();
-//                (new DB(ProfileActivity.this)).deleteFavorites();
-//                IBikeApplication.setIsFacebookLogin(false);
-//
-//                // Disable tracking
-//                IBikeApplication.getSettings().setTrackingEnabled(false);
-//                IBikeApplication.getSettings().setNotifyMilestone(false);
-//                IBikeApplication.getSettings().setNotifyWeekly(false);
-//
-//                // Set the result so the MapActivity causes the LeftMenu to reload
-//                setResult(RESULT_OK);
-//                finish();
-//                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-//            }
-//
-//        });
-//
-//
-//        textName = (TextView) findViewById(R.id.textName);
-//        textEmail = (TextView) findViewById(R.id.textEmail);
-//        textLoggedInAs = (TextView) findViewById(R.id.textLoggedInAs);
-//
-//        btnDelete = (Button) findViewById(R.id.btnDelete);
-//        btnDelete.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (!Util.isNetworkConnected(ProfileActivity.this)) {
-//                    Util.launchNoConnectionDialog(ProfileActivity.this);
-//                    return;
-//                }
-//                launchDeleteDialog();
-//            }
-//        });
-//
-//        btnEdit = (Button) findViewById(R.id.btnEdit);
-//        btnEdit.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Uri uri = Uri.parse("https://www.ibikecph.dk/account");
-//                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//                startActivity(intent);
-//            }
-//        });
-//
-//        userData = new UserData(PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).getString("auth_token", ""), PreferenceManager
-//                .getDefaultSharedPreferences(ProfileActivity.this).getInt("id", -1));
-//
-//        tfetchUser = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Looper.myLooper();
-//                Looper.prepare();
-//                ProfileActivity.this.runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        progressBar.setVisibility(View.VISIBLE);
-//                    }
-//                });
-//                Message message = HTTPAccountHandler.performGetUser(userData);
-//                handler.sendMessage(message);
-//            }
-//        });
-//        tfetchUser.start();
-//
-//        if (handler == null) {
-//            handler = new Handler(new Handler.Callback() {
-//
-//                @Override
-//                public boolean handleMessage(Message msg) {
-//
-//                    Bundle data = msg.getData();
-//                    int msgType = data.getInt("type");
-//                    Boolean success = false;
-//                    switch (msgType) {
-//                        case HTTPAccountHandler.GET_USER:
-//                            success = data.getBoolean("success");
-//                            if (success) {
-//                                userData.setId(data.getInt("id"));
-//                                userData.setName(data.getString("name"));
-//                                userData.setEmail(data.getString("email"));
-//                                updateControls();
-//                                LoadImageFromWebOperations(data.getString("image_url"));
-//                            } else {
-//                                enableButtons();
-//                                userData = null;
-//                                //Util.launchNoConnectionDialog(ProfileActivity.this);
-//                                progressBar.setVisibility(View.GONE);
-//                            }
-//                            break;
-//                        case HTTPAccountHandler.PUT_USER:
-//                            success = data.getBoolean("success");
-//                            if (!success) {
-//                                launchAlertDialog(data.getString("info"));
-//                            }
-//                            progressBar.setVisibility(View.GONE);
-//                            finish();
-//                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-//                            enableButtons();
-//                            break;
-//                        case HTTPAccountHandler.DELETE_USER:
-//                            success = data.getBoolean("success");
-//                            if (success) {
-//                                Log.d("DV", "User Deleted!");
-//                                PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("email").commit();
-//                                PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("auth_token").commit();
-//                                PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("signature").commit();
-//                                PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("id").commit();
-//                                setResult(RESULT_USER_DELETED);
-//                                IBikeApplication.setIsFacebookLogin(false);
-//                                (new DB(ProfileActivity.this)).deleteFavorites();
-//                                IBikeApplication.logoutDeleteUser();
-//                                //finish();
-//                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-//                            } else {
-//                                launchAlertDialog(data.getString("info"));
-//                            }
-//                            break;
-//                        case HTTPAccountHandler.ERROR:
-//                            enableButtons();
-//                            //Util.launchNoConnectionDialog(ProfileActivity.this);
-//                            break;
-//                    }
-//                    enableButtons();
-//                    return true;
-//                }
-//            });
-//        }
+      super.onCreate(savedInstanceState);
+        setContentView(R.layout.profile_activity);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        pictureContainer = (ImageView) findViewById(R.id.pictureContainer);
+
+        btnLogout = (Button) findViewById(R.id.btnLogout);
+        btnLogout.setVisibility(View.VISIBLE);
+        btnLogout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LOG.d("logout");
+                IBikeApplication.logout();
+                (new DB(ProfileActivity.this)).deleteFavorites();
+
+
+                // Set the result so the MapActivity causes the LeftMenu to reload
+                setResult(RESULT_OK);
+                finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+            }
+
+        });
+
+
+        textName = (TextView) findViewById(R.id.textName);
+        textEmail = (TextView) findViewById(R.id.textEmail);
+        textLoggedInAs = (TextView) findViewById(R.id.textLoggedInAs);
+
+        btnDelete = (Button) findViewById(R.id.btnDelete);
+        btnDelete.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!Util.isNetworkConnected(ProfileActivity.this)) {
+                    Util.launchNoConnectionDialog(ProfileActivity.this);
+                    return;
+                }
+                launchDeleteDialog();
+            }
+        });
+
+        btnEdit = (Button) findViewById(R.id.btnEdit);
+        btnEdit.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("https://www.ibikecph.dk/account");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+
+        userData = new UserData(PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).getString("auth_token", ""), PreferenceManager
+                .getDefaultSharedPreferences(ProfileActivity.this).getInt("id", -1));
+
+        tfetchUser = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Looper.myLooper();
+                Looper.prepare();
+                ProfileActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
+                });
+                Message message = HTTPAccountHandler.performGetUser(userData);
+                handler.sendMessage(message);
+            }
+        });
+        tfetchUser.start();
+
+        if (handler == null) {
+            handler = new Handler(new Handler.Callback() {
+
+                @Override
+                public boolean handleMessage(Message msg) {
+
+                    Bundle data = msg.getData();
+                    int msgType = data.getInt("type");
+                    Boolean success = false;
+                    switch (msgType) {
+                        case HTTPAccountHandler.GET_USER:
+                            success = data.getBoolean("success");
+                            if (success) {
+                                userData.setId(data.getInt("id"));
+                                userData.setName(data.getString("name"));
+                                userData.setEmail(data.getString("email"));
+                                updateControls();
+                                LoadImageFromWebOperations(data.getString("image_url"));
+                            } else {
+                                enableButtons();
+                                userData = null;
+                                //Util.launchNoConnectionDialog(ProfileActivity.this);
+                                progressBar.setVisibility(View.GONE);
+                            }
+                            break;
+                        case HTTPAccountHandler.PUT_USER:
+                            success = data.getBoolean("success");
+                            if (!success) {
+                                launchAlertDialog(data.getString("info"));
+                            }
+                            progressBar.setVisibility(View.GONE);
+                            finish();
+                            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                            enableButtons();
+                            break;
+                        case HTTPAccountHandler.DELETE_USER:
+                            success = data.getBoolean("success");
+                            if (success) {
+                                Log.d("DV", "User Deleted!");
+                                PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("email").commit();
+                                PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("auth_token").commit();
+                                PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("signature").commit();
+                                PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this).edit().remove("id").commit();
+                                setResult(RESULT_USER_DELETED);
+                                IBikeApplication.setIsFacebookLogin(false);
+                                (new DB(ProfileActivity.this)).deleteFavorites();
+                                IBikeApplication.logoutDeleteUser();
+                                //finish();
+                                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                            } else {
+                                launchAlertDialog(data.getString("info"));
+                            }
+                            break;
+                        case HTTPAccountHandler.ERROR:
+                            enableButtons();
+                            //Util.launchNoConnectionDialog(ProfileActivity.this);
+                            break;
+                    }
+                    enableButtons();
+                    return true;
+                }
+            });
+        }
 
     }
 

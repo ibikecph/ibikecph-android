@@ -7,7 +7,6 @@
 package dk.kk.ibikecphlib;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -15,13 +14,9 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.text.Spanned;
-import android.util.Log;
 
-import dk.kk.ibikecphlib.BuildConfig;
-import dk.kk.ibikecphlib.R;
 import dk.kk.ibikecphlib.map.MapActivity;
 import dk.kk.ibikecphlib.map.overlays.TogglableOverlay;
-import dk.kk.ibikecphlib.map.overlays.TogglableOverlayFactory;
 import dk.kk.ibikecphlib.map.overlays.RefreshOverlaysTask;
 import dk.kk.ibikecphlib.util.IBikePreferences;
 import dk.kk.ibikecphlib.util.IBikePreferences.Language;
@@ -30,7 +25,6 @@ import dk.kk.ibikecphlib.util.SMDictionary;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -169,6 +163,8 @@ public class IBikeApplication extends Application {
 
     public static void logout() {
         IBikeApplication.setIsFacebookLogin(false);
+
+        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString("auth_token", null).apply();
 
         Intent intent = new Intent(MapActivity.mapActivityContext, MapActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         MapActivity.mapActivityContext.startActivity(intent);

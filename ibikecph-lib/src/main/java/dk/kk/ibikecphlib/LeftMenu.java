@@ -165,6 +165,7 @@ public class LeftMenu extends Fragment {
                 else
                     i = new Intent(getActivity(), ProfileActivity.class);
             }
+            LOG.d("starting login activity");
             getActivity().startActivityForResult(i, LAUNCH_LOGIN);
         }
     }

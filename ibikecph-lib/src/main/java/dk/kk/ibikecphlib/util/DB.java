@@ -436,6 +436,7 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public void deleteFavorites() {
+        LOG.d("Deleting favorites from sqllite database");
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_FAVORITES, null, null);
         db.close();
