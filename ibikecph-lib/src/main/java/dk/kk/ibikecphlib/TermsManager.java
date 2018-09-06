@@ -6,6 +6,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import dk.kk.ibikecphlib.util.Config;
 import org.json.JSONException;
+import dk.kk.ibikecphlib.util.LOG;
 
 /**
  * Created by jens on 7/22/15.
@@ -23,6 +24,7 @@ public class TermsManager {
             return;
         }
 
+        LOG.d("fetching terms");
         AsyncHttpClient client = new AsyncHttpClient();
         client.addHeader("Accept", "application/vnd.ibikecph.v1");
         client.get(Config.TRACKING_TERMS_JSON_URL, new JsonHttpResponseHandler() {
