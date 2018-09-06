@@ -24,24 +24,27 @@ public class TermsManager {
             return;
         }
 
-        LOG.d("fetching terms");
+        LOG.d("checking for new terms");
         AsyncHttpClient client = new AsyncHttpClient();
         client.addHeader("Accept", "application/vnd.ibikecph.v1");
         client.get(Config.TRACKING_TERMS_JSON_URL, new JsonHttpResponseHandler() {
-            public void onSuccess(int statusCode, org.apache.http.Header[] headers, org.json.JSONObject response) {
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, org.json.JSONObject response) {
 
                 try {
                     int version = response.getInt("version");
-                    String importantNews = response.getString("important_parts_description_"+ IBikeApplication.getLanguageString());
+                    String importantNews = response.getString("important_parts_description_" + IBikeApplication.getLanguageString());
 
                     // If the most recent terms we read turns out to be older than the current one, then spawn a dialog.
                     if (IBikeApplication.getSettings().getNewestTermsAccepted() < version) {
+                        LOG.d("god newer terms, ask user to accept them");
                         Intent i = new Intent(hostActivity, IBikeApplication.getTermsAcceptanceClass());
 
                         i.putExtra("important_news", importantNews);
                         i.putExtra("version", version);
 
                         hostActivity.startActivity(i);
+                    } else {
+                        LOG.d("terms are up-to-date");
                     }
 
 
