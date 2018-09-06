@@ -605,9 +605,9 @@ public class MapActivity extends BaseMapActivity {
                 state.setDestination(address);
                 // mapView.showRoute(fd);
                 //mapView.showAddressFromFavorite(a);
+                // Close the LeftMenu
+                drawerLayout.closeDrawer(Gravity.LEFT);
             }
-            // Close the LeftMenu
-            drawerLayout.closeDrawer(Gravity.LEFT);
         } else if (requestCode == LeftMenu.LAUNCH_TRACKING) {
             Log.d(TAG, "Got back from the tracking screen.");
         } else if (requestCode == LeftMenu.LAUNCH_ABOUT) {
