@@ -205,28 +205,11 @@ public class AutocompleteAdapter extends ArrayAdapter<SearchListItem> {
 			}
 		}
 		if (list != null) {
-			// add data from Foursquare and Kortforsyningen
+			// add data from Kortforsyningen
 			Iterator<SearchListItem> it = list.iterator();
 			while (it.hasNext()) {
 				SearchListItem s = it.next();
-				if (s instanceof FoursquareListItem) { // Foursquare
-					if (!isForPreviousCleared) {
-						ArrayList<SearchListItem> itemsToRemove = new ArrayList<SearchListItem>();
-						for (int i = 0; i < super.getCount(); i++) {
-							if (getItem(i).getClass().equals(FoursquareListItem.class)) {
-								itemsToRemove.add(getItem(i));
-							}
-						}
-						Iterator<SearchListItem> it2 = itemsToRemove.iterator();
-						while (it2.hasNext()) {
-							SearchListItem sli = it2.next();
-							super.remove(sli);
-							it2.remove();
-						}
-						isForPreviousCleared = true;
-					}
-					add(s);
-				} else if (s instanceof KortforsyningenListItem) { // Kortforsyningen
+				if (s instanceof KortforsyningenListItem) { // Kortforsyningen
 					if (!isKMSPreviousCleared) {
 						ArrayList<SearchListItem> itemsToRemove = new ArrayList<SearchListItem>();
 						for (int i = 0; i < super.getCount(); i++) {

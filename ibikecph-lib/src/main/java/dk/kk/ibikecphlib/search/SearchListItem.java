@@ -33,7 +33,7 @@ public abstract class SearchListItem {
 	}
 
 	public enum nodeType {
-		CURRENT_POSITION, FAVORITE, HISTORY, KORTFOR, FOURSQUARE
+		CURRENT_POSITION, FAVORITE, HISTORY, KORTFOR
 	};
 
 	protected JsonNode jsonNode;
@@ -99,9 +99,7 @@ public abstract class SearchListItem {
 
 	public static SearchListItem instantiate(JsonNode node) {
 		SearchListItem ret = null;
-		if (node.has("location")) {
-			ret = new FoursquareListItem(node);
-		} else if (node.has("properties")) {
+		if (node.has("properties")) {
 			ret = new KortforsyningenListItem(node);
 		}
 		return ret;

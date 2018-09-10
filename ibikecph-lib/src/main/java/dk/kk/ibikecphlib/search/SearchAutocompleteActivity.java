@@ -26,21 +26,17 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import dk.kk.ibikecphlib.IBikeApplication;
 import dk.kk.ibikecphlib.R;
 import dk.kk.ibikecphlib.map.MapActivity;
-import dk.kk.ibikecphlib.search.SearchListItem.nodeType;
 import dk.kk.ibikecphlib.util.DB;
 import dk.kk.ibikecphlib.util.LOG;
 import dk.kk.ibikecphlib.util.Util;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import dk.kk.ibikecphlib.util.Util;
 
 public class SearchAutocompleteActivity extends Activity {
 
@@ -52,14 +48,14 @@ public class SearchAutocompleteActivity extends Activity {
     private AutocompleteAdapter adapter;
     private SearchListItem currentSelection;
     private int lastTextSize = 0;
-    private boolean addressPicked = false, isA = false, isFoursquareFetched = false, isClose = false;
+    private boolean addressPicked = false, isA = false, isClose = false;
     /**
      * @deprecated Use the address on the currentSelection SearchListItem instead
      */
     private Address address;
     private ProgressBar progressBar;
 
-    private Thread kmsThread, foursquareThread;
+    private Thread kmsThread;
     private Address lastAddress = null;
 
     @Override
@@ -313,9 +309,6 @@ public class SearchAutocompleteActivity extends Activity {
             // We are currently searching for this
             adapter.updateListData(list, searchText, addr);
         }
-        if (isFoursquareFetched) {
-            progressBar.setVisibility(View.INVISIBLE);
-        }
     }
 
     public void hideKeyboard() {
@@ -328,9 +321,6 @@ public class SearchAutocompleteActivity extends Activity {
         public void afterTextChanged(Editable statusText) {
             if (kmsThread != null && kmsThread.isAlive()) {
                 kmsThread.interrupt();
-            }
-            if (foursquareThread != null && foursquareThread.isAlive()) {
-                foursquareThread.interrupt();
             }
             final Address newAddress = AddressParser.parseAddressRegex(textSrch.getText().toString().replaceAll("\n", ","));
             LOG.d("after text changed");
@@ -348,7 +338,6 @@ public class SearchAutocompleteActivity extends Activity {
                     // final String searchText = AddressParser.addresWithoutNumber(textSrch.getText().toString());
                     final String searchText = textSrch.getText().toString();
 
-                    isFoursquareFetched = !(textSrch.getText().toString().length() > 2);
                     final Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -404,6 +393,7 @@ public class SearchAutocompleteActivity extends Activity {
 
                         // Wrapping this in try/catch in case the user has already quit the Activity before the thread stops running
                         try {
+                            LOG.d("fetching from KSM, input has no street");
                             List<JsonNode> list = HTTPAutocompleteHandler.getKortforsyningenAutocomplete(loc, addr);
                             int count = 0;
                             if (list != null) {
@@ -435,6 +425,7 @@ public class SearchAutocompleteActivity extends Activity {
 
                     }
                     if (!addr.isAddress()) {
+                        LOG.d("fetching from KSM, input is not an address");
                         List<JsonNode> places = HTTPAutocompleteHandler.getKortforsyningenPlaces(loc, addr);
                         if (places != null) {
                             int count = 0;
@@ -474,44 +465,7 @@ public class SearchAutocompleteActivity extends Activity {
 
             });
             kmsThread.start();
-            if (textSrch.getText().toString().length() >= 3) { // && address.isFoursquare() <- was = null...
-                // fetch the Foursquare autocomplete
-                foursquareThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<JsonNode> list = HTTPAutocompleteHandler.getFoursquareAutocomplete(addr, SearchAutocompleteActivity.this, loc);
-                        final ArrayList<SearchListItem> data = new ArrayList<SearchListItem>();
-                        if (list != null) {
-                            int count = 0;
-                            for (JsonNode node : list) {
-                                if (count == 3) {
-                                    break;
-                                }
-                                JsonNode location = node.path("location");
-                                if (location.has("lat") && location.has("lng") && location.get("lat").asDouble() != 0
-                                        && location.get("lng").asDouble() != 0) {
-                                    String country = location.has("country") ? location.get("country").asText() : "";
-                                    if (country.contains("Denmark") || country.contains("Dansk") || country.contains("Danmark")) {
-                                        FoursquareListItem fd = new FoursquareListItem(node);
-                                        fd.setDistance(loc.distanceTo(Util.locationFromCoordinates(fd.getAddress().getLocation().getLatitude(), fd.getAddress().getLocation().getLongitude())));
-                                        data.add(fd);
-                                        count++;
-                                    }
-                                }
-                            }
-                        }
-                        isFoursquareFetched = true;
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                updateListData(data, searchText, addr);
-                            }
-                        });
-                    }
-                });
-                foursquareThread.start();
-            } else {
-                isFoursquareFetched = true;
-            }
+
         }
     }
 

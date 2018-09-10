@@ -101,7 +101,7 @@ public class Address implements Serializable {
     }
 
     public enum Source {
-        SEARCH, HISTORYDATA, FOURSQUARE, FAVORITE
+        SEARCH, HISTORYDATA, FAVORITE
     }
 
     private Source source;
@@ -154,7 +154,7 @@ public class Address implements Serializable {
             } else if (this.name != null && !this.name.trim().isEmpty()) {
                 return this.name;
             } else if (this.street != null && this.houseNumber != null && !this.street.trim().equals("") && !this.houseNumber.trim().equals("")) {
-                //Remove "null" from the strings received from Foursquare (occurs often if you search for Tivoli)
+                //Remove "null" from the strings
                 if (this.street.contains("null")) {
                     this.street = this.street.replace("null", "");
                 }

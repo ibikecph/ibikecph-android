@@ -31,74 +31,11 @@ import dk.kk.ibikecphlib.util.Util;
 
 public class HTTPAutocompleteHandler {
 
-	static final String FOURSQUARE_ID = "AFXG5WVI4UTINRGVJZ52ZAWRK454EN4J3FZRJB03J4ZMXQX1";
-	static final String FOURSQUARE_SECRET = "D2EU4WKSQ2WHQGOK4FJVNRDZUJ4S4YTZVBO1FM4V03NRJWYK";
 	static final double GEOCODING_SEARCH_RADIUS = 50000.0;
 	static final String PLACES_SEARCH_RADIUS = "20000";
-	static final String FOURSQUARE_SEARCH_RADIUS = "20000";
 	static final String PLACES_LANGUAGE = "da";
-	static final String FOURSQUARE_CATEGORIES = "4d4b7104d754a06370d81259,4d4b7105d754a06372d81259,4d4b7105d754a06373d81259,4d4b7105d754a06374d81259,4d4b7105d754a06376d81259,4d4b7105d754a06377d81259,4d4b7105d754a06375d81259,5032891291d4c4b30a586d68,4f2a210c4b9023bd5841ed28,4d4b7105d754a06378d81259,4bf58dd8d48988d1ed931735,4e4c9077bd41f78e849722f9,4bf58dd8d48988d12d951735,4bf58dd8d48988d1fa931735,4bf58dd8d48988d1fc931735,4e74f6cabd41c4836eac4c31,4bf58dd8d48988d1ef941735,4f4530164b9074f6e4fb00ff,4bf58dd8d48988d129951735";
-	static final String FOURSQUARE_LIMIT = "10";
 
 	@SuppressLint("NewApi")
-	public static List<JsonNode> getFoursquareAutocomplete(Address address, Context context, Location location) {
-
-		double lat;
-		double lon;
-		try {
-			lat = location.getLatitude();
-			lon = location.getLongitude();
-		} catch (NullPointerException e) {
-			lat = -1.0;
-			lon = -1.0;
-		}
-
-		String urlString;
-		List<JsonNode> list = null;
-		try {
-			String query = URLEncoder.encode(normalizeToAlphabet(address.getStreet()), "UTF-8");
-
-			String near = null;
-			if (address.getZip() != null && !address.getZip().equals("")) {
-				if (address.getCity() != null && !address.getCity().equals("")) {
-					near = address.getPostCodeAndCity();
-				} else {
-					near = address.getZip() + ", Denmark";
-				}
-			} else {
-				if (address.getCity() != null && !address.getCity().equals("")) {
-					near = address.getCity();
-				}
-			}
-
-			if (near != null && !near.equals("")) {
-				urlString = "https://api.foursquare.com/v2/venues/search?intent=browse&near=" + URLEncoder.encode(near, "UTF-8")
-						+ "&client_id=" + FOURSQUARE_ID + "&client_secret=" + FOURSQUARE_SECRET + "&query="
-						+ URLEncoder.encode(query, "UTF-8") + "&v=20130301&radius=" + FOURSQUARE_SEARCH_RADIUS + "&limit="
-						+ FOURSQUARE_LIMIT + "&categoryId=" + FOURSQUARE_CATEGORIES;
-			} else {
-				urlString = "https://api.foursquare.com/v2/venues/search?intent=browse&ll=" + lat + "," + lon + "&client_id="
-						+ FOURSQUARE_ID + "&client_secret=" + FOURSQUARE_SECRET + "&query=" + URLEncoder.encode(query, "UTF-8") + "&v="
-						+ 20130301 + "&radius=" + FOURSQUARE_SEARCH_RADIUS + "&limit=" + FOURSQUARE_LIMIT + "&categoryId="
-						+ FOURSQUARE_CATEGORIES;
-			}
-
-			JsonNode rootNode = performGET(urlString);
-
-			if (rootNode != null && rootNode.has("response")) {
-				if (rootNode.get("response").has("minivenues")) {
-					list = Util.JsonNodeToList(rootNode.get("response").get("minivenues"));
-				} else if (rootNode.get("response").has("venues")) {
-					list = Util.JsonNodeToList(rootNode.get("response").get("venues"));
-				}
-			}
-
-		} catch (UnsupportedEncodingException e) {
-			LOG.e(e.getLocalizedMessage());
-		}
-
-		return list;
-	}
 
 	public static JsonNode performGET(String urlString) {
 		JsonNode ret = null;
