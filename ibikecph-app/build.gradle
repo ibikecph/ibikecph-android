@@ -56,7 +56,6 @@ android {
             pseudoLocalesEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     '../ibikecph-lib/proguard-rules.pro'
-            signingConfig signingConfigs.development
         }
     }
 
