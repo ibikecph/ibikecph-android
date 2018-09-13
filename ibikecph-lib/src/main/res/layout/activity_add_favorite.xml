@@ -3,5 +3,5 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.spoiledmilk.ibikecph.favorites.AddFavoriteActivity"
+    tools:context="dk.kk.ibikecphlib.favorites.AddFavoriteActivity"
     tools:ignore="MergeRootFrame" />

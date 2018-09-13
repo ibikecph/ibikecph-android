@@ -41,7 +41,11 @@ release mode, this involves a few steps:
 - Checkout the tag related to the release we want to make.
 - From the "Build" menu in the top menu and choose "Generate Signed APK"
   and follow along with the wizard.
-
+- For older version of Android, you must enable V1 (in addition to V2)
+  signing when building the sigend app.
+  Otherwise the app will fail to install with a simple
+  message the the app failed to install, without further details.
+ 
 ## Code structure
 
 As stated, this project brings together three separate projects,
@@ -58,6 +62,6 @@ Supercykelstier also relies on the library for most of its
 functionality, but also implements some additional things, among other
 things the "Knæk ruten" functionality.
 
-The Java code is published under the `com.spoiledmilk` namespace, and
+The Java code is published under the `dk.kk` namespace, and
 split into packages that reflect what part of the app they pertain to.
 Model class names are suffixed with  `Data`.

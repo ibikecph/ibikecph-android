@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.spoiledmilk.ibikecph.EditFavoriteActivity" >
+    tools:context="dk.kk.ibikecphlib.EditFavoriteActivity" >
 
     <item
         android:id="@+id/action_start_route"

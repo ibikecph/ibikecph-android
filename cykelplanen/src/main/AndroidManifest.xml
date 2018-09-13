@@ -1,45 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.spoiledmilk.cykelsuperstier"
-    android:versionCode="82"
-    android:versionName="2.2.3">
-
-    <uses-sdk android:targetSdkVersion="23" />
-
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-    <!--uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /-->
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
-
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.location.network"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.location.gps"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.telephony"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.wifi"
-        android:required="false" />
+    package="dk.kk.cykelsuperstier">
 
     <application
-        android:name="com.spoiledmilk.cykelsuperstier.CykelPlanenApplication"
+        android:name=".CykelPlanenApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -47,81 +12,35 @@
         android:theme="@style/CykelsuperstierTheme.ActionBar"
         tools:replace="android:name">
 
-        <activity android:name="net.hockeyapp.android.UpdateActivity" />
-        <activity
-            android:name="com.spoiledmilk.cykelsuperstier.SplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/CykelsuperstierTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.spoiledmilk.cykelsuperstier.login.LoginSplashActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/CykelsuperstierTheme" />
-        <activity
-            android:name="com.spoiledmilk.ibikecph.introduction.GreenPathsIntroductionActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.spoiledmilk.cykelsuperstier.map.MapActivity"
-            android:configChanges="keyboard|keyboardHidden"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/CykelsuperstierTheme.ActionBar" />
-        <activity
-            android:name="com.spoiledmilk.cykelsuperstier.AboutActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/CykelsuperstierTheme.ActionBar" />
-        <activity
-            android:name="com.spoiledmilk.ibikecph.login.ProfileActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.spoiledmilk.ibikecph.login.LoginActivity"
-            android:screenOrientation="portrait" />
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
-        <meta-data
-            android:name="net.hockeyapp.android.appIdentifier"
-            android:value="${HOCKEYAPP_APP_ID}" />
 
         <activity
-            android:name="com.facebook.LoginActivity"
+            android:name=".BreakRouteSplashActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.spoiledmilk.ibikecph.login.RegisterActivity"
+            android:name=".break_rote.BreakRouteActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.spoiledmilk.ibikecph.search.SearchActivity"
+            android:name=".break_rote.TransportationActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.spoiledmilk.ibikecph.search.SearchAutocompleteActivity"
+            android:name=".search.SearchActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.spoiledmilk.cykelsuperstier.favorites.FavoritesActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.spoiledmilk.ibikecph.IssuesActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.spoiledmilk.ibikecph.login.FacebookProfileActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.spoiledmilk.cykelsuperstier.BreakRouteSplashActivity"
-            android:screenOrientation="portrait" />
+            android:name=".AcceptNewTermsActivity"
+            android:label="@string/title_activity_accept_new_terms" />
 
         <receiver
-            android:name="com.spoiledmilk.cykelsuperstier.reminders.AlarmReceiver"
+            android:name=".reminders.AlarmReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.spoiledmilk.cykelsuperstier.ALARM_ACTION" />
+                <action android:name=".ALARM_ACTION" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.spoiledmilk.cykelsuperstier.reminders.BootReceiver"
+            android:name=".reminders.BootReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -129,73 +48,8 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.spoiledmilk.cykelsuperstier.reminders.ResetAlarmsService" />
+        <service android:name=".reminders.ResetAlarmsService" />
 
-        <activity
-            android:name="com.spoiledmilk.cykelsuperstier.break_rote.BreakRouteActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.spoiledmilk.cykelsuperstier.break_rote.TransportationActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.spoiledmilk.cykelsuperstier.search.SearchActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.spoiledmilk.ibikecph.TTSSettingsActivity"
-            android:label="@string/title_activity_ttssettings" />
-        <activity
-            android:name="com.spoiledmilk.ibikecph.favorites.FavoritesListActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/CykelsuperstierTheme.ActionBar" />
-        <activity
-            android:name="com.spoiledmilk.ibikecph.favorites.AddFavoriteActivity"
-            android:label="@string/title_activity_add_favorite" />
-        <activity
-            android:name="com.spoiledmilk.ibikecph.favorites.EditFavoriteActivity"
-            android:label="@string/title_activity_edit_favorite" />
-
-        <service android:name="com.spoiledmilk.ibikecph.BikeLocationService" />
-        <service android:enabled="@bool/trackingEnabled"
-            android:name="com.spoiledmilk.ibikecph.BikeActivityService" />
-
-        <activity
-            android:enabled="@bool/trackingEnabled"
-            android:name="com.spoiledmilk.ibikecph.tracking.TrackingActivity"
-            android:label="@string/title_activity_tracking" />
-        <activity
-            android:enabled="@bool/trackingEnabled"
-            android:name="com.spoiledmilk.ibikecph.tracking.TrackingWelcomeActivity" />
-        <activity
-            android:enabled="@bool/trackingEnabled"
-            android:name="com.spoiledmilk.ibikecph.tracking.TrackingSettingsActivity"
-            android:label="@string/title_activity_tracking_settings" />
-        <activity
-            android:enabled="@bool/trackingEnabled"
-            android:name="com.spoiledmilk.ibikecph.tracking.TrackMapView"
-            android:label="@string/title_activity_track_map_view" />
-
-        <!--receiver android:name="com.spoiledmilk.ibikecph.BootReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.SCREEN_OFF" />
-                <action android:name="android.intent.action.SCREEN_ON" />
-            </intent-filter>
-        </receiver-->
-
-        <activity
-            android:name="com.spoiledmilk.cykelsuperstier.AcceptNewTermsActivity"
-            android:label="@string/title_activity_accept_new_terms" />
-
-        <!-- To enable Google Analytics background services -->
-        <receiver android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
-            </intent-filter>
-        </receiver>
-        <service android:name="com.google.android.gms.analytics.AnalyticsService"
-            android:enabled="true"
-            android:exported="false"/>
     </application>
 
 

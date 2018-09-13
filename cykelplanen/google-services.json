@@ -8,7 +8,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:691732006711:android:b3d86244353df1ce",
         "android_client_info": {
-          "package_name": "com.spoiledmilk.cykelsuperstier"
+          "package_name": "dk.kk.cykelsuperstier"
         }
       },
       "oauth_client": [],
@@ -37,7 +37,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:691732006711:android:f643619fded1cdc1",
         "android_client_info": {
-          "package_name": "com.spoiledmilk.cykelsuperstier.staging"
+          "package_name": "dk.kk.cykelsuperstier.staging"
         }
       },
       "oauth_client": [],
@@ -66,7 +66,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:691732006711:android:e08e6889763b42b7",
         "android_client_info": {
-          "package_name": "com.spoiledmilk.cykelsuperstier.local"
+          "package_name": "dk.kk.cykelsuperstier.local"
         }
       },
       "oauth_client": [],

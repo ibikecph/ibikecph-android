@@ -2,13 +2,13 @@ package dk.kk.ibikecph.test;
 
 import android.location.Location;
 
-import com.spoiledmilk.ibikecph.map.RouteType;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Leg;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.Route;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.TransportationType;
-import com.spoiledmilk.ibikecph.navigation.routing_engine.TurnInstruction;
-import com.spoiledmilk.ibikecph.search.Address;
-import com.spoiledmilk.ibikecph.util.Util;
+import dk.kk.ibikecphlib.map.RouteType;
+import dk.kk.ibikecphlib.navigation.routing_engine.Leg;
+import dk.kk.ibikecphlib.navigation.routing_engine.Route;
+import dk.kk.ibikecphlib.navigation.routing_engine.TransportationType;
+import dk.kk.ibikecphlib.navigation.routing_engine.TurnInstruction;
+import dk.kk.ibikecphlib.search.Address;
+import dk.kk.ibikecphlib.util.Util;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

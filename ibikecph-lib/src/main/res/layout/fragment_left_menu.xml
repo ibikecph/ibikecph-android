@@ -84,7 +84,7 @@
             android:layout_centerHorizontal="true"
             android:background="@null" >
 
-            <com.spoiledmilk.ibikecph.controls.SortableListView
+            <dk.kk.ibikecph.controls.SortableListView
                 android:id="@+id/favoritesList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -2,26 +2,24 @@ apply plugin: 'com.android.application'
 
 dependencies {
     // For testing
-    androidTestCompile 'com.android.support:support-annotations:23.3.0'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
+    androidTestImplementation 'com.android.support:support-annotations:27.1.1'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
     // Optional -- Hamcrest library
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
+    androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
     // Optional -- UI testing with Espresso
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     // This is needed to perform actions of ex the Drawer menu
-    androidTestCompile ("com.android.support.test.espresso:espresso-contrib:2.2.2") {
+    androidTestImplementation('com.android.support.test.espresso:espresso-contrib:3.0.2') {
         exclude module: 'support-annotations'
         exclude module: 'recyclerview-v7'
         exclude module: 'support-v4'
     }
     // Optional -- UI testing with UI Automator
     //androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
-
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':ibikecph-lib')
-
-    compile 'com.google.android.gms:play-services-analytics:8.4.0'
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api project(':ibikecph-lib')
+    implementation 'com.android.support:support-v4:27.1.1'
 }
 
 android {
@@ -29,20 +27,20 @@ android {
         development {
             keyAlias secret('DEV_KEY_ALIAS')
             keyPassword secret('DEV_KEY_PASSWORD')
-            storeFile file('../development-keystore.jks')
+            storeFile file('../debug.keystore')
             storePassword secret('DEV_KEYSTORE_PASSWORD')
         }
     }
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
     defaultConfig {
         applicationId "dk.kk.ibikecph"
-        minSdkVersion 16
-        targetSdkVersion 23
-        manifestPlaceholders = [HOCKEYAPP_APP_ID: ""]
+        minSdkVersion 22
+        targetSdkVersion 28
+        manifestPlaceholders = [HOCKEYAPP_APP_ID: "085d3271f48c40c1bf7e58cb6818c79b"]
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        // versionCode 1
-        // versionName "1.0"
+        versionCode 86
+        versionName "2.2.4"
     }
     packagingOptions {
         exclude 'META-INF/NOTICE'
@@ -51,34 +49,40 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.development
-            manifestPlaceholders = [HOCKEYAPP_APP_ID: "d10e63f39cdbe7e8e3af275207388b2a"]
+            manifestPlaceholders = [HOCKEYAPP_APP_ID: "085d3271f48c40c1bf7e58cb6818c79b"]
         }
         release {
             minifyEnabled false
             pseudoLocalesEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     '../ibikecph-lib/proguard-rules.pro'
-            signingConfig signingConfigs.development
         }
     }
+
+    flavorDimensions "default"
+
     productFlavors {
         local {
             applicationIdSuffix ".local"
             resValue "string", "app_name", "I Bike CPH (local)"
             buildConfigField "String", "BASE_URL", "\"http://10.0.2.2:3000\""
+            dimension "default"
         }
         staging {
             applicationIdSuffix ".staging"
             resValue "string", "app_name", "I Bike CPH (staging)"
             buildConfigField "String", "BASE_URL", "\"https://staging.ibikecph.dk\""
+            dimension "default"
         }
         production {
             resValue "string", "app_name", "I Bike CPH"
             buildConfigField "String", "BASE_URL", "\"https://www.ibikecph.dk\""
+            dimension "default"
         }
     }
 }
 
+// https://github.com/x2on/gradle-hockeyapp-plugin
 apply plugin: 'de.felixschulze.gradle.hockeyapp'
 hockeyapp {
     apiToken = secret('HOCKEY_APP_TOKEN')
@@ -86,7 +90,5 @@ hockeyapp {
     teams = 65310
     commitSha = git.head().id
     notes = git.head().fullMessage
-    status = 2
+    status = 2      // 2 mean make  version available for download
 }
-// This line needs to be in the bottom of the file
-apply plugin: 'com.google.gms.google-services'

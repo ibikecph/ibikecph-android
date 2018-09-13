@@ -146,7 +146,6 @@ public class MapView extends ViewGroup implements IMapView, MapViewConstants, Mu
     float lastScale = 1f;
     // TileDownloadQueue tileDownloadQueue;
     boolean zoomSetFromPinch = false;
-    public boolean tracking = false;
     public Location lastLocation;
     public boolean directionShown = false;
     boolean noRendering = false;
@@ -1092,7 +1091,7 @@ public class MapView extends ViewGroup implements IMapView, MapViewConstants, Mu
             }
         }
 
-        if (!(tracking && isPinchZooming)) {
+        if (!(isPinchZooming)) {
             if (mGestureDetector.onTouchEvent(rotatedEvent)) {
                 return true;
             }
@@ -1541,7 +1540,7 @@ public class MapView extends ViewGroup implements IMapView, MapViewConstants, Mu
             }
 
             if (mZoomLevel < getMaxZoomLevel()) {
-                if (!tracking || !directionShown) {
+                if (!directionShown) {
                     Matrix m = new Matrix();
                     float x = e.getX() + getScrollX() - (getWidth() / 2);
                     float y = e.getY() + getScrollY() - (getHeight() / 2);

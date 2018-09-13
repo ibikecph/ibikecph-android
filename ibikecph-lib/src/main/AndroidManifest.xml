@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.spoiledmilk.ibikecph"
-    android:versionCode="82"
-    android:versionName="2.2.3">
-
-    <uses-sdk android:targetSdkVersion="23" android:minSdkVersion="16" />
+    package="dk.kk.ibikecphlib">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -14,9 +10,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <!--uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /-->
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
@@ -42,10 +35,26 @@
         android:hardwareAccelerated="true"
         android:largeHeap="true"
         android:screenOrientation="portrait">
-        <activity android:name="net.hockeyapp.android.UpdateActivity" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+        <meta-data
+            android:name="net.hockeyapp.android.appIdentifier"
+            android:value="${HOCKEYAPP_APP_ID}" />
+
         <activity
             android:name=".SplashActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".introduction.GreenPathsIntroductionActivity"
             android:screenOrientation="portrait" />
@@ -68,14 +77,6 @@
         <activity
             android:name=".login.LoginActivity"
             android:screenOrientation="portrait" />
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/app_id" />
-
-        <activity
-            android:name="com.facebook.LoginActivity"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".login.RegisterActivity"
             android:screenOrientation="portrait" />
@@ -87,9 +88,6 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".favorites.FavoritesActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".IssuesActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".login.FacebookProfileActivity"
@@ -106,16 +104,9 @@
         <activity
             android:name=".favorites.EditFavoriteActivity"
             android:label="@string/title_activity_edit_favorite" />
-
-        <service android:name=".BikeLocationService" />
-        <service android:enabled="@bool/trackingEnabled"
-            android:name=".BikeActivityService" />
-        <service android:name=".tracking.MilestoneManager" />
-
         <activity
             android:name=".tracking.TrackingActivity"
             android:label="@string/title_activity_tracking" />
-
         <activity
             android:name=".tracking.TrackingWelcomeActivity"
             android:screenOrientation="portrait" />
@@ -125,13 +116,19 @@
         <activity
             android:name=".tracking.TrackMapView"
             android:label="@string/title_activity_track_map_view" />
-
         <activity
             android:name=".login.SignatureActivity"
             android:label="@string/track_token_title"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".map.overlays.OverlaysActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AcceptNewTermsActivity"
+            android:label="@string/title_activity_accept_new_terms" />
+
+        <activity
+            android:name="com.facebook.LoginActivity"
             android:screenOrientation="portrait" />
 
         <receiver
@@ -142,9 +139,10 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".AcceptNewTermsActivity"
-            android:label="@string/title_activity_accept_new_terms" />
+        <service android:name=".BikeLocationService" />
+        <service android:enabled="@bool/trackingEnabled"
+            android:name=".BikeActivityService" />
+        <service android:name=".tracking.MilestoneManager" />
     </application>
 
 </manifest>

@@ -10,18 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="bottom"
-        android:orientation="vertical" >
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Debugging controls" />
-        <CheckBox
-            android:id="@+id/crashReportingCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Send HockeyApp crash reports"/>
-    </LinearLayout>
+        android:orientation="vertical" ></LinearLayout>
 
     <ScrollView
         android:id="@+id/aboutTextScrollView"
